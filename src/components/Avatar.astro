@@ -1,6 +1,7 @@
 ---
-// Circular avatar. Renders the real photo when `src` is given; otherwise a
-// polished initials-on-gradient placeholder so nothing ever looks broken.
+// Circular avatar. If `src` is given it shows the real photo on top of an
+// initials-on-gradient base; if the image is missing/fails to load, it falls
+// back to the initials automatically (never a broken image).
 // Drop real images into /public/images and pass `src="/images/<file>"`.
 interface Props {
   name: string;
@@ -28,26 +29,26 @@ const gradients = [
 let hash = 0;
 for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
 const gradient = gradients[hash % gradients.length];
+const dims = `width:${size}px;height:${size}px;`;
 ---
 
-{
-  src ? (
-    <img
-      src={src}
-      alt={name}
-      width={size}
-      height={size}
-      loading="lazy"
-      class={`rounded-full object-cover ring-2 ring-white/70 ${className}`}
-      style={`width:${size}px;height:${size}px;`}
-    />
-  ) : (
-    <div
-      class={`flex items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-white/70 ${className}`}
-      style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.36)}px;`}
-      aria-label={name}
-    >
-      {initials}
-    </div>
-  )
-}
+<div class={`relative shrink-0 ${className}`} style={dims}>
+  <div
+    class={`flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-white/70`}
+    style={`font-size:${Math.round(size * 0.36)}px;`}
+    aria-label={name}
+  >
+    {initials}
+  </div>
+  {
+    src && (
+      <img
+        src={src}
+        alt={name}
+        loading="lazy"
+        class="absolute inset-0 h-full w-full rounded-full object-cover ring-2 ring-white/70"
+        onerror="this.style.display='none'"
+      />
+    )
+  }
+</div>
