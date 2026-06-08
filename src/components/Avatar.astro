@@ -34,7 +34,7 @@ const dims = `width:${size}px;height:${size}px;`;
 
 <div class={`relative shrink-0 ${className}`} style={dims}>
   <div
-    class={`flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-white/70`}
+    class={`flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-black`}
     style={`font-size:${Math.round(size * 0.36)}px;`}
     aria-label={name}
   >
@@ -45,8 +45,7 @@ const dims = `width:${size}px;height:${size}px;`;
       <img
         src={src}
         alt={name}
-        loading="lazy"
-        class="absolute inset-0 h-full w-full rounded-full object-cover ring-2 ring-white/70"
+        class="absolute inset-0 h-full w-full rounded-full object-cover ring-2 ring-black"
         onerror="this.style.display='none'"
       />
     )
