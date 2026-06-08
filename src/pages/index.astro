@@ -75,19 +75,19 @@ const perfectFor = [
     <div class="mx-auto max-w-[1500px] px-6 pt-12 pb-16 text-center sm:pt-16">
       <Logo tone="brand" href="/" class="mx-auto" imgClass="h-20 sm:h-24" />
       <h1
-        class="font-display mx-auto mt-10 max-w-[1400px] text-4xl font-extrabold leading-[1.08] text-brand-600 sm:text-5xl lg:text-[3.25rem]"
+        class="font-display mx-auto mt-10 max-w-[1400px] text-4xl font-extrabold leading-[1.1] text-brand-600 sm:text-5xl lg:text-[3.75rem]"
       >
         We Help Impact-Driven Coaches and Thought<br class="hidden xl:inline" />
         Leaders Share Their Journey On Social Media
       </h1>
-      <p class="mx-auto mt-6 max-w-3xl text-lg text-muted sm:text-xl">
+      <p class="mx-auto mt-7 max-w-[1120px] text-lg text-muted sm:text-[1.4rem] sm:leading-relaxed">
         Stop worrying about where the next client is going to come from. It's
         time to blow up your social media and have you focused on what matters
         the most: <span class="font-semibold text-ink">your business.</span>
       </p>
-      <div class="mt-9 flex flex-col items-center gap-2">
-        <Button href="#book" tone="brand">Speak To Our Team Today</Button>
-        <p class="text-sm text-muted">Schedule Your FREE Audit Call Now</p>
+      <div class="mt-10 flex flex-col items-center gap-3">
+        <Button href="#book" tone="brand" size="xl">Speak To Our Team Today</Button>
+        <p class="text-base text-muted">Schedule Your FREE Audit Call Now</p>
       </div>
     </div>
   </section>
@@ -96,22 +96,22 @@ const perfectFor = [
   <section class="bg-brand-band px-6 py-16 text-white sm:py-20">
     <div class="mx-auto max-w-6xl">
       <div class="text-center">
-        <h2 class="font-display text-3xl font-extrabold sm:text-4xl">
+        <h2 class="font-display text-4xl font-extrabold sm:text-5xl lg:text-6xl">
           LEADERS WE'VE WORKED WITH
         </h2>
-        <p class="mt-2 text-sm text-white/70">
+        <p class="mt-3 text-base text-white/70">
           Here are a few notable leaders we have worked with…
         </p>
       </div>
       <ul
-        class="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-6"
+        class="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-6"
       >
         {
           clients.map((c) => (
             <li class="flex flex-col items-center text-center">
-              <Avatar name={c.name} src={c.img} size={88} />
-              <span class="mt-3 text-sm font-semibold">{c.name}</span>
-              <span class="text-xs text-white/65">{c.followers} Followers</span>
+              <Avatar name={c.name} src={c.img} size={116} />
+              <span class="mt-3 text-base font-semibold">{c.name}</span>
+              <span class="text-sm text-white/65">{c.followers} Followers</span>
             </li>
           ))
         }
@@ -123,10 +123,10 @@ const perfectFor = [
   <section class="bg-white px-6 py-20 sm:py-24">
     <div class="mx-auto max-w-6xl">
       <div class="text-center">
-        <h2 class="font-display text-4xl font-extrabold text-brand-600 sm:text-5xl">
+        <h2 class="font-display text-4xl font-extrabold text-brand-600 sm:text-5xl lg:text-6xl">
           OUR APPROACH
         </h2>
-        <p class="mt-2 italic text-muted">"Grow exceptionally but with intention"</p>
+        <p class="mt-3 text-lg italic text-muted">"Grow exceptionally but with intention"</p>
       </div>
 
       <div class="mt-14 grid items-center gap-12 lg:grid-cols-2">
@@ -153,8 +153,8 @@ const perfectFor = [
             }
           </div>
           <div class="mt-9 flex flex-col items-start gap-2">
-            <Button href="#book" tone="brand">Speak To Our Team Today</Button>
-            <p class="text-sm text-muted">Schedule Your FREE Audit Call Now</p>
+            <Button href="#book" tone="brand" size="xl">Speak To Our Team Today</Button>
+            <p class="text-base text-muted">Schedule Your FREE Audit Call Now</p>
           </div>
         </div>
 
@@ -163,7 +163,7 @@ const perfectFor = [
           <img
             src="/images/phone.png"
             alt="Grow your brand on social media"
-            class="w-full max-w-[320px]"
+            class="w-full max-w-[400px]"
             loading="lazy"
           />
         </div>
@@ -204,7 +204,7 @@ const perfectFor = [
         {
           team.map((m) => (
             <div class="flex flex-col items-center text-center">
-              <Avatar name={m.name} src={m.img} size={104} />
+              <Avatar name={m.name} src={m.img} size={120} />
               <span class="mt-3 font-semibold text-ink">{m.name}</span>
               <span class="text-sm text-muted">{m.role}</span>
             </div>
@@ -212,7 +212,7 @@ const perfectFor = [
         }
       </div>
       <div>
-        <h2 class="font-display text-4xl font-extrabold text-ink sm:text-5xl">
+        <h2 class="font-display text-4xl font-extrabold text-ink sm:text-5xl lg:text-6xl">
           MEET THE A-TEAM
         </h2>
         <p class="mt-5 leading-relaxed text-muted">
