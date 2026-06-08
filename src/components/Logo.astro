@@ -1,43 +1,60 @@
 ---
-// Synchro Social logo: infinity mark above the wordmark.
-// `tone` recolors it for the purple (main) or coral (AI) themes, or white.
+// Synchro Social logo.
+// - brand (main site / light pages): uses the real logo.png lockup.
+// - white / coral (dark onboarding, AI pages): inline SVG so it can recolor.
 interface Props {
   tone?: "brand" | "coral" | "white";
   href?: string | null;
   class?: string;
+  imgClass?: string; // height of the PNG lockup on brand pages
 }
-const { tone = "brand", href = "/", class: className = "" } = Astro.props;
+const {
+  tone = "brand",
+  href = "/",
+  class: className = "",
+  imgClass = "h-16",
+} = Astro.props;
 
 const colors = {
   brand: "text-brand-600",
   coral: "text-coral-500",
   white: "text-white",
 };
-const color = colors[tone];
 
 const Tag = href ? "a" : "div";
 ---
 
-<Tag
-  {...href ? { href } : {}}
-  class={`inline-flex flex-col items-center gap-1 ${color} ${className}`}
-  aria-label="Synchro Social"
->
-  <svg
-    viewBox="0 0 64 32"
-    class="h-7 w-auto"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z"
-      stroke="currentColor"
-      stroke-width="3.6"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    ></path>
-  </svg>
-  <span class="text-[0.7rem] font-bold leading-none tracking-[0.32em]">
-    SYNCHRO&nbsp;SOCIAL
-  </span>
-</Tag>
+{
+  tone === "brand" ? (
+    <Tag
+      {...href ? { href } : {}}
+      class={`inline-block ${className}`}
+      aria-label="Synchro Social"
+    >
+      <img
+        src="/images/logo.png"
+        alt="Synchro Social"
+        class={`${imgClass} w-auto`}
+      />
+    </Tag>
+  ) : (
+    <Tag
+      {...href ? { href } : {}}
+      class={`inline-flex flex-col items-center gap-1 ${colors[tone]} ${className}`}
+      aria-label="Synchro Social"
+    >
+      <svg viewBox="0 0 64 32" class="h-7 w-auto" fill="none" aria-hidden="true">
+        <path
+          d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z"
+          stroke="currentColor"
+          stroke-width="3.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="text-[0.7rem] font-bold leading-none tracking-[0.32em]">
+        SYNCHRO&nbsp;SOCIAL
+      </span>
+    </Tag>
+  )
+}

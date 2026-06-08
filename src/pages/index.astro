@@ -73,7 +73,7 @@ const perfectFor = [
     >
     </div>
     <div class="mx-auto max-w-[1500px] px-6 pt-12 pb-16 text-center sm:pt-16">
-      <Logo tone="brand" href="/" class="mx-auto" />
+      <Logo tone="brand" href="/" class="mx-auto" imgClass="h-20 sm:h-24" />
       <h1
         class="font-display mx-auto mt-10 max-w-[1400px] text-4xl font-extrabold leading-[1.08] text-brand-600 sm:text-5xl lg:text-[3.25rem]"
       >
@@ -158,26 +158,14 @@ const perfectFor = [
           </div>
         </div>
 
-        <!-- Phone / social placeholder -->
-        <div class="relative mx-auto flex h-80 w-full max-w-md items-center justify-center">
-          <div
-            class="absolute h-72 w-40 rotate-6 rounded-[2rem] bg-gradient-to-b from-brand-100 to-brand-200 shadow-2xl ring-1 ring-brand-300/40"
-          >
-          </div>
-          <div
-            class="relative h-72 w-40 rounded-[2rem] bg-gradient-to-b from-brand-500 to-brand-700 p-2 shadow-2xl"
-          >
-            <div class="flex h-full w-full flex-col items-center justify-center rounded-[1.6rem] bg-white/95">
-              <svg viewBox="0 0 24 24" class="h-12 w-12 text-brand-500" fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="2" y="2" width="20" height="20" rx="6" />
-                <circle cx="12" cy="12" r="4.5" />
-                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" />
-              </svg>
-              <p class="mt-3 px-4 text-center text-[0.65rem] font-medium uppercase tracking-wide text-muted/70">
-                Image placeholder
-              </p>
-            </div>
-          </div>
+        <!-- Phone / social graphic -->
+        <div class="flex w-full items-center justify-center">
+          <img
+            src="/images/phone.png"
+            alt="Grow your brand on social media"
+            class="w-full max-w-[320px]"
+            loading="lazy"
+          />
         </div>
       </div>
     </div>
