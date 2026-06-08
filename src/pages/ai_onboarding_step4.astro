@@ -1,0 +1,18 @@
+---
+import OnboardingStep from "../components/OnboardingStep.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+---
+
+<OnboardingStep
+  theme="light"
+  tone="coral"
+  step={4}
+  title="Just Some Final Words"
+  next={null}
+>
+  <VideoEmbed provider="placeholder" title="Final words" tone="coral" />
+
+  <p class="mt-8 text-center text-sm text-coral-700/70">
+    That's it — you're all set. We're excited to get started with you. 🎉
+  </p>
+</OnboardingStep>

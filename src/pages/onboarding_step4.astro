@@ -1,0 +1,24 @@
+---
+import OnboardingStep from "../components/OnboardingStep.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+---
+
+<OnboardingStep
+  theme="dark"
+  tone="brand"
+  step={4}
+  title="Just Some Final Words"
+  next={null}
+>
+  <VideoEmbed
+    provider="vimeo"
+    id="774531806"
+    hash="f703acc8b5"
+    title="Final words from Synchro Social"
+    tone="brand"
+  />
+
+  <p class="mt-8 text-center text-sm text-white/60">
+    That's it — you're all set. We're excited to get started with you. 🎉
+  </p>
+</OnboardingStep>

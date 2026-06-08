@@ -1,0 +1,14 @@
+---
+import OnboardingStep from "../components/OnboardingStep.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+---
+
+<OnboardingStep
+  theme="light"
+  tone="coral"
+  step={1}
+  title="What To Expect"
+  next={{ href: "/ai_onboarding_step2", label: "Take Me To The Next Step (2/4)" }}
+>
+  <VideoEmbed provider="placeholder" title="What to expect" tone="coral" />
+</OnboardingStep>

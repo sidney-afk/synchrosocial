@@ -1,0 +1,180 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Logo from "../components/Logo.astro";
+import Button from "../components/Button.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+const testimonials = [
+  {
+    quote:
+      "Synchro Social helped me grow over 300k followers in the first year of working together.",
+    name: "Reya Voce",
+  },
+  {
+    quote: "I don't know where I would be without the team at Synchro Social.",
+    name: "Jessica Winterborn",
+  },
+  {
+    quote:
+      "I had a video reach over 1 million views within the first week of working with Synchro Social.",
+    name: "Morgan Burch",
+  },
+];
+
+const stats = [
+  { value: "1B+", label: "Content Views" },
+  { value: "$0", label: "Ad Spend" },
+  { value: "4M+", label: "Followers Grown" },
+];
+---
+
+<Layout
+  title="AI Clone Content That Grows Your Social Media — Synchro Social"
+  description="We build your AI clone that grows your social media without you ever filming again. Made for women who want a content machine — look beautiful, sound authoritative, grow your audience."
+  bodyClass="bg-gradient-to-b from-white via-coral-50 to-coral-100"
+>
+  <!-- Top banner -->
+  <div class="bg-coral-gradient px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-white">
+    Limited Availability · Apply Now & See If You Qualify
+  </div>
+
+  <main>
+    <!-- Hero -->
+    <section class="mx-auto max-w-4xl px-6 pt-12 pb-10 text-center">
+      <Logo tone="coral" href="/" class="mx-auto" />
+      <h1
+        class="font-display mx-auto mt-9 max-w-3xl text-4xl font-extrabold leading-[1.1] text-ink sm:text-5xl"
+      >
+        We Build Your <span class="text-coral-500">AI Clone</span> That Grows Your
+        Social Media <span class="text-coral-500">Without</span> You Ever Filming Again
+      </h1>
+      <p class="mx-auto mt-5 max-w-xl text-base text-muted sm:text-lg">
+        Made for women who want a content machine that makes you look beautiful,
+        sound authoritative, and grow your audience — without ever picking up a
+        camera.
+      </p>
+
+      <div class="mx-auto mt-10 max-w-2xl">
+        <p class="font-display mb-3 text-lg font-bold text-ink">
+          How We Grow Your Brand <span class="text-coral-500">— Without Filming</span>
+        </p>
+        <VideoEmbed
+          provider="youtube"
+          id="MnAFKperwBQ"
+          title="How we grow your brand without filming"
+          tone="coral"
+        />
+      </div>
+
+      <div class="mt-9 flex flex-col items-center gap-2">
+        <Button href="/call" tone="coral">Schedule a Call</Button>
+        <p class="text-xs font-medium uppercase tracking-wider text-muted">
+          Limited spots each month · Apply now & book your strategy call
+        </p>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="mx-auto max-w-5xl px-6 py-12">
+      <div class="grid gap-5 sm:grid-cols-3">
+        {
+          testimonials.map((t) => (
+            <figure class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coral-100">
+              <blockquote class="text-sm leading-relaxed text-ink">
+                “{t.quote}”
+              </blockquote>
+              <figcaption class="mt-4 text-sm font-semibold text-coral-600">
+                {t.name}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Sales letter -->
+    <section class="mx-auto max-w-2xl px-6 py-12 text-center">
+      <h2 class="font-display text-2xl font-bold text-coral-500">
+        I'll be straight with you.
+      </h2>
+      <div class="mt-6 space-y-5 text-base leading-relaxed text-ink/90">
+        <p>
+          Most women trying to build something online right now are doing it
+          completely backwards. Posting random content hoping something hits.
+          Spending thousands of dollars on videographers, makeup and hair, social
+          media teams, and then going dark for two weeks because life got in the
+          way. Watching other women blow up and wondering "what does she know
+          that I don't?"
+        </p>
+        <p>
+          I'll tell you what she knows. She knows that <span class="font-semibold text-coral-500"
+            >the most successful women online aren't the most talented</span
+          >. They're the most visible. She figured out how to show up
+          consistently, professionally, in a way that builds trust before a
+          single sales conversation ever happens. And she stopped letting the
+          production machine eat her alive.
+        </p>
+        <p class="font-display text-lg font-bold text-coral-500">
+          That's it. That's the whole game.
+        </p>
+        <p>
+          We've watched so many women with genuinely life-changing things to say
+          get completely buried online — not because their message wasn't good
+          enough, but because the system of content creation was never designed
+          for someone running an actual business. It was designed for
+          22-year-olds with nothing else on their calendar.
+        </p>
+        <p>
+          You don't have nothing else on your calendar. You have clients. You
+          have a life. You have expertise that took years to build. And <span
+            class="font-semibold text-coral-500"
+            >you deserve a vehicle that actually scales it.</span
+          >
+        </p>
+        <p>
+          That's what we built. A photorealistic avatar that looks like you on
+          your best day, every day. A full team handling strategy, scripts,
+          editing, and posting. <span class="font-semibold text-coral-500"
+            >A system where your only job is to say yes.</span
+          > We've helped clients rack up over a billion views doing exactly this —
+          and not one of them spent a Saturday in a studio wondering if they
+          looked tired on camera.
+        </p>
+        <p>
+          This call is for the woman who knows she's leaving clients and revenue
+          on the table every week she's not showing up. The woman who's been the
+          best-kept secret in her industry for too long.
+        </p>
+        <p class="font-display text-lg font-bold text-coral-500">
+          This is how that changes. And it starts with one conversation.
+        </p>
+        <p class="font-semibold text-ink">Book the call below.</p>
+      </div>
+
+      <div class="mt-9 flex justify-center">
+        <Button href="/call" tone="coral">Schedule a Call</Button>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="mx-auto max-w-3xl px-6 pt-4 pb-20">
+      <div class="grid grid-cols-3 gap-4">
+        {
+          stats.map((s) => (
+            <div class="rounded-2xl bg-white/70 px-4 py-7 text-center shadow-sm ring-1 ring-coral-100">
+              <div class="font-display text-3xl font-extrabold text-ink sm:text-4xl">
+                {s.value}
+              </div>
+              <div class="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                {s.label}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter tone="coral" />
+</Layout>

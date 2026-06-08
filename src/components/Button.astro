@@ -1,0 +1,42 @@
+---
+// Pill CTA button used across both themes.
+interface Props {
+  href?: string;
+  tone?: "brand" | "coral";
+  variant?: "solid" | "outline";
+  size?: "md" | "lg";
+  class?: string;
+  target?: string;
+  rel?: string;
+}
+const {
+  href = "#",
+  tone = "brand",
+  variant = "solid",
+  size = "lg",
+  class: className = "",
+  target,
+  rel,
+} = Astro.props;
+
+const sizes = {
+  md: "px-6 py-3 text-sm",
+  lg: "px-9 py-4 text-base",
+};
+
+const solid =
+  tone === "coral"
+    ? "bg-coral-gradient text-white shadow-lg shadow-coral-500/30 hover:brightness-105"
+    : "bg-brand-gradient text-white shadow-lg shadow-brand-600/30 hover:brightness-110";
+
+const outline =
+  tone === "coral"
+    ? "border border-coral-300 text-coral-600 hover:bg-coral-50"
+    : "border border-brand-300 text-brand-700 hover:bg-brand-50";
+
+const classes = `inline-flex items-center justify-center rounded-full font-semibold transition ${sizes[size]} ${variant === "solid" ? solid : outline} ${className}`;
+---
+
+<a href={href} class={classes} target={target} rel={rel}>
+  <slot />
+</a>

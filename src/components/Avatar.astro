@@ -1,0 +1,53 @@
+---
+// Circular avatar. Renders the real photo when `src` is given; otherwise a
+// polished initials-on-gradient placeholder so nothing ever looks broken.
+// Drop real images into /public/images and pass `src="/images/<file>"`.
+interface Props {
+  name: string;
+  src?: string | null;
+  size?: number; // px
+  class?: string;
+}
+const { name, src = null, size = 72, class: className = "" } = Astro.props;
+
+const initials = name
+  .split(/\s+/)
+  .slice(0, 2)
+  .map((w) => w[0]?.toUpperCase() ?? "")
+  .join("");
+
+// Deterministic gradient per name so the placeholders feel intentional.
+const gradients = [
+  "from-brand-400 to-brand-600",
+  "from-coral-400 to-coral-600",
+  "from-violet-400 to-fuchsia-600",
+  "from-indigo-400 to-brand-500",
+  "from-rose-400 to-coral-500",
+  "from-purple-400 to-indigo-500",
+];
+let hash = 0;
+for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+const gradient = gradients[hash % gradients.length];
+---
+
+{
+  src ? (
+    <img
+      src={src}
+      alt={name}
+      width={size}
+      height={size}
+      loading="lazy"
+      class={`rounded-full object-cover ring-2 ring-white/70 ${className}`}
+      style={`width:${size}px;height:${size}px;`}
+    />
+  ) : (
+    <div
+      class={`flex items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-white/70 ${className}`}
+      style={`width:${size}px;height:${size}px;font-size:${Math.round(size * 0.36)}px;`}
+      aria-label={name}
+    >
+      {initials}
+    </div>
+  )
+}

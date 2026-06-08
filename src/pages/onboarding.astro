@@ -1,0 +1,33 @@
+---
+import OnboardingStep from "../components/OnboardingStep.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+---
+
+<OnboardingStep
+  theme="dark"
+  tone="brand"
+  step={1}
+  title="What To Expect"
+  next={{ href: "/onboarding_step2", label: "Take Me To The Next Step (2/4)" }}
+>
+  <VideoEmbed
+    provider="youtube"
+    id="1kamvA4efi8"
+    title="What to expect from Synchro Social"
+    tone="brand"
+  />
+
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-left sm:p-8">
+    <h2 class="font-display text-center text-xl font-bold italic text-white">
+      EXPECT THIS FROM US
+    </h2>
+    <div class="mx-auto mt-3 h-0.5 w-16 rounded bg-brand-400"></div>
+    <p class="mt-5 text-sm leading-relaxed text-white/75">
+      <span class="font-semibold text-white">Communication:</span> All
+      communication is done inside of Slack exclusively. If you message anywhere
+      else, we will ask you to communicate in Slack instead. This is so we can
+      keep things streamlined and get you the quickest possible response time.
+      Every day except weekends you can expect a maximum 24 hour response time.
+    </p>
+  </div>
+</OnboardingStep>

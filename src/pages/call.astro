@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CalendlyEmbed from "../components/CalendlyEmbed.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+---
+
+<Layout
+  title="Schedule Your Call — Synchro Social"
+  description="Book a 30-minute call to see whether your AI clone is the right fit for growing your social media without you ever having to film again."
+>
+  <main class="mx-auto max-w-3xl px-6 py-16 sm:py-20">
+    <h1
+      class="font-display text-center text-4xl font-extrabold text-[#6f1d1d] sm:text-5xl"
+    >
+      Schedule Your Call
+    </h1>
+    <p class="mx-auto mt-4 max-w-xl text-center text-muted">
+      This is a 30-minute call to see whether your AI clone is the right fit for
+      growing your following, going viral, and generating more leads on social
+      media — without you ever having to film again.
+    </p>
+
+    <div class="mx-auto mt-10 max-w-xl">
+      <CalendlyEmbed slug="kasper-synchro/ai" />
+    </div>
+  </main>
+
+  <SiteFooter tone="coral" />
+</Layout>

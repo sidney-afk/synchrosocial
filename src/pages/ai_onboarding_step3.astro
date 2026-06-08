@@ -1,0 +1,22 @@
+---
+import OnboardingStep from "../components/OnboardingStep.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+import CalendlyEmbed from "../components/CalendlyEmbed.astro";
+---
+
+<OnboardingStep
+  theme="light"
+  tone="coral"
+  step={3}
+  title="Strategy Session"
+  next={{ href: "/ai_onboarding_step4", label: "Take Me To The Next Step (4/4)" }}
+>
+  <VideoEmbed provider="placeholder" title="Your strategy session" tone="coral" />
+
+  <div class="mt-8">
+    <p class="mb-4 text-center text-sm text-coral-700/80">
+      Schedule your first strategy session with Synchro Social.
+    </p>
+    <CalendlyEmbed slug="kasper-synchro/ai" />
+  </div>
+</OnboardingStep>

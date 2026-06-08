@@ -1,178 +1,286 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Logo from "../components/Logo.astro";
+import Button from "../components/Button.astro";
+import Avatar from "../components/Avatar.astro";
+import CalendlyEmbed from "../components/CalendlyEmbed.astro";
+import SiteFooter from "../components/SiteFooter.astro";
 
-// Real content pulled from synchrosocial.com. This first-pass homepage is a
-// working draft of the redesign — structure and copy are real; the exact
-// visual styling and imagery get finalized once the screenshots land.
-const stats = [
-  { value: "1B+", label: "Content views" },
-  { value: "63", label: "Clients helped" },
-  { value: "23,000+", label: "Leads generated" },
-  { value: "8M+", label: "Followers grown" },
+// --- Real content from synchrosocial.com ---
+// NOTE: client names were transcribed from screenshots — double-check spellings.
+// To show a real photo: drop the file in /public/images and set `img` to e.g.
+// "/images/danny-morel.jpg". Leave it null to show the initials placeholder.
+const clients = [
+  { name: "Danny Morel", followers: "1.5M+", img: null },
+  { name: "Alexi Panos", followers: "510K+", img: null },
+  { name: "Garrain Jones", followers: "300K+", img: null },
+  { name: "Morgan Burch", followers: "600K+", img: null },
+  { name: "Stefanos Sifandos", followers: "200K+", img: null },
+  { name: "Alyssa Nobriga", followers: "350K+", img: null },
+  { name: "Daniel Raphael", followers: "100K+", img: null },
+  { name: "Reya Voce", followers: "200K+", img: null },
+  { name: "Kyle Bladson", followers: "300K+", img: null },
+  { name: "Martin Kipp", followers: "600K+", img: null },
+  { name: "Tu Lam", followers: "660K+", img: null },
+  { name: "Jessica Winterborn", followers: "100K+", img: null },
 ];
 
-const phases = [
+const approach = [
   {
-    step: "01",
-    title: "Traffic",
-    body: "We create scroll-stopping content that puts your message in front of the right audience, at scale.",
+    n: "1",
+    title: "Generate traffic",
+    body: "We first study your audience to deeply understand their interests, behaviors, motivators and emotional drivers. Based on this data we work on your messaging by coming up with the best angles and hooks to use on your content and follower growth efforts.",
   },
   {
-    step: "02",
-    title: "Nurture",
-    body: "We turn passive viewers into an engaged community that trusts you and looks forward to what's next.",
+    n: "2",
+    title: "Nurture traffic",
+    body: "After we have grown followers, either organically or through influencer marketing, we continue nurturing your new audience by creating highly engaging content.",
   },
   {
-    step: "03",
-    title: "Monetize",
-    body: "We convert that attention into booked calls, qualified leads, and real revenue for your business.",
+    n: "3",
+    title: "Monetize traffic",
+    body: "Once we have an audience that has been nurtured, we monetize it by generating leads on autopilot by using advanced content & back-end technology.",
   },
+];
+
+const stats = [
+  { value: "63", label: "Clients Helped" },
+  { value: "23K+", label: "Leads Generated" },
+  { value: "8M+", label: "Followers Grown" },
 ];
 
 const team = [
-  { name: "Kasper Hytonen", role: "Founder & Strategy" },
-  { name: "Sidney Laruel", role: "Operations Manager" },
-  { name: "Rocio Perez", role: "Graphic Design" },
-  { name: "Laura Ospina", role: "Social Media Manager" },
+  { name: "Kasper Hytonen", role: "Founder & Strategy", img: null },
+  { name: "Rocio Perez", role: "Graphic Design", img: null },
+  { name: "Sidney Laruel", role: "Operations Manager", img: null },
+  { name: "Laura Ospina", role: "Social Media Manager", img: null },
+];
+
+const perfectFor = [
+  "Coaches and leaders looking to remove the headache of trying to grow & manage their social media on their own.",
+  "Coaches and leaders looking to convert their current social media into a high quality & streamlined funnel format.",
+  "Coaches and leaders looking to stop doing cold outreach and get leads on autopilot.",
+  "Coaches and leaders looking for a team that truly understands them, their brand and their messaging.",
+  "Coaches and leaders looking for a reliable agency that can make their company a priority.",
 ];
 ---
 
 <Layout>
-  <!-- Header -->
-  <header class="sticky top-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur">
-    <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-      <a href="#top" class="text-lg font-extrabold tracking-tight">Synchro<span class="text-brand-600">Social</span></a>
-      <div class="hidden items-center gap-8 text-sm font-medium text-muted md:flex">
-        <a href="#approach" class="hover:text-ink">Approach</a>
-        <a href="#results" class="hover:text-ink">Results</a>
-        <a href="#team" class="hover:text-ink">Team</a>
-      </div>
-      <a
-        href="#call"
-        class="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700"
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-white">
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[480px] bg-gradient-to-b from-brand-50 to-white"
+    >
+    </div>
+    <div class="mx-auto max-w-4xl px-6 pt-12 pb-16 text-center sm:pt-16">
+      <Logo tone="brand" href="/" class="mx-auto" />
+      <h1
+        class="font-display mx-auto mt-10 max-w-3xl text-4xl font-extrabold leading-[1.08] text-brand-600 sm:text-5xl md:text-6xl"
       >
-        Free audit call
-      </a>
-    </nav>
-  </header>
-
-  <main id="top">
-    <!-- Hero -->
-    <section class="relative overflow-hidden">
-      <div class="absolute inset-0 -z-10 bg-gradient-to-b from-brand-50 to-white"></div>
-      <div class="mx-auto max-w-6xl px-6 py-24 text-center md:py-32">
-        <p class="mb-5 inline-block rounded-full border border-brand-200 bg-white px-4 py-1.5 text-sm font-medium text-brand-700">
-          Grow exceptionally — but with intention
-        </p>
-        <h1 class="mx-auto max-w-4xl text-4xl font-extrabold leading-[1.1] tracking-tight md:text-6xl">
-          We help impact-driven coaches and thought leaders share their journey on social media
-        </h1>
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-muted">
-          We take social media off your plate and turn it into a
-          client-generating machine — so you can focus on the work only you
-          can do.
-        </p>
-        <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a
-            href="#call"
-            class="rounded-full bg-brand-600 px-7 py-3.5 text-base font-semibold text-white transition hover:bg-brand-700"
-          >
-            Schedule your free audit call
-          </a>
-          <a
-            href="#approach"
-            class="rounded-full border border-black/10 px-7 py-3.5 text-base font-semibold text-ink transition hover:bg-black/[0.03]"
-          >
-            See how it works
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Stats -->
-    <section id="results" class="border-y border-black/5 bg-ink text-white">
-      <div class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-14 md:grid-cols-4">
-        {
-          stats.map((s) => (
-            <div class="text-center">
-              <div class="text-4xl font-extrabold tracking-tight md:text-5xl">{s.value}</div>
-              <div class="mt-2 text-sm font-medium text-white/60">{s.label}</div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Approach -->
-    <section id="approach" class="mx-auto max-w-6xl px-6 py-24">
-      <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-3xl font-extrabold tracking-tight md:text-4xl">A simple, intentional system</h2>
-        <p class="mt-4 text-lg text-muted">
-          Three phases that take you from invisible to in-demand.
-        </p>
-      </div>
-      <div class="mt-14 grid gap-6 md:grid-cols-3">
-        {
-          phases.map((p) => (
-            <div class="rounded-2xl border border-black/5 bg-white p-8 shadow-sm transition hover:shadow-md">
-              <div class="text-sm font-bold text-brand-600">{p.step}</div>
-              <h3 class="mt-3 text-xl font-bold">{p.title}</h3>
-              <p class="mt-3 text-muted">{p.body}</p>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- Team -->
-    <section id="team" class="border-t border-black/5 bg-brand-50/40">
-      <div class="mx-auto max-w-6xl px-6 py-24">
-        <div class="mx-auto max-w-2xl text-center">
-          <h2 class="text-3xl font-extrabold tracking-tight md:text-4xl">The team behind the growth</h2>
-          <p class="mt-4 text-lg text-muted">A small, results-driven team — fully remote.</p>
-        </div>
-        <div class="mt-14 grid grid-cols-2 gap-6 md:grid-cols-4">
-          {
-            team.map((m) => (
-              <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
-                <div class="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-brand-200 to-brand-400" />
-                <div class="mt-4 font-bold">{m.name}</div>
-                <div class="text-sm text-muted">{m.role}</div>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </section>
-
-    <!-- CTA -->
-    <section id="call" class="mx-auto max-w-6xl px-6 py-24">
-      <div class="rounded-3xl bg-brand-600 px-8 py-16 text-center text-white md:py-20">
-        <h2 class="mx-auto max-w-2xl text-3xl font-extrabold tracking-tight md:text-4xl">
-          Ready to grow with intention?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-white/80">
-          Book a free audit call and we'll map out exactly how to turn your
-          social media into a client-generating machine.
-        </p>
-        <a
-          href="#"
-          class="mt-8 inline-block rounded-full bg-white px-8 py-3.5 text-base font-semibold text-brand-700 transition hover:bg-brand-50"
-        >
-          Speak to our team today
-        </a>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="border-t border-black/5">
-    <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-10 text-sm text-muted md:flex-row">
-      <div>© {new Date().getFullYear()} Synchro Social Ltd. All rights reserved.</div>
-      <div class="flex gap-6">
-        <a href="/privacy" class="hover:text-ink">Privacy Policy</a>
-        <a href="/terms" class="hover:text-ink">Terms of Service</a>
+        We Help Impact-Driven Coaches and Thought Leaders Share Their Journey On
+        Social Media
+      </h1>
+      <p class="mx-auto mt-6 max-w-xl text-base text-muted sm:text-lg">
+        Stop worrying about where the next client is going to come from. It's
+        time to blow up your social media and have you focused on what matters
+        the most: <span class="font-semibold text-ink">your business.</span>
+      </p>
+      <div class="mt-9 flex flex-col items-center gap-2">
+        <Button href="#book" tone="brand">Speak To Our Team Today</Button>
+        <p class="text-sm text-muted">Schedule Your FREE Audit Call Now</p>
       </div>
     </div>
-  </footer>
+  </section>
+
+  <!-- Leaders we've worked with -->
+  <section class="bg-brand-band px-6 py-16 text-white sm:py-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <h2 class="font-display text-3xl font-extrabold sm:text-4xl">
+          LEADERS WE'VE WORKED WITH
+        </h2>
+        <p class="mt-2 text-sm text-white/70">
+          Here are a few notable leaders we have worked with…
+        </p>
+      </div>
+      <ul
+        class="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-6"
+      >
+        {
+          clients.map((c) => (
+            <li class="flex flex-col items-center text-center">
+              <Avatar name={c.name} src={c.img} size={88} />
+              <span class="mt-3 text-sm font-semibold">{c.name}</span>
+              <span class="text-xs text-white/65">{c.followers} Followers</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Our approach -->
+  <section class="bg-white px-6 py-20 sm:py-24">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <h2 class="font-display text-4xl font-extrabold text-brand-600 sm:text-5xl">
+          OUR APPROACH
+        </h2>
+        <p class="mt-2 italic text-muted">"Grow exceptionally but with intention"</p>
+      </div>
+
+      <div class="mt-14 grid items-center gap-12 lg:grid-cols-2">
+        <div>
+          <h3 class="font-display text-2xl font-bold text-ink">
+            Modern Day Alchemy
+          </h3>
+          <p class="mt-2 text-muted">
+            Our process can be summarized into a 3-step process.
+          </p>
+          <div class="mt-8 space-y-6">
+            {
+              approach.map((a) => (
+                <div class="flex gap-4">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold text-white">
+                    {a.n}
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-ink">{a.title}</h4>
+                    <p class="mt-1 text-sm leading-relaxed text-muted">{a.body}</p>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="mt-9 flex flex-col items-start gap-2">
+            <Button href="#book" tone="brand">Speak To Our Team Today</Button>
+            <p class="text-sm text-muted">Schedule Your FREE Audit Call Now</p>
+          </div>
+        </div>
+
+        <!-- Phone / social placeholder -->
+        <div class="relative mx-auto flex h-80 w-full max-w-md items-center justify-center">
+          <div
+            class="absolute h-72 w-40 rotate-6 rounded-[2rem] bg-gradient-to-b from-brand-100 to-brand-200 shadow-2xl ring-1 ring-brand-300/40"
+          >
+          </div>
+          <div
+            class="relative h-72 w-40 rounded-[2rem] bg-gradient-to-b from-brand-500 to-brand-700 p-2 shadow-2xl"
+          >
+            <div class="flex h-full w-full flex-col items-center justify-center rounded-[1.6rem] bg-white/95">
+              <svg viewBox="0 0 24 24" class="h-12 w-12 text-brand-500" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="2" y="2" width="20" height="20" rx="6" />
+                <circle cx="12" cy="12" r="4.5" />
+                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" />
+              </svg>
+              <p class="mt-3 px-4 text-center text-[0.65rem] font-medium uppercase tracking-wide text-muted/70">
+                Image placeholder
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-brand-band px-6 py-16 text-white sm:py-20">
+    <div class="mx-auto max-w-5xl text-center">
+      <p class="font-display text-lg font-semibold tracking-wide text-white/80">
+        TOTAL CONTENT VIEWS
+      </p>
+      <p class="font-display mt-1 text-5xl font-extrabold sm:text-7xl">
+        1 BILLION +
+      </p>
+      <div class="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
+        {
+          stats.map((s) => (
+            <div class="rounded-3xl bg-white px-6 py-8 text-ink shadow-lg">
+              <div class="font-display text-4xl font-extrabold sm:text-5xl">
+                {s.value}
+              </div>
+              <div class="mt-1 text-sm font-semibold uppercase tracking-wide text-muted">
+                {s.label}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Meet the A-Team -->
+  <section class="bg-white px-6 py-20 sm:py-24">
+    <div class="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+      <div class="grid grid-cols-2 gap-x-6 gap-y-10 sm:max-w-sm">
+        {
+          team.map((m) => (
+            <div class="flex flex-col items-center text-center">
+              <Avatar name={m.name} src={m.img} size={104} />
+              <span class="mt-3 font-semibold text-ink">{m.name}</span>
+              <span class="text-sm text-muted">{m.role}</span>
+            </div>
+          ))
+        }
+      </div>
+      <div>
+        <h2 class="font-display text-4xl font-extrabold text-ink sm:text-5xl">
+          MEET THE A-TEAM
+        </h2>
+        <p class="mt-5 leading-relaxed text-muted">
+          Founded by Kasper Hytonen who has spent the past 5 years perfecting the
+          craft of high-quality Instagram growth and lead generation.
+        </p>
+        <p class="mt-4 leading-relaxed text-muted">
+          With the elusive company culture & calibre of clientele Kasper has
+          built, Synchro Social has become the go-to social media marketing
+          agency that offers coaches and thought leaders less clutter and more
+          certainty.
+        </p>
+        <div class="mt-8 flex flex-col items-start gap-2">
+          <Button href="#book" tone="brand">Speak To Our Team Today</Button>
+          <p class="text-sm text-muted">Schedule Your FREE Audit Call Now</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Booking -->
+  <section id="book" class="bg-brand-band px-6 py-20 text-white sm:py-24">
+    <div class="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-2">
+      <div class="order-2 lg:order-1">
+        <CalendlyEmbed slug="kasper-synchro/demo" />
+      </div>
+      <div class="order-1 lg:order-2">
+        <p class="text-sm font-semibold uppercase tracking-wider text-white/70">
+          Schedule Your Call With Kasper
+        </p>
+        <h2 class="font-display mt-2 text-4xl font-extrabold sm:text-5xl">
+          Free 30-Minute Audit Call
+        </h2>
+        <p class="mt-5 leading-relaxed text-white/85">
+          By the end of this audit call, you will have a clear understanding of
+          the next steps you can take for your business to start generating
+          consistent and reliable content, lead generation and growth results on
+          social media. Find a time on Kasper's calendar to schedule your call
+          today and we look forward to speaking to you soon!
+        </p>
+        <p class="mt-8 text-sm font-semibold uppercase tracking-wider text-white/70">
+          This audit call is perfect for:
+        </p>
+        <ul class="mt-4 space-y-3">
+          {
+            perfectFor.map((item) => (
+              <li class="flex gap-3 text-sm text-white/90">
+                <span class="mt-1 text-white">✓</span>
+                <span>{item}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter tone="brand" />
 </Layout>

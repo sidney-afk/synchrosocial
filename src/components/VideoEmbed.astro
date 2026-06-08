@@ -1,0 +1,57 @@
+---
+// Responsive 16:9 video. Supports YouTube, Vimeo, or a styled placeholder
+// (used where the real video isn't ready yet).
+interface Props {
+  provider?: "youtube" | "vimeo" | "placeholder";
+  id?: string;
+  hash?: string; // Vimeo private hash (the ?h= value)
+  title?: string;
+  tone?: "brand" | "coral";
+  class?: string;
+}
+const {
+  provider = "placeholder",
+  id = "",
+  hash,
+  title = "Video",
+  tone = "brand",
+  class: className = "",
+} = Astro.props;
+
+let src = "";
+if (provider === "youtube") {
+  src = `https://www.youtube.com/embed/${id}`;
+} else if (provider === "vimeo") {
+  src = `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ""}`;
+}
+
+const ring = tone === "coral" ? "ring-coral-200" : "ring-brand-200";
+const accent = tone === "coral" ? "text-coral-500" : "text-brand-500";
+---
+
+<div class={`relative aspect-video w-full overflow-hidden rounded-2xl shadow-xl ring-1 ${ring} ${className}`}>
+  {
+    provider === "placeholder" ? (
+      <div class="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-black/[0.03] to-black/[0.07]">
+        <div class={`flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-md ${accent}`}>
+          <svg viewBox="0 0 24 24" fill="currentColor" class="ml-1 h-7 w-7">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </div>
+        <p class="text-xs font-medium uppercase tracking-wider text-muted/70">
+          Video coming soon
+        </p>
+      </div>
+    ) : (
+      <iframe
+        class="absolute inset-0 h-full w-full"
+        src={src}
+        title={title}
+        loading="lazy"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+        allowfullscreen
+      />
+    )
+  }
+</div>

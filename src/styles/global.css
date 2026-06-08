@@ -1,28 +1,49 @@
 @import "tailwindcss";
 
 /*
-  Brand theme tokens. These are sensible placeholders — once I have the real
-  screenshots I'll drop in Synchro Social's exact brand colors and fonts here,
-  and they propagate everywhere automatically. No more hunting through
-  breakpoints.
+  Synchro Social brand theme.
+
+  Two palettes drive the whole site, matched from the Framer screenshots:
+    • brand  (purple) — the main synchrosocial.com pages
+    • coral  (rose)   — the /ai funnel pages
+
+  Change a value here and it propagates everywhere — no more hunting through
+  breakpoints. Tweak the exact hex once you confirm your official brand colors.
 */
 @theme {
-  --color-brand-50: #eef4ff;
-  --color-brand-100: #d9e6ff;
-  --color-brand-200: #bcd3ff;
-  --color-brand-300: #8eb5ff;
-  --color-brand-400: #598cff;
-  --color-brand-500: #3563ff;
-  --color-brand-600: #1f40f5;
-  --color-brand-700: #1730d8;
-  --color-brand-800: #192baf;
-  --color-brand-900: #1a2b8a;
+  /* Purple — main brand */
+  --color-brand-50: #f6f1ff;
+  --color-brand-100: #ece2ff;
+  --color-brand-200: #d6c2ff;
+  --color-brand-300: #b794ff;
+  --color-brand-400: #9a5dff;
+  --color-brand-500: #8331e8;
+  --color-brand-600: #7726d6;
+  --color-brand-700: #631cb4;
+  --color-brand-800: #521b92;
+  --color-brand-900: #441978;
 
-  --color-ink: #0b1020;
-  --color-muted: #5b6478;
+  /* Coral / rose — AI funnel */
+  --color-coral-50: #fff5f3;
+  --color-coral-100: #ffe8e3;
+  --color-coral-200: #ffd0c6;
+  --color-coral-300: #f8ad9e;
+  --color-coral-400: #f08a78;
+  --color-coral-500: #e8755f;
+  --color-coral-600: #d85843;
+  --color-coral-700: #b8412f;
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
+  /* Neutrals */
+  --color-ink: #15101f;
+  --color-muted: #5b5470;
+
+  /* Typography */
+  --font-sans:
+    "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-display:
+    "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    sans-serif;
 }
 
 html {
@@ -35,4 +56,21 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Reusable brand gradients */
+.bg-brand-gradient {
+  background-image: linear-gradient(135deg, #4f1fb0 0%, #7726d6 55%, #9a3fe0 100%);
+}
+.bg-brand-band {
+  background-image: linear-gradient(180deg, #5a23c6 0%, #7d2cd8 100%);
+}
+.bg-coral-gradient {
+  background-image: linear-gradient(135deg, #ef8a78 0%, #e8755f 100%);
+}
+
+/* Display headings */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
 }

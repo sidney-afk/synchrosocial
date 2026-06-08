@@ -1,0 +1,34 @@
+---
+import Logo from "./Logo.astro";
+
+// Shared footer: logo, legal links, and the required disclaimer.
+interface Props {
+  tone?: "brand" | "coral" | "white";
+}
+const { tone = "brand" } = Astro.props;
+
+const linkColor =
+  tone === "coral" ? "hover:text-coral-600" : "hover:text-brand-600";
+---
+
+<footer class="border-t border-black/5 bg-white">
+  <div class="mx-auto max-w-5xl px-6 py-12 text-center">
+    <Logo tone={tone} href="/" class="mx-auto" />
+
+    <div class={`mt-6 flex items-center justify-center gap-6 text-sm font-medium text-muted`}>
+      <a href="/privacypolicy" class={linkColor}>Privacy Policy</a>
+      <span class="text-black/15">|</span>
+      <a href="/terms-conditions" class={linkColor}>Terms of Service</a>
+    </div>
+
+    <p class="mx-auto mt-6 max-w-3xl text-[0.7rem] leading-relaxed text-muted/70">
+      NOT FACEBOOK: This site is not a part of the Facebook website or Facebook
+      Inc. Additionally, this site is NOT endorsed by Facebook in any way.
+      FACEBOOK is a trademark of FACEBOOK, Inc.
+    </p>
+
+    <p class="mt-4 text-[0.7rem] text-muted/60">
+      © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
+    </p>
+  </div>
+</footer>

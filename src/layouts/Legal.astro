@@ -1,0 +1,58 @@
+---
+import Layout from "./Layout.astro";
+import Logo from "../components/Logo.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  title: string;
+  effectiveDate: string;
+}
+const { title, effectiveDate } = Astro.props;
+---
+
+<Layout title={`${title} — Synchro Social`}>
+  <header class="border-b border-black/5 py-6">
+    <Logo tone="brand" href="/" class="mx-auto" />
+  </header>
+
+  <main class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="font-display text-3xl font-extrabold text-ink sm:text-4xl">
+      {title}
+    </h1>
+    <p class="mt-2 text-sm text-muted">Effective Date: {effectiveDate}</p>
+
+    <div class="legal mt-10 text-[0.95rem] leading-relaxed text-muted">
+      <slot />
+    </div>
+  </main>
+
+  <SiteFooter tone="brand" />
+</Layout>
+
+<style is:global>
+  .legal h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    font-size: 1.05rem;
+  }
+  .legal p {
+    margin-bottom: 0.85rem;
+  }
+  .legal ul {
+    margin: 0.5rem 0 1rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+  .legal li {
+    margin-bottom: 0.35rem;
+  }
+  .legal a {
+    color: var(--color-brand-600);
+    text-decoration: underline;
+  }
+  .legal strong {
+    color: var(--color-ink);
+  }
+</style>
