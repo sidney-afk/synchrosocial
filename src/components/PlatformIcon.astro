@@ -1,0 +1,40 @@
+---
+// Brand icon for a social platform (used on the case studies "Platforms:" row).
+interface Props {
+  name: string;
+  class?: string;
+}
+const { name, class: className = "h-6 w-6" } = Astro.props;
+const n = name.toLowerCase();
+---
+
+{
+  n === "instagram" && (
+    <svg viewBox="0 0 24 24" class={className} role="img" aria-label="Instagram" style="color:#E1306C" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="2" width="20" height="20" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.4" cy="6.6" r="1.4" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+{
+  n === "tiktok" && (
+    <svg viewBox="0 0 24 24" class={className} role="img" aria-label="TikTok" style="color:#111111" fill="currentColor">
+      <path d="M16.5 3c.4 2.2 1.9 3.9 4 4.1v3c-1.5 0-2.9-.4-4-1.2v6.3a6 6 0 1 1-6-6c.34 0 .67.03 1 .09v3.1a3 3 0 1 0 2 2.83V3h3z" />
+    </svg>
+  )
+}
+{
+  n === "youtube" && (
+    <svg viewBox="0 0 24 24" class={className} role="img" aria-label="YouTube" style="color:#FF0000" fill="currentColor">
+      <path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .7 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.3 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z" />
+    </svg>
+  )
+}
+{
+  n === "facebook" && (
+    <svg viewBox="0 0 24 24" class={className} role="img" aria-label="Facebook" style="color:#1877F2" fill="currentColor">
+      <path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.8 3.7-3.8 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z" />
+    </svg>
+  )
+}

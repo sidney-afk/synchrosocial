@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
 import ApplyButton from "../components/ApplyButton.astro";
+import PlatformIcon from "../components/PlatformIcon.astro";
 
 /* ===========================================================================
    APPLY PAGE — what happens when someone clicks "Apply Now".
@@ -33,7 +34,7 @@ const caseStudies = [
     stats: [
       { value: "77.6M", label: "Total Views Generated" },
       { value: "+145K", label: "Total Audience Growth" },
-      { value: "3", label: "Total Accounts Managed" },
+      { value: "5", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "o1cai14og1", views: "15.4M" },
@@ -49,7 +50,7 @@ const caseStudies = [
     stats: [
       { value: "75.9M", label: "Total Views Generated" },
       { value: "+420K", label: "Total Audience Growth" },
-      { value: "3", label: "Total Accounts Managed" },
+      { value: "8", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "kk7u41d1as", views: "6.9M" },
@@ -65,7 +66,7 @@ const caseStudies = [
     stats: [
       { value: "126M", label: "Total Views Generated" },
       { value: "+260K", label: "Total Audience Growth" },
-      { value: "3", label: "Total Accounts Managed" },
+      { value: "6", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "0gn2w3js52", views: "4.9M" },
@@ -81,7 +82,7 @@ const caseStudies = [
     stats: [
       { value: "14.8M", label: "Total Views Generated" },
       { value: "+110K", label: "Total Audience Growth" },
-      { value: "3", label: "Total Accounts Managed" },
+      { value: "4", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "mjkz45f2r3", views: "4.1M" },
@@ -97,7 +98,7 @@ const caseStudies = [
     stats: [
       { value: "73.2M", label: "Total Views Generated" },
       { value: "+180K", label: "Total Audience Growth" },
-      { value: "3", label: "Total Accounts Managed" },
+      { value: "7", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "9jdg8z8xh7", views: "2.7M" },
@@ -263,9 +264,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
               <div class="mt-8 flex flex-wrap items-center gap-3">
                 <span class="text-sm font-semibold text-ink">Platforms:</span>
                 {cs.platforms.map((p) => (
-                  <span class="rounded-full bg-white px-3 py-1 text-xs font-medium text-muted ring-1 ring-black/5">
-                    {p}
-                  </span>
+                  <PlatformIcon name={p} class="h-7 w-7" />
                 ))}
               </div>
 
