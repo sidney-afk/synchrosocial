@@ -34,6 +34,28 @@ const clients = [
 // Six faces for the hero social-proof cluster.
 const heroFaces = clients.slice(0, 6);
 
+// --- Reel wall: real client reels (covers from Wistia, link to IG reels) ----
+const reelWall = [
+  { img: "o1cai14og1", code: "DMYRpAtP5dw", handle: "@bayavoce", views: "15.4M" },
+  { img: "kk7u41d1as", code: "DJJvvwvxO8k", handle: "@dannymorel", views: "6.9M" },
+  { img: "0gn2w3js52", code: "DPpFUKYD26S", handle: "@goodmorgantherapy", views: "4.9M" },
+  { img: "mjkz45f2r3", code: "DLQOoQ7Rl5W", handle: "@heyamberrae", views: "4.1M" },
+  { img: "9jdg8z8xh7", code: "DMGj6FzPkDr", handle: "@garrain.jones", views: "2.7M" },
+  { img: "yr595aeok8", code: "C5Bkj_kpAm5", handle: "@alyssanobriga", views: "2.0M" },
+  { img: "ty1po06ji9", code: "DMqLzBtxFg1", handle: "@bayavoce", views: "7.7M" },
+  { img: "ua3ljukl3y", code: "DAY62nyvWkQ", handle: "@goodmorgantherapy", views: "4.2M" },
+  { img: "apvw96sf43", code: "DPeAPTvkW2O", handle: "@dannymorel", views: "2.1M" },
+  { img: "81k1kp4wyz", code: "DLYCNuASANP", handle: "@heyamberrae", views: "2.0M" },
+  { img: "oster0f52c", code: "C3spblIAwYP", handle: "@garrain.jones", views: "2.2M" },
+  { img: "v0b9wflgc2", code: "DLAnWbKRpre", handle: "@bayavoce", views: "5.3M" },
+  { img: "yxz1h0gcu1", code: "C-3fJLlvT7j", handle: "@goodmorgantherapy", views: "3.7M" },
+  { img: "no5xkvl3wv", code: "CxqW5Cyrfll", handle: "@alyssanobriga", views: "427K" },
+  { img: "uos9ko8nrw", code: "ClEYdkYDzI4", handle: "@garrain.jones", views: "2.1M" },
+  { img: "eg078l5vig", code: "DQ7a9EPEVJo", handle: "@dannymorel", views: "1.1M" },
+  { img: "xek1ii57gs", code: "DTNlH2OgAAk", handle: "@heyamberrae", views: "929K" },
+  { img: "c71gtjpzd8", code: "DRIFWqUiYpv", handle: "@alyssanobriga", views: "361K" },
+];
+
 // --- Our Proven 3-Step Formula (Synchro's real approach) -------------------
 const steps = [
   {
@@ -280,14 +302,39 @@ const footerCols = [
   <!-- Swap these for your real client screenshots (IG growth, DMs, results). -->
   <section class="bg-[#08040f] px-6 pb-20">
     <div class="mx-auto max-w-6xl">
-      <div class="flex gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <h2 class="font-display text-center text-2xl font-extrabold text-white sm:text-3xl">
+        Reels We've Made Go Viral
+      </h2>
+      <p class="mt-2 text-center text-sm text-white/50">
+        A glimpse of the millions of views we've generated for our clients.
+      </p>
+      <div class="mt-10 flex gap-4 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {
-          Array.from({ length: 6 }).map(() => (
-            <div class="flex h-96 w-52 shrink-0 flex-col items-center justify-center rounded-[2rem] border border-dashed border-white/15 bg-white/[0.02] text-center">
-              <Icon name="smartphone" class="h-10 w-10 text-white/25" />
-              <p class="mt-3 px-6 text-sm text-white/40">Your client result screenshot</p>
-              <p class="mt-1 text-xs text-white/25">placeholder</p>
-            </div>
+          reelWall.map((r) => (
+            <a
+              href={`https://www.instagram.com/reel/${r.code}/`}
+              target="_blank"
+              rel="noopener"
+              class="group relative block h-96 w-52 shrink-0 overflow-hidden rounded-[1.5rem] ring-1 ring-white/10"
+            >
+              <img
+                src={`/images/reels/${r.img}.jpg`}
+                alt={`${r.handle} reel`}
+                loading="lazy"
+                class="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/20" />
+              <span class="absolute left-1/2 top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/40 backdrop-blur">
+                <svg viewBox="0 0 24 24" class="h-5 w-5 text-white" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+              </span>
+              <div class="absolute inset-x-0 bottom-0 p-3">
+                <p class="truncate text-sm font-semibold text-white">{r.handle}</p>
+                <p class="flex items-center gap-1 text-xs text-white/85">
+                  <svg viewBox="0 0 24 24" class="h-3 w-3" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+                  {r.views} views
+                </p>
+              </div>
+            </a>
           ))
         }
       </div>
