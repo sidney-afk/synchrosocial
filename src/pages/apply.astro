@@ -1,35 +1,234 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
-import ApplyButton from "../components/ApplyButton.astro";
+import IClosedEmbed from "../components/IClosedEmbed.astro";
 
-// STUB — placeholder Apply page.
-// The real "Apply Now" flow is different from the homepage; it will be rebuilt
-// once the screenshots are provided. For now this keeps every CTA working.
+/* ===========================================================================
+   APPLY PAGE — what happens when someone clicks "Apply Now".
+   Modeled on growthopia.io's apply flow, rebuilt in Synchro Social purple.
+
+   Booking uses iClosed (not Calendly). Drop your iClosed embed URL into the
+   <IClosedEmbed src="..."/> below to make it live — it's a placeholder for now.
+   Search "PLACEHOLDER" for every spot that needs your real assets/words.
+=========================================================================== */
+
+// Video testimonials ⟨PLACEHOLDER⟩ — swap in real client videos + names.
+const videoTestimonials = Array.from({ length: 6 }, () => ({
+  name: "Client Name",
+  role: "Coach & Thought Leader",
+}));
+
+// Platforms shown on the case study.
+const platforms = ["Instagram", "TikTok", "YouTube", "Facebook"];
+
+// Case-study stats ⟨PLACEHOLDER⟩ — replace with a real client's numbers.
+const caseStats = [
+  { value: "—", label: "Total Views Generated" },
+  { value: "—", label: "Total Audience Growth" },
+  { value: "—", label: "Total Accounts Managed" },
+];
 ---
 
 <Layout
   title="Apply — Synchro Social"
-  description="Apply to work with Synchro Social."
+  description="Apply to work with Synchro Social. Grow your social media exceptionally, but with intention."
   bodyClass="bg-[#07040f]"
 >
-  <SiteNav />
+  <SiteNav minimal />
 
-  <main class="bg-hero-purple">
-    <div
-      class="mx-auto flex min-h-[80vh] max-w-3xl flex-col items-center justify-center px-6 py-24 text-center text-white"
-    >
-      <p class="font-script text-2xl text-brand-200">Almost there</p>
-      <h1 class="font-display mt-3 text-4xl font-extrabold sm:text-5xl">
-        Application Page — Coming Soon
-      </h1>
-      <p class="mt-5 max-w-xl text-lg text-white/80">
-        This is a placeholder. The real application flow will be built here next
-        — send the screenshots whenever you're ready and I'll wire it up.
+  <!-- ===================== HERO ===================== -->
+  <section class="bg-hero-purple">
+    <div class="mx-auto max-w-4xl px-6 pt-16 pb-12 text-center sm:pt-24">
+      <p class="font-script text-2xl text-brand-200 sm:text-3xl">
+        Impact-Driven Coaches &amp; Thought Leaders
       </p>
-      <div class="mt-10">
-        <ApplyButton href="/v2" label="Back To Home" />
+      <h1
+        class="font-display mx-auto mt-3 max-w-4xl text-4xl font-extrabold leading-[1.08] text-white sm:text-6xl"
+      >
+        We Help Coaches Get{" "}
+        <span
+          class="bg-brand-gradient rounded-xl px-3 py-1 text-white [box-decoration-break:clone] [-webkit-box-decoration-break:clone]"
+          >Real, Quality Views</span
+        >{" "}
+        On Social Media In 90 Days
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-white/75">
+        Apply below to see if you're a fit. We grow your brand authentically —
+        exceptionally, but with intention.
+      </p>
+
+      <div class="mt-9 flex justify-center">
+        <a
+          href="#book"
+          class="bg-brand-gradient group inline-flex items-center gap-4 rounded-2xl py-4 pl-8 pr-3 text-lg font-semibold text-white shadow-xl shadow-brand-700/40 transition hover:brightness-110"
+        >
+          <span>Apply Below</span>
+          <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-600 transition group-hover:translate-y-0.5">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 7l5 5 5-5M7 13l5 5 5-5" />
+            </svg>
+          </span>
+        </a>
       </div>
     </div>
-  </main>
+
+    <!-- ===================== BOOKING (iClosed) ===================== -->
+    <div id="book" class="mx-auto max-w-4xl px-6 pb-24">
+      <!-- TODO: add your iClosed embed URL, e.g. <IClosedEmbed src="https://app.iclosed.io/e/..." /> -->
+      <IClosedEmbed />
+    </div>
+  </section>
+
+  <!-- ===================== VIDEO TESTIMONIALS  ⟨PLACEHOLDER⟩ ===================== -->
+  <section class="bg-[#08040f] px-6 py-24">
+    <div class="mx-auto max-w-6xl text-center">
+      <h2 class="font-display text-4xl font-extrabold text-white sm:text-5xl">
+        Here's What Our Clients Are Saying
+      </h2>
+      <p class="mt-4 text-white/60">
+        We're happy to keep helping our clients achieve their goals.
+      </p>
+
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          videoTestimonials.map((t) => (
+            <div>
+              <div class="relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
+                <span class="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient shadow-lg shadow-brand-700/40">
+                  <svg viewBox="0 0 24 24" class="h-7 w-7 text-white" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+                <span class="absolute bottom-3 left-3 text-xs text-white/40">placeholder</span>
+              </div>
+              <p class="mt-3 font-semibold text-white">{t.name}</p>
+              <p class="text-xs text-white/50">{t.role}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASE STUDIES  ⟨PLACEHOLDER⟩ ===================== -->
+  <section class="bg-white px-6 py-24">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="font-display text-center text-4xl font-extrabold text-ink sm:text-5xl">
+        Check Out (Just Some) Of Our Case Studies.
+      </h2>
+
+      <div class="mt-12 rounded-3xl bg-brand-tint p-8 ring-1 ring-black/5 sm:p-10">
+        <p class="text-center text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+          Synchro Social Case Study
+        </p>
+        <p class="font-display mt-1 text-center text-3xl font-extrabold text-ink">
+          Client Name
+        </p>
+
+        <p class="mt-8 text-sm font-semibold uppercase tracking-wider text-muted">
+          Results In 3 Months:
+        </p>
+        <hr class="mt-2 border-black/10" />
+
+        <div class="mt-6 grid items-center gap-8 lg:grid-cols-[1fr_auto]">
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+            {
+              caseStats.map((s) => (
+                <div>
+                  <div class="font-display text-4xl font-extrabold text-ink sm:text-5xl">
+                    {s.value}
+                  </div>
+                  <div class="mt-1 text-sm text-muted">{s.label}</div>
+                </div>
+              ))
+            }
+          </div>
+          <div class="flex h-40 w-40 items-center justify-center justify-self-center rounded-2xl bg-gradient-to-br from-brand-300 to-brand-600 text-sm font-medium text-white/80 lg:justify-self-end">
+            Client photo
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <span class="text-sm font-semibold text-ink">Platforms:</span>
+          {
+            platforms.map((p) => (
+              <span class="rounded-full bg-white px-3 py-1 text-xs font-medium text-muted ring-1 ring-black/5">
+                {p}
+              </span>
+            ))
+          }
+        </div>
+
+        <p class="mt-10 text-center font-display text-xl font-bold text-ink">
+          Video examples:
+        </p>
+        <div class="mt-4 grid gap-4 sm:grid-cols-3">
+          {
+            Array.from({ length: 3 }).map(() => (
+              <div class="relative flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-black/15 bg-white">
+                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-gradient">
+                  <svg viewBox="0 0 24 24" class="h-5 w-5 text-white" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="bg-[#06040d] px-6 pt-16 pb-10 text-white">
+    <div class="mx-auto max-w-6xl">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <div class="lg:col-span-1">
+          <div class="inline-flex items-center gap-2.5">
+            <svg viewBox="0 0 64 32" class="h-7 w-auto text-white" fill="none" aria-hidden="true">
+              <path d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="text-lg font-extrabold tracking-tight">Synchro Social</span>
+          </div>
+          <p class="mt-4 max-w-xs text-sm text-white/50">
+            Helping impact-driven coaches &amp; thought leaders share their
+            journey on social media.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white/40">Links</h4>
+          <ul class="mt-4 space-y-3 text-sm text-white/70">
+            <li><a href="/v2" class="transition hover:text-white">Home</a></li>
+            <li><a href="/v2#features" class="transition hover:text-white">Features</a></li>
+            <li><a href="/v2#results" class="transition hover:text-white">Case Studies</a></li>
+            <li><a href="/v2#faq" class="transition hover:text-white">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white/40">Legal</h4>
+          <ul class="mt-4 space-y-3 text-sm text-white/70">
+            <li><a href="/privacypolicy" class="transition hover:text-white">Privacy Policy</a></li>
+            <li><a href="/terms-conditions" class="transition hover:text-white">Terms of Service</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-white/40">Contact</h4>
+          <ul class="mt-4 space-y-3 text-sm text-white/70">
+            <li><a href="mailto:hello@synchrosocial.com" class="transition hover:text-white">hello@synchrosocial.com</a></li>
+            <li><span class="text-white/50">Office Location*</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="mt-12 text-[0.7rem] leading-relaxed text-white/30">
+        NOT FACEBOOK: This site is not a part of the Facebook website or Facebook
+        Inc. Additionally, this site is NOT endorsed by Facebook in any way.
+        FACEBOOK is a trademark of FACEBOOK, Inc.
+      </p>
+      <p class="mt-4 text-xs text-white/40">
+        © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
+      </p>
+    </div>
+  </footer>
 </Layout>

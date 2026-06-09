@@ -1,6 +1,12 @@
 ---
 // Sticky dark top nav for the v2 homepage (mirrors the reference layout).
 // Logo is rendered as a white horizontal lockup so it reads on the dark bar.
+// `minimal` = logo only, centered (used on the focused /apply page).
+interface Props {
+  minimal?: boolean;
+}
+const { minimal = false } = Astro.props;
+
 const links = [
   { label: "Home", href: "/v2" },
   { label: "Features", href: "/v2#features" },
@@ -10,7 +16,9 @@ const links = [
 ---
 
 <header class="sticky top-0 z-50 border-b border-white/5 bg-[#06040d]/90 backdrop-blur">
-  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+  <nav
+    class={`mx-auto flex max-w-7xl items-center px-6 py-4 ${minimal ? "justify-center" : "justify-between"}`}
+  >
     <a
       href="/v2"
       class="inline-flex items-center gap-2.5 text-white"
@@ -27,23 +35,27 @@ const links = [
       <span class="text-lg font-extrabold tracking-tight">Synchro Social</span>
     </a>
 
-    <ul class="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
-      {
-        links.map((l) => (
-          <li>
-            <a href={l.href} class="transition hover:text-white">
-              {l.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    {
+      !minimal && (
+        <>
+          <ul class="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
+            {links.map((l) => (
+              <li>
+                <a href={l.href} class="transition hover:text-white">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-    <a
-      href="/apply"
-      class="inline-flex items-center rounded-xl bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-700/30 transition hover:brightness-110"
-    >
-      Apply Now
-    </a>
+          <a
+            href="/apply"
+            class="inline-flex items-center rounded-xl bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-700/30 transition hover:brightness-110"
+          >
+            Apply Now
+          </a>
+        </>
+      )
+    }
   </nav>
 </header>
