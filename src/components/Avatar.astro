@@ -7,9 +7,18 @@ interface Props {
   name: string;
   src?: string | null;
   size?: number; // px
+  /** Set false for a clean, borderless photo (e.g. on dark cards). */
+  ring?: boolean;
   class?: string;
 }
-const { name, src = null, size = 72, class: className = "" } = Astro.props;
+const {
+  name,
+  src = null,
+  size = 72,
+  ring = true,
+  class: className = "",
+} = Astro.props;
+const ringCls = ring ? "ring-2 ring-white/70" : "";
 
 const initials = name
   .split(/\s+/)
@@ -34,7 +43,7 @@ const dims = `width:${size}px;height:${size}px;`;
 
 <div class={`relative shrink-0 ${className}`} style={dims}>
   <div
-    class={`flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ring-2 ring-white/70`}
+    class={`flex h-full w-full items-center justify-center rounded-full bg-gradient-to-br ${gradient} font-bold text-white ${ringCls}`}
     style={`font-size:${Math.round(size * 0.36)}px;`}
     aria-label={name}
   >
@@ -46,7 +55,7 @@ const dims = `width:${size}px;height:${size}px;`;
         src={src}
         alt={name}
         loading="lazy"
-        class="absolute inset-0 h-full w-full rounded-full object-cover ring-2 ring-white/70"
+        class={`absolute inset-0 h-full w-full rounded-full object-cover ${ringCls}`}
         onerror="this.style.display='none'"
       />
     )

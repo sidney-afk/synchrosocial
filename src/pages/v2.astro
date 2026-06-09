@@ -10,6 +10,10 @@ import Icon from "../components/Icon.astro";
 
    • Lives at /v2 so the current homepage (/) and /ai stay untouched.
    • Real Synchro Social copy is used wherever it maps.
+   • The layout is matched 1:1 to the reference's measured spec: pure-black
+     body, 1040px/95% containers, Inter 16px/1.58 paragraphs, Inter Tight
+     700 capitalized headings, Caveat 24px eyebrows, flat-purple CTA with a
+     48px white arrow chip, #262626 dark cards, purple-tinted light bands.
    • Sections marked  ⟨PLACEHOLDER⟩  need real assets/words from you and are
      styled so they look intentional until you swap them in. Search this file
      for "PLACEHOLDER" to find every spot to edit.
@@ -202,246 +206,336 @@ const footerCols = [
     ],
   },
 ];
+
+// Marquee cards crop like real phone screenshots: repeat each account's three
+// reels so tall cards stay filled, alternating order so rows don't twin.
+const reelRows = (reels: { img: string; views: string }[]) => [
+  ...reels,
+  ...[...reels].reverse(),
+  ...reels,
+  ...[...reels].reverse(),
+];
+
+// "1,500,000+" → "1.5M+" so follower counts stay on one line in the cards.
+const compactCount = (s: string) =>
+  s.replace(/^(\d{1,3}(?:,\d{3})*)(\+?)$/, (_, num, plus) => {
+    const n = parseInt(num.replace(/,/g, ""), 10);
+    const compact =
+      n >= 1e6
+        ? `${(n / 1e6).toFixed(n % 1e6 ? 1 : 0).replace(/\.0$/, "")}M`
+        : n >= 1e3
+          ? `${Math.round(n / 1e3)}K`
+          : String(n);
+    return compact + plus;
+  });
 ---
 
 <Layout
   title="Synchro Social — Grow your social media, with intention"
   description="We help impact-driven coaches and thought leaders share their journey on social media. Grow exceptionally, but with intention."
-  bodyClass="bg-[#07040f]"
+  bodyClass="v2"
 >
   <SiteNav />
 
   <!-- ===================== HERO ===================== -->
-  <section class="bg-hero-purple">
-    <div class="mx-auto max-w-5xl px-6 pt-20 pb-28 text-center sm:pt-28">
-      <p class="font-script text-2xl text-brand-200 sm:text-3xl">
-        Impact-Driven Coaches &amp; Thought Leaders
-      </p>
-      <h1
-        class="font-display mx-auto mt-4 max-w-4xl text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl"
-      >
-        We Help You Share Your Journey On Social Media
-      </h1>
-      <p class="mx-auto mt-6 max-w-2xl text-lg text-white/75 sm:text-xl">
-        Stop worrying about where the next client is going to come from. It's
-        time to blow up your social media and stay focused on what matters the
-        most: <span class="font-semibold text-white">your business.</span>
-      </p>
+  <section class="relative pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10">
+    <!-- Backdrop: transparent fading down to solid brand purple, spanning
+         exactly the hero section (solid color lands at its bottom edge). -->
+    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
-      <div class="mt-10 flex justify-center">
-        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-md" />
-      </div>
-
-      <!-- Social proof -->
-      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-        <div class="flex -space-x-3">
-          {
-            heroFaces.map((c) => (
-              <div class="rounded-full ring-2 ring-[#1a0b33]">
-                <Avatar name={c.name} src={c.img} size={44} />
-              </div>
-            ))
-          }
-        </div>
-        <div class="text-left">
-          <div class="flex gap-0.5 text-brand-300">
-            {
-              Array.from({ length: 5 }).map(() => (
-                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-                  <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15l-5.2 2.6 1-5.8L1.5 7.7l5.9-.9z" />
-                </svg>
-              ))
-            }
-          </div>
-          <p class="text-sm text-white/80">
-            Trusted by 60+ coaches &amp; thought leaders
+    <div class="relative z-[3] mx-auto w-[95%] max-w-[1040px]">
+      <!-- Heading block -->
+      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
+        <p class="font-script text-2xl capitalize leading-[157%] text-[#b794ff]">
+          Impact-Driven Coaches &amp; Thought Leaders
+        </p>
+        <h1 class="font-tight text-[64px] font-bold capitalize leading-none text-white max-md:text-[32px]">
+          We Help You Share Your Journey On Social Media
+        </h1>
+        <div class="my-3 max-w-[686px]">
+          <p class="text-xl leading-[157%] max-md:text-lg">
+            Stop worrying about where the next client is going to come from.
+            It's time to blow up your social media and stay focused on what
+            matters the most:
+            <span class="font-semibold text-white">your business.</span>
           </p>
+        </div>
+
+        <!-- Button + social proof -->
+        <div class="flex w-full max-w-[457px] flex-col gap-6 max-md:max-w-[80%] max-sm:max-w-full">
+          <ApplyButton href="/apply" label="Apply Now" class="w-full" />
+          <div class="flex w-max items-center justify-center gap-4 self-center max-sm:w-full max-sm:flex-col">
+            <div class="flex -space-x-1">
+              {
+                heroFaces.map((c) => (
+                  <div class="rounded-full ring-2 ring-white">
+                    <Avatar name={c.name} src={c.img} size={48} ring={false} />
+                  </div>
+                ))
+              }
+            </div>
+            <div class="flex flex-col items-start gap-1.5 max-sm:items-center">
+              <div class="flex gap-1 text-[var(--g-purple)]">
+                {
+                  Array.from({ length: 5 }).map(() => (
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                      <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15l-5.2 2.6 1-5.8L1.5 7.7l5.9-.9z" />
+                    </svg>
+                  ))
+                }
+              </div>
+              <p class="whitespace-nowrap text-sm leading-[120%] text-[#e9e9e9] max-sm:whitespace-normal">
+                Trusted by 60+ coaches &amp; thought leaders
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ===================== LEADERS / CLIENT CARDS ===================== -->
-  <section id="results" class="bg-[#08040f] px-6 py-20">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="font-display text-center text-2xl font-extrabold text-white sm:text-3xl">
-        Leaders We've Worked With
-      </h2>
-      <p class="mt-2 text-center text-sm text-white/50">
-        A few of the notable leaders we've helped grow.
-      </p>
-      <ul class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          clients.map((c) => (
-            <li class="flex items-center gap-4 rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/5">
-              <Avatar name={c.name} src={c.img} size={52} class="rounded-xl" />
-              <div class="min-w-0">
-                <p class="truncate font-semibold text-white">{c.name}</p>
-                <p class="text-sm text-white/50">{c.followers} Followers</p>
-              </div>
-            </li>
-          ))
-        }
+  <section id="results" class="w-full overflow-hidden py-[120px] max-lg:py-[60px]">
+    <div class="mx-auto w-[95%] max-w-[1040px]">
+      <ul class="grid w-full grid-cols-4 gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-4">
+          {
+            clients.map((c) => (
+              <li class="shadow-soft-dark flex items-center justify-center gap-3 rounded-xl bg-[#262626] px-5 py-4 max-md:justify-start max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:p-4">
+                <Avatar name={c.name} src={c.img} size={59} ring={false} />
+                <div class="flex min-w-0 flex-col items-start gap-1.5">
+                  <p class="max-w-full truncate text-lg font-medium leading-[120%] text-white max-md:text-base">
+                    {c.name}
+                  </p>
+                  <p class="text-base leading-[120%] text-[#c4c4c4] max-md:text-sm">
+                    {compactCount(c.followers)} Followers
+                  </p>
+                </div>
+              </li>
+            ))
+          }
       </ul>
     </div>
-  </section>
 
-  <!-- ===================== PROOF SCROLLER  ⟨PLACEHOLDER⟩ ===================== -->
-  <!-- Swap these for your real client screenshots (IG growth, DMs, results). -->
-  <section class="bg-[#08040f] px-6 pb-20">
-    <div class="mx-auto max-w-6xl">
-      <h2 class="font-display text-center text-2xl font-extrabold text-white sm:text-3xl">
-        Reels We've Made Go Viral
-      </h2>
-      <p class="mt-2 text-center text-sm text-white/50">
-        A glimpse of the millions of views we've generated for our clients.
-      </p>
-      <div class="group relative mt-10 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-        <div class="flex w-max gap-5 animate-marquee group-hover:[animation-play-state:paused]">
-          {[...proofCards, ...proofCards].map((c) => (
-            <div class="w-72 shrink-0 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/10">
-              <div class="flex items-center gap-3 p-3">
-                <div class="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
-                  <div class="flex h-full w-full items-center justify-center text-sm font-bold text-white">{c.handle.replace("@", "").slice(0, 2).toUpperCase()}</div>
-                  <img src={`/images/clients/${c.pic}.jpg`} alt="" class="absolute inset-0 h-full w-full object-cover" onerror="this.style.display='none'" />
-                </div>
-                <div class="min-w-0">
-                  <p class="truncate text-sm font-bold text-ink">{c.handle}</p>
-                  <p class="text-xs text-muted">{c.followers} followers</p>
-                </div>
-                <svg viewBox="0 0 24 24" class="ml-auto h-5 w-5 text-ink/60" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
-              </div>
-              <div class="grid grid-cols-3 gap-px bg-black/10">
-                {c.reels.map((r) => (
-                  <div class="relative aspect-[9/16] bg-black">
-                    <img src={`/images/reels/${r.img}.jpg`} alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
-                    <span class="absolute bottom-1 left-1 flex items-center gap-0.5 text-[0.62rem] font-semibold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.85)]"><svg viewBox="0 0 24 24" class="h-2.5 w-2.5" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>{r.views}</span>
+    <!-- ⟨PLACEHOLDER⟩ proof marquee — swap reels for real client result
+         screenshots (IG growth, DMs) when you have them. -->
+    <div class="mt-40 w-full max-lg:mt-[60px]">
+      <div class="group overflow-hidden">
+            <div class="animate-marquee flex w-max gap-5 group-hover:[animation-play-state:paused]">
+              {
+                [...proofCards, ...proofCards].map((c) => (
+                  <div class="h-[70vh] max-h-[850px] min-h-[500px] w-[360px] shrink-0 overflow-hidden rounded-[20px] bg-white max-md:h-[500px] max-md:min-h-0">
+                    <div class="flex items-center gap-3 p-3">
+                      <div class="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
+                        <div class="flex h-full w-full items-center justify-center text-sm font-bold text-white">
+                          {c.handle.replace("@", "").slice(0, 2).toUpperCase()}
+                        </div>
+                        <img
+                          src={`/images/clients/${c.pic}.jpg`}
+                          alt=""
+                          class="absolute inset-0 h-full w-full object-cover"
+                          onerror="this.style.display='none'"
+                        />
+                      </div>
+                      <div class="min-w-0">
+                        <p class="truncate text-sm font-bold leading-tight text-[#262626]">
+                          {c.handle}
+                        </p>
+                        <p class="text-xs leading-tight text-[#555]">
+                          {c.followers} followers
+                        </p>
+                      </div>
+                      <svg
+                        viewBox="0 0 24 24"
+                        class="ml-auto h-5 w-5 text-[#262626]"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+                      </svg>
+                    </div>
+                    <div class="grid grid-cols-3 gap-px bg-black/10">
+                      {reelRows(c.reels).map((r) => (
+                        <div class="relative aspect-[9/16] bg-black">
+                          <img
+                            src={`/images/reels/${r.img}.jpg`}
+                            alt=""
+                            loading="lazy"
+                            class="absolute inset-0 h-full w-full object-cover"
+                          />
+                          <span class="absolute bottom-1 left-1 flex items-center gap-0.5 text-[0.62rem] font-semibold text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.85)]">
+                            <svg viewBox="0 0 24 24" class="h-2.5 w-2.5" fill="currentColor">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                            {r.views}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
+                ))
+              }
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </div>
   </section>
 
-  <!-- ===================== 3-STEP FORMULA ===================== -->
-  <section class="bg-brand-tint px-6 py-24">
-    <div class="mx-auto max-w-6xl">
-      <div class="text-center">
-        <p class="font-script text-2xl text-brand-500">Our Process</p>
-        <h2 class="font-display mt-1 text-4xl font-extrabold text-ink sm:text-5xl">
-          Our Proven 3-Step Formula
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-muted">
-          Our process can be summarized into three steps — designed to grow your
-          brand exceptionally, but with intention.
-        </p>
-      </div>
+  <!-- ===================== LIGHT BAND: 3-STEP + FEATURE GRID ===================== -->
+  <div class="bg-brand-tint flex flex-col gap-40 py-[120px] text-black max-lg:gap-[60px] max-lg:py-[60px]">
+    <!-- 3-step formula -->
+    <section class="w-full">
+      <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+        <div class="flex w-full max-w-[686px] flex-col items-center gap-4 text-center max-md:gap-2">
+          <p class="font-script text-2xl capitalize leading-[157%] text-[var(--g-purple)]">Our Process</p>
+          <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+            Our Proven 3-Step Formula
+          </h2>
+          <div class="mt-2 max-w-[686px]">
+            <p class="text-xl leading-[157%] text-[#555] max-md:text-lg">
+              Our process can be summarized into three steps — designed to grow
+              your brand exceptionally, but with intention.
+            </p>
+          </div>
+        </div>
 
-      <div class="mt-16 grid gap-8 lg:grid-cols-3">
-        {
-          steps.map((s) => (
-            <div class="flex flex-col rounded-3xl bg-white p-8 shadow-xl shadow-brand-900/5 ring-1 ring-black/5">
-              <div class="relative flex h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-tint">
-                <Icon name={s.icon} class="h-16 w-16 text-brand-500" />
-                <span class="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold text-white">
-                  {s.n}
-                </span>
-              </div>
-              <h3 class="font-display mt-6 text-xl font-bold text-ink">{s.title}</h3>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{s.body}</p>
-              <a
-                href="/apply"
-                class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:gap-3"
-              >
-                Apply Now
-                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </a>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== FEATURE GRID ===================== -->
-  <section id="features" class="bg-brand-tint px-6 pb-24">
-    <div class="mx-auto max-w-6xl">
-      <div class="text-center">
-        <p class="font-script text-2xl text-brand-500">What You Get</p>
-        <h2 class="font-display mt-1 text-4xl font-extrabold text-ink sm:text-5xl">
-          Here's What's Waiting For You
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-muted">
-          Say goodbye to empty metrics and hello to real results. With our
-          system you don't just grow — you grow with intention.
-        </p>
-      </div>
-
-      <div class="mx-auto mt-14 overflow-hidden rounded-3xl bg-black/[0.06] shadow-xl ring-1 ring-black/5">
-        <div class="grid grid-cols-2 gap-px lg:grid-cols-4">
+        <div class="grid w-full grid-cols-3 gap-5 max-md:grid-cols-1">
           {
-            features.map((f, i) => (
-              <div
-                class={`bg-white p-6 text-center ${i === features.length - 1 ? "col-span-2 lg:col-span-4" : ""}`}
-              >
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
-                  <Icon name={f.icon} class="h-6 w-6" />
+            steps.map((s) => (
+              <div class="flex flex-col overflow-hidden rounded-xl bg-white">
+                <!-- ⟨PLACEHOLDER⟩ illustration zone — swap the icon for real art -->
+                <div class="relative flex aspect-[333/235] w-full items-center justify-center">
+                  <Icon name={s.icon} class="h-20 w-20 text-[var(--g-purple)]" />
+                  <span class="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--g-purple)] text-sm font-bold text-white">
+                    {s.n}
+                  </span>
                 </div>
-                <h3 class="mt-4 text-sm font-bold text-ink">{f.title}</h3>
-                <p class="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-muted">
-                  {f.desc}
-                </p>
+                <div class="flex h-full flex-col gap-3 px-6 pb-6 max-sm:gap-2 max-sm:px-4 max-sm:pb-4">
+                  <h3 class="text-2xl font-bold capitalize leading-none text-[#262626]">
+                    {s.title}
+                  </h3>
+                  <p class="text-base leading-[157%] text-[#555]">{s.body}</p>
+                  <a
+                    href="/apply"
+                    class="mt-auto flex items-center justify-center gap-2 py-3 text-base font-semibold capitalize leading-[150%] text-[var(--g-purple)]"
+                  >
+                    Apply Now
+                    <svg
+                      viewBox="0 0 24 24"
+                      class="h-6 w-6"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M13.21 8.96L16.25 12l-3.04 3.04M7.75 12h8.43" />
+                    </svg>
+                  </a>
+                </div>
               </div>
             ))
           }
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- Feature grid -->
+    <section id="features" class="w-full">
+      <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+        <div class="flex w-full max-w-[686px] flex-col items-center gap-4 text-center max-md:gap-2">
+          <p class="font-script text-2xl capitalize leading-[157%] text-[var(--g-purple)]">What You Get</p>
+          <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+            Here's What's Waiting For You
+          </h2>
+          <div class="mt-2 max-w-[686px]">
+            <p class="text-xl leading-[157%] text-[#555] max-md:text-lg">
+              Say goodbye to empty metrics and hello to real results. With our
+              system you don't just grow — you grow with intention.
+            </p>
+          </div>
+        </div>
+
+        <div class="shadow-soft-band w-full rounded-xl bg-white px-8 py-[18px] max-md:p-4">
+          <div class="grid w-full grid-cols-4 gap-px bg-[#e9e9e9] max-lg:grid-cols-3 max-md:grid-cols-2">
+            {
+              features.map((f, i) => (
+                <div
+                  class={`flex flex-col items-center gap-3 bg-white p-4 text-center max-sm:p-2 ${i === features.length - 1 ? "col-span-4 max-lg:col-span-3 max-md:col-span-2" : ""}`}
+                >
+                  <Icon name={f.icon} class="h-9 w-9 text-[var(--g-purple)]" />
+                  <h3 class="font-tight text-base font-bold capitalize leading-none text-[#262626]">
+                    {f.title}
+                  </h3>
+                  <p class="mx-auto max-w-xs text-base leading-[157%] text-[#555]">
+                    {f.desc}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- ===================== CUSTOMER STORIES  ⟨PLACEHOLDER⟩ ===================== -->
-  <section class="bg-[#08040f] px-6 py-24">
-    <div class="mx-auto max-w-6xl text-center">
-      <h2 class="font-display text-4xl font-extrabold text-white sm:text-5xl">
-        Here's What Our Clients Are Saying
-      </h2>
-      <p class="mt-4 text-white/60">
-        We're here to help our clients reach their goals — and keep reaching new ones.
-      </p>
+  <section class="w-full py-[120px] max-lg:py-[60px]">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+          Here's What Our Clients Are Saying
+        </h2>
+        <div class="mt-2 max-w-[686px]">
+          <p class="text-xl leading-[157%] max-md:text-lg">
+            We're here to help our clients reach their goals — and keep reaching
+            new ones.
+          </p>
+        </div>
+      </div>
 
       <!-- Story tabs (placeholder) -->
-      <div class="mt-12 flex flex-wrap justify-center gap-4">
-        {
-          storyTabs.map((t, i) => (
-            <div
-              class={`rounded-xl border px-5 py-3 text-left ${i === 0 ? "border-brand-400/40 bg-white/[0.06]" : "border-white/10 bg-white/[0.02]"}`}
-            >
-              <p class="font-semibold text-white">{t.name}</p>
-              <p class="text-xs text-white/50">{t.role}</p>
-            </div>
-          ))
-        }
+      <div class="relative w-full">
+        <div class="flex w-full gap-4 overflow-hidden pr-16 max-sm:flex-col max-sm:pr-0">
+          {
+            storyTabs.map((t) => (
+              <div class="flex w-full max-w-[270px] shrink-0 cursor-grab items-stretch gap-4 rounded-xl border border-[#262626] bg-[#26262666] py-4 pl-4 pr-6 text-left max-sm:max-w-none">
+                <div class="flex flex-col justify-between gap-0.5">
+                  <p class="text-base font-medium leading-[150%] tracking-[-0.128px] text-white">
+                    {t.name}
+                  </p>
+                  <p class="text-sm leading-[142%] tracking-[-0.084px] text-[#c4c4c4]">
+                    {t.role}
+                  </p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center max-sm:hidden">
+          <span class="flex h-12 w-12 items-center justify-center rounded-full border border-[#d6d6d6] bg-white text-black">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13.21 8.96L16.25 12l-3.04 3.04M7.75 12h8.43" />
+            </svg>
+          </span>
+        </div>
       </div>
 
       <!-- Featured story card (placeholder) -->
-      <div class="mt-10 grid items-center gap-8 rounded-3xl bg-white/[0.03] p-6 text-left ring-1 ring-white/5 lg:grid-cols-2 lg:p-10">
-        <div class="flex aspect-video items-center justify-center rounded-2xl border border-dashed border-white/15 bg-black/40">
-          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient">
+      <div class="flex w-full items-stretch justify-between gap-10 rounded-[56px] border border-[#262626] bg-[#26262666] p-10 max-md:flex-col max-md:gap-6 max-md:rounded-[20px] max-md:p-6">
+        <div class="flex aspect-[9/16] w-full max-w-[250px] shrink-0 items-center justify-center rounded-3xl border border-dashed border-white/15 bg-black/40 max-md:max-w-none">
+          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--g-purple)]">
             <svg viewBox="0 0 24 24" class="h-7 w-7 text-white" fill="currentColor">
               <path d="M8 5v14l11-7z" />
             </svg>
           </span>
         </div>
-        <div>
-          <h3 class="font-display text-2xl font-bold text-white">
+        <div class="flex flex-1 flex-col gap-4 text-left">
+          <h3 class="text-2xl font-medium leading-[133%] tracking-[-0.288px] text-white">
             [Add your client's headline result here]
           </h3>
-          <p class="mt-4 leading-relaxed text-white/70">
+          <p class="text-xl leading-[157%] text-[#d4d4d4]">
             Drop in a real client story — where they started, what we did
             together, and the growth and lead-generation results they saw. This
             placeholder is here so the layout looks complete until you add the
@@ -450,9 +544,9 @@ const footerCols = [
         </div>
       </div>
 
-      <div class="mt-12 flex flex-col items-center gap-3">
-        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-sm" />
-        <p class="text-sm text-white/50">
+      <div class="flex w-full max-w-[420px] flex-col gap-4 text-center max-md:max-w-[80%]">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full" />
+        <p class="text-base leading-[157%]">
           Get Started In Less Than 60 Seconds • Speak To Our Team Today
         </p>
       </div>
@@ -460,26 +554,32 @@ const footerCols = [
   </section>
 
   <!-- ===================== WHY WE'RE DIFFERENT ===================== -->
-  <section class="bg-[#07040f] px-6 py-24">
-    <div class="mx-auto max-w-5xl text-center">
-      <h2 class="font-display text-4xl font-extrabold text-white sm:text-5xl">
-        Why We're Different
-      </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-white/60">
-        While others rely on shortcuts that fall flat, we grow your brand
-        authentically — exceptionally, but with intention.
-      </p>
+  <section class="w-full pb-40 max-lg:pb-[60px]">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+          Why We're Different
+        </h2>
+        <div class="mt-2 max-w-[686px]">
+          <p class="text-xl leading-[157%] max-md:text-lg">
+            While others rely on shortcuts that fall flat, we grow your brand
+            authentically — exceptionally, but with intention.
+          </p>
+        </div>
+      </div>
 
-      <div class="mt-14 grid gap-6 text-left md:grid-cols-2">
+      <div class="flex w-full items-stretch gap-6 max-md:flex-col">
         <!-- Others -->
-        <div class="rounded-3xl bg-white/[0.04] p-8 ring-1 ring-white/5">
-          <h3 class="text-center text-xl font-bold text-white/80">Others</h3>
-          <ul class="mt-6 space-y-4">
+        <div class="relative flex w-full flex-col items-center overflow-hidden rounded-[20px] bg-[#26262666] text-[#7b7b7b]">
+          <h3 class="mb-[41px] w-full bg-[#26262699] py-5 text-center text-xl font-medium capitalize leading-[120%] text-[#d9d9d9] max-md:mb-6 max-md:py-4">
+            Others
+          </h3>
+          <ul class="flex w-full flex-col items-start gap-7 px-10 pb-[84px] max-md:gap-4 max-md:px-6 max-md:pb-6">
             {
               othersList.map((item) => (
-                <li class="flex items-center gap-3 text-white/60">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-rose-400">
-                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                <li class="flex items-center gap-3 text-xl leading-[120%] max-md:text-base">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[1.5px] border-rose-400/70 text-rose-400 max-md:h-6 max-md:w-6">
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                       <path d="M6 6l12 12M18 6L6 18" />
                     </svg>
                   </span>
@@ -491,14 +591,21 @@ const footerCols = [
         </div>
 
         <!-- Synchro Social -->
-        <div class="bg-brand-gradient rounded-3xl p-8 shadow-2xl shadow-brand-700/40">
-          <h3 class="text-center text-xl font-bold text-white">Synchro Social</h3>
-          <ul class="mt-6 space-y-4">
+        <div class="relative flex w-full flex-col items-center rounded-[20px] text-white">
+          <div
+            class="absolute inset-0 rounded-[20px] bg-[linear-gradient(165deg,#9a5dff_0%,#8331e8_45%,#5f1fae_100%)] shadow-[0_24px_80px_-12px_rgba(131,49,232,0.55)]"
+            aria-hidden="true"
+          >
+          </div>
+          <h3 class="relative mb-[26px] pt-[29px] text-center text-2xl font-semibold capitalize leading-[120%] max-md:mb-6 max-md:pt-5">
+            Synchro Social
+          </h3>
+          <ul class="relative flex w-full flex-col items-start gap-7 px-10 pb-[84px] max-md:gap-4 max-md:px-6 max-md:pb-6">
             {
               usList.map((item) => (
-                <li class="flex items-center gap-3 font-medium text-white">
-                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
-                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <li class="flex items-center gap-3 text-xl leading-[120%] max-md:text-base">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[1.5px] border-white/80 text-white max-md:h-6 max-md:w-6">
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M5 12l4 4 10-10" />
                     </svg>
                   </span>
@@ -510,47 +617,89 @@ const footerCols = [
         </div>
       </div>
 
-      <div class="mt-14 flex flex-col items-center gap-3">
-        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-sm" />
-        <p class="text-sm text-white/50">
+      <div class="flex w-full max-w-[420px] flex-col gap-4 text-center max-md:max-w-[80%]">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full" />
+        <p class="text-base leading-[157%]">
           Get Started In Less Than 60 Seconds • Speak To Our Team Today
         </p>
       </div>
+    </div>
+  </section>
 
-      <!-- Community face wall ⟨PLACEHOLDER⟩ — swap for real audience photos -->
-      <div class="mt-20 flex flex-wrap justify-center gap-3 opacity-70 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]">
+  <!-- ===================== CTA  ⟨PLACEHOLDER visual⟩ ===================== -->
+  <section class="flex w-full flex-col items-center gap-10 pb-40 max-lg:pb-[60px]">
+    <!-- ⟨PLACEHOLDER⟩ swap this face wall for a wide results-collage image -->
+    <div class="w-[95%] max-w-[1439px]">
+      <div class="flex flex-wrap justify-center gap-3 opacity-70 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]">
         {
           Array.from({ length: 30 }).map((_, i) => (
-            <div class={`h-12 w-12 rounded-xl bg-gradient-to-br ${["from-brand-400 to-brand-700", "from-violet-400 to-fuchsia-700", "from-indigo-400 to-brand-600", "from-purple-400 to-indigo-700"][i % 4]}`} />
+            <div
+              class={`h-12 w-12 rounded-xl bg-gradient-to-br ${["from-brand-400 to-brand-700", "from-violet-400 to-fuchsia-700", "from-indigo-400 to-brand-600", "from-purple-400 to-indigo-700"][i % 4]}`}
+            />
           ))
         }
+      </div>
+    </div>
+
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[50px] max-lg:gap-6">
+      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+          Ready To Grow With Intention?
+        </h2>
+        <div class="mt-2 max-w-[686px]">
+          <p class="text-xl leading-[157%] max-md:text-lg">
+            Stop worrying about where the next client is going to come from —
+            let's blow up your social media together.
+          </p>
+        </div>
+      </div>
+      <div class="flex w-full max-w-[420px] flex-col gap-4 text-center max-md:max-w-[80%]">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full" />
+        <p class="text-base leading-[157%]">
+          Get Started In Less Than 60 Seconds • Speak To Our Team Today
+        </p>
       </div>
     </div>
   </section>
 
   <!-- ===================== FAQ ===================== -->
-  <section id="faq" class="bg-brand-tint px-6 py-24">
-    <div class="mx-auto max-w-3xl">
-      <div class="text-center">
-        <h2 class="font-display text-4xl font-extrabold text-ink sm:text-5xl">
+  <section id="faq" class="bg-brand-tint w-full py-[120px] text-black max-lg:py-[60px]">
+    <div class="mx-auto flex w-[95%] max-w-[748px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full max-w-[686px] flex-col items-center gap-4 text-center max-md:gap-2">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
           Your Questions, Answered.
         </h2>
-        <p class="mt-4 text-muted">
-          We know you might have questions — here are clear, straightforward answers.
-        </p>
+        <div class="mt-2 max-w-[686px]">
+          <p class="text-xl leading-[157%] text-[#555] max-md:text-lg">
+            We know you might have questions — here are clear, straightforward
+            answers.
+          </p>
+        </div>
       </div>
 
-      <div class="mt-12 space-y-4">
+      <div class="flex w-full flex-col gap-3 max-sm:gap-2">
         {
           faqs.map((f) => (
-            <details class="group rounded-2xl bg-white px-6 py-5 shadow-sm ring-1 ring-black/5">
-              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-ink [&::-webkit-details-marker]:hidden">
-                {f.q}
-                <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-brand-500 transition group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+            <details class="group w-full overflow-hidden rounded-xl bg-white">
+              <summary class="relative flex cursor-pointer list-none items-center justify-between gap-2.5 p-6 [&::-webkit-details-marker]:hidden max-sm:p-4">
+                <h3 class="text-xl font-semibold capitalize leading-none text-[#0a0a0a] max-md:text-lg max-sm:text-base max-sm:leading-5">
+                  {f.q}
+                </h3>
+                <span class="flex h-6 w-6 shrink-0 flex-col items-center justify-center gap-1 py-1 text-[#0a0a0a]">
+                  <svg viewBox="0 0 10 6" class="w-2.5 transition group-open:-translate-y-0.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 5l4-4 4 4" />
+                  </svg>
+                  <svg viewBox="0 0 10 6" class="w-2.5 transition group-open:translate-y-0.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 1l4 4 4-4" />
+                  </svg>
+                </span>
+                <span class="absolute bottom-0 left-1/2 hidden h-px w-[calc(100%-48px)] -translate-x-1/2 bg-[#e6e6e6] group-open:block" aria-hidden="true" />
               </summary>
-              <p class="mt-4 leading-relaxed text-muted">{f.a}</p>
+              <div class="px-6 max-sm:px-4">
+                <div class="h-6 max-sm:h-4" />
+                <p class="text-base leading-[140%] text-[#555]">{f.a}</p>
+                <div class="h-6 max-sm:h-4" />
+              </div>
             </details>
           ))
         }
@@ -559,49 +708,67 @@ const footerCols = [
   </section>
 
   <!-- ===================== FOOTER ===================== -->
-  <footer class="bg-[#06040d] px-6 pt-16 pb-10 text-white">
-    <div class="mx-auto max-w-6xl">
-      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
-        <div class="lg:col-span-2">
-          <img src="/images/logo.png" alt="Synchro Social" class="h-14 w-auto" />
-          <p class="mt-4 max-w-xs text-sm text-white/50">
+  <footer class="w-full pb-12 pt-16 max-md:pb-6 max-md:pt-[60px]">
+    <div class="mx-auto flex w-[95%] max-w-[1120px] flex-col gap-16 max-lg:gap-[30px]">
+      <div class="flex w-full items-start justify-between gap-6 max-lg:flex-col">
+        <div class="flex w-full max-w-[320px] flex-col items-start gap-8">
+          <a href="/v2" class="inline-flex w-full max-w-[170px] items-center gap-2 text-white" aria-label="Synchro Social">
+            <svg viewBox="0 0 64 32" class="h-9 w-auto shrink-0" fill="none" aria-hidden="true">
+              <path
+                d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z"
+                stroke="currentColor"
+                stroke-width="3.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="whitespace-nowrap text-[13px] font-bold leading-none tracking-[0.12em]">
+              SYNCHRO&nbsp;SOCIAL
+            </span>
+          </a>
+          <p class="text-base leading-[157%] text-[#d4d4d4]">
             Helping impact-driven coaches &amp; thought leaders share their
             journey on social media.
           </p>
         </div>
 
-        {
-          footerCols.map((col) => (
-            <div>
-              <h4 class="text-xs font-bold uppercase tracking-wider text-white/40">
-                {col.title}
-              </h4>
-              <ul class="mt-4 space-y-3 text-sm text-white/70">
+        <div class="flex justify-between gap-[60px] max-md:flex-wrap max-md:gap-8">
+          {
+            footerCols.map((col) => (
+              <div class="flex flex-col items-start gap-3 max-md:min-w-[40%]">
+                <h4 class="mb-1 text-sm font-semibold uppercase leading-[142%] text-white">
+                  {col.title}
+                </h4>
                 {col.items.map((it) => (
-                  <li>
-                    <a href={it.href} class="transition hover:text-white">
-                      {it.label}
-                    </a>
-                  </li>
+                  <a
+                    href={it.href}
+                    class="text-base leading-[150%] text-[#c4c4c4] transition hover:text-white"
+                  >
+                    {it.label}
+                  </a>
                 ))}
-              </ul>
-            </div>
-          ))
-        }
+              </div>
+            ))
+          }
+        </div>
       </div>
 
-      <p class="mt-12 text-[0.7rem] leading-relaxed text-white/30">
-        NOT FACEBOOK: This site is not a part of the Facebook website or Facebook
-        Inc. Additionally, this site is NOT endorsed by Facebook in any way.
-        FACEBOOK is a trademark of FACEBOOK, Inc.
+      <p class="text-[11px] leading-relaxed text-white/30">
+        NOT FACEBOOK: This site is not a part of the Facebook website or
+        Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any
+        way. FACEBOOK is a trademark of FACEBOOK, Inc.
       </p>
 
-      <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
-        <p class="text-xs text-white/40">
+      <div class="flex w-full items-end justify-between gap-6 border-t border-[#262626] pt-8 max-md:flex-col max-md:items-center">
+        <p class="text-base leading-[150%] text-white max-md:text-center">
           © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
         </p>
-        <a href="#" aria-label="Instagram" class="text-white/50 transition hover:text-white">
-          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+        <a
+          href="#"
+          aria-label="Instagram"
+          class="text-white transition hover:text-[#b794ff]"
+        >
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8">
             <rect x="3" y="3" width="18" height="18" rx="5" />
             <circle cx="12" cy="12" r="4" />
             <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
