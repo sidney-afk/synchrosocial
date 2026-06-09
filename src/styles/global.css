@@ -74,3 +74,32 @@ body {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
 }
+
+/* ---------------------------------------------------------------------------
+   v2 homepage (growthopia-style layout, Synchro purple)
+   Added for src/pages/v2.astro — safe, additive utilities only.
+--------------------------------------------------------------------------- */
+
+/* Handwritten eyebrow labels ("Our Process", "What You Get"…) */
+.font-script {
+  font-family: "Caveat", ui-sans-serif, cursive;
+  letter-spacing: 0;
+}
+
+/* Dark hero: near-black fading up into brand purple
+   (mirrors the reference's navy→blue, in our colors). */
+.bg-hero-purple {
+  background-image: linear-gradient(
+    180deg,
+    #07040f 0%,
+    #150a2e 24%,
+    #341079 56%,
+    #5a23c6 84%,
+    #7726d6 100%
+  );
+}
+
+/* Faint purple wash for the light bands. */
+.bg-brand-tint {
+  background-image: linear-gradient(180deg, #faf7ff 0%, #f1e9ff 100%);
+}

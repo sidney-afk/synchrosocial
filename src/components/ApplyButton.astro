@@ -1,0 +1,42 @@
+---
+// The reference's signature CTA: a purple gradient button with a white
+// rounded square holding an arrow. Used in the hero and the mid-page CTAs.
+interface Props {
+  href?: string;
+  label?: string;
+  size?: "md" | "lg";
+  class?: string;
+}
+const {
+  href = "/apply",
+  label = "Apply Now",
+  size = "lg",
+  class: className = "",
+} = Astro.props;
+
+const pad = size === "lg" ? "py-4 pl-8 pr-3 text-lg" : "py-3 pl-6 pr-2.5 text-base";
+const box = size === "lg" ? "h-10 w-10" : "h-8 w-8";
+---
+
+<a
+  href={href}
+  class={`group inline-flex items-center gap-4 rounded-2xl bg-brand-gradient font-semibold text-white shadow-xl shadow-brand-700/40 transition hover:brightness-110 ${pad} ${className}`}
+>
+  <span class="flex-1 text-center">{label}</span>
+  <span
+    class={`flex items-center justify-center rounded-xl bg-white text-brand-600 transition group-hover:translate-x-0.5 ${box}`}
+  >
+    <svg
+      viewBox="0 0 24 24"
+      class="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14M13 6l6 6-6 6"></path>
+    </svg>
+  </span>
+</a>

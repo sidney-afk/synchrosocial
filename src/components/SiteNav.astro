@@ -1,0 +1,49 @@
+---
+// Sticky dark top nav for the v2 homepage (mirrors the reference layout).
+// Logo is rendered as a white horizontal lockup so it reads on the dark bar.
+const links = [
+  { label: "Home", href: "/v2" },
+  { label: "Features", href: "/v2#features" },
+  { label: "Case Studies", href: "/v2#results" },
+  { label: "FAQ", href: "/v2#faq" },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-white/5 bg-[#06040d]/90 backdrop-blur">
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <a
+      href="/v2"
+      class="inline-flex items-center gap-2.5 text-white"
+      aria-label="Synchro Social"
+    >
+      <svg viewBox="0 0 64 32" class="h-7 w-auto" fill="none" aria-hidden="true">
+        <path
+          d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z"
+          stroke="currentColor"
+          stroke-width="3.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+      </svg>
+      <span class="text-lg font-extrabold tracking-tight">Synchro Social</span>
+    </a>
+
+    <ul class="hidden items-center gap-8 text-sm font-medium text-white/80 md:flex">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href} class="transition hover:text-white">
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a
+      href="/apply"
+      class="inline-flex items-center rounded-xl bg-brand-gradient px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-brand-700/30 transition hover:brightness-110"
+    >
+      Apply Now
+    </a>
+  </nav>
+</header>

@@ -1,0 +1,586 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
+import ApplyButton from "../components/ApplyButton.astro";
+import Avatar from "../components/Avatar.astro";
+import Icon from "../components/Icon.astro";
+
+/* ===========================================================================
+   NEW HOMEPAGE — growthopia.io layout, rebuilt in Synchro Social purple.
+
+   • Lives at /v2 so the current homepage (/) and /ai stay untouched.
+   • Real Synchro Social copy is used wherever it maps.
+   • Sections marked  ⟨PLACEHOLDER⟩  need real assets/words from you and are
+     styled so they look intentional until you swap them in. Search this file
+     for "PLACEHOLDER" to find every spot to edit.
+=========================================================================== */
+
+// --- Leaders we've worked with (real Synchro clients + photos) -------------
+const clients = [
+  { name: "Danny Morel", followers: "1,500,000+", img: "/images/danny-morel.jpg" },
+  { name: "Tu Lam", followers: "640,000+", img: "/images/tu-lam.jpg" },
+  { name: "Morgan Burch", followers: "600,000+", img: "/images/morgan.jpg" },
+  { name: "Mastin Kipp", followers: "400,000+", img: "/images/mastin.jpg" },
+  { name: "Alyssa Nobriga", followers: "350,000+", img: "/images/alyssa.jpg" },
+  { name: "Baya Voce", followers: "350,000+", img: "/images/baya.jpg" },
+  { name: "Garrain Jones", followers: "300,000+", img: "/images/garrain.jpg" },
+  { name: "Kute Blackson", followers: "300,000+", img: "/images/kute.jpg" },
+  { name: "Stefanos Sifandos", followers: "200,000+", img: "/images/stefanos.jpg" },
+  { name: "Alexi Panos", followers: "150,000+", img: "/images/alexi.jpg" },
+  { name: "Daniel Raphael", followers: "100,000+", img: "/images/daniel.jpg" },
+  { name: "Jessica Winterstern", followers: "100,000+", img: "/images/jessica.jpg" },
+];
+
+// Six faces for the hero social-proof cluster.
+const heroFaces = clients.slice(0, 6);
+
+// --- Our Proven 3-Step Formula (Synchro's real approach) -------------------
+const steps = [
+  {
+    n: "1",
+    icon: "trending-up",
+    title: "Generate Traffic",
+    body:
+      "We first study your audience to deeply understand their interests, behaviors, motivators and emotional drivers. Based on this data we craft your messaging — the best angles and hooks — across your content and follower-growth efforts.",
+  },
+  {
+    n: "2",
+    icon: "heart",
+    title: "Nurture Traffic",
+    body:
+      "After we've grown your followers, organically or through influencer marketing, we keep nurturing your new audience by creating highly engaging, on-brand content they actually want to watch.",
+  },
+  {
+    n: "3",
+    icon: "dollar-sign",
+    title: "Monetize Traffic",
+    body:
+      "Once your audience is nurtured, we monetize it — generating leads on autopilot using advanced content and back-end technology, so your growth turns into real business.",
+  },
+];
+
+// --- "Here's What's Waiting For You" feature grid --------------------------
+// ⟨PLACEHOLDER copy⟩ — drafted in Synchro's voice from the reference grid.
+// Trim, reword or remove any of these.
+const features = [
+  { icon: "search", title: "Audience Research", desc: "We decode your audience's interests, behaviors and emotional drivers." },
+  { icon: "file-text", title: "Content Scripting", desc: "Ready-to-film scripts engineered to hook attention and inspire action." },
+  { icon: "video", title: "Recording Sessions", desc: "Work with our team to capture professional, high-quality content." },
+  { icon: "users", title: "Follower Growth", desc: "Grow a real, engaged following organically and through influencers." },
+  { icon: "scissors", title: "Video Editing", desc: "Turn raw clips into polished, scroll-stopping videos." },
+  { icon: "calendar", title: "Content Calendar", desc: "Plan and schedule your content with precision for maximum reach." },
+  { icon: "heart", title: "Engagement Boosters", desc: "Optimize every post to lift likes, shares, saves and comments." },
+  { icon: "bar-chart", title: "Performance Tracking", desc: "Clear analytics that measure growth and sharpen your strategy." },
+  { icon: "beaker", title: "Hook & Angle Testing", desc: "Test the best angles and hooks so the winners get scaled." },
+  { icon: "folder", title: "Content Hub", desc: "One organized library for all of your content and assets." },
+  { icon: "layers", title: "Growth Framework", desc: "A proven, step-by-step system for compounding social growth." },
+  { icon: "share-2", title: "Influencer Collabs", desc: "We connect you with the right creators to expand your reach." },
+  { icon: "badge-check", title: "Social Proof", desc: "Weave testimonials and results into your funnel to build trust." },
+  { icon: "users", title: "Community Building", desc: "Turn passive followers into a loyal community of superfans." },
+  { icon: "target", title: "Lead Generation", desc: "Generate qualified leads on autopilot with back-end systems." },
+  { icon: "send", title: "Done-For-You Posting", desc: "Hands-free publishing so your content is always on time." },
+  { icon: "maximize", title: "Account Scaling", desc: "Scale your presence across multiple platforms and pages." },
+  { icon: "life-buoy", title: "Live Support", desc: "Real-time coaching and guidance whenever you need it." },
+  { icon: "eye", title: "Audience Insights", desc: "Ongoing analysis to keep your audience engaged and loyal." },
+  { icon: "sparkles", title: "AI-Assisted Editing", desc: "Speed up and polish your content with the latest AI tools." },
+  { icon: "repeat", title: "Content Repurposing", desc: "Turn one video into many assets across every platform." },
+  { icon: "book", title: "Viral Playbook", desc: "Our insider frameworks to keep your content trending." },
+  { icon: "flame", title: "Trend Spotting", desc: "Stay ahead with content ideas built on current trends." },
+  { icon: "crown", title: "Brand Authority", desc: "Position you as the go-to leader in your niche." },
+  { icon: "message-square", title: "Messaging & Positioning", desc: "Dial in the words and angles that convert your audience." },
+  { icon: "layout", title: "Collaboration Portal", desc: "Work seamlessly with our team in one place." },
+  { icon: "target", title: "Personalized Content", desc: "Highly targeted content for each audience segment." },
+  { icon: "smartphone", title: "Platform Strategies", desc: "Tailored plans for Instagram, TikTok, YouTube and more." },
+  { icon: "globe", title: "Global Reach", desc: "Strategies designed to grow international audiences." },
+  { icon: "database", title: "Data-Driven Decisions", desc: "Actionable insights that keep you ahead of the game." },
+  { icon: "dollar-sign", title: "Monetization", desc: "Turn your audience into consistent, reliable revenue." },
+  { icon: "share-2", title: "Creator Network", desc: "Tap our network of creators for co-branded content." },
+  { icon: "shield", title: "Reputation Management", desc: "Handle any PR moment with confidence." },
+];
+
+// --- "Why We're Different" comparison --------------------------------------
+const othersList = [
+  "Bots, fake followers, and ghost views",
+  "No guarantees, empty promises",
+  "Heavy reliance on expensive ad spend",
+  "Generic, one-size-fits-all approaches",
+  "Minimal or no visibility into results",
+  "Low-quality, outdated content tactics",
+];
+const usList = [
+  "100% real, engaged audiences",
+  "Organic, sustainable reach — no costly ads",
+  "1 billion+ content views generated",
+  "Content & angles built from real audience data",
+  "Transparent reporting and analytics",
+  "A team that truly learns your brand & messaging",
+  "Grow exceptionally — but with intention",
+];
+
+// --- Customer stories ⟨PLACEHOLDER⟩ ----------------------------------------
+// You don't have these yet — swap in real client names, photos, videos & text.
+const storyTabs = [
+  { name: "Client Name", role: "Coach & Thought Leader" },
+  { name: "Client Name", role: "Course Creator" },
+  { name: "Client Name", role: "Podcast Host" },
+  { name: "Client Name", role: "Personal Brand" },
+];
+
+// --- FAQ (questions mirror the reference; answers drafted for Synchro) ------
+// ⟨PLACEHOLDER copy⟩ — edit answers; add your real criteria where noted.
+const faqs = [
+  {
+    q: "How Do I Know If I Am A Fit?",
+    a: "Synchro Social is built for established coaches and thought leaders ready to invest in a real growth system — not a quick fix. If you have an audience or offer and want consistent content, lead generation and growth without doing it all yourself, you're likely a great fit. [Add your exact fit criteria here.]",
+  },
+  {
+    q: "Best Business Models For This Strategy?",
+    a: "Coaches, thought leaders, course creators, programs, business owners, personal brands, podcasters and educators who want to scale their impact and revenue on social media.",
+  },
+  {
+    q: "What Is The Success Rate?",
+    a: "Across 60+ clients we've grown 8M+ followers and generated 1 billion+ content views and 23K+ leads. Results depend on your starting point, niche and offer. [Add your guarantee / success details here.]",
+  },
+  {
+    q: "What Kind Of Results Can I Expect?",
+    a: "Consistent, on-brand content, real follower growth, and qualified leads generated on autopilot — so you can stay focused on what matters most: your business.",
+  },
+  {
+    q: "What Social Media Platforms Does This Work On?",
+    a: "Primarily Instagram, with strategies tailored for TikTok, YouTube and more depending on where your audience lives.",
+  },
+  {
+    q: "Will It Work With My Type Of Content?",
+    a: "Yes — we study your brand and audience and build content and angles specific to you, so the system adapts to your niche, voice and message.",
+  },
+  {
+    q: "How Long Does It Take To See Results?",
+    a: "Most clients start building real momentum within the first 90 days as we generate, nurture and monetize traffic. [Edit with your typical timeline.]",
+  },
+];
+
+// --- Footer ----------------------------------------------------------------
+const footerCols = [
+  {
+    title: "Links",
+    items: [
+      { label: "Home", href: "/v2" },
+      { label: "Features", href: "/v2#features" },
+      { label: "Case Studies", href: "/v2#results" },
+      { label: "FAQ", href: "/v2#faq" },
+    ],
+  },
+  {
+    title: "Company",
+    items: [
+      { label: "Apply Now", href: "/apply" },
+      { label: "Onboarding", href: "/onboarding" },
+    ],
+  },
+  {
+    title: "Legal",
+    items: [
+      { label: "Privacy Policy", href: "/privacypolicy" },
+      { label: "Terms of Service", href: "/terms-conditions" },
+    ],
+  },
+  {
+    title: "Contact",
+    items: [
+      { label: "hello@synchrosocial.com", href: "mailto:hello@synchrosocial.com" },
+      { label: "Office Location*", href: "#" },
+    ],
+  },
+];
+---
+
+<Layout
+  title="Synchro Social — Grow your social media, with intention"
+  description="We help impact-driven coaches and thought leaders share their journey on social media. Grow exceptionally, but with intention."
+  bodyClass="bg-[#07040f]"
+>
+  <SiteNav />
+
+  <!-- ===================== HERO ===================== -->
+  <section class="bg-hero-purple">
+    <div class="mx-auto max-w-5xl px-6 pt-20 pb-28 text-center sm:pt-28">
+      <p class="font-script text-2xl text-brand-200 sm:text-3xl">
+        Impact-Driven Coaches &amp; Thought Leaders
+      </p>
+      <h1
+        class="font-display mx-auto mt-4 max-w-4xl text-4xl font-extrabold leading-[1.05] text-white sm:text-6xl"
+      >
+        We Help You Share Your Journey On Social Media
+      </h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-white/75 sm:text-xl">
+        Stop worrying about where the next client is going to come from. It's
+        time to blow up your social media and stay focused on what matters the
+        most: <span class="font-semibold text-white">your business.</span>
+      </p>
+
+      <div class="mt-10 flex justify-center">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-md" />
+      </div>
+
+      <!-- Social proof -->
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+        <div class="flex -space-x-3">
+          {
+            heroFaces.map((c) => (
+              <div class="rounded-full ring-2 ring-[#1a0b33]">
+                <Avatar name={c.name} src={c.img} size={44} />
+              </div>
+            ))
+          }
+        </div>
+        <div class="text-left">
+          <div class="flex gap-0.5 text-brand-300">
+            {
+              Array.from({ length: 5 }).map(() => (
+                <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                  <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15l-5.2 2.6 1-5.8L1.5 7.7l5.9-.9z" />
+                </svg>
+              ))
+            }
+          </div>
+          <p class="text-sm text-white/80">
+            Trusted by 60+ coaches &amp; thought leaders
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LEADERS / CLIENT CARDS ===================== -->
+  <section id="results" class="bg-[#08040f] px-6 py-20">
+    <div class="mx-auto max-w-6xl">
+      <h2 class="font-display text-center text-2xl font-extrabold text-white sm:text-3xl">
+        Leaders We've Worked With
+      </h2>
+      <p class="mt-2 text-center text-sm text-white/50">
+        A few of the notable leaders we've helped grow.
+      </p>
+      <ul class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          clients.map((c) => (
+            <li class="flex items-center gap-4 rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/5">
+              <Avatar name={c.name} src={c.img} size={52} class="rounded-xl" />
+              <div class="min-w-0">
+                <p class="truncate font-semibold text-white">{c.name}</p>
+                <p class="text-sm text-white/50">{c.followers} Followers</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== PROOF SCROLLER  ⟨PLACEHOLDER⟩ ===================== -->
+  <!-- Swap these for your real client screenshots (IG growth, DMs, results). -->
+  <section class="bg-[#08040f] px-6 pb-20">
+    <div class="mx-auto max-w-6xl">
+      <div class="flex gap-5 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {
+          Array.from({ length: 6 }).map(() => (
+            <div class="flex h-96 w-52 shrink-0 flex-col items-center justify-center rounded-[2rem] border border-dashed border-white/15 bg-white/[0.02] text-center">
+              <Icon name="smartphone" class="h-10 w-10 text-white/25" />
+              <p class="mt-3 px-6 text-sm text-white/40">Your client result screenshot</p>
+              <p class="mt-1 text-xs text-white/25">placeholder</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3-STEP FORMULA ===================== -->
+  <section class="bg-brand-tint px-6 py-24">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <p class="font-script text-2xl text-brand-500">Our Process</p>
+        <h2 class="font-display mt-1 text-4xl font-extrabold text-ink sm:text-5xl">
+          Our Proven 3-Step Formula
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-muted">
+          Our process can be summarized into three steps — designed to grow your
+          brand exceptionally, but with intention.
+        </p>
+      </div>
+
+      <div class="mt-16 grid gap-8 lg:grid-cols-3">
+        {
+          steps.map((s) => (
+            <div class="flex flex-col rounded-3xl bg-white p-8 shadow-xl shadow-brand-900/5 ring-1 ring-black/5">
+              <div class="relative flex h-40 items-center justify-center overflow-hidden rounded-2xl bg-brand-tint">
+                <Icon name={s.icon} class="h-16 w-16 text-brand-500" />
+                <span class="absolute left-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-brand-gradient text-sm font-bold text-white">
+                  {s.n}
+                </span>
+              </div>
+              <h3 class="font-display mt-6 text-xl font-bold text-ink">{s.title}</h3>
+              <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{s.body}</p>
+              <a
+                href="/apply"
+                class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-brand-600 hover:gap-3"
+              >
+                Apply Now
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURE GRID ===================== -->
+  <section id="features" class="bg-brand-tint px-6 pb-24">
+    <div class="mx-auto max-w-6xl">
+      <div class="text-center">
+        <p class="font-script text-2xl text-brand-500">What You Get</p>
+        <h2 class="font-display mt-1 text-4xl font-extrabold text-ink sm:text-5xl">
+          Here's What's Waiting For You
+        </h2>
+        <p class="mx-auto mt-4 max-w-2xl text-muted">
+          Say goodbye to empty metrics and hello to real results. With our
+          system you don't just grow — you grow with intention.
+        </p>
+      </div>
+
+      <div class="mx-auto mt-14 overflow-hidden rounded-3xl bg-black/[0.06] shadow-xl ring-1 ring-black/5">
+        <div class="grid grid-cols-2 gap-px lg:grid-cols-4">
+          {
+            features.map((f, i) => (
+              <div
+                class={`bg-white p-6 text-center ${i === features.length - 1 ? "col-span-2 lg:col-span-4" : ""}`}
+              >
+                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                  <Icon name={f.icon} class="h-6 w-6" />
+                </div>
+                <h3 class="mt-4 text-sm font-bold text-ink">{f.title}</h3>
+                <p class="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-muted">
+                  {f.desc}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CUSTOMER STORIES  ⟨PLACEHOLDER⟩ ===================== -->
+  <section class="bg-[#08040f] px-6 py-24">
+    <div class="mx-auto max-w-6xl text-center">
+      <h2 class="font-display text-4xl font-extrabold text-white sm:text-5xl">
+        Here's What Our Clients Are Saying
+      </h2>
+      <p class="mt-4 text-white/60">
+        We're here to help our clients reach their goals — and keep reaching new ones.
+      </p>
+
+      <!-- Story tabs (placeholder) -->
+      <div class="mt-12 flex flex-wrap justify-center gap-4">
+        {
+          storyTabs.map((t, i) => (
+            <div
+              class={`rounded-xl border px-5 py-3 text-left ${i === 0 ? "border-brand-400/40 bg-white/[0.06]" : "border-white/10 bg-white/[0.02]"}`}
+            >
+              <p class="font-semibold text-white">{t.name}</p>
+              <p class="text-xs text-white/50">{t.role}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Featured story card (placeholder) -->
+      <div class="mt-10 grid items-center gap-8 rounded-3xl bg-white/[0.03] p-6 text-left ring-1 ring-white/5 lg:grid-cols-2 lg:p-10">
+        <div class="flex aspect-video items-center justify-center rounded-2xl border border-dashed border-white/15 bg-black/40">
+          <span class="flex h-16 w-16 items-center justify-center rounded-full bg-brand-gradient">
+            <svg viewBox="0 0 24 24" class="h-7 w-7 text-white" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </span>
+        </div>
+        <div>
+          <h3 class="font-display text-2xl font-bold text-white">
+            [Add your client's headline result here]
+          </h3>
+          <p class="mt-4 leading-relaxed text-white/70">
+            Drop in a real client story — where they started, what we did
+            together, and the growth and lead-generation results they saw. This
+            placeholder is here so the layout looks complete until you add the
+            video and write-up.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-col items-center gap-3">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-sm" />
+        <p class="text-sm text-white/50">
+          Get Started In Less Than 60 Seconds • Speak To Our Team Today
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WHY WE'RE DIFFERENT ===================== -->
+  <section class="bg-[#07040f] px-6 py-24">
+    <div class="mx-auto max-w-5xl text-center">
+      <h2 class="font-display text-4xl font-extrabold text-white sm:text-5xl">
+        Why We're Different
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-white/60">
+        While others rely on shortcuts that fall flat, we grow your brand
+        authentically — exceptionally, but with intention.
+      </p>
+
+      <div class="mt-14 grid gap-6 text-left md:grid-cols-2">
+        <!-- Others -->
+        <div class="rounded-3xl bg-white/[0.04] p-8 ring-1 ring-white/5">
+          <h3 class="text-center text-xl font-bold text-white/80">Others</h3>
+          <ul class="mt-6 space-y-4">
+            {
+              othersList.map((item) => (
+                <li class="flex items-center gap-3 text-white/60">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-rose-400">
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                      <path d="M6 6l12 12M18 6L6 18" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <!-- Synchro Social -->
+        <div class="bg-brand-gradient rounded-3xl p-8 shadow-2xl shadow-brand-700/40">
+          <h3 class="text-center text-xl font-bold text-white">Synchro Social</h3>
+          <ul class="mt-6 space-y-4">
+            {
+              usList.map((item) => (
+                <li class="flex items-center gap-3 font-medium text-white">
+                  <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 12l4 4 10-10" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-14 flex flex-col items-center gap-3">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full max-w-sm" />
+        <p class="text-sm text-white/50">
+          Get Started In Less Than 60 Seconds • Speak To Our Team Today
+        </p>
+      </div>
+
+      <!-- Community face wall ⟨PLACEHOLDER⟩ — swap for real audience photos -->
+      <div class="mt-20 flex flex-wrap justify-center gap-3 opacity-70 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_85%)]">
+        {
+          Array.from({ length: 30 }).map((_, i) => (
+            <div class={`h-12 w-12 rounded-xl bg-gradient-to-br ${["from-brand-400 to-brand-700", "from-violet-400 to-fuchsia-700", "from-indigo-400 to-brand-600", "from-purple-400 to-indigo-700"][i % 4]}`} />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq" class="bg-brand-tint px-6 py-24">
+    <div class="mx-auto max-w-3xl">
+      <div class="text-center">
+        <h2 class="font-display text-4xl font-extrabold text-ink sm:text-5xl">
+          Your Questions, Answered.
+        </h2>
+        <p class="mt-4 text-muted">
+          We know you might have questions — here are clear, straightforward answers.
+        </p>
+      </div>
+
+      <div class="mt-12 space-y-4">
+        {
+          faqs.map((f) => (
+            <details class="group rounded-2xl bg-white px-6 py-5 shadow-sm ring-1 ring-black/5">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-bold text-ink [&::-webkit-details-marker]:hidden">
+                {f.q}
+                <svg viewBox="0 0 24 24" class="h-5 w-5 shrink-0 text-brand-500 transition group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </summary>
+              <p class="mt-4 leading-relaxed text-muted">{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="bg-[#06040d] px-6 pt-16 pb-10 text-white">
+    <div class="mx-auto max-w-6xl">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+        <div class="lg:col-span-2">
+          <div class="inline-flex items-center gap-2.5">
+            <svg viewBox="0 0 64 32" class="h-7 w-auto text-white" fill="none" aria-hidden="true">
+              <path d="M32 16C27 7 13 7 13 16C13 25 27 25 32 16C37 7 51 7 51 16C51 25 37 25 32 16Z" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="text-lg font-extrabold tracking-tight">Synchro Social</span>
+          </div>
+          <p class="mt-4 max-w-xs text-sm text-white/50">
+            Helping impact-driven coaches &amp; thought leaders share their
+            journey on social media.
+          </p>
+        </div>
+
+        {
+          footerCols.map((col) => (
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-white/40">
+                {col.title}
+              </h4>
+              <ul class="mt-4 space-y-3 text-sm text-white/70">
+                {col.items.map((it) => (
+                  <li>
+                    <a href={it.href} class="transition hover:text-white">
+                      {it.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="mt-12 text-[0.7rem] leading-relaxed text-white/30">
+        NOT FACEBOOK: This site is not a part of the Facebook website or Facebook
+        Inc. Additionally, this site is NOT endorsed by Facebook in any way.
+        FACEBOOK is a trademark of FACEBOOK, Inc.
+      </p>
+
+      <div class="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
+        <p class="text-xs text-white/40">
+          © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
+        </p>
+        <a href="#" aria-label="Instagram" class="text-white/50 transition hover:text-white">
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+</Layout>
