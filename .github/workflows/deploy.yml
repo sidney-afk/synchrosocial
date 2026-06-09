@@ -2,7 +2,13 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, claude/laughing-noether-21Lpo, claude/gallant-rubin-8q0zk6]
+    branches:
+      [
+        main,
+        claude/laughing-noether-21Lpo,
+        claude/gallant-rubin-8q0zk6,
+        claude/trusting-carson-6y0z7w,
+      ]
   workflow_dispatch:
 
 permissions:
