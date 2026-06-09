@@ -103,3 +103,15 @@ body {
 .bg-brand-tint {
   background-image: linear-gradient(180deg, #faf7ff 0%, #f1e9ff 100%);
 }
+
+
+/* Auto-scrolling marquee (homepage reel collage) */
+@keyframes marquee-x {
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x 55s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
