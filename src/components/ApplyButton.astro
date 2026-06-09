@@ -8,6 +8,8 @@ interface Props {
   label?: string;
   size?: "md" | "lg";
   arrow?: boolean;
+  /** "down" renders a double-chevron (e.g. "Apply Below" scroll buttons). */
+  arrowDir?: "right" | "down";
   class?: string;
 }
 const {
@@ -15,6 +17,7 @@ const {
   label = "Apply Now",
   size = "lg",
   arrow = true,
+  arrowDir = "right",
   class: className = "",
 } = Astro.props;
 
@@ -33,18 +36,35 @@ const text = size === "lg" ? "text-xl leading-none" : "text-base leading-[150%]"
         class="absolute right-2 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-lg bg-white"
         aria-hidden="true"
       >
-        <svg
-          viewBox="0 0 48 48"
-          class="h-12 w-12"
-          fill="none"
-          stroke="var(--g-purple)"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M26.43 17.93 32.5 24l-6.07 6.07" />
-          <path d="M15.5 24h16.86" />
-        </svg>
+        {
+          arrowDir === "down" ? (
+            <svg
+              viewBox="0 0 48 48"
+              class="h-12 w-12"
+              fill="none"
+              stroke="var(--g-purple)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 16.5l7 7 7-7" />
+              <path d="M17 25.5l7 7 7-7" />
+            </svg>
+          ) : (
+            <svg
+              viewBox="0 0 48 48"
+              class="h-12 w-12"
+              fill="none"
+              stroke="var(--g-purple)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M26.43 17.93 32.5 24l-6.07 6.07" />
+              <path d="M15.5 24h16.86" />
+            </svg>
+          )
+        }
       </span>
     )
   }
