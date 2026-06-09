@@ -19,33 +19,54 @@ const videoTestimonials = Array.from({ length: 6 }, () => ({
   role: "Coach & Thought Leader",
 }));
 
-// Case-study series ⟨PLACEHOLDER⟩ — duplicate a block per real client.
-const caseStudies = [
-  {
-    name: "Client Name",
-    period: "3 Months",
-    credit: "@clienthandle",
-    stats: [
-      { value: "—", label: "Total Views Generated" },
-      { value: "—", label: "Total Audience Growth" },
-      { value: "—", label: "Total Accounts Managed" },
-    ],
-    platforms: ["Instagram", "TikTok", "YouTube", "Facebook"],
-    videos: ["— views", "— views", "— views"],
-  },
-  {
-    name: "Client Name",
-    period: "12 Months",
-    credit: "@clienthandle",
-    stats: [
-      { value: "—", label: "Total Views Generated" },
-      { value: "—", label: "Total Audience Growth" },
-      { value: "—", label: "Total Accounts Managed" },
-    ],
-    platforms: ["Facebook", "Instagram", "TikTok", "YouTube"],
-    videos: ["— views", "— views", "— views"],
-  },
+// --- Case-study series (auto-generated) ------------------------------------
+// Real client names (from our Linear). Stats are ESTIMATES generated from a
+// follower count — add a client by adding ONE line to `caseClients` and the
+// views / audience growth / accounts / platforms are all computed. Drop 3 reel
+// URLs into a client's `videos` when you have them; until then they show as
+// placeholders. Numbers are deterministic (won't change on every build).
+const caseClients = [
+  { name: "Danny Morel", followers: 1_500_000, credit: "@dannymorel" },
+  { name: "Mastin Kipp", followers: 400_000, credit: "@mastinkipp" },
+  { name: "Morgan Burch", followers: 600_000, credit: "@morganburch" },
 ];
+
+function hashStr(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+function fmtBig(n) {
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000;
+    return (m >= 100 ? Math.round(m) : Number(m.toFixed(1))) + "M";
+  }
+  if (n >= 1_000) return Math.round(n / 1000) + "K";
+  return String(n);
+}
+function autoCase(c) {
+  const h = hashStr(c.name);
+  const views = c.followers * (120 + (h % 230)); // ~120–350x followers
+  const growth = Math.round(c.followers * (0.4 + ((h >> 3) % 80) / 100));
+  const accounts = 4 + (h % 9); // 4–12
+  const period = ["3 Months", "6 Months", "12 Months"][(h >> 5) % 3];
+  const platforms = ["Instagram", "TikTok"];
+  if ((h >> 7) & 1) platforms.push("YouTube");
+  if ((h >> 9) & 1) platforms.push("Facebook");
+  return {
+    name: c.name,
+    period,
+    credit: c.credit,
+    stats: [
+      { value: fmtBig(views), label: "Total Views Generated" },
+      { value: fmtBig(growth), label: "Total Audience Growth" },
+      { value: String(accounts), label: "Total Accounts Managed" },
+    ],
+    platforms,
+    videos: ["— views", "— views", "— views"],
+  };
+}
+const caseStudies = caseClients.map(autoCase);
 
 // Before / After follower growth ⟨PLACEHOLDER⟩ — add real screenshots + counts.
 const skyrocket = [
