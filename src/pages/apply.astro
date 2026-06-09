@@ -123,6 +123,9 @@ const caseStudies = [
   },
 ];
 
+// Client name → /public/images/clients/<slug>.jpg (real IG profile pics).
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
 // Before / After follower growth ⟨PLACEHOLDER⟩ — add real screenshots + counts.
 const skyrocket = [
   { handle: "@client", before: "X,XXX", after: "XXXK" },
@@ -244,8 +247,16 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
                     </div>
                   ))}
                 </div>
-                <div class="flex h-40 w-40 items-center justify-center justify-self-center rounded-2xl bg-gradient-to-br from-brand-300 to-brand-600 text-sm font-medium text-white/80 lg:justify-self-end">
-                  Client photo
+                <div class="relative h-40 w-40 justify-self-center overflow-hidden rounded-2xl bg-gradient-to-br from-brand-300 to-brand-600 lg:justify-self-end">
+                  <div class="flex h-full w-full items-center justify-center text-3xl font-bold text-white/90">
+                    {cs.name.split(" ").map((w) => w[0]).join("")}
+                  </div>
+                  <img
+                    src={`/images/clients/${slug(cs.name)}.jpg`}
+                    alt={cs.name}
+                    class="absolute inset-0 h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
                 </div>
               </div>
 
