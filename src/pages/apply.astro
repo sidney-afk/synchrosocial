@@ -36,9 +36,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "DMYRpAtP5dw", views: "15.4M" },
-      { code: "DMqLzBtxFg1", views: "7.7M" },
-      { code: "DLAnWbKRpre", views: "5.3M" },
+      { wistia: "o1cai14og1", views: "15.4M" },
+      { wistia: "ty1po06ji9", views: "7.7M" },
+      { wistia: "v0b9wflgc2", views: "5.3M" },
     ],
   },
   {
@@ -52,9 +52,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "DJJvvwvxO8k", views: "6.9M" },
-      { code: "DPeAPTvkW2O", views: "2.1M" },
-      { code: "DQ7a9EPEVJo", views: "1.1M" },
+      { wistia: "kk7u41d1as", views: "6.9M" },
+      { wistia: "apvw96sf43", views: "2.1M" },
+      { wistia: "eg078l5vig", views: "1.1M" },
     ],
   },
   {
@@ -68,9 +68,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "DPpFUKYD26S", views: "4.9M" },
-      { code: "DAY62nyvWkQ", views: "4.2M" },
-      { code: "C-3fJLlvT7j", views: "3.7M" },
+      { wistia: "0gn2w3js52", views: "4.9M" },
+      { wistia: "ua3ljukl3y", views: "4.2M" },
+      { wistia: "yxz1h0gcu1", views: "3.7M" },
     ],
   },
   {
@@ -84,9 +84,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "DLQOoQ7Rl5W", views: "4.1M" },
-      { code: "DLYCNuASANP", views: "2.0M" },
-      { code: "DTNlH2OgAAk", views: "929K" },
+      { wistia: "mjkz45f2r3", views: "4.1M" },
+      { wistia: "81k1kp4wyz", views: "2.0M" },
+      { wistia: "xek1ii57gs", views: "929K" },
     ],
   },
   {
@@ -100,9 +100,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "DMGj6FzPkDr", views: "2.7M" },
-      { code: "C3spblIAwYP", views: "2.2M" },
-      { code: "ClEYdkYDzI4", views: "2.1M" },
+      { wistia: "9jdg8z8xh7", views: "2.7M" },
+      { wistia: "oster0f52c", views: "2.2M" },
+      { wistia: "uos9ko8nrw", views: "2.1M" },
     ],
   },
   {
@@ -116,9 +116,9 @@ const caseStudies = [
       { value: "3", label: "Total Accounts Managed" },
     ],
     videos: [
-      { code: "C5Bkj_kpAm5", views: "2.0M" },
-      { code: "CxqW5Cyrfll", views: "427K" },
-      { code: "DRIFWqUiYpv", views: "361K" },
+      { wistia: "yr595aeok8", views: "2.0M" },
+      { wistia: "no5xkvl3wv", views: "427K" },
+      { wistia: "c71gtjpzd8", views: "361K" },
     ],
   },
 ];
@@ -275,13 +275,13 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
               <div class="mt-4 grid gap-4 sm:grid-cols-3">
                 {cs.videos.map((v) => (
                   <div>
-                    <div class="overflow-hidden rounded-2xl bg-black ring-1 ring-black/10">
+                    <div class="relative aspect-[9/16] overflow-hidden rounded-2xl bg-black ring-1 ring-black/10">
                       <iframe
-                        src={`https://www.instagram.com/reel/${v.code}/embed/`}
-                        class="h-[540px] w-full"
+                        src={`https://fast.wistia.net/embed/iframe/${v.wistia}?seo=false&videoFoam=false`}
+                        class="absolute inset-0 h-full w-full"
                         loading="lazy"
-                        scrolling="no"
                         title={`${cs.name} reel — ${v.views} views`}
+                        allow="autoplay; fullscreen"
                         allowfullscreen
                       />
                     </div>
