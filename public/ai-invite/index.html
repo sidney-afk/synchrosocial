@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Synchro Social — Your AI Clone</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" href="/images/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -62,42 +62,12 @@
     background:
       radial-gradient(120% 80% at 20% 0%, #ffffff 0%, #ffe9e9 45%, #f5b6ad 100%);
     box-shadow: 0 30px 60px -30px rgba(126, 30, 20, 0.3);
-    cursor: pointer;
-    user-select: none;
   }
-  .video-inner {
+  .video-frame {
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    gap: 18px;
-    padding: 40px;
-    text-align: center;
+    width: 100%; height: 100%;
+    border: 0;
   }
-  .video-label {
-    font-family: 'Satoshi', ui-monospace, monospace;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: rgba(61, 0, 0, 0.5);
-  }
-  .video-title {
-    font-weight: 700;
-    font-size: clamp(28px, 4vw, 52px);
-    line-height: 1.05;
-    color: var(--ink);
-  }
-  .video-title .em { color: var(--accent); display: block; }
-  .play {
-    margin-top: 8px;
-    width: 64px; height: 48px;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.6);
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 200ms ease, background 200ms ease;
-  }
-  .video-card:hover .play { transform: scale(1.05); background: rgba(0,0,0,0.75); }
-  .play svg { width: 24px; height: 24px; fill: #fff; margin-left: 3px; }
 
   .cta-row {
     margin: 40px auto 0;
@@ -158,39 +128,6 @@
     padding: 0 20px;
   }
 
-  /* Modal for video placeholder */
-  .modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(20, 8, 5, 0.6);
-    display: none;
-    align-items: center; justify-content: center;
-    z-index: 50;
-    padding: 24px;
-  }
-  .modal-backdrop.open { display: flex; }
-  .modal {
-    background: #fff;
-    border-radius: 16px;
-    padding: 36px;
-    max-width: 460px;
-    text-align: center;
-    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.4);
-  }
-  .modal h3 { margin: 0 0 10px; font-size: 22px; font-weight: 600; }
-  .modal p { margin: 0 0 22px; color: rgba(61,0,0,0.75); font-size: 15px; line-height: 1.5; }
-  .modal button {
-    appearance: none;
-    border: none;
-    background: var(--ink);
-    color: #fff;
-    font-family: inherit;
-    font-weight: 600;
-    padding: 12px 26px;
-    border-radius: 999px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
   @media (max-width: 900px) {
     h1.hero { max-width: 92%; }
   }
@@ -216,17 +153,14 @@
     posting. Grow your audience without ever picking up a camera.
   </p>
 
-  <div class="video-card" id="videoCard" role="button" aria-label="Play intro video">
-    <div class="video-inner">
-      <div class="video-label">— Video placeholder · drop final film here —</div>
-      <div class="video-title">
-        How We Grow Your Brand
-        <span class="em">Without Filming</span>
-      </div>
-      <div class="play" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-    </div>
+  <div class="video-card">
+    <iframe
+      src="https://fast.wistia.net/embed/iframe/d3mw9aszkp?seo=false&videoFoam=false"
+      class="video-frame"
+      title="How We Grow Your Brand Without Filming"
+      allow="autoplay; fullscreen"
+      allowfullscreen
+    ></iframe>
   </div>
 
   <div class="cta-row">
@@ -243,23 +177,6 @@
   </p>
 
 </main>
-
-<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
-  <div class="modal">
-    <h3>Video coming soon</h3>
-    <p>Your intro film hasn't been recorded yet. Drop the final MP4 or YouTube embed into this placeholder when ready.</p>
-    <button id="closeModal">Got it</button>
-  </div>
-</div>
-
-<script>
-  const card = document.getElementById('videoCard');
-  const modal = document.getElementById('modal');
-  const close = document.getElementById('closeModal');
-  card.addEventListener('click', () => modal.classList.add('open'));
-  close.addEventListener('click', () => modal.classList.remove('open'));
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('open'); });
-</script>
 
 </body>
 </html>
