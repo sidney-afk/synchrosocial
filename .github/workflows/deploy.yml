@@ -2,15 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      [
-        main,
-        claude/laughing-noether-21Lpo,
-        claude/gallant-rubin-8q0zk6,
-        claude/trusting-carson-6y0z7w,
-        claude/wonderful-mendel-xe06a0,
-        claude/busy-pasteur-qduwl1,
-      ]
+    # Production only. The Pages custom domain is the live synchrosocial.com,
+    # so a deploy from ANY branch listed here replaces the live site.
+    branches: [main]
   workflow_dispatch:
 
 permissions:
