@@ -131,6 +131,16 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   letter-spacing: 0;
 }
 
+/* AI funnel page faces (matched to the production Framer build) */
+.font-outfit {
+  font-family: "Outfit", ui-sans-serif, sans-serif;
+  letter-spacing: 0;
+}
+.font-satoshi {
+  font-family: "Satoshi", ui-sans-serif, sans-serif;
+  letter-spacing: 0;
+}
+
 /* Handwritten eyebrow labels ("Our Process", "What You Get"…) */
 .font-script {
   font-family: "Caveat", ui-sans-serif, cursive;

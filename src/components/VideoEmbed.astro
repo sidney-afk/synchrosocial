@@ -7,6 +7,8 @@ interface Props {
   hash?: string; // Vimeo private hash (the ?h= value)
   title?: string;
   tone?: "brand" | "coral";
+  /** false = no rounding/ring/shadow (bare 16:9 frame). */
+  frame?: boolean;
   class?: string;
 }
 const {
@@ -15,6 +17,7 @@ const {
   hash,
   title = "Video",
   tone = "brand",
+  frame = true,
   class: className = "",
 } = Astro.props;
 
@@ -29,7 +32,9 @@ const ring = tone === "coral" ? "ring-coral-200" : "ring-brand-200";
 const accent = tone === "coral" ? "text-coral-500" : "text-brand-500";
 ---
 
-<div class={`relative aspect-video w-full overflow-hidden rounded-2xl shadow-xl ring-1 ${ring} ${className}`}>
+<div
+  class={`relative aspect-video w-full overflow-hidden ${frame ? `rounded-2xl shadow-xl ring-1 ${ring}` : ""} ${className}`}
+>
   {
     provider === "placeholder" ? (
       <div class="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-black/[0.03] to-black/[0.07]">

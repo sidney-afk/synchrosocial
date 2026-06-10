@@ -1,24 +1,46 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Logo from "../components/Logo.astro";
-import Button from "../components/Button.astro";
-import VideoEmbed from "../components/VideoEmbed.astro";
-import SiteFooter from "../components/SiteFooter.astro";
+
+/* ===========================================================================
+   AI FUNNEL PAGE — matched 1:1 to the production Framer page at
+   synchrosocial.com/ai (measured in-browser). Design tokens:
+
+     ink            #3d0000   (dark maroon, all primary text)
+     coral bright   #ed5a5a   (banner bar, headline accents)
+     coral mid      #e37676   (buttons, sales-letter accents)
+     pink           #ffe0e0   (hero gradient end, card glows)
+     stat label     #7d6161
+     card white     #fdfdfd
+
+   Type: Outfit (banner 18/600, headline 43/600/1.1, sub 21/400, letter
+   17/500/1.4, stats 35/400 + 15/700) and Satoshi (button 16/500, caption
+   13/700 caps, quotes 16/500, footer 8/500). Hero band is a white→pink
+   gradient with 40px rounded bottom corners; video is a bare 844px 16:9.
+=========================================================================== */
 
 const testimonials = [
   {
     quote:
       "Synchro Social helped me grow over 300k followers in the first year of working together.",
     name: "Baya Voce",
+    img: "/images/baya.jpg",
+    style: "photo",
+    width: "w-[301px]",
   },
   {
     quote: "I don't know where I would be without the team at Synchro Social.",
     name: "Jessica Winterstern",
+    img: "/images/jessica.jpg",
+    style: "light",
+    width: "w-[308px]",
   },
   {
     quote:
-      "I had a video reach over 1 million views within the first week of working with Synchro Social.",
+      "I had a video reach over 1 million views within the first week of working at Synchro Social.",
     name: "Morgan Burch",
+    img: "/images/morgan.jpg",
+    style: "photo",
+    width: "w-[314px]",
   },
 ];
 
@@ -27,97 +49,177 @@ const stats = [
   { value: "$0", label: "Ad Spend" },
   { value: "4M+", label: "Followers Grown" },
 ];
+
+const btn =
+  "flex h-[75px] w-[309px] max-w-full items-center justify-center rounded-full bg-[#e37676] font-satoshi text-[20px] font-medium leading-none text-white shadow-[inset_0_1px_2px_rgba(255,255,255,0.5),0_1px_2px_-1px_rgba(255,255,255,0.72),0_3px_6px_-2px_rgba(255,255,255,0.64),0_10px_18px_-4px_rgba(255,255,255,0.5)] transition hover:brightness-105";
 ---
 
 <Layout
   title="AI Clone Content That Grows Your Social Media — Synchro Social"
   description="We build your AI clone that grows your social media without you ever filming again. Made for women who want a content machine — look beautiful, sound authoritative, grow your audience."
-  bodyClass="bg-gradient-to-b from-white via-coral-50 to-coral-100"
+  bodyClass="bg-white"
 >
+  <!-- Satoshi (Fontshare) — used only on this page -->
+  <link
+    rel="stylesheet"
+    href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700&display=swap"
+  />
+
   <!-- Top banner -->
-  <div class="bg-coral-gradient px-4 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-white">
-    Limited Availability · Apply Now & See If You Qualify
+  <div class="flex h-11 items-center justify-center bg-[#ed5a5a] px-4">
+    <h1 class="font-outfit text-lg font-semibold leading-none text-white max-md:text-sm">
+      Limited Availability. Apply Now &amp; See If You Qualify
+    </h1>
   </div>
 
-  <main>
-    <!-- Hero -->
-    <section class="mx-auto max-w-4xl px-6 pt-12 pb-10 text-center">
-      <Logo tone="coral" href="/" class="mx-auto" />
-      <h1
-        class="font-display mx-auto mt-9 max-w-3xl text-4xl font-extrabold leading-[1.1] text-ink sm:text-5xl"
-      >
-        We Build Your <span class="text-coral-500">AI Clone</span> That Grows Your
-        Social Media <span class="text-coral-500">Without</span> You Ever Filming Again
-      </h1>
-      <p class="mx-auto mt-5 max-w-xl text-base text-muted sm:text-lg">
-        Made for women who want a content machine that makes you look beautiful,
-        sound authoritative, and grow your audience — without ever picking up a
-        camera.
-      </p>
+  <main class="bg-white">
+    <!-- Hero band: white → pink, rounded bottom corners -->
+    <section
+      class="rounded-b-[40px] bg-[linear-gradient(rgb(255,255,255)_0%,rgb(255,224,224)_100%)] pb-5 pt-[19px] text-center"
+    >
+      <div class="mx-auto w-[95%] max-w-[965px]">
+        <h2 class="font-outfit text-[43px] font-semibold leading-[1.1] text-[#3d0000] max-md:text-[30px]">
+          We Build Your <span class="text-[#ed5a5a]">AI Clone</span> That Grows
+          Your Social Media <span class="text-[#ed5a5a]">Without</span> You Ever
+          Filming Again
+        </h2>
+        <h3
+          class="mx-auto mt-[18px] max-w-[800px] font-outfit text-[21px] font-normal leading-[1.4] text-[#3d0000] max-md:text-lg"
+        >
+          Made for women who want a content machine that makes you look
+          beautiful, sound authoritative, and grow your audience, without ever
+          picking up a camera.
+        </h3>
 
-      <div class="mx-auto mt-10 max-w-2xl">
-        <p class="font-display mb-3 text-lg font-bold text-ink">
-          How We Grow Your Brand <span class="text-coral-500">— Without Filming</span>
-        </p>
-        <VideoEmbed
-          provider="youtube"
-          id="MnAFKperwBQ"
-          title="How we grow your brand without filming"
-          tone="coral"
-        />
-      </div>
+        <!-- Click-to-play facade: clean poster like the production page,
+             swaps to the YouTube player on click. -->
+        <div
+          id="ai-video"
+          class="relative mx-auto mt-4 aspect-video w-full max-w-[844px] overflow-hidden bg-black"
+        >
+          <button
+            id="ai-video-play"
+            type="button"
+            class="group absolute inset-0 h-full w-full cursor-pointer"
+            aria-label="Play: How we grow your brand without filming"
+          >
+            <img
+              src="https://i.ytimg.com/vi/MnAFKperwBQ/maxresdefault.jpg"
+              alt="How we grow your brand without filming"
+              class="absolute inset-0 h-full w-full object-cover"
+            />
+            <span
+              class="absolute left-1/2 top-1/2 flex h-12 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl bg-black/60 transition group-hover:bg-black/75"
+            >
+              <svg viewBox="0 0 24 24" class="ml-0.5 h-6 w-6 text-white" fill="currentColor">
+                <path d="M8 5v14l11-7z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+        <script>
+          document.getElementById("ai-video-play")?.addEventListener("click", () => {
+            const wrap = document.getElementById("ai-video");
+            if (!wrap) return;
+            wrap.innerHTML =
+              '<iframe class="absolute inset-0 h-full w-full" src="https://www.youtube.com/embed/MnAFKperwBQ?autoplay=1" title="How we grow your brand without filming" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+          });
+        </script>
 
-      <div class="mt-9 flex flex-col items-center gap-2">
-        <Button href="/call" tone="coral">Schedule a Call</Button>
-        <p class="text-xs font-medium uppercase tracking-wider text-muted">
-          Limited spots each month · Apply now & book your strategy call
-        </p>
+        <div class="mt-9 flex justify-center">
+          <a href="/call" class={btn}>Schedule a Call</a>
+        </div>
+
+        <h5
+          class="mt-[29px] font-satoshi text-[13px] font-bold uppercase leading-[1.4] tracking-[0.52px] text-[#3d0000]"
+        >
+          Limited spots each month. Apply now &amp;<br />book your strategy call
+        </h5>
       </div>
     </section>
 
     <!-- Testimonials -->
-    <section class="mx-auto max-w-5xl px-6 py-12">
-      <div class="grid gap-5 sm:grid-cols-3">
+    <section class="mt-[53px]">
+      <div
+        class="mx-auto flex w-[95%] max-w-[1040px] items-stretch justify-center gap-[45px] max-lg:gap-6 max-md:flex-col max-md:items-center"
+      >
         {
-          testimonials.map((t) => (
-            <figure class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-coral-100">
-              <blockquote class="text-sm leading-relaxed text-ink">
-                “{t.quote}”
-              </blockquote>
-              <figcaption class="mt-4 text-sm font-semibold text-coral-600">
-                {t.name}
-              </figcaption>
-            </figure>
-          ))
+          testimonials.map((t) =>
+            t.style === "photo" ? (
+              <figure
+                class={`relative h-[283px] ${t.width} shrink-0 overflow-hidden rounded-[32px] max-md:w-full max-md:max-w-[340px]`}
+              >
+                <img
+                  src={t.img}
+                  alt={t.name}
+                  loading="lazy"
+                  class="absolute inset-0 h-full w-full object-cover"
+                />
+                <div
+                  class="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.7)_100%)]"
+                  aria-hidden="true"
+                />
+                <div class="relative flex h-full flex-col justify-between p-6">
+                  <blockquote class="font-satoshi text-base font-medium leading-[1.3] text-white">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption class="font-satoshi text-base font-medium leading-[1.3] text-[#f5fbff]">
+                    {t.name}
+                  </figcaption>
+                </div>
+              </figure>
+            ) : (
+              <figure
+                class={`relative h-[283px] ${t.width} shrink-0 overflow-hidden rounded-[32px] bg-[#fdfdfd] max-md:w-full max-md:max-w-[340px]`}
+              >
+                <div
+                  class="absolute inset-0 bg-[radial-gradient(75%_50%_at_50%_100%,#ffe0e0_0%,rgba(241,206,247,0)_100%)]"
+                  aria-hidden="true"
+                />
+                <div class="relative flex h-full flex-col p-[15px]">
+                  <img
+                    src={t.img}
+                    alt={t.name}
+                    loading="lazy"
+                    class="h-[52px] w-[52px] rounded-full object-cover"
+                  />
+                  <blockquote class="mt-[15px] font-satoshi text-base font-medium leading-[1.3] text-[#3d0000]">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption class="mt-auto font-satoshi text-base font-medium leading-[1.3] text-[#3d0000]">
+                    {t.name}
+                  </figcaption>
+                </div>
+              </figure>
+            ),
+          )
         }
       </div>
     </section>
 
     <!-- Sales letter -->
-    <section class="mx-auto max-w-2xl px-6 py-12 text-center">
-      <h2 class="font-display text-2xl font-bold text-coral-500">
-        I'll be straight with you.
-      </h2>
-      <div class="mt-6 space-y-5 text-base leading-relaxed text-ink/90">
+    <section class="mx-auto mt-20 w-[95%] max-w-[580px] text-center">
+      <div
+        class="flex flex-col gap-[21px] font-outfit text-[17px] font-medium leading-[1.4] text-[#3d0000]"
+      >
+        <p class="text-[#e37676]">I'll be straight with you.</p>
         <p>
           Most women trying to build something online right now are doing it
           completely backwards. Posting random content hoping something hits.
-          Spending thousands of dollars on videographers, makeup and hair, social
-          media teams, and then going dark for two weeks because life got in the
-          way. Watching other women blow up and wondering "what does she know
-          that I don't?"
+          Spending thousands of dollars on videographers, makeup and hair,
+          social media teams, and then going dark for two weeks because life got
+          in the way. Watching other women blow up and wondering "what does she
+          know that I don't?"
         </p>
         <p>
-          I'll tell you what she knows. She knows that <span class="font-semibold text-coral-500"
-            >the most successful women online aren't the most talented</span
-          >. They're the most visible. She figured out how to show up
+          I'll tell you what she knows. She knows that
+          <span class="text-[#e37676]">the most successful women online aren't the most talented</span>.
+          They're the most visible. She figured out how to show up
           consistently, professionally, in a way that builds trust before a
           single sales conversation ever happens. And she stopped letting the
           production machine eat her alive.
         </p>
-        <p class="font-display text-lg font-bold text-coral-500">
-          That's it. That's the whole game.
-        </p>
+        <p class="text-[#e37676]">That's it. That's the whole game.</p>
         <p>
           We've watched so many women with genuinely life-changing things to say
           get completely buried online — not because their message wasn't good
@@ -127,17 +229,15 @@ const stats = [
         </p>
         <p>
           You don't have nothing else on your calendar. You have clients. You
-          have a life. You have expertise that took years to build. And <span
-            class="font-semibold text-coral-500"
-            >you deserve a vehicle that actually scales it.</span
-          >
+          have a life. You have expertise that took years to build. And
+          <span class="text-[#e37676]">you deserve a vehicle that actually scales it.</span>
         </p>
         <p>
           That's what we built. A photorealistic avatar that looks like you on
           your best day, every day. A full team handling strategy, scripts,
-          editing, and posting. <span class="font-semibold text-coral-500"
-            >A system where your only job is to say yes.</span
-          > We've helped clients rack up over a billion views doing exactly this —
+          editing, and posting.
+          <span class="text-[#e37676]">A system where your only job is to say yes.</span>
+          We've helped clients rack up over a billion views doing exactly this —
           and not one of them spent a Saturday in a studio wondering if they
           looked tired on camera.
         </p>
@@ -146,35 +246,54 @@ const stats = [
           on the table every week she's not showing up. The woman who's been the
           best-kept secret in her industry for too long.
         </p>
-        <p class="font-display text-lg font-bold text-coral-500">
+        <p class="text-[#e37676]">
           This is how that changes. And it starts with one conversation.
         </p>
-        <p class="font-semibold text-ink">Book the call below.</p>
+        <p class="font-bold">Book the call below.</p>
       </div>
 
-      <div class="mt-9 flex justify-center">
-        <Button href="/call" tone="coral">Schedule a Call</Button>
+      <div class="mt-20 flex justify-center">
+        <a href="/call" class={btn}>Schedule a Call</a>
       </div>
     </section>
 
     <!-- Stats -->
-    <section class="mx-auto max-w-3xl px-6 pt-4 pb-20">
-      <div class="grid grid-cols-3 gap-4">
+    <section class="mt-10">
+      <div class="mx-auto flex w-[95%] max-w-[600px] items-center justify-center gap-8 max-sm:gap-3">
         {
           stats.map((s) => (
-            <div class="rounded-2xl bg-white/70 px-4 py-7 text-center shadow-sm ring-1 ring-coral-100">
-              <div class="font-display text-3xl font-extrabold text-ink sm:text-4xl">
-                {s.value}
-              </div>
-              <div class="mt-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                {s.label}
+            <div class="relative h-[139px] w-[152px] shrink-0 overflow-hidden rounded-[32px] bg-[#fdfdfd] ring-1 ring-black/5 max-sm:w-full">
+              <div
+                class="absolute inset-0 bg-[radial-gradient(94%_69%_at_50%_100%,#ffe0e0_0%,rgba(241,206,247,0)_100%)]"
+                aria-hidden="true"
+              />
+              <div class="relative flex h-full flex-col items-center justify-center text-center">
+                <div class="font-outfit text-[35px] font-normal leading-none text-[#3d0000]">
+                  {s.value}
+                </div>
+                <div class="mt-0.5 max-w-[110px] font-outfit text-[15px] font-bold leading-[1.4] text-[#7d6161]">
+                  {s.label}
+                </div>
               </div>
             </div>
           ))
         }
       </div>
     </section>
-  </main>
 
-  <SiteFooter tone="coral" />
+    <!-- Footer -->
+    <footer class="mx-auto mt-[54px] w-[95%] max-w-[750px] pb-10 text-center">
+      <p class="font-satoshi text-[8px] font-medium leading-[1.3] text-[#3d0000]">
+        This website is operated by Synchro Social LLC. This website is not part
+        of the YouTube, Google, or Facebook website; Google Inc or Facebook Inc.
+        Also, this website is NOT endorsed by YouTube, Google or Facebook in any
+        way. FACEBOOK is a trademark of FACEBOOK Inc. YOUTUBE is a trademark of
+        GOOGLE Inc.
+      </p>
+      <div class="mt-2 flex items-center justify-center gap-4 font-satoshi text-[8px] font-medium text-[#3d0000]">
+        <a href="/terms-conditions" class="underline">Terms &amp; Conditions</a>
+        <a href="/privacypolicy" class="underline">Privacy Policy</a>
+      </div>
+    </footer>
+  </main>
 </Layout>
