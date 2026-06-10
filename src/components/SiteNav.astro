@@ -12,10 +12,10 @@ interface Props {
 const { minimal = false } = Astro.props;
 
 const links = [
-  { label: "Home", href: "/v2" },
-  { label: "Features", href: "/v2#features" },
-  { label: "Case Studies", href: "/v2#results" },
-  { label: "FAQ", href: "/v2#faq" },
+  { label: "Home", href: "/" },
+  { label: "Features", href: "/#features" },
+  { label: "Case Studies", href: "/#results" },
+  { label: "FAQ", href: "/#faq" },
 ];
 ---
 
@@ -24,7 +24,7 @@ const links = [
     class={`relative mx-auto flex w-[95%] max-w-[1040px] items-center py-3 ${minimal ? "justify-center" : ""}`}
   >
     <a
-      href="/v2"
+      href="/"
       class={`inline-flex w-full max-w-[200px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto"}`}
       aria-label="Synchro Social"
     >

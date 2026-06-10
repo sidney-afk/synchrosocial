@@ -4,8 +4,8 @@ The Synchro Social website, rebuilt from Framer into clean, maintainable code.
 
 - **Framework:** [Astro](https://astro.build/) (static site, no build headaches)
 - **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) — responsive by default, one source of truth for the design
-- **Hosting:** GitHub Pages (auto-deploys on every push to `main`)
-- **Test domain:** `test.synchrosocial.com` (the live `synchrosocial.com` stays on Framer until you cut over)
+- **Hosting:** GitHub Pages (auto-deploys on pushes to the branches listed in `.github/workflows/deploy.yml`)
+- **Domain:** `synchrosocial.com` (cut over from Framer — see "Going live" below)
 
 ---
 
@@ -27,7 +27,10 @@ Two funnels share one codebase. URLs match the original Framer paths exactly.
 ### Main site — purple theme
 | URL | File | What it is |
 | --- | --- | --- |
-| `/` | `src/pages/index.astro` | Homepage (hero, clients, approach, stats, team, booking) |
+| `/` | `src/pages/index.astro` | Homepage (formerly `/v2`; `/v2` now redirects here) |
+| `/apply` | `src/pages/apply.astro` | Apply funnel — booking + case studies with reels |
+| `/event` | `src/pages/event.astro` | Hub page for Kasper's AI events |
+| `/ai-invite/` | `public/ai-invite/` | Static AI invite page + scheduling pages (Calendly) |
 | `/onboarding` | `src/pages/onboarding.astro` | Onboarding step 1/4 — What To Expect |
 | `/onboarding_step2` | `src/pages/onboarding_step2.astro` | Step 2/4 — Complete This Form |
 | `/onboarding_step3` | `src/pages/onboarding_step3.astro` | Step 3/4 — Strategy Session |
@@ -86,10 +89,22 @@ list of images to provide.
 ## Deploying to GitHub Pages
 
 1. In the repo, go to **Settings → Pages** and set **Source = GitHub Actions**.
-2. Push to `main` (or run the "Deploy to GitHub Pages" workflow manually). The
-   workflow in `.github/workflows/deploy.yml` builds and publishes automatically.
-3. **Custom domain:** `public/CNAME` is set to `test.synchrosocial.com`. Add a
-   DNS `CNAME` record pointing `test` → `<your-github-username>.github.io`.
-4. When you're ready to replace the live Framer site, change `public/CNAME` and
-   `site` in `astro.config.mjs` to `synchrosocial.com`, then repoint that DNS
-   record to GitHub Pages.
+2. Push to a branch listed in `.github/workflows/deploy.yml` (or run the
+   "Deploy to GitHub Pages" workflow manually). It builds and publishes
+   automatically — the most recent push wins.
+
+## Going live on synchrosocial.com (cutover from Framer)
+
+The code is already configured for the live domain (`public/CNAME` and `site`
+in `astro.config.mjs` are `synchrosocial.com`). The remaining steps happen
+outside this repo:
+
+1. **Framer:** Site Settings → Domains → disconnect/remove `synchrosocial.com`.
+2. **Namecheap** (DNS for synchrosocial.com): remove Framer's records for `@`
+   (A `76.76.21.21` / CNAME to framer) and add:
+   - Four **A records** for `@`: `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`
+   - A **CNAME record** `www` → `sidney-afk.github.io`
+3. **GitHub:** repo **Settings → Pages → Custom domain** → change
+   `test.synchrosocial.com` to `synchrosocial.com`, then tick
+   **Enforce HTTPS** once the certificate is issued (can take up to an hour).
