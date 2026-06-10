@@ -1,0 +1,118 @@
+---
+// iClosed booking widget.
+//
+// When you have your iClosed scheduler, pass its embed URL as `src` and this
+// renders the live widget. Until then it shows a styled placeholder that looks
+// like the real two-step (form → calendar) flow, so the page feels complete.
+//
+//   <IClosedEmbed src="https://app.iclosed.io/e/your-event" />
+interface Props {
+  src?: string | null;
+  height?: string;
+  class?: string;
+}
+const { src = null, height = "760px", class: className = "" } = Astro.props;
+
+// Static day grid — purely decorative for the placeholder.
+const days = Array.from({ length: 30 }, (_, i) => i + 1);
+const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const monthLabel = new Date().toLocaleDateString("en-US", {
+  month: "long",
+  year: "numeric",
+});
+---
+
+{
+  src ? (
+    <div
+      class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}
+    >
+      <iframe
+        src={src}
+        title="Book your consultation"
+        loading="lazy"
+        style={`width:100%;height:${height};border:0;`}
+      />
+    </div>
+  ) : (
+    <div class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}>
+      {/* PLACEHOLDER — replace by passing your iClosed embed URL to `src`. */}
+      <div class="border-b border-brand-100 bg-brand-50 px-5 py-2 text-center text-xs font-semibold text-brand-700">
+        Placeholder — your iClosed booking widget will go here
+      </div>
+
+      <div class="flex items-center justify-center gap-6 border-b border-black/5 py-3 text-sm">
+        <span class="flex items-center gap-2 font-medium text-brand-600">
+          <span class="h-2 w-2 rounded-full bg-brand-500" />
+          Fill out the form
+        </span>
+        <span class="flex items-center gap-2 text-muted/60">
+          <span class="h-2 w-2 rounded-full bg-black/15" />
+          Book your event
+        </span>
+      </div>
+
+      <div class="grid gap-0 md:grid-cols-2">
+        {/* Left: form */}
+        <div class="border-b border-black/5 p-6 md:border-b-0 md:border-r">
+          <h3 class="font-display text-lg font-bold text-ink">
+            Social Media Consultation
+          </h3>
+          <p class="mt-1 text-sm text-muted">
+            Fill in the info below and pick a time that works for you.
+          </p>
+
+          <div class="mt-5 space-y-3">
+            <div class="flex h-11 items-center rounded-lg border border-black/10 px-3 text-sm text-muted/70">
+              +1&nbsp; Phone number
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex h-11 items-center rounded-lg border border-black/10 px-3 text-sm text-muted/70">
+                First name *
+              </div>
+              <div class="flex h-11 items-center rounded-lg border border-black/10 px-3 text-sm text-muted/70">
+                Last name *
+              </div>
+            </div>
+            <p class="text-xs leading-relaxed text-muted/70">
+              By entering your information, you consent to your data being saved
+              in accordance with our{" "}
+              <a href="/terms-conditions" class="underline">Terms</a> &amp;{" "}
+              <a href="/privacypolicy" class="underline">Privacy Policy</a>.
+            </p>
+            <div class="bg-brand-gradient flex h-11 items-center justify-center rounded-lg text-sm font-semibold text-white opacity-90">
+              Continue ›
+            </div>
+          </div>
+        </div>
+
+        {/* Right: calendar */}
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-ink">{monthLabel}</span>
+            <div class="flex gap-1 text-muted/50">
+              <span class="flex h-7 w-7 items-center justify-center rounded-md border border-black/10">‹</span>
+              <span class="flex h-7 w-7 items-center justify-center rounded-md border border-black/10">›</span>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-7 gap-1 text-center text-[0.65rem] font-semibold text-muted/50">
+            {weekdays.map((d) => (
+              <span>{d}</span>
+            ))}
+          </div>
+          <div class="mt-2 grid grid-cols-7 gap-1 text-center text-sm text-ink/70">
+            {days.map((n) => (
+              <span class="flex h-9 items-center justify-center rounded-md hover:bg-brand-50">
+                {n}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-black/5 py-2 text-center text-xs text-muted/50">
+        Powered by iClosed (placeholder)
+      </div>
+    </div>
+  )
+}

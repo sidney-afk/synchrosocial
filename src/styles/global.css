@@ -74,3 +74,166 @@ body {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
 }
+
+/* ---------------------------------------------------------------------------
+   v2 homepage (growthopia-spec layout, Synchro purple)
+   Added for src/pages/v2.astro — safe, additive utilities only.
+
+   The v2 design system is measured 1:1 from the reference site and re-colored
+   purple. Core tokens:
+     primary action   #8331e8  (their vivid blue)
+     primary ring     #7a2bdc
+     hover base       #5f1fae
+     dark card        #262626 on pure-black body
+     light bands      white washed with a faint brand tint
+   Type: Inter 16px/1.58 paragraphs, Inter Tight 700 headings (capitalize),
+   Caveat 24px script eyebrows. Body base is 14px/20px.
+--------------------------------------------------------------------------- */
+:root {
+  --g-purple: #8331e8;
+  --g-purple-ring: #7a2bdc;
+  --g-purple-deep: #5f1fae;
+}
+
+/* Page base for v2 (body gets class="v2") */
+body.v2 {
+  background-color: #000;
+  color: #fff;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+}
+/* Paragraph default lives in the base layer (zero specificity) so Tailwind
+   utilities — which sit in the later `utilities` layer — always win. */
+@layer base {
+  body.v2 :where(p) {
+    font-size: 16px;
+    line-height: 157.6%;
+    color: #c4c4c4;
+  }
+}
+
+/* Branded page scrollbar, only when a v2 page is shown */
+html:has(body.v2)::-webkit-scrollbar {
+  width: 10px;
+}
+html:has(body.v2)::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+html:has(body.v2)::-webkit-scrollbar-thumb {
+  background: var(--g-purple);
+  border-radius: 100px;
+}
+
+/* Headings face for v2 */
+.font-tight {
+  font-family: "Inter Tight", Arial, sans-serif;
+  letter-spacing: 0;
+}
+
+/* AI funnel page faces (matched to the production Framer build) */
+.font-outfit {
+  font-family: "Outfit", ui-sans-serif, sans-serif;
+  letter-spacing: 0;
+}
+.font-satoshi {
+  font-family: "Satoshi", ui-sans-serif, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Handwritten eyebrow labels ("Our Process", "What You Get"…) */
+.font-script {
+  font-family: "Caveat", ui-sans-serif, cursive;
+  letter-spacing: 0;
+}
+
+/* Primary CTA skin: flat brand fill + top sheen + 1px ring (not a gradient
+   fill — the sheen is a translucent overlay, per the reference treatment). */
+.btn-g {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 70.48%,
+      rgba(255, 255, 255, 0.12) 93.62%,
+      rgba(255, 255, 255, 0) 100%
+    ),
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.04) 100%),
+    var(--g-purple);
+  box-shadow:
+    0 1px 0.75px rgba(255, 255, 255, 0.24) inset,
+    0 0 0 1px var(--g-purple-ring);
+  transition: all 0.4s;
+}
+.btn-g:hover {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.15) 70.48%,
+      rgba(0, 0, 0, 0.25) 93.62%,
+      rgba(0, 0, 0, 0.15) 100%
+    ),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%),
+    var(--g-purple-deep);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 8px rgba(95, 31, 174, 0.6);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Hero backdrop: transparent fading down into solid brand purple. Spans the
+   hero heading AND the client-cards block beneath it (one shared canvas). */
+.bg-hero-fade {
+  background-image: linear-gradient(rgba(131, 49, 232, 0), #8331e8);
+}
+
+/* Dark hero used by /apply (kept: predates the v2 spec rebuild). */
+.bg-hero-purple {
+  background-image: linear-gradient(
+    180deg,
+    #07040f 0%,
+    #150a2e 24%,
+    #341079 56%,
+    #5a23c6 84%,
+    #7726d6 100%
+  );
+}
+
+/* Light bands: white washed with a very faint brand tint. */
+.bg-brand-tint {
+  background-color: #fff;
+  background-image: linear-gradient(
+    180deg,
+    rgba(183, 148, 255, 0.04) 0%,
+    rgba(183, 148, 255, 0.2) 100%
+  );
+}
+
+/* Soft elevation for cards sitting on the light bands. */
+.shadow-soft-band {
+  box-shadow:
+    0px 49px 14px 0px rgba(86, 41, 127, 0),
+    0px 31px 13px 0px rgba(86, 41, 127, 0.01),
+    0px 18px 11px 0px rgba(86, 41, 127, 0.02),
+    0px 8px 8px 0px rgba(86, 41, 127, 0.04),
+    0px 2px 4px 0px rgba(86, 41, 127, 0.04);
+}
+
+/* Soft elevation for the dark client cards on the hero fade. */
+.shadow-soft-dark {
+  box-shadow:
+    0px 27px 16px 0px rgba(178, 163, 215, 0.03),
+    0px 12px 12px 0px rgba(178, 163, 215, 0.05),
+    0px 3px 7px 0px rgba(178, 163, 215, 0.06);
+}
+
+
+/* Auto-scrolling marquee (homepage reel collage) */
+@keyframes marquee-x {
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x 55s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}

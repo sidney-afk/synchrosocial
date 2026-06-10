@@ -1,0 +1,61 @@
+---
+// Sticky top nav for the v2 pages, matched to the reference geometry:
+// solid black bar with a hairline bottom border, 1040px/95% wrapper with
+// 12px vertical padding, logo zone up to 200px wide, links centered in the
+// bar, and a flat-purple Apply button on the right.
+// `minimal` = logo only, centered (used on the focused /apply page).
+import ApplyButton from "./ApplyButton.astro";
+
+interface Props {
+  minimal?: boolean;
+}
+const { minimal = false } = Astro.props;
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "Features", href: "/#features" },
+  { label: "Case Studies", href: "/#results" },
+  { label: "FAQ", href: "/#faq" },
+];
+---
+
+<header class="sticky top-0 z-[100] border-b border-[#f5f5f51f] bg-black">
+  <nav
+    class={`relative mx-auto flex w-[95%] max-w-[1040px] items-center py-3 ${minimal ? "justify-center" : ""}`}
+  >
+    <a
+      href="/"
+      class={`inline-flex w-full max-w-[200px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto"}`}
+      aria-label="Synchro Social"
+    >
+      <img
+        src="/images/logo.png"
+        alt="Synchro Social"
+        class="h-12 w-auto shrink-0"
+      />
+    </a>
+
+    {
+      !minimal && (
+        <>
+          <ul class="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center p-[5px] md:flex">
+            {links.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  class="block rounded-xl px-3.5 py-[7px] text-sm capitalize leading-[157%] text-white transition duration-500 hover:bg-white/10"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div class="ml-auto flex items-center justify-end gap-6">
+            <ApplyButton href="/apply" label="Apply Now" size="md" arrow={false} />
+          </div>
+        </>
+      )
+    }
+  </nav>
+</header>

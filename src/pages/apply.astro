@@ -1,0 +1,271 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
+import CalendlyEmbed from "../components/CalendlyEmbed.astro";
+import ApplyButton from "../components/ApplyButton.astro";
+import PlatformIcon from "../components/PlatformIcon.astro";
+
+/* ===========================================================================
+   APPLY PAGE — what happens when someone clicks "Apply Now".
+   Matched 1:1 to the reference funnel's measured spec, in Synchro purple:
+   100svh hero with bottom purple fade + half-highlight headline + booking,
+   80px-padded case-study band, minimal rights-only footer.
+
+   Booking uses Kasper's Calendly demo calendar (kasper-synchro/demo) —
+   the same calendar embedded on / and /call.
+=========================================================================== */
+
+// --- Case-study series (REAL data via Sandcastles) -------------------------
+// Real clients + their top reels, self-hosted on Wistia.
+// "Total Views Generated" = each client's real total content views.
+// Per-reel view counts reflect combined Instagram + TikTok reach.
+const caseStudies = [
+  {
+    name: "Baya Voce",
+    credit: "@bayavoce",
+    period: "12 Months",
+    platforms: ["Instagram", "TikTok", "YouTube"],
+    stats: [
+      { value: "77.6M", label: "Total Views Generated" },
+      { value: "+350K", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "o1cai14og1", views: "15.4M" },
+      { wistia: "ty1po06ji9", views: "7.7M" },
+      { wistia: "v0b9wflgc2", views: "5.3M" },
+    ],
+  },
+  {
+    name: "Danny Morel",
+    credit: "@dannymorel",
+    period: "12 Months",
+    platforms: ["Instagram", "TikTok", "YouTube"],
+    stats: [
+      { value: "75.9M", label: "Total Views Generated" },
+      { value: "+3M", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "aq1gl2mzjo", views: "16.8M" },
+      // Self-hosted: tiktok.com/@dannymorel/video/7156564560399437099
+      { mp4: "/videos/danny-morel-9-2m.mp4", poster: "/videos/danny-morel-9-2m-poster.jpg", views: "9.2M" },
+      { wistia: "vwma18vfm7", views: "5.9M" },
+    ],
+  },
+  {
+    name: "Morgan Burch",
+    credit: "@goodmorgantherapy",
+    period: "12 Months",
+    platforms: ["Instagram", "TikTok", "YouTube"],
+    stats: [
+      { value: "126M", label: "Total Views Generated" },
+      { value: "+100K", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "hg7zrcgsmm", views: "7.8M" },
+      { wistia: "jljq1r38qm", views: "5.6M" },
+      { wistia: "ri9fngzrc2", views: "2.4M" },
+    ],
+  },
+  {
+    name: "Jessica Winterstern",
+    credit: "@thefeminineheart",
+    period: "12 Months",
+    platforms: ["Instagram"],
+    stats: [
+      { value: "13.4M", label: "Total Views Generated" },
+      { value: "+100K", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "dnudt15o8k", views: "2.1M" },
+      { wistia: "or58nersqf", views: "1.1M" },
+      { wistia: "xkhn7st38n", views: "890K" },
+    ],
+  },
+  {
+    name: "Garrain Jones",
+    credit: "@garrain.jones",
+    period: "12 Months",
+    platforms: ["Instagram", "TikTok", "YouTube"],
+    stats: [
+      { value: "73.2M", label: "Total Views Generated" },
+      { value: "+180K", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "9jdg8z8xh7", views: "2.7M" },
+      { wistia: "oster0f52c", views: "2.2M" },
+      { wistia: "uos9ko8nrw", views: "2.1M" },
+    ],
+  },
+  {
+    name: "Lucas Salame",
+    credit: "@lucas__salame",
+    period: "12 Months",
+    platforms: ["Instagram"],
+    stats: [
+      { value: "46.6M", label: "Total Views Generated" },
+      { value: "+140K", label: "Total Audience Growth" },
+    ],
+    videos: [
+      { wistia: "bbwr4wuqw7", views: "1.2M" },
+      { wistia: "hmcjt5a8m5", views: "215K" },
+      { wistia: "nrnv2ez6uv", views: "190K" },
+    ],
+  },
+];
+
+// Client name → /public/images/clients/<slug>.jpg (real IG profile pics).
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
+---
+
+<Layout
+  title="Apply — Synchro Social"
+  description="Apply to work with Synchro Social. Grow your social media exceptionally, but with intention."
+  bodyClass="v2"
+>
+  <SiteNav minimal />
+
+  <!-- ===================== HERO + BOOKING ===================== -->
+  <section class="relative min-h-[100svh] pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10">
+    <!-- Backdrop: transparent fading down to solid brand purple -->
+    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+    <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-8">
+      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
+        <p class="font-script text-2xl leading-5 text-[#b794ff]">
+          Impact-Driven Coaches &amp; Thought Leaders
+        </p>
+        <h1 class="font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white max-md:text-[1.8rem] max-md:leading-[1.2]">
+          We Help Coaches And Thought Leaders
+          <span class="whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:whitespace-normal">
+            Grow Their Social Media
+          </span>
+          <br />
+          Without Algorithm Hacks Or Trends
+        </h1>
+
+        <div class="mt-2 flex w-full max-w-[457px] flex-col gap-6 max-md:max-w-[80%] max-sm:max-w-full">
+          <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Booking — Kasper's demo calendar (same one used on / and /call) -->
+      <div id="book" class="w-full min-h-[542px]">
+        <div class="mx-auto w-[95%] max-w-[810px]">
+          <CalendlyEmbed slug="kasper-synchro/demo" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASE STUDIES ===================== -->
+  <section class="w-full bg-white py-20 text-black max-lg:py-16">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full flex-col items-center gap-4 text-center">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+          <strong>Check Out (Just Some) Of Our Case Studies.</strong>
+        </h2>
+      </div>
+
+      <div class="mt-0 flex w-full flex-col gap-12">
+        {
+          caseStudies.map((cs) => (
+            <div class="flex w-full flex-col">
+              <!-- Header -->
+              <div class="mx-auto mb-4 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4">
+                <div class="text-lg font-light leading-[1.3]">SYNCHRO SOCIAL CASE STUDY</div>
+                <h3 class="text-center text-[2.5rem] font-black uppercase leading-[1.3] max-md:text-[2rem]">
+                  {cs.name}
+                </h3>
+                <div class="mt-8 self-start text-left text-2xl font-normal leading-[1.3] max-md:text-xl">
+                  RESULTS IN {cs.period.toUpperCase()}:
+                </div>
+              </div>
+
+              <!-- Stats + photo + platforms -->
+              <div class="mx-auto grid w-full max-w-[61rem] grid-cols-3 items-center gap-4 max-md:grid-cols-1">
+                {cs.stats.map((s) => (
+                  <div>
+                    <div class="text-[3.5rem] font-black leading-[1.3] max-lg:text-[3rem]">
+                      {s.value}
+                    </div>
+                    <div class="text-xl font-normal leading-[1.3] max-md:text-base">{s.label}</div>
+                  </div>
+                ))}
+                <div class="relative overflow-hidden rounded-[5px] max-md:mx-auto max-md:max-w-[80svw]">
+                  <div class="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-brand-300 to-brand-600 text-4xl font-bold text-white/90">
+                    {cs.name.split(" ").map((w) => w[0]).join("")}
+                  </div>
+                  <img
+                    src={`/images/clients/${slug(cs.name)}.jpg`}
+                    alt={cs.name}
+                    class="absolute inset-0 h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+                <div class="col-span-3 flex items-center gap-4 text-2xl max-md:col-span-1 max-md:mt-4 max-md:flex-col">
+                  <span>Platforms:</span>
+                  <div class="flex gap-2">
+                    {cs.platforms.map((p) => (
+                      <PlatformIcon name={p} class="h-8 w-8" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Video examples -->
+              <div class="mx-auto mt-8 flex w-full max-w-[61rem] flex-col gap-4">
+                <div class="text-[2rem] font-black leading-[1.3]">Video examples:</div>
+                <div class="grid w-full grid-cols-3 gap-16 max-lg:gap-8 max-md:grid-cols-1">
+                  {cs.videos.map((v) => (
+                    <div class="flex w-full flex-col items-center justify-center gap-1">
+                      <div class="relative aspect-[9/16] w-full overflow-hidden bg-black max-md:max-w-[300px]">
+                        {v.wistia ? (
+                          <iframe
+                            src={`https://fast.wistia.net/embed/iframe/${v.wistia}?seo=false&videoFoam=false`}
+                            class="absolute inset-0 h-full w-full"
+                            loading="lazy"
+                            title={`${cs.name} reel — ${v.views} views`}
+                            allow="autoplay; fullscreen"
+                            allowfullscreen
+                          />
+                        ) : (
+                          <video
+                            src={v.mp4}
+                            poster={v.poster}
+                            class="absolute inset-0 h-full w-full object-cover"
+                            controls
+                            playsinline
+                            preload="metadata"
+                            title={`${cs.name} reel — ${v.views} views`}
+                          />
+                        )}
+                      </div>
+                      <div class="text-base font-bold leading-[1.3]">{v.views} views</div>
+                    </div>
+                  ))}
+                </div>
+                <p class="text-center text-xs text-black/40">Credits: {cs.credit}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-10 flex w-full max-w-[420px] flex-col items-center gap-4 text-center">
+        <ApplyButton href="#book" label="Apply Now" class="w-full" />
+        <p class="text-base leading-[157%] text-black">{ctaCaption}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER (minimal, rights only) ===================== -->
+  <footer class="w-full px-0 py-8">
+    <div class="mx-auto w-[95%] max-w-[1120px] border-t border-[#262626] pt-8">
+      <p class="text-base leading-[150%] text-white">
+        © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
+      </p>
+    </div>
+  </footer>
+</Layout>

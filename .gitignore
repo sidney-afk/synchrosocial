@@ -21,3 +21,6 @@ yarn-error.log*
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# internal scratch — client data, never commit to the public repo
+client-top-reels.md

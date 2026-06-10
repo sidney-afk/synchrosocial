@@ -1,12 +1,14 @@
 ---
-// Responsive 16:9 video. Supports YouTube, Vimeo, Wistia, or a styled placeholder
+// Responsive 16:9 video. Supports YouTube, Vimeo, or a styled placeholder
 // (used where the real video isn't ready yet).
 interface Props {
-  provider?: "youtube" | "vimeo" | "wistia" | "placeholder";
+  provider?: "youtube" | "vimeo" | "placeholder";
   id?: string;
   hash?: string; // Vimeo private hash (the ?h= value)
   title?: string;
   tone?: "brand" | "coral";
+  /** false = no rounding/ring/shadow (bare 16:9 frame). */
+  frame?: boolean;
   class?: string;
 }
 const {
@@ -15,6 +17,7 @@ const {
   hash,
   title = "Video",
   tone = "brand",
+  frame = true,
   class: className = "",
 } = Astro.props;
 
@@ -23,15 +26,15 @@ if (provider === "youtube") {
   src = `https://www.youtube.com/embed/${id}`;
 } else if (provider === "vimeo") {
   src = `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ""}`;
-} else if (provider === "wistia") {
-  src = `https://fast.wistia.net/embed/iframe/${id}`;
 }
 
 const ring = tone === "coral" ? "ring-coral-200" : "ring-brand-200";
 const accent = tone === "coral" ? "text-coral-500" : "text-brand-500";
 ---
 
-<div class={`relative aspect-video w-full overflow-hidden rounded-2xl shadow-xl ring-1 ${ring} ${className}`}>
+<div
+  class={`relative aspect-video w-full overflow-hidden ${frame ? `rounded-2xl shadow-xl ring-1 ${ring}` : ""} ${className}`}
+>
   {
     provider === "placeholder" ? (
       <div class="flex h-full w-full flex-col items-center justify-center gap-3 bg-gradient-to-br from-black/[0.03] to-black/[0.07]">
