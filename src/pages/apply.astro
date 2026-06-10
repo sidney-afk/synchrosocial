@@ -1,19 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
-import IClosedEmbed from "../components/IClosedEmbed.astro";
+import CalendlyEmbed from "../components/CalendlyEmbed.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 
 /* ===========================================================================
    APPLY PAGE — what happens when someone clicks "Apply Now".
    Matched 1:1 to the reference funnel's measured spec, in Synchro purple:
-   100svh hero with bottom purple fade + half-highlight headline + iClosed,
+   100svh hero with bottom purple fade + half-highlight headline + booking,
    80px-padded case-study band, minimal rights-only footer.
 
-   Booking uses iClosed (not Calendly). Drop your iClosed embed URL into the
-   <IClosedEmbed src="..."/> below to make it live — it's a placeholder for now.
-   Search "PLACEHOLDER" for every spot that needs your real assets/words.
+   Booking uses Kasper's Calendly demo calendar (kasper-synchro/demo) —
+   the same calendar embedded on / and /call.
 =========================================================================== */
 
 // --- Case-study series (REAL data via Sandcastles) -------------------------
@@ -150,11 +149,10 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </div>
       </div>
 
-      <!-- Booking (iClosed) -->
+      <!-- Booking — Kasper's demo calendar (same one used on / and /call) -->
       <div id="book" class="w-full min-h-[542px]">
-        <!-- TODO: add your iClosed embed URL, e.g. <IClosedEmbed src="https://app.iclosed.io/e/..." /> -->
-        <div class="mx-auto max-w-[810px]">
-          <IClosedEmbed />
+        <div class="mx-auto w-[95%] max-w-[810px]">
+          <CalendlyEmbed slug="kasper-synchro/demo" />
         </div>
       </div>
     </div>
