@@ -77,8 +77,10 @@ const btn =
     <section
       class="rounded-b-[40px] bg-[linear-gradient(rgb(255,255,255)_0%,rgb(255,224,224)_100%)] pb-5 pt-[19px] text-center"
     >
-      <div class="mx-auto w-[95%] max-w-[965px]">
-        <h2 class="font-outfit text-[43px] font-semibold leading-[1.1] text-[#3d0000] max-md:text-[30px]">
+      <div class="mx-auto w-full max-md:px-4">
+        <!-- Heading width mirrors production: 67% of the viewport, widening
+             to 77% on large screens. -->
+        <h2 class="font-outfit mx-auto max-w-[67%] text-[43px] font-semibold leading-[1.1] text-[#3d0000] min-[1600px]:max-w-[77%] max-md:max-w-none max-md:text-[30px]">
           We Build Your <span class="text-[#ed5a5a]">AI Clone</span> That Grows
           Your Social Media <span class="text-[#ed5a5a]">Without</span> You Ever
           Filming Again
