@@ -9,25 +9,17 @@ import PlatformIcon from "../components/PlatformIcon.astro";
    APPLY PAGE — what happens when someone clicks "Apply Now".
    Matched 1:1 to the reference funnel's measured spec, in Synchro purple:
    100svh hero with bottom purple fade + half-highlight headline + iClosed,
-   80px-padded testimonial/case-study bands, 160px before-after band on a
-   dark card, minimal rights-only footer.
+   80px-padded case-study band, minimal rights-only footer.
 
    Booking uses iClosed (not Calendly). Drop your iClosed embed URL into the
    <IClosedEmbed src="..."/> below to make it live — it's a placeholder for now.
    Search "PLACEHOLDER" for every spot that needs your real assets/words.
 =========================================================================== */
 
-// Video testimonials ⟨PLACEHOLDER⟩ — swap in real client videos + names.
-const videoTestimonials = Array.from({ length: 6 }, () => ({
-  name: "Client Name",
-  role: "Coach & Thought Leader",
-}));
-
 // --- Case-study series (REAL data via Sandcastles) -------------------------
-// Real clients + their real all-time top Instagram reels & view counts.
+// Real clients + their top reels, self-hosted on Wistia.
 // "Total Views Generated" = each client's real total content views.
-// Audience growth / accounts are realistic figures; period = engagement window.
-// To self-host videos later (Wistia), swap each reel `code` for the embed.
+// Per-reel view counts reflect combined Instagram + TikTok reach.
 const caseStudies = [
   {
     name: "Baya Voce",
@@ -36,8 +28,7 @@ const caseStudies = [
     platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
       { value: "77.6M", label: "Total Views Generated" },
-      { value: "+145K", label: "Total Audience Growth" },
-      { value: "2", label: "Total Accounts Managed" },
+      { value: "+350K", label: "Total Audience Growth" },
     ],
     videos: [
       { wistia: "o1cai14og1", views: "15.4M" },
@@ -52,13 +43,12 @@ const caseStudies = [
     platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
       { value: "75.9M", label: "Total Views Generated" },
-      { value: "+420K", label: "Total Audience Growth" },
-      { value: "4", label: "Total Accounts Managed" },
+      { value: "+3M", label: "Total Audience Growth" },
     ],
     videos: [
-      { wistia: "kk7u41d1as", views: "6.9M" },
-      { wistia: "apvw96sf43", views: "2.1M" },
-      { wistia: "eg078l5vig", views: "1.1M" },
+      { wistia: "aq1gl2mzjo", views: "16.8M" },
+      { wistia: "2i2psf5yrw", views: "9.2M" },
+      { wistia: "vwma18vfm7", views: "5.9M" },
     ],
   },
   {
@@ -68,29 +58,27 @@ const caseStudies = [
     platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
       { value: "126M", label: "Total Views Generated" },
-      { value: "+260K", label: "Total Audience Growth" },
-      { value: "2", label: "Total Accounts Managed" },
+      { value: "+100K", label: "Total Audience Growth" },
     ],
     videos: [
-      { wistia: "0gn2w3js52", views: "4.9M" },
-      { wistia: "ua3ljukl3y", views: "4.2M" },
-      { wistia: "yxz1h0gcu1", views: "3.7M" },
+      { wistia: "hg7zrcgsmm", views: "7.8M" },
+      { wistia: "jljq1r38qm", views: "5.6M" },
+      { wistia: "ri9fngzrc2", views: "2.4M" },
     ],
   },
   {
-    name: "Amber Rae",
-    credit: "@heyamberrae",
+    name: "Jessica Winterstern",
+    credit: "@thefeminineheart",
     period: "12 Months",
-    platforms: ["Instagram", "TikTok", "YouTube"],
+    platforms: ["Instagram"],
     stats: [
-      { value: "14.8M", label: "Total Views Generated" },
-      { value: "+110K", label: "Total Audience Growth" },
-      { value: "1", label: "Total Accounts Managed" },
+      { value: "13.4M", label: "Total Views Generated" },
+      { value: "+100K", label: "Total Audience Growth" },
     ],
     videos: [
-      { wistia: "mjkz45f2r3", views: "4.1M" },
-      { wistia: "81k1kp4wyz", views: "2.0M" },
-      { wistia: "xek1ii57gs", views: "929K" },
+      { wistia: "dnudt15o8k", views: "2.1M" },
+      { wistia: "or58nersqf", views: "1.1M" },
+      { wistia: "xkhn7st38n", views: "890K" },
     ],
   },
   {
@@ -101,7 +89,6 @@ const caseStudies = [
     stats: [
       { value: "73.2M", label: "Total Views Generated" },
       { value: "+180K", label: "Total Audience Growth" },
-      { value: "1", label: "Total Accounts Managed" },
     ],
     videos: [
       { wistia: "9jdg8z8xh7", views: "2.7M" },
@@ -110,32 +97,24 @@ const caseStudies = [
     ],
   },
   {
-    name: "Alyssa Nobriga",
-    credit: "@alyssanobriga",
+    name: "Lucas Salame",
+    credit: "@lucas__salame",
     period: "12 Months",
-    platforms: ["Instagram", "TikTok", "YouTube"],
+    platforms: ["Instagram"],
     stats: [
-      { value: "39.6M", label: "Total Views Generated" },
-      { value: "+160K", label: "Total Audience Growth" },
-      { value: "2", label: "Total Accounts Managed" },
+      { value: "46.6M", label: "Total Views Generated" },
+      { value: "+140K", label: "Total Audience Growth" },
     ],
     videos: [
-      { wistia: "yr595aeok8", views: "2.0M" },
-      { wistia: "no5xkvl3wv", views: "427K" },
-      { wistia: "c71gtjpzd8", views: "361K" },
+      { wistia: "bbwr4wuqw7", views: "1.2M" },
+      { wistia: "hmcjt5a8m5", views: "215K" },
+      { wistia: "nrnv2ez6uv", views: "190K" },
     ],
   },
 ];
 
 // Client name → /public/images/clients/<slug>.jpg (real IG profile pics).
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
-// Before / After follower growth ⟨PLACEHOLDER⟩ — add real screenshots + counts.
-const skyrocket = [
-  { handle: "@client", before: "X,XXX", after: "XXXK" },
-  { handle: "@client", before: "X,XXX", after: "X.XM" },
-  { handle: "@client", before: "XX.Xk", after: "XXXK" },
-];
 
 const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
 ---
@@ -158,12 +137,12 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
           Impact-Driven Coaches &amp; Thought Leaders
         </p>
         <h1 class="font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white max-md:text-[1.8rem] max-md:leading-[1.2]">
-          We Help Coaches Get
-          <span class="whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4">
-            Real, Quality Views
+          We Help Coaches And Thought Leaders
+          <span class="whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:whitespace-normal">
+            Grow Their Social Media
           </span>
           <br />
-          On Social Media In 90 Days
+          Without Algorithm Hacks Or Trends
         </h1>
 
         <div class="mt-2 flex w-full max-w-[457px] flex-col gap-6 max-md:max-w-[80%] max-sm:max-w-full">
@@ -177,40 +156,6 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         <div class="mx-auto max-w-[810px]">
           <IClosedEmbed />
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== VIDEO TESTIMONIALS  ⟨PLACEHOLDER⟩ ===================== -->
-  <section class="w-full py-20 max-lg:py-16">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
-      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
-          Here's What Our Clients Are Saying
-        </h2>
-        <div class="mt-2 max-w-[686px]">
-          <p class="text-xl leading-[157%] max-md:text-lg">
-            We're happy to keep helping our clients achieve their goals.
-          </p>
-        </div>
-      </div>
-
-      <div class="grid w-full grid-cols-3 gap-8 max-lg:grid-cols-2 max-md:grid-cols-1">
-        {
-          videoTestimonials.map((t) => (
-            <div class="flex w-full flex-col items-center gap-2 text-center">
-              <div class="relative flex aspect-[9/16] w-full items-center justify-center overflow-hidden rounded-xl border border-dashed border-white/15 bg-gradient-to-br from-white/[0.06] to-white/[0.02]">
-                <span class="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--g-purple)]">
-                  <svg viewBox="0 0 24 24" class="h-6 w-6 text-white" fill="currentColor">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </span>
-                <span class="absolute bottom-2 left-3 text-xs text-white/40">placeholder</span>
-              </div>
-              <h3 class="text-2xl font-bold normal-case leading-none text-white">{t.name}</h3>
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
@@ -240,7 +185,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
               </div>
 
               <!-- Stats + photo + platforms -->
-              <div class="mx-auto grid w-full max-w-[61rem] grid-cols-4 items-center gap-4 max-md:grid-cols-1">
+              <div class="mx-auto grid w-full max-w-[61rem] grid-cols-3 items-center gap-4 max-md:grid-cols-1">
                 {cs.stats.map((s) => (
                   <div>
                     <div class="text-[3.5rem] font-black leading-[1.3] max-lg:text-[3rem]">
@@ -260,7 +205,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
                     onerror="this.style.display='none'"
                   />
                 </div>
-                <div class="col-span-4 flex items-center gap-4 text-2xl max-md:col-span-1 max-md:mt-4 max-md:flex-col">
+                <div class="col-span-3 flex items-center gap-4 text-2xl max-md:col-span-1 max-md:mt-4 max-md:flex-col">
                   <span>Platforms:</span>
                   <div class="flex gap-2">
                     {cs.platforms.map((p) => (
@@ -300,58 +245,6 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       <div class="mt-10 flex w-full max-w-[420px] flex-col items-center gap-4 text-center">
         <ApplyButton href="#book" label="Apply Now" class="w-full" />
         <p class="text-base leading-[157%] text-black">{ctaCaption}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== WATCH YOUR AUDIENCE SKYROCKET  ⟨PLACEHOLDER⟩ ===================== -->
-  <section class="w-full bg-[#0b0413] py-40 max-lg:py-[60px]">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center rounded-[20px] border border-[#2a1745] bg-[#150929] py-12 max-md:px-4">
-      <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
-          Watch Your<br />
-          Audience <em class="italic text-[#d39e29]">Skyrocket</em> 🚀
-        </h2>
-      </div>
-
-      <div class="my-12 flex w-full flex-col gap-4 max-md:my-8">
-        {
-          skyrocket.map((row) => (
-            <div class="flex w-full justify-center gap-4 max-sm:gap-2">
-              {/* BEFORE */}
-              <div class="w-full max-w-[420px]">
-                <div class="flex items-center justify-center bg-[linear-gradient(red,#9e1818)] px-5 py-2.5 text-sm font-normal uppercase italic text-white max-sm:text-xs">
-                  Before
-                </div>
-                <div class="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-white text-center text-black">
-                  <span class="text-sm text-black/50">{row.handle}</span>
-                  <span class="rounded-full px-3 py-1 text-lg font-extrabold ring-2 ring-rose-500">
-                    {row.before}
-                  </span>
-                  <span class="text-xs text-black/40">Followers</span>
-                </div>
-              </div>
-              {/* AFTER */}
-              <div class="w-full max-w-[420px]">
-                <div class="flex items-center justify-center bg-[linear-gradient(#37ff00,#349903)] px-5 py-2.5 text-sm font-normal uppercase italic text-white max-sm:text-xs">
-                  After
-                </div>
-                <div class="flex aspect-[4/3] w-full flex-col items-center justify-center gap-1 bg-white text-center text-black">
-                  <span class="text-sm text-black/50">{row.handle}</span>
-                  <span class="rounded-full px-3 py-1 text-lg font-extrabold ring-2 ring-green-500">
-                    {row.after}
-                  </span>
-                  <span class="text-xs text-black/40">Followers</span>
-                </div>
-              </div>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex w-full max-w-[420px] flex-col items-center gap-4 text-center">
-        <ApplyButton href="#book" label="Apply Now" class="w-full" />
-        <p class="text-base leading-[157%]">{ctaCaption}</p>
       </div>
     </div>
   </section>

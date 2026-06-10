@@ -8,6 +8,7 @@ on:
         claude/laughing-noether-21Lpo,
         claude/gallant-rubin-8q0zk6,
         claude/trusting-carson-6y0z7w,
+        claude/wonderful-mendel-xe06a0,
       ]
   workflow_dispatch:
 
