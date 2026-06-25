@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Self-hosted faces (the exact woff2 the reference funnel ships), so the v2
+   pages render with pixel-identical metrics instead of Google Fonts' slightly
+   different "Inter Tight" build. latin subset only.
+--------------------------------------------------------------------------- */
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 300; font-display: swap; src: url("/fonts/inter-300.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/inter-400.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/inter-500.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/inter-600.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/inter-700.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-style: normal; font-weight: 900; font-display: swap; src: url("/fonts/inter-900.woff2") format("woff2"); }
+@font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/inter-tight-700.woff2") format("woff2"); }
+@font-face { font-family: "Caveat"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/caveat-400.woff2") format("woff2"); }
+
 /*
   Synchro Social brand theme.
 
@@ -93,6 +107,39 @@ body {
   --g-purple: #8331e8;
   --g-purple-ring: #7a2bdc;
   --g-purple-deep: #5f1fae;
+  /* Dark purple for the inline checklist labels (reference uses a dark blue
+     #0c05ad against its blue palette). */
+  --g-purple-text: #3d128f;
+}
+
+/* "STEP N" labels — outlined pill with a filled accent dot + down-arrow icon,
+   matched to the reference geometry (2px ring, 15px radius, 8/32 padding,
+   Inter 300 24px). `--dark` flips the label white on the black sections. */
+.step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 2px solid var(--g-purple);
+  border-radius: 15px;
+  padding: 8px 32px;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 26px;
+  color: #000;
+}
+.step-pill--dark {
+  color: #fff;
+}
+.step-dot {
+  display: flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--g-purple);
+  color: #fff;
 }
 
 /* Page base for v2 (body gets class="v2") */
