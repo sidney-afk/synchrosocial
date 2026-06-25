@@ -88,17 +88,18 @@ const testimonials = [
     >
       <img src="/images/logo.png" alt="Synchro Social" class="h-16 w-auto" />
 
-      <h1 class="font-tight text-5xl font-bold capitalize leading-[1.05] text-white max-md:text-[2rem]">
-        Your Call Is Not Confirmed
-      </h1>
-      <p class="text-xl leading-[1.3] text-[#e9e9e9] max-md:text-base">
-        Make sure to do these 2 steps so you can confirm your call with us
-      </p>
+      <div class="flex flex-col items-center gap-2">
+        <h1 class="font-tight text-5xl font-bold capitalize leading-[1.05] text-white max-md:text-[2rem]">
+          Your Call Is Not Confirmed
+        </h1>
+        <p class="text-xl leading-[1.3] text-[#e9e9e9] max-md:text-base">
+          Make sure to do these 2 steps so you can confirm your call with us
+        </p>
+      </div>
 
-      <!-- STEP 1 pill -->
-      <a
-        href="#step-1-video"
-        class="btn-g mt-3 flex w-full max-w-[860px] items-center justify-center gap-3 rounded-full px-6 py-4 text-center text-2xl font-medium text-white max-lg:text-lg max-md:text-sm"
+      <!-- STEP 1 label — non-interactive, squared corners -->
+      <div
+        class="flex w-full max-w-[860px] items-center justify-center gap-3 rounded-lg bg-[var(--g-purple)] px-6 py-4 text-center text-2xl font-medium text-white max-lg:text-lg max-md:text-sm"
       >
         <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -106,7 +107,7 @@ const testimonials = [
           </svg>
         </span>
         STEP 1 : Watch This Short Video On How To Prepare For The Call
-      </a>
+      </div>
 
       <!-- ⟨PLACEHOLDER⟩ Step 1 prep video — full container width, 16:9 -->
       <div id="step-1-video" class="mt-7 w-full scroll-mt-24">
