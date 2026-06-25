@@ -1,34 +1,334 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import ApplyButton from "../components/ApplyButton.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+import PlatformIcon from "../components/PlatformIcon.astro";
+import { caseStudies, slug } from "../data/caseStudies.js";
+
+/* ===========================================================================
+   THANK-YOU / "Your call is not confirmed" page.
+
+   Booking on /apply (iClosed) redirects here. Layout matched 1:1 to the
+   reference funnel's thank-you page, re-skinned in Synchro purple:
+     Hero (dark→purple) → Step 1 prep video → Step 2 "I know the sender" →
+     Step 3 pre-call checklist → Step 4 Q&A videos → Step 5 testimonials →
+     Step 6 case studies (shared with /apply).
+
+   ⟨PLACEHOLDER⟩ — videos and the SMS number are placeholders until you
+   provide them. Search this file for "PLACEHOLDER".
+=========================================================================== */
+
+// ⟨PLACEHOLDER⟩ — the number invitees are told they'll be texted from.
+const smsNumber = "+1 (000) 000-0000";
+
+// Step 3 — pre-call checklist
+const checklist = [
+  {
+    n: "1",
+    title: "Communication",
+    body:
+      "Check your email for a calendar invite confirming your scheduled date and time. Be sure to accept the invite so it's added to your calendar.",
+  },
+  {
+    n: "2",
+    title: "Punctuality",
+    body:
+      "Your call will take place over Zoom or phone — the link/number is included in your calendar invite. Please join from a quiet, private space with minimal distractions; we'll do the same. Important: due to high demand, missed calls can't be rescheduled, so if you need to make changes please let us know at least 24 hours in advance.",
+  },
+  {
+    n: "3",
+    title: "Preparation",
+    body:
+      "To make the most of our time together, please watch the Q&A videos below and review the emails we'll be sending over the next few days. These give a detailed overview of our service so you can come prepared with any questions.",
+  },
+];
+
+// Step 4 — Q&A videos ⟨PLACEHOLDER videos⟩
+const qaVideos = [
+  "Watch This Behind-The-Scenes Of Working With Synchro Social",
+  "What is the ROI of the program?",
+  "Will this work for my niche/industry?",
+  "What this program is NOT",
+  "Who this doesn't work for?",
+  "How fast will I get results?",
+  "Organic Vs. Paid Ads",
+];
+
+// Step 5 — testimonials ⟨PLACEHOLDER videos⟩ (real Synchro clients)
+const testimonials = [
+  "Baya Voce",
+  "Danny Morel",
+  "Morgan Burch",
+  "Mastin Kipp",
+  "Garrain Jones",
+  "Kute Blackson",
+  "Alexi Panos",
+  "Lucas Salame",
+  "Jessica Winterstern",
+];
 ---
 
-<Layout title="You're Booked! — Synchro Social">
-  <main class="mx-auto flex max-w-3xl flex-col px-6 py-20 sm:py-28">
-    <h1
-      class="font-display text-center text-5xl font-extrabold text-brand-600 sm:text-6xl"
-    >
-      YOU'RE BOOKED!
-    </h1>
-    <p class="mt-5 text-center text-lg font-medium text-ink">
-      It's time to get ready.
-    </p>
+<Layout
+  title="You're Almost There — Synchro Social"
+  description="Two quick steps to confirm your call with Synchro Social."
+  bodyClass="v2"
+>
+  <SiteNav />
 
-    <div class="mt-10 space-y-4 text-base leading-relaxed text-muted">
-      <p>
-        I sent you an email confirming the date/time. Please mark this in your
-        calendar now. Myself, or someone on my team will call you via Zoom or
-        phone at the time that you selected. If you selected Zoom call, please
-        check your email for our meeting room link.
-      </p>
-      <p>
-        Please make sure you're in a quiet room, no airports, no calls while
-        driving, etc.
-      </p>
-      <p>I look forward to helping you grow.</p>
-      <p class="font-semibold text-ink">– Kasper</p>
+  <!-- ===================== HERO ===================== -->
+  <section class="relative overflow-hidden">
+    <div
+      class="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,#05030d_22%,#1b0a45_52%,#5a23c6_82%,#8331e8_100%)]"
+      aria-hidden="true"
+    >
     </div>
-  </main>
+
+    <div
+      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-6 pb-24 pt-14 text-center max-lg:pb-16 max-lg:pt-10"
+    >
+      <img src="/images/logo.png" alt="Synchro Social" class="h-16 w-auto" />
+
+      <h1 class="font-tight text-[clamp(2.4rem,1.1rem+2.1vw,3.6rem)] font-bold capitalize leading-[1.1] text-white">
+        Your Call Is Not Confirmed
+      </h1>
+      <p class="-mt-1 text-lg text-[#e9e9e9] max-md:text-base">
+        Make sure to do these 2 steps so you can confirm your call with us
+      </p>
+
+      <!-- STEP 1 pill -->
+      <a
+        href="#step-1-video"
+        class="btn-g mt-2 flex w-full max-w-[760px] items-center justify-center gap-3 rounded-full px-6 py-4 text-center font-semibold text-white max-md:text-sm"
+      >
+        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M6 13l6 6 6-6" />
+          </svg>
+        </span>
+        STEP 1 : Watch This Short Video On How To Prepare For The Call
+      </a>
+
+      <!-- ⟨PLACEHOLDER⟩ Step 1 prep video -->
+      <div id="step-1-video" class="mt-6 w-full max-w-[760px] scroll-mt-24">
+        <VideoEmbed provider="placeholder" title="How to prepare for your call" class="shadow-2xl" />
+      </div>
+
+      <div class="mt-10 text-white">
+        <p class="text-base leading-tight text-white/85">You'll get a text from</p>
+        <p class="mt-1 text-2xl font-semibold tracking-wide">{smsNumber}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="w-full bg-white py-20 text-black max-lg:py-14">
+    <div class="mx-auto flex w-[95%] max-w-[900px] flex-col items-center gap-7 text-center">
+      <span class="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-5 py-2 text-sm font-semibold text-[#0a0a0a] shadow-sm">
+        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--g-purple)] text-white">
+          <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M6 13l6 6 6-6" />
+          </svg>
+        </span>
+        STEP 2
+      </span>
+
+      <h2 class="font-tight text-4xl font-bold leading-[1.2] text-black max-md:text-2xl">
+        Press The "I Know The Sender" Button In Your Event Email &amp; Accept
+        The Calendar Invite We Just Sent You
+      </h2>
+
+      <img
+        src="/images/thank-you/i-know-the-sender.webp"
+        alt={'Gmail "I know the sender" button highlighted on the calendar invite'}
+        class="w-full rounded-xl ring-1 ring-black/10"
+        loading="lazy"
+      />
+
+      <p class="max-w-[680px] text-lg leading-[157%] text-[#555] max-md:text-base">
+        Otherwise the event you just scheduled with us will not show up in your
+        calendar and you will likely miss the call.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="w-full bg-white pb-20 text-black max-lg:pb-14">
+    <div class="mx-auto flex w-[95%] max-w-[900px] flex-col items-center gap-8">
+      <span class="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-5 py-2 text-sm font-semibold text-[#0a0a0a] shadow-sm">
+        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--g-purple)] text-white">
+          <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M6 13l6 6 6-6" />
+          </svg>
+        </span>
+        STEP 3
+      </span>
+
+      <h2 class="text-center font-tight text-4xl font-bold leading-[1.2] text-black max-md:text-2xl">
+        Pre-Call Checklist: Please Review Before Your Call
+      </h2>
+
+      <ol class="flex w-full flex-col gap-6">
+        {
+          checklist.map((c) => (
+            <li class="text-lg leading-[157%] text-[#555] max-md:text-base">
+              <span class="font-bold text-[var(--g-purple)]">
+                {c.n}. {c.title}:
+              </span>{" "}
+              {c.body}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 4 — Q&A VIDEOS ===================== -->
+  <section class="w-full bg-white pb-24 text-black max-lg:pb-14">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-12 max-lg:gap-8">
+      <h2 class="text-center font-tight text-[2.5rem] font-bold leading-[1.2] text-black max-md:text-2xl">
+        Watch These Q&amp;A Videos Answering Most Common Questions To Save Time
+        In Your Decision-Making Process.
+      </h2>
+
+      <div class="grid w-full grid-cols-2 gap-x-16 gap-y-12 max-md:grid-cols-1 max-md:gap-y-8">
+        {
+          qaVideos.map((title) => (
+            <div class="flex flex-col items-center gap-4">
+              <VideoEmbed provider="placeholder" title={title} />
+              <h3 class="text-center text-xl font-bold leading-tight text-[#0a0a0a] max-md:text-lg">
+                {title}
+              </h3>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 5 — TESTIMONIALS ===================== -->
+  <section class="w-full bg-black py-20 max-lg:py-14">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-12 max-lg:gap-8">
+      <div class="flex flex-col items-center gap-3 text-center">
+        <h2 class="font-tight text-[2.5rem] font-bold capitalize leading-[1.2] text-white max-md:text-2xl">
+          Here's What Other Customers Are Saying
+        </h2>
+        <p class="text-lg text-[#c4c4c4] max-md:text-base">
+          We're happy to keep helping our customers achieve their goals.
+        </p>
+      </div>
+
+      <div class="grid w-full grid-cols-3 gap-x-8 gap-y-12 max-md:grid-cols-2 max-sm:grid-cols-1">
+        {
+          testimonials.map((name) => (
+            <div class="flex flex-col items-center gap-4">
+              <div class="w-full overflow-hidden rounded-2xl">
+                <div class="relative aspect-[9/16] w-full">
+                  <VideoEmbed provider="placeholder" title={`${name} testimonial`} class="!aspect-[9/16]" />
+                </div>
+              </div>
+              <h3 class="text-center text-lg font-bold leading-tight text-white">
+                {name}
+              </h3>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 6 — CASE STUDIES ===================== -->
+  <section class="w-full bg-white py-20 text-black max-lg:py-14">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full flex-col items-center gap-5 text-center">
+        <span class="inline-flex items-center gap-2 rounded-full border border-black/15 bg-white px-5 py-2 text-sm font-semibold text-[#0a0a0a] shadow-sm">
+          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--g-purple)] text-white">
+            <svg viewBox="0 0 24 24" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M6 13l6 6 6-6" />
+            </svg>
+          </span>
+          STEP 6
+        </span>
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+          <strong>Check Out (Just Some) Of Our Case Studies.</strong>
+        </h2>
+      </div>
+
+      <div class="mt-0 flex w-full flex-col gap-12">
+        {
+          caseStudies.map((cs) => (
+            <div class="flex w-full flex-col">
+              <div class="mx-auto mb-4 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4">
+                <div class="text-lg font-light leading-[1.3]">SYNCHRO SOCIAL CASE STUDY</div>
+                <h3 class="text-center text-[2.5rem] font-black uppercase leading-[1.3] max-md:text-[2rem]">
+                  {cs.name}
+                </h3>
+                <div class="mt-8 self-start text-left text-2xl font-normal leading-[1.3] max-md:text-xl">
+                  RESULTS IN {cs.period.toUpperCase()}:
+                </div>
+              </div>
+
+              <div class="mx-auto grid w-full max-w-[61rem] grid-cols-3 items-center gap-4 max-md:grid-cols-1">
+                {cs.stats.map((s) => (
+                  <div>
+                    <div class="text-[3.5rem] font-black leading-[1.3] max-lg:text-[3rem]">
+                      {s.value}
+                    </div>
+                    <div class="text-xl font-normal leading-[1.3] max-md:text-base">{s.label}</div>
+                  </div>
+                ))}
+                <div class="relative overflow-hidden rounded-[5px] max-md:mx-auto max-md:max-w-[80svw]">
+                  <div class="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-brand-300 to-brand-600 text-4xl font-bold text-white/90">
+                    {cs.name.split(" ").map((w) => w[0]).join("")}
+                  </div>
+                  <img
+                    src={`/images/clients/${slug(cs.name)}.jpg`}
+                    alt={cs.name}
+                    class="absolute inset-0 h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+                <div class="col-span-3 flex items-center gap-4 text-2xl max-md:col-span-1 max-md:mt-4 max-md:flex-col">
+                  <span>Platforms:</span>
+                  <div class="flex gap-2">
+                    {cs.platforms.map((p) => (
+                      <PlatformIcon name={p} class="h-8 w-8" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div class="mx-auto mt-8 flex w-full max-w-[61rem] flex-col gap-4">
+                <div class="text-[2rem] font-black leading-[1.3]">Video examples:</div>
+                <div class="grid w-full grid-cols-3 gap-16 max-lg:gap-8 max-md:grid-cols-1">
+                  {cs.videos.map((v) => (
+                    <div class="flex w-full flex-col items-center justify-center gap-1">
+                      <div class="relative aspect-[9/16] w-full overflow-hidden bg-black max-md:max-w-[300px]">
+                        <iframe
+                          src={`https://fast.wistia.net/embed/iframe/${v.wistia}?seo=false&videoFoam=false`}
+                          class="absolute inset-0 h-full w-full"
+                          loading="lazy"
+                          title={`${cs.name} reel — ${v.views} views`}
+                          allow="autoplay; fullscreen"
+                          allowfullscreen
+                        />
+                      </div>
+                      <div class="text-base font-bold leading-[1.3]">{v.views} views</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="mt-6 flex w-full max-w-[420px] flex-col items-center gap-4 text-center">
+        <ApplyButton href="/apply" label="Apply Now" class="w-full" />
+      </div>
+    </div>
+  </section>
 
   <SiteFooter tone="brand" />
 </Layout>
