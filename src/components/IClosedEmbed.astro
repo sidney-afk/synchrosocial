@@ -1,17 +1,29 @@
 ---
-// iClosed booking widget.
+// iClosed booking widget (official inline embed).
 //
-// When you have your iClosed scheduler, pass its embed URL as `src` and this
-// renders the live widget. Until then it shows a styled placeholder that looks
-// like the real two-step (form → calendar) flow, so the page feels complete.
+// Renders iClosed's auto-resizing inline scheduler. Pass a full booking `url`
+// or a `linkPrefix` like "synchrosocial/vsl-funnel"; iClosed's widget.js turns
+// the .iclosed-widget div into the live scheduler iframe and keeps its height
+// in sync with the content (data-resize). Booking an event writes it to the
+// host's connected Google Calendar (Kasper's, on the live account).
 //
-//   <IClosedEmbed src="https://app.iclosed.io/e/your-event" />
+//   <IClosedEmbed linkPrefix="synchrosocial/vsl-funnel" />
+//   <IClosedEmbed url="https://app.iclosed.io/e/synchrosocial/vsl-funnel" />
 interface Props {
-  src?: string | null;
+  url?: string | null;
+  linkPrefix?: string | null;
   height?: string;
   class?: string;
 }
-const { src = null, height = "760px", class: className = "" } = Astro.props;
+const {
+  url = null,
+  linkPrefix = null,
+  height = "760px",
+  class: className = "",
+} = Astro.props;
+
+const bookingUrl =
+  url ?? (linkPrefix ? `https://app.iclosed.io/e/${linkPrefix}` : null);
 
 // Static day grid — purely decorative for the placeholder.
 const days = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -23,15 +35,21 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 ---
 
 {
-  src ? (
+  bookingUrl ? (
     <div
       class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}
     >
-      <iframe
-        src={src}
-        title="Book your consultation"
-        loading="lazy"
-        style={`width:100%;height:${height};border:0;`}
+      <div
+        class="iclosed-widget"
+        data-url={bookingUrl}
+        data-resize="true"
+        style={`min-width:320px;height:${height};`}
+      />
+      <script
+        is:inline
+        type="text/javascript"
+        src="https://app.iclosed.io/assets/widget.js"
+        async
       />
     </div>
   ) : (

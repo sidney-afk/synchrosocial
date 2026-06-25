@@ -1,7 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
-import CalendlyEmbed from "../components/CalendlyEmbed.astro";
+import IClosedEmbed from "../components/IClosedEmbed.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 
@@ -39,15 +39,15 @@ const caseStudies = [
     name: "Danny Morel",
     credit: "@dannymorel",
     period: "12 Months",
-    platforms: ["Instagram", "TikTok", "YouTube"],
+    platforms: ["Instagram", "TikTok", "YouTube", "Facebook"],
     stats: [
       { value: "75.9M", label: "Total Views Generated" },
       { value: "+3M", label: "Total Audience Growth" },
     ],
     videos: [
       { wistia: "aq1gl2mzjo", views: "16.8M" },
-      // Source: tiktok.com/@dannymorel/video/7156564560399437099
-      { wistia: "ke2uv8pkx4", views: "9.2M" },
+      // Source: tiktok.com/@dannymorel/video/7215212004284402990
+      { wistia: "plygtp8725", views: "9.2M" },
       { wistia: "vwma18vfm7", views: "5.9M" },
     ],
   },
@@ -106,9 +106,11 @@ const caseStudies = [
       { value: "+140K", label: "Total Audience Growth" },
     ],
     videos: [
+      // Source: instagram.com/reel/DI36o9VsVeA (love & alcohol)
+      { wistia: "zasud019el", views: "2.0M" },
       { wistia: "bbwr4wuqw7", views: "1.2M" },
-      { wistia: "hmcjt5a8m5", views: "215K" },
-      { wistia: "nrnv2ez6uv", views: "190K" },
+      // Source: instagram.com/reel/DL5aRaAubzQ (masculine energy)
+      { wistia: "ebrf7uwtaw", views: "1.2M" },
     ],
   },
 ];
@@ -134,16 +136,22 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
     <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-8">
       <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
         <p class="font-script text-2xl leading-5 text-[#b794ff]">
-          Impact-Driven Coaches &amp; Thought Leaders
+          Impact-Driven Coaches, Thought Leaders &amp; Business Owners
         </p>
         <h1 class="font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white max-md:text-[1.8rem] max-md:leading-[1.2]">
-          We Help Coaches And Thought Leaders
+          Hire The Team Behind
           <span class="whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:whitespace-normal">
-            Grow Their Social Media
+            Over 1 Billion Views
           </span>
           <br />
-          Without Algorithm Hacks Or Trends
+          Generated For Your Favorite Brands.
         </h1>
+        <div class="max-w-[686px]">
+          <p class="text-xl leading-[157%] max-md:text-lg">
+            We'll install the content engine that makes you the go-to authority
+            in your niche in 90 days.
+          </p>
+        </div>
 
         <div class="mt-2 flex w-full max-w-[457px] flex-col gap-6 max-md:max-w-[80%] max-sm:max-w-full">
           <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="w-full" />
@@ -153,7 +161,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       <!-- Booking — Kasper's demo calendar (same one used on / and /call) -->
       <div id="book" class="w-full min-h-[542px]">
         <div class="mx-auto w-[95%] max-w-[810px]">
-          <CalendlyEmbed slug="kasper-synchro/demo" />
+          <IClosedEmbed linkPrefix="synchrosocial/vsl-funnel" />
         </div>
       </div>
     </div>
@@ -246,7 +254,6 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
                     </div>
                   ))}
                 </div>
-                <p class="text-center text-xs text-black/40">Credits: {cs.credit}</p>
               </div>
             </div>
           ))
