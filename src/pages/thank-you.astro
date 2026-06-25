@@ -79,28 +79,26 @@ const testimonials = [
 
   <!-- ===================== HERO ===================== -->
   <section class="relative overflow-hidden">
-    <div
-      class="absolute inset-0 bg-[linear-gradient(180deg,#000_0%,#05030d_22%,#1b0a45_52%,#5a23c6_82%,#8331e8_100%)]"
-      aria-hidden="true"
-    >
-    </div>
+    <!-- Transparent fading down into solid brand purple (matches the reference
+         hero treatment, re-colored). -->
+    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
     <div
-      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-6 pb-24 pt-14 text-center max-lg:pb-16 max-lg:pt-10"
+      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-5 pb-28 pt-14 text-center max-lg:pb-20 max-lg:pt-10"
     >
       <img src="/images/logo.png" alt="Synchro Social" class="h-16 w-auto" />
 
-      <h1 class="font-tight text-[clamp(2.4rem,1.1rem+2.1vw,3.6rem)] font-bold capitalize leading-[1.1] text-white">
+      <h1 class="font-tight text-5xl font-bold capitalize leading-[1.05] text-white max-md:text-[2rem]">
         Your Call Is Not Confirmed
       </h1>
-      <p class="-mt-1 text-lg text-[#e9e9e9] max-md:text-base">
+      <p class="text-xl leading-[1.3] text-[#e9e9e9] max-md:text-base">
         Make sure to do these 2 steps so you can confirm your call with us
       </p>
 
       <!-- STEP 1 pill -->
       <a
         href="#step-1-video"
-        class="btn-g mt-2 flex w-full max-w-[760px] items-center justify-center gap-3 rounded-full px-6 py-4 text-center font-semibold text-white max-md:text-sm"
+        class="btn-g mt-3 flex w-full max-w-[860px] items-center justify-center gap-3 rounded-full px-6 py-4 text-center text-2xl font-medium text-white max-lg:text-lg max-md:text-sm"
       >
         <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/15">
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -110,14 +108,14 @@ const testimonials = [
         STEP 1 : Watch This Short Video On How To Prepare For The Call
       </a>
 
-      <!-- ⟨PLACEHOLDER⟩ Step 1 prep video -->
-      <div id="step-1-video" class="mt-6 w-full max-w-[760px] scroll-mt-24">
+      <!-- ⟨PLACEHOLDER⟩ Step 1 prep video — full container width, 16:9 -->
+      <div id="step-1-video" class="mt-7 w-full scroll-mt-24">
         <VideoEmbed provider="placeholder" title="How to prepare for your call" class="shadow-2xl" />
       </div>
 
-      <div class="mt-10 text-white">
-        <p class="text-base leading-tight text-white/85">You'll get a text from</p>
-        <p class="mt-1 text-2xl font-semibold tracking-wide">{smsNumber}</p>
+      <div class="mt-12 text-white">
+        <p class="text-xl leading-tight text-white/85">You'll get a text from</p>
+        <p class="mt-1 text-xl font-semibold tracking-wide">{smsNumber}</p>
       </div>
     </div>
   </section>
@@ -172,7 +170,7 @@ const testimonials = [
       <ol class="flex w-full flex-col gap-6">
         {
           checklist.map((c) => (
-            <li class="text-lg leading-[157%] text-[#555] max-md:text-base">
+            <li class="text-2xl leading-[157%] text-[#555] max-md:text-lg">
               <span class="font-bold text-[var(--g-purple)]">
                 {c.n}. {c.title}:
               </span>{" "}
