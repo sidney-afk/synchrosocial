@@ -31,10 +31,11 @@ export const caseStudies = [
     videos: [
       // tiktok.com/@dannymorel/video/7187396490350972202 (If I Was A Woman)
       { wistia: "aq1gl2mzjo", views: "16.8M" },
+      // tiktok.com/@dannymorel/video/7258248867349663018 (Emotionally Intelligent)
+      // — dark-room shot in the middle so the three don't all look the same
+      { wistia: "vwma18vfm7", views: "5.9M" },
       // tiktok.com/@dannymorel/video/7215212004284402990 (Why 50/50 Relationships)
       { wistia: "ke2uv8pkx4", views: "9.2M" },
-      // tiktok.com/@dannymorel/video/7258248867349663018 (Emotionally Intelligent)
-      { wistia: "vwma18vfm7", views: "5.9M" },
     ],
   },
   {
