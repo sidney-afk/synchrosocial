@@ -30,7 +30,7 @@ Two funnels share one codebase. URLs match the original Framer paths exactly.
 | `/` | `src/pages/index.astro` | Homepage (formerly `/v2`; `/v2` now redirects here) |
 | `/apply` | `src/pages/apply.astro` | Apply funnel — booking + case studies with reels |
 | `/event` | `src/pages/event.astro` | Hub page for Kasper's AI events |
-| `/ai-invite/` | `public/ai-invite/` | Static AI invite page + scheduling pages (Calendly) |
+| `/ai-invite/` | `public/ai-invite/` | Static AI invite page + scheduling pages (iClosed) |
 | `/onboarding` | `src/pages/onboarding.astro` | Onboarding step 1/4 — What To Expect |
 | `/onboarding_step2` | `src/pages/onboarding_step2.astro` | Step 2/4 — Complete This Form |
 | `/onboarding_step3` | `src/pages/onboarding_step3.astro` | Step 3/4 — Strategy Session |
@@ -61,7 +61,7 @@ Two funnels share one codebase. URLs match the original Framer paths exactly.
   `src/pages/index.astro`.
 - **Brand colors & fonts:** `src/styles/global.css` — change a value once and it
   updates everywhere. `brand` = purple (main), `coral` = rose (AI funnel).
-- **Reusable pieces:** `src/components/` (logo, buttons, footer, video & Calendly
+- **Reusable pieces:** `src/components/` (logo, buttons, footer, video & iClosed
   embeds, onboarding step shell).
 
 ## Swapping in real images
@@ -78,8 +78,13 @@ list of images to provide.
 
 ## Integrations (already wired)
 
-- **Calendly:** home `kasper-synchro/demo`, onboarding step 3
-  `kasper-synchro/strategy-session`, AI `kasper-synchro/ai`.
+- **iClosed:** all booking runs on iClosed (`app.iclosed.io`). By page:
+  `/apply` + `/call` → `synchrosocial/vsl-funnel`; `/onboarding_step3` →
+  `synchrosocial/strategy-session`; `/ai_onboarding_step3` →
+  `synchrosocial/ai-clone-consultation`; events/clients (`/event`,
+  `/ai-invite/schedule-clients`, `/old`) → `synchrosocial/demo`; investors
+  (`/ai-invite/schedule-investors`) → `synchrosocial/1-1-call-with-kasper`.
+  Full picture in `docs/ECOSYSTEM_MAP.md`.
 - **Onboarding videos:** YouTube (steps 1–3) + Vimeo (final word) on the main
   funnel; AI funnel videos are placeholders until you provide them.
 - **Forms:** main onboarding → Notion; AI onboarding → JotForm.
