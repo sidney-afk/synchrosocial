@@ -1,8 +1,8 @@
 # Synchro Social — Ecosystem & Booking Map
 
 > One place to see how every property, funnel, page, and booking calendar connects —
-> so we (and anyone we hand this to) don't get lost. Last updated as part of the
-> Calendly → iClosed migration.
+> so we (and anyone we hand this to) don't get lost. Reflects the completed
+> Calendly → iClosed migration. All booking runs on iClosed (`app.iclosed.io`).
 
 ## The big picture
 
@@ -16,24 +16,25 @@ flowchart TD
   %% ---------- Marketing site ----------
   subgraph SITE["synchrosocial.com — marketing site (Astro)"]
     HOME["/ — Homepage"]
-    AILAND["/ai — AI Clone landing (VSL, for ads)"]
+    AILAND["/ai — AI Clone landing (VSL, for ads) · coral"]
     EVENTHUB["/event — Events Hub"]
     AIINVITE["/ai-invite/ — AI Clone invite hub"]
-    APPLY["/apply — Apply funnel"]
-    CALL["/call — AI intro call"]
+    APPLY["/apply — Apply funnel · purple"]
+    CALL["/call — AI intro call · coral"]
     SCLIENTS["/ai-invite/schedule-clients"]
     SINVEST["/ai-invite/schedule-investors"]
-    OLD["/old — legacy homepage (deprecated?)"]
-    THANKYOU["/thank-you — 'You're booked' (sales)"]
+    OLD["/old — legacy homepage (kept)"]
+    THANKYOU["/thank-you — 'You're booked' (purple)"]
   end
 
   %% ---------- Booking calendars (iClosed) ----------
   subgraph CALS["iClosed calendars — kasper@synchrosocial.com (Zoom)"]
-    SMC{{"Social Media Consultation<br/>vsl-funnel<br/>★ QUALIFY + DISQUALIFY"}}
-    DEMO["demo<br/>synchrosocial/demo<br/>no disqualify"]
-    ONE["1:1 Call with Kasper<br/>1-1-call-with-kasper<br/>no disqualify"]
-    KICK["Synchro Client Kickoff Call<br/>strategy-session · 60 min<br/>no disqualify · internal"]
-    AICC["AI Clone Consultation<br/>ai-clone-consultation<br/>no disqualify · internal"]
+    SMC{{"Social Media Consultation<br/>vsl-funnel · ★ QUALIFY+DISQUALIFY<br/>→ /thank-you"}}
+    AICALL{{"AI Intro Call<br/>ai-intro-call · ★ QUALIFY+DISQUALIFY<br/>internal confirm (no redirect)"}}
+    DEMO["demo<br/>synchrosocial/demo<br/>internal confirm"]
+    ONE["1:1 Call with Kasper<br/>1-1-call-with-kasper<br/>internal confirm"]
+    KICK["Synchro Client Kickoff Call<br/>strategy-session · 60 min<br/>internal confirm"]
+    AICC["AI Clone Consultation<br/>ai-clone-consultation<br/>internal confirm"]
   end
 
   %% ---------- Post-sale onboarding ----------
@@ -42,7 +43,6 @@ flowchart TD
     AIONB["/ai_onboarding 1→2→3→4 (AI / coral)"]
   end
 
-  %% ---------- Internal ----------
   SYNCVIEW["syncview.synchrosocial.com<br/>SyncView — internal content & analytics ops"]
 
   %% ---------- Flows ----------
@@ -60,16 +60,14 @@ flowchart TD
   OLD --> DEMO
 
   APPLY --> SMC
-  CALL --> SMC
+  CALL --> AICALL
   SCLIENTS --> DEMO
   SINVEST --> ONE
 
-  SMC -->|confirmation| THANKYOU
-  DEMO -->|confirmation| THANKYOU
-  ONE -->|confirmation| THANKYOU
+  SMC -->|redirect| THANKYOU
 
-  SMC -.->|qualified → signs → onboard| MONB
-  SMC -.->|AI client signs → onboard| AIONB
+  SMC -.->|qualified → signs| MONB
+  AICALL -.->|qualified → signs| AIONB
 
   MONB --> KICK
   AIONB --> AICC
@@ -80,7 +78,7 @@ flowchart TD
   AIONB -.->|client is live| SYNCVIEW
 
   classDef filter fill:#fde68a,stroke:#b45309,stroke-width:2px,color:#000;
-  class SMC filter;
+  class SMC,AICALL filter;
 ```
 
 ## Properties
@@ -88,39 +86,30 @@ flowchart TD
 | Property | URL | What it is |
 | --- | --- | --- |
 | Marketing site | `synchrosocial.com` | Astro site — all funnels, landing pages, onboarding |
-| SyncView | `syncview.synchrosocial.com` | Internal Instagram analytics + content-ops dashboard (the `client-analytics` repo). Used by the team **after** a client is signed; not part of the booking funnels. |
+| SyncView | `syncview.synchrosocial.com` | Internal Instagram analytics + content-ops dashboard (the `client-analytics` repo). Used by the team **after** a client signs; not part of booking. |
 
 ## Entry points → booking calendar
 
-| Entry point | Page | Audience | Calendar | Qualify/disqualify? |
-| --- | --- | --- | --- | --- |
-| Cold ads | `/ai` → `/call` | Cold prospects | **Social Media Consultation** (`vsl-funnel`) | **YES — the filter** |
-| Main site | `/` → `/apply` | Warm-ish prospects | **Social Media Consultation** (`vsl-funnel`) | **YES — the filter** |
-| Events Hub "Book a call" | `/event` | Met Kasper at an event | **demo** (`synchrosocial/demo`) | No (warm) |
-| AI invite — Clients | `/ai-invite/schedule-clients` | Event AI-clone leads | **demo** (`synchrosocial/demo`) | No (warm) |
-| AI invite — Investors | `/ai-invite/schedule-investors` | Investors | **1:1 Call** (`1-1-call-with-kasper`) | No |
-| Legacy homepage | `/old` | (deprecated) | **demo** (`synchrosocial/demo`) | No |
-| Main onboarding step 3 | `/onboarding_step3` | Signed clients | **Kickoff Call** (`strategy-session`, 60 min) | No |
-| AI onboarding step 3 | `/ai_onboarding_step3` | Signed AI clients | **AI Clone Consultation** (`ai-clone-consultation`) | No |
-
-## Calendar confirmation logic
-
-| Calendar | Disqualify | Confirmation page | Why |
-| --- | --- | --- | --- |
-| Social Media Consultation (`vsl-funnel`) | **On** | → `synchrosocial.com/thank-you` | Cold/main filter; terminal sales booking |
-| demo (`synchrosocial/demo`) | Off | → `synchrosocial.com/thank-you` | Warm event/client booking; terminal |
-| 1:1 Call (`1-1-call-with-kasper`) | Off | → `synchrosocial.com/thank-you` | Investor booking; terminal |
-| Kickoff Call (`strategy-session`) | Off | Internal (→ click to step 4) | Onboarding step, must continue the flow |
-| AI Clone Consultation (`ai-clone-consultation`) | Off | Internal (→ click to step 4) | Onboarding step, must continue the flow |
+| Entry point | Page | Theme | Calendar | Qualifies? | After booking |
+| --- | --- | --- | --- | --- | --- |
+| Cold ads | `/ai` → `/call` | coral | **AI Intro Call** (`ai-intro-call`) | **YES — filter** | internal (no redirect) |
+| Main site | `/` → `/apply` | purple | **Social Media Consultation** (`vsl-funnel`) | **YES — filter** | → `/thank-you` |
+| Events Hub "Book a call" | `/event` | — | **demo** (`synchrosocial/demo`) | No | internal |
+| AI invite — Clients | `/ai-invite/schedule-clients` | — | **demo** (`synchrosocial/demo`) | No | internal |
+| AI invite — Investors | `/ai-invite/schedule-investors` | — | **1:1 Call** (`1-1-call-with-kasper`) | No | internal |
+| Legacy homepage | `/old` | — | **demo** (`synchrosocial/demo`) | No | internal |
+| Main onboarding step 3 | `/onboarding_step3` | purple | **Kickoff Call** (`strategy-session`, 60 min) | No | internal → step 4 |
+| AI onboarding step 3 | `/ai_onboarding_step3` | coral | **AI Clone Consultation** (`ai-clone-consultation`) | No | internal → step 4 |
 
 ## Why this is coherent
 
-- **One filter, used at both cold doors.** The only calendar with disqualification is *Social Media Consultation*, and it sits on exactly the two pages that receive unqualified traffic: `/apply` (main site) and `/call` (AI ads landing). Everything downstream is already-warm or already-signed, so no filter.
-- **Warm doors don't filter.** Event leads (`/ai-invite`, `/event`) and investors get friction-free calendars (`demo`, `1:1`).
-- **Onboarding never dumps clients on the sales thank-you page.** The two onboarding-step calendars use iClosed's internal confirmation so the client continues to step 4 ("Final Words"); only sales bookings redirect to `/thank-you`.
-- **Two AI surfaces, on purpose:** `/ai` = cold ad landing (filtered), `/ai-invite/` = warm event invite (unfiltered). Same theme, different traffic temperature.
+- **Two filter calendars, one per cold door.** `/apply` (main, purple) uses *Social Media Consultation*; `/ai`→`/call` (ads, coral) uses *AI Intro Call*. Both qualify + disqualify. They're separate only so each can have the right post-booking behavior.
+- **Only `/apply` redirects to `/thank-you`.** That page is purple, so it matches the purple `/apply` funnel. `/call` is coral, so it uses iClosed's internal confirmation instead of jumping to the purple `/thank-you` — preserving the old (Calendly) behavior and the funnel's look.
+- **Warm doors don't filter.** Event leads (`/ai-invite`, `/event`) and investors get friction-free calendars (`demo`, `1:1`), all internal confirmation.
+- **Onboarding never dumps clients on the sales thank-you page.** Both onboarding calendars use internal confirmation so the client continues to step 4 ("Final Words").
+- **Two AI surfaces, on purpose:** `/ai` = cold ad landing (filtered) vs `/ai-invite/` = warm event invite (unfiltered). Same theme, different traffic temperature.
 
-## Open items
+## Notes
 
-- **`/old`** — legacy homepage still in the build. Confirm it's still used; if not, delete rather than migrate.
-- Confirmation-page + disqualification settings are configured per event in the **iClosed dashboard** (the API is read-only for event config), not in this repo.
+- Confirmation-page + disqualification settings are configured per event in the **iClosed dashboard** (the public API is read-only for event config), not in this repo.
+- `/old` is a kept legacy homepage; its booking uses `demo` like the other warm entry points.
