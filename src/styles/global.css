@@ -64,12 +64,20 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  background-color: #ffffff;
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+/* Base body styles live in @layer base so that a page's `bodyClass` background
+   utility (e.g. the onboarding dark canvas or the AI funnel's coral gradient)
+   wins. Tailwind utilities sit in the later `utilities` layer; an UNLAYERED
+   body rule here would otherwise beat every layered utility regardless of
+   specificity — which is exactly what was silently forcing the onboarding
+   pages white (white H1 on white = invisible). */
+@layer base {
+  body {
+    background-color: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 }
 
 /* Reusable brand gradients */
@@ -231,6 +239,25 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
    hero heading AND the client-cards block beneath it (one shared canvas). */
 .bg-hero-fade {
   background-image: linear-gradient(rgba(131, 49, 232, 0), #8331e8);
+}
+
+/* Onboarding (dark) canvas: a deep near-black base lit by a soft brand glow at
+   the top (behind the logo/heading) and a fainter one at the bottom, so the
+   page reads premium and intentional instead of a flat, empty white field. */
+.bg-onboarding-dark {
+  background-color: #0a0711;
+  background-image:
+    radial-gradient(
+      72% 56% at 50% -6%,
+      rgba(122, 43, 220, 0.32) 0%,
+      rgba(122, 43, 220, 0) 70%
+    ),
+    radial-gradient(
+      60% 42% at 50% 106%,
+      rgba(122, 43, 220, 0.16) 0%,
+      rgba(122, 43, 220, 0) 72%
+    );
+  background-repeat: no-repeat;
 }
 
 /* Dark hero used by /apply (kept: predates the v2 spec rebuild). */
