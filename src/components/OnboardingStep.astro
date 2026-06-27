@@ -14,41 +14,85 @@ interface Props {
 }
 const { theme, tone, step, title, next = null, pageTitle } = Astro.props;
 
+const TOTAL_STEPS = 4;
 const isDark = theme === "dark";
+
 const bodyClass = isDark
-  ? "bg-[#0c0b10]"
+  ? "bg-onboarding-dark"
   : "bg-gradient-to-b from-white via-coral-50 to-coral-100";
 const logoTone = isDark ? "white" : "coral";
 const eyebrowColor = isDark ? "text-brand-300" : "text-coral-500";
 const headingColor = isDark ? "text-white" : "text-[#6f1d1d]";
-const captionColor = isDark ? "text-white/50" : "text-coral-700/70";
+const captionColor = isDark ? "text-white/45" : "text-coral-700/70";
+const trackDone = isDark ? "bg-brand-400" : "bg-coral-500";
+const trackTodo = isDark ? "bg-white/12" : "bg-coral-200";
 ---
 
 <Layout
   title={pageTitle ?? `Step ${step}/4: ${title} — Synchro Social`}
   bodyClass={bodyClass}
 >
-  <main class="flex min-h-screen flex-col items-center px-6 py-12">
-    <Logo tone={logoTone} href={null} />
-    <p class={`mt-4 text-sm font-medium ${eyebrowColor}`}>Your Onboarding Below</p>
+  <main
+    class="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-5 py-8 sm:py-10"
+  >
+    <Logo tone={logoTone} href={null} imgClass="h-12 sm:h-14" />
+
+    <p
+      class={`mt-3 text-xs font-semibold uppercase tracking-[0.22em] ${eyebrowColor}`}
+    >
+      Your Onboarding
+    </p>
 
     <h1
-      class={`font-display mt-2 text-center text-3xl font-extrabold sm:text-4xl md:text-5xl ${headingColor}`}
+      class={`font-display mt-1.5 text-center text-3xl font-extrabold leading-tight sm:text-4xl ${headingColor}`}
     >
       Step {step}/4: {title}
     </h1>
 
-    <div class="mt-10 w-full max-w-3xl">
+    {/* Progress through the 4 onboarding steps */}
+    <div
+      class="mt-4 flex w-full max-w-[18rem] items-center gap-1.5"
+      aria-hidden="true"
+    >
+      {
+        Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+          <span
+            class={`h-1.5 flex-1 rounded-full ${i < step ? trackDone : trackTodo}`}
+          />
+        ))
+      }
+    </div>
+
+    <div class="mt-6 w-full sm:mt-7">
       <slot />
     </div>
 
     {
       next && (
-        <div class="mt-10 flex flex-col items-center">
-          <Button href={next.href} tone={tone} size="md">
+        <div class="mt-6 flex w-full flex-col items-center sm:mt-7">
+          <Button
+            href={next.href}
+            tone={tone}
+            size="xl"
+            class="group w-full gap-2 sm:w-auto"
+          >
             {next.label}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-5 w-5 transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
           </Button>
-          <p class={`mt-3 text-[0.7rem] font-medium uppercase tracking-wider ${captionColor}`}>
+          <p
+            class={`mt-2.5 text-[0.7rem] font-medium uppercase tracking-wider ${captionColor}`}
+          >
             Click here to go to the next onboarding step
           </p>
         </div>
