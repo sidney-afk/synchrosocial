@@ -1,8 +1,8 @@
 ---
-// Responsive 16:9 video. Supports YouTube, Vimeo, or a styled placeholder
-// (used where the real video isn't ready yet).
+// Responsive 16:9 video. Supports YouTube, Vimeo, Wistia, or a styled
+// placeholder (used where the real video isn't ready yet).
 interface Props {
-  provider?: "youtube" | "vimeo" | "placeholder";
+  provider?: "youtube" | "vimeo" | "wistia" | "placeholder";
   id?: string;
   hash?: string; // Vimeo private hash (the ?h= value)
   title?: string;
@@ -26,6 +26,8 @@ if (provider === "youtube") {
   src = `https://www.youtube.com/embed/${id}`;
 } else if (provider === "vimeo") {
   src = `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ""}`;
+} else if (provider === "wistia") {
+  src = `https://fast.wistia.net/embed/iframe/${id}?seo=false&videoFoam=false`;
 }
 
 const ring = tone === "coral" ? "ring-coral-200" : "ring-brand-200";
