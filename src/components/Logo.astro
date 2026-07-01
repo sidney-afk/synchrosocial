@@ -1,19 +1,23 @@
 ---
-// Synchro Social logo — always the real logo.png lockup, on every page.
+// Synchro Social logo lockup. Defaults to the purple mark; pass
+// variant="coral" for the peach/coral version used on the AI funnel onboarding.
 // `tone` is kept for backwards compatibility but no longer changes the mark.
 interface Props {
   tone?: "brand" | "coral" | "white";
+  variant?: "purple" | "coral";
   href?: string | null;
   class?: string;
   imgClass?: string; // height of the PNG lockup
 }
 const {
+  variant = "purple",
   href = "/",
   class: className = "",
   imgClass = "h-16",
 } = Astro.props;
 
 const Tag = href ? "a" : "div";
+const src = variant === "coral" ? "/images/logo-coral.png" : "/images/logo.png";
 ---
 
 <Tag
@@ -21,9 +25,5 @@ const Tag = href ? "a" : "div";
   class={`inline-block ${className}`}
   aria-label="Synchro Social"
 >
-  <img
-    src="/images/logo.png"
-    alt="Synchro Social"
-    class={`${imgClass} w-auto`}
-  />
+  <img src={src} alt="Synchro Social" class={`${imgClass} w-auto`} />
 </Tag>

@@ -86,9 +86,12 @@ list of images to provide.
   `/ai-invite/schedule-clients`, `/old`) → `synchrosocial/demo`; investors
   (`/ai-invite/schedule-investors`) → `synchrosocial/1-1-call-with-kasper`.
   Full picture in `docs/ECOSYSTEM_MAP.md`.
-- **Onboarding videos:** YouTube (steps 1–3) + Vimeo (final word) on the main
-  funnel; AI funnel videos are placeholders until you provide them.
-- **Forms:** main onboarding → Notion; AI onboarding → JotForm.
+- **Onboarding videos:** Wistia for steps 1–3 on both funnels (steps 1 & 3 are
+  shared; step 2 has a separate recording per funnel — a plain and an AI
+  variant). The main funnel's step 4 is Vimeo; the AI funnel's step 4 is still
+  a placeholder.
+- **Forms:** both onboarding funnels link out to `syncview.synchrosocial.com`
+  (main → `/onboarding_form`, AI → `/ai_onboarding_form`).
 
 ---
 
