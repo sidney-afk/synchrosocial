@@ -20,7 +20,7 @@ const isDark = theme === "dark";
 const bodyClass = isDark
   ? "bg-onboarding-dark"
   : "bg-gradient-to-b from-white via-coral-50 to-coral-100";
-const logoTone = isDark ? "white" : "coral";
+const logoVariant = isDark ? "purple" : "coral";
 const eyebrowColor = isDark ? "text-brand-300" : "text-coral-500";
 const headingColor = isDark ? "text-white" : "text-[#6f1d1d]";
 const captionColor = isDark ? "text-white/45" : "text-coral-700/70";
@@ -35,7 +35,7 @@ const trackTodo = isDark ? "bg-white/12" : "bg-coral-200";
   <main
     class="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-5 py-8 sm:py-10"
   >
-    <Logo tone={logoTone} href={null} imgClass="h-12 sm:h-14" />
+    <Logo variant={logoVariant} href={null} imgClass="h-12 sm:h-14" />
 
     <p
       class={`mt-3 text-xs font-semibold uppercase tracking-[0.22em] ${eyebrowColor}`}
