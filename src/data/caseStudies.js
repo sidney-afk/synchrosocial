@@ -10,7 +10,7 @@ export const caseStudies = [
     period: "12 Months",
     platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
-      { value: "77.6M", label: "Total Views Generated" },
+      { value: "200M+", label: "Total Views Generated" },
       { value: "+350K", label: "Total Audience Growth" },
     ],
     videos: [
@@ -25,7 +25,7 @@ export const caseStudies = [
     period: "12 Months",
     platforms: ["Instagram", "TikTok", "YouTube", "Facebook"],
     stats: [
-      { value: "75.9M", label: "Total Views Generated" },
+      { value: "500M+", label: "Total Views Generated" },
       { value: "+3M", label: "Total Audience Growth" },
     ],
     videos: [
