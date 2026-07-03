@@ -3,7 +3,10 @@ import OnboardingStep from "../components/OnboardingStep.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
 import Button from "../components/Button.astro";
 
-const formUrl = "https://syncview.synchrosocial.com/ai_onboarding_form";
+// Query-param entry loads the app directly — the clean /ai_onboarding_form
+// path takes an extra hop through GitHub Pages' 404.html redirect first. The
+// app rewrites the address bar back to the clean path once the form mounts.
+const formUrl = "https://syncview.synchrosocial.com/?onboarding=ai";
 ---
 
 <OnboardingStep
