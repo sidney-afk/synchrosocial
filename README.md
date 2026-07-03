@@ -90,7 +90,9 @@ list of images to provide.
   are shared across the two funnels; steps 2 and 4 have a separate recording per
   funnel (a plain and an AI variant each).
 - **Forms:** both onboarding funnels link out to `syncview.synchrosocial.com`
-  (main → `/onboarding_form`, AI → `/ai_onboarding_form`).
+  via the direct query entries (main → `/?onboarding=1`, AI → `/?onboarding=ai`)
+  to skip the GitHub Pages 404-redirect hop; the app rewrites the address bar to
+  the clean `/onboarding_form` / `/ai_onboarding_form` paths once the form mounts.
 
 ---
 
