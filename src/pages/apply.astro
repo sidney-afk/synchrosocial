@@ -63,11 +63,13 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's demo calendar (same one used on / and /call).
-           Narrow column (max-w-[540px]) so iClosed renders in its stacked
-           single-column shape (form on top, calendar below) — matching the
-           reference funnel — instead of the wide two-column layout. -->
+           Wide column (max-w-[810px]) so iClosed renders in its two-column
+           shape — form on the left, calendar on the right — matching the
+           Growth Topia reference. iClosed's embed only lays the form and
+           calendar side by side once the iframe is >= 769px wide, so this
+           column must stay comfortably above that. -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[540px]">
+        <div class="mx-auto w-[95%] max-w-[810px]">
           <IClosedEmbed linkPrefix="synchrosocial/vsl-funnel" />
         </div>
       </div>
