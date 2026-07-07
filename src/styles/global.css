@@ -13,6 +13,7 @@
 @font-face { font-family: "Inter"; font-style: normal; font-weight: 900; font-display: swap; src: url("/fonts/inter-900.woff2") format("woff2"); }
 @font-face { font-family: "Inter Tight"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/inter-tight-700.woff2") format("woff2"); }
 @font-face { font-family: "Caveat"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/caveat-400.woff2") format("woff2"); }
+@font-face { font-family: "Caveat"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/caveat-700.woff2") format("woff2"); }
 
 /*
   Synchro Social brand theme.
