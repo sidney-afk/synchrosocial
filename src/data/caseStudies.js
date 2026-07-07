@@ -14,10 +14,13 @@ export const caseStudies = [
       { value: "+350K", label: "Total Audience Growth" },
     ],
     videos: [
-      { wistia: "o1cai14og1", views: "15.4M" },
-      { wistia: "ty1po06ji9", views: "7.7M" },
+      // Posters are our own frames (public/images/case-studies/*) rendered as
+      // click-to-play thumbnails so the preview is always Baya — Wistia's iframe
+      // auto-thumbnail otherwise lands on a B-roll cutaway.
+      { wistia: "o1cai14og1", views: "15.4M", poster: "/images/case-studies/o1cai14og1.jpg" },
+      { wistia: "ty1po06ji9", views: "7.7M", poster: "/images/case-studies/ty1po06ji9.jpg" },
       // instagram.com/reel/DZSb80DOrLA ("Toxic vs Green flag" split-screen)
-      { wistia: "zsxy0hwi1x", views: "5.3M" },
+      { wistia: "zsxy0hwi1x", views: "5.3M", poster: "/images/case-studies/zsxy0hwi1x.jpg" },
     ],
   },
   {
