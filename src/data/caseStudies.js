@@ -16,7 +16,8 @@ export const caseStudies = [
     videos: [
       { wistia: "o1cai14og1", views: "15.4M" },
       { wistia: "ty1po06ji9", views: "7.7M" },
-      { wistia: "v0b9wflgc2", views: "5.3M" },
+      // instagram.com/reel/DZSb80DOrLA ("Toxic vs Green flag" split-screen)
+      { wistia: "zsxy0hwi1x", views: "5.3M" },
     ],
   },
   {

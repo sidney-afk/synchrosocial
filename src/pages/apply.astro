@@ -38,7 +38,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
 
     <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-8">
       <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <p class="font-script text-2xl leading-5 text-[#b794ff]">
+        <p class="font-script text-2xl font-bold leading-5 text-[#b794ff]">
           Impact-Driven Coaches, Thought Leaders &amp; Business Owners
         </p>
         <h1 class="font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white max-md:text-[1.8rem] max-md:leading-[1.2]">
@@ -61,9 +61,12 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="w-full" />
       </div>
 
-      <!-- Booking — Kasper's demo calendar (same one used on / and /call) -->
+      <!-- Booking — Kasper's demo calendar (same one used on / and /call).
+           Narrow column (max-w-[540px]) so iClosed renders in its stacked
+           single-column shape (form on top, calendar below) — matching the
+           reference funnel — instead of the wide two-column layout. -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[810px]">
+        <div class="mx-auto w-[95%] max-w-[540px]">
           <IClosedEmbed linkPrefix="synchrosocial/vsl-funnel" />
         </div>
       </div>
