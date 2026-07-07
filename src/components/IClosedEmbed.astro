@@ -13,12 +13,14 @@ interface Props {
   url?: string | null;
   linkPrefix?: string | null;
   height?: string;
+  title?: string;
   class?: string;
 }
 const {
   url = null,
   linkPrefix = null,
   height = "760px",
+  title = "Book a call",
   class: className = "",
 } = Astro.props;
 
@@ -43,7 +45,8 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         class="iclosed-widget"
         data-url={bookingUrl}
         data-resize="true"
-        style={`min-width:320px;height:${height};`}
+        title={title}
+        style={`width:100%;min-width:320px;height:${height};`}
       />
       <script
         is:inline
