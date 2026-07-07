@@ -63,14 +63,19 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's demo calendar (same one used on / and /call).
-           Wide column (max-w-[810px]) so iClosed renders in its two-column
-           shape — form on the left, calendar on the right — matching the
-           Growth Topia reference. iClosed's embed only lays the form and
-           calendar side by side once the iframe is >= 769px wide, so this
-           column must stay comfortably above that. -->
+           iClosed's scheduler is a CONTAINER-QUERY layout: it only places the
+           form and calendar side by side once the widget itself is >= 900px
+           wide (@container (min-width:900px) in iClosed's stylesheet). So this
+           column must be wider than 900px to get the two-column shape that
+           matches the Growth Topia reference — below 900px iClosed stacks them
+           (which is what an 810px column was doing). -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[810px]">
-          <IClosedEmbed linkPrefix="synchrosocial/vsl-funnel" />
+        <div class="mx-auto w-[95%] max-w-[960px]">
+          <IClosedEmbed
+            linkPrefix="synchrosocial/vsl-funnel"
+            title="Social Media Consultation"
+            height="620px"
+          />
         </div>
       </div>
     </div>
