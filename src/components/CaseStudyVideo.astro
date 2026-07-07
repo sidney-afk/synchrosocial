@@ -1,0 +1,95 @@
+---
+// Case-study reel cell. When a `poster` image is supplied we render it as a
+// click-to-play thumbnail (our own image, so the preview frame is guaranteed —
+// Wistia's iframe embed ignores the stillUrl override and can land its
+// auto-thumbnail on a B-roll frame). Clicking swaps in the Wistia player and
+// autoplays; the poster stays on top briefly to mask the player's own load.
+// Without a poster it falls back to the original bare Wistia iframe (or an
+// mp4 <video> when there's no Wistia id).
+interface Props {
+  wistia?: string | null;
+  poster?: string | null;
+  mp4?: string | null;
+  mp4Poster?: string | null;
+  title: string;
+  rounded?: boolean;
+}
+const {
+  wistia = null,
+  poster = null,
+  mp4 = null,
+  mp4Poster = null,
+  title,
+  rounded = false,
+} = Astro.props;
+
+const wrapCls = `relative aspect-[9/16] w-full overflow-hidden bg-black max-md:max-w-[300px]${rounded ? " rounded-[5px]" : ""}`;
+const iframeSrc = wistia
+  ? `https://fast.wistia.net/embed/iframe/${wistia}?seo=false&videoFoam=false`
+  : "";
+---
+
+<div class={wrapCls}>
+  {
+    wistia && poster ? (
+      <button
+        type="button"
+        class="cs-video-poster group absolute inset-0 h-full w-full cursor-pointer"
+        data-src={`${iframeSrc}&autoPlay=true`}
+        aria-label={`Play video — ${title}`}
+      >
+        <img
+          src={poster}
+          alt={title}
+          class="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+        <span class="pointer-events-none absolute left-1/2 top-1/2 flex h-[52px] w-[74px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-[10px] bg-black/55 transition group-hover:bg-black/70">
+          <svg viewBox="0 0 24 24" fill="white" class="ml-0.5 h-6 w-6">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+      </button>
+    ) : wistia ? (
+      <iframe
+        src={iframeSrc}
+        class="absolute inset-0 h-full w-full"
+        loading="lazy"
+        title={title}
+        allow="autoplay; fullscreen"
+        allowfullscreen
+      />
+    ) : (
+      <video
+        src={mp4}
+        poster={mp4Poster}
+        class="absolute inset-0 h-full w-full object-cover"
+        controls
+        playsinline
+        preload="metadata"
+        title={title}
+      />
+    )
+  }
+</div>
+
+<script>
+  document.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest(".cs-video-poster");
+    if (!btn) return;
+    const wrap = btn.parentElement;
+    const src = btn.getAttribute("data-src");
+    if (!wrap || !src) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = src;
+    iframe.className = "absolute inset-0 h-full w-full";
+    iframe.setAttribute("allow", "autoplay; fullscreen");
+    iframe.setAttribute("allowfullscreen", "");
+    // Insert the player behind the poster, then fade the poster out once the
+    // player has had a moment to start so we never flash Wistia's own thumbnail.
+    wrap.insertBefore(iframe, btn);
+    (btn as HTMLElement).style.transition = "opacity .3s";
+    setTimeout(() => ((btn as HTMLElement).style.opacity = "0"), 650);
+    setTimeout(() => btn.remove(), 1050);
+  });
+</script>
