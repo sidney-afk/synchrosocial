@@ -27,13 +27,16 @@ browser; don't eyeball it and don't trust the source CSS class names.
 ENVIRONMENT (do this first):
 - This session's network access must be "Full" (so you can reach the reference
   site and its font/CDN assets). If it's restricted, tell me to change it.
-- Install a headless browser:  npm i -D playwright && npx playwright install chromium
-- IMPORTANT: this cloud env proxies outbound traffic, so curl works but Chromium
-  will hang/fail TLS unless you launch with args:['--ignore-certificate-errors']
-  AND context option ignoreHTTPSErrors:true. Always set both.
-- Any node script that require('playwright') must live INSIDE the project dir
-  (node resolves modules from the script's own path, not the cwd).
-- Use a real Chrome user-agent string in the browser context.
+- IMPORTANT: in the current cloud env, curl works but a headless browser gets
+  ERR_CONNECTION_RESET on every HTTPS site — the egress proxy rejects Chromium's
+  TLS ClientHello, and --ignore-certificate-errors alone does NOT fix it. Use the
+  relay + helpers in scripts/browser/ (see docs/headless-browser-in-this-env.md):
+  `node scripts/browser/relay.cjs &` then screenshot via scripts/browser/shot.mjs
+  or import scripts/browser/lib.mjs. Playwright + Chromium are preinstalled
+  (/opt/pw-browsers) — do not run `playwright install`.
+- If you write a custom Playwright script, launch with args
+  ['--no-sandbox','--ignore-certificate-errors'], proxy at the relay, context
+  ignoreHTTPSErrors:true, and a real Chrome user-agent (lib.mjs does all this).
 
 METHOD:
 1. Fetch the reference HTML:  curl -sL <REFERENCE URL> -o ref.html
