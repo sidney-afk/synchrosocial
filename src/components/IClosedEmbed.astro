@@ -15,6 +15,7 @@ interface Props {
   height?: string;
   title?: string;
   class?: string;
+  card?: boolean;
 }
 const {
   url = null,
@@ -22,7 +23,20 @@ const {
   height = "760px",
   title = "Book a call",
   class: className = "",
+  card = true,
 } = Astro.props;
+
+// iClosed's inline widget is transparent and renders its OWN white card (with
+// an 8px radius + subtle border) around the scheduler content, which is fixed
+// at ~811px wide and centered inside the iframe — it does not grow with the
+// iframe. When we wrap it in our own opaque `bg-white` card that is wider than
+// 811px (needed so iClosed's container query lays the form + calendar side by
+// side at >= 900px), our card's background shows as empty bands on the left and
+// right of the content. Passing `card={false}` drops our wrapper so only
+// iClosed's own card shows on the page background — matching the Growth Topia
+// reference, which embeds the bare transparent iframe with no wrapper at all.
+const cardClass = "overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5";
+const wrapperClass = card ? `${cardClass} ${className}` : className;
 
 const bookingUrl =
   url ?? (linkPrefix ? `https://app.iclosed.io/e/${linkPrefix}` : null);
@@ -38,9 +52,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
 {
   bookingUrl ? (
-    <div
-      class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}
-    >
+    <div class={wrapperClass}>
       <div
         class="iclosed-widget"
         data-url={bookingUrl}

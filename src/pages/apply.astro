@@ -63,19 +63,21 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
-           iClosed only lays the form + calendar side by side once the widget is
-           >= 900px wide (a @container query). We keep this column at 912px —
-           the tightest two-column size. iClosed's own form (max 512px) and
-           calendar grid don't fill the full width even at their minimum
-           two-column size, so some inner white space is iClosed's own layout
-           (inside their iframe) and is NOT controlled by this width — making the
-           column wider only enlarges that inner gap. Below 900px it stacks. -->
+           iClosed lays the form + calendar side by side once the widget is
+           >= 900px wide (a @container query), so this column stays at 912px.
+           iClosed's scheduler renders inside a TRANSPARENT iframe as its own
+           ~811px-wide white card (fixed width; it never grows), centered in the
+           iframe. So we render it card-less (`card={false}`): only iClosed's own
+           card shows, sitting on the purple hero — matching the Growth Topia
+           reference. Wrapping it in our own wider white card (the old default)
+           left empty white bands on either side of the 811px content. -->
       <div id="book" class="w-full min-h-[542px]">
         <div class="mx-auto w-[95%] max-w-[912px]">
           <IClosedEmbed
             linkPrefix="synchrosocial/social-media-consultation"
             title="Social Media Consultation"
             height="620px"
+            card={false}
           />
         </div>
       </div>
