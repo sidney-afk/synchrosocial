@@ -1,136 +1,105 @@
 ---
 const imageBase = "/images/audience-skyrocket/";
 
-const comparisonCards = [
+const comparisonRows = [
   {
-    label: "Before",
-    src: "baya-before.png",
-    alt: "Baya Voce Instagram account before growth",
-    variant: "crop",
-    position: "center",
+    shape: "wide",
+    before: {
+      src: "baya-before.png",
+      alt: "Baya Voce Instagram account before growth",
+    },
+    after: {
+      src: "baya-after.png",
+      alt: "Baya Voce Instagram account after growth",
+    },
   },
   {
-    label: "After",
-    src: "baya-after.png",
-    alt: "Baya Voce Instagram account after growth",
-    variant: "crop",
-    position: "center",
+    shape: "tall",
+    before: {
+      src: "lucas-before.png",
+      alt: "Lucas Salame Instagram account before growth",
+    },
+    after: {
+      src: "lucas-after.png",
+      alt: "Lucas Salame Instagram account after growth",
+    },
   },
   {
-    label: "Before",
-    src: "lucas-before.png",
-    alt: "Lucas Salame Instagram account before growth",
-    variant: "short",
-    position: "center",
+    shape: "wide",
+    before: {
+      src: "danny-before-feed.png",
+      alt: "Danny Morel Instagram account before growth",
+    },
+    after: {
+      src: "danny-after-feed.png",
+      alt: "Danny Morel Instagram account after growth",
+    },
   },
   {
-    label: "After",
-    src: "lucas-after.png",
-    alt: "Lucas Salame Instagram account after growth",
-    variant: "short",
-    position: "center",
-  },
-  {
-    label: "Before",
-    src: "danny-before-feed.png",
-    alt: "Danny Morel Instagram account before growth",
-    variant: "phone",
-    position: "top",
-  },
-  {
-    label: "After",
-    src: "danny-after-feed.png",
-    alt: "Danny Morel Instagram account after growth",
-    variant: "phone",
-    position: "top",
+    shape: "tall",
+    before: {
+      src: "oliver-before.png",
+      alt: "Oliver Nino Instagram account before growth",
+    },
+    after: {
+      src: "oliver-after.png",
+      alt: "Oliver Nino Instagram account after growth",
+    },
   },
 ];
 
 const proofTiles = [
   {
-    src: "baya-instagram-growth.png",
-    alt: "Baya Voce before and after Instagram follower growth proof",
-    title: "6.8K to 356K followers",
-    shape: "wide",
+    src: "danny-morel-podcast-millions.png",
+    alt: "Podcast clips with millions of views",
+    size: "featured",
   },
   {
     src: "danny-morel-2025-growth.png",
     alt: "Danny Morel thirty day Instagram growth analytics",
-    title: "+47,640 followers in 30 days",
-    shape: "phone",
-  },
-  {
-    src: "insights-overview.png",
-    alt: "Instagram insights overview showing reach growth",
-    title: "3.9M accounts reached",
-    shape: "phone",
-  },
-  {
-    src: "danny-morel-tiktok.jpg",
-    alt: "Danny Morel TikTok profile at one million followers",
-    title: "1M TikTok followers",
-    shape: "wide",
-  },
-  {
-    src: "danny-morel-podcast-millions.png",
-    alt: "Podcast clips with millions of views",
-    title: "Millions of podcast views",
-    shape: "wide",
-  },
-  {
-    src: "amber-rae-bestseller.png",
-    alt: "USA Today bestselling booklist proof for Amber Rae",
-    title: "USA Today bestseller support",
-    shape: "square",
+    size: "standard",
   },
   {
     src: "danny-podcast-chart.png",
     alt: "Apple Podcasts chart showing Danny Morel at number one",
-    title: "#1 Apple Podcasts spirituality",
-    shape: "wide",
+    size: "standard",
+  },
+  {
+    src: "danny-morel-tiktok.png",
+    alt: "Danny Morel TikTok profile at one million followers",
+    size: "standard",
   },
   {
     src: "jessica-growth-chart.png",
     alt: "Jessica Winterstern follower growth chart",
-    title: "Long-term follower growth",
-    shape: "wide",
+    size: "standard",
   },
   {
-    src: "oliver-nino-before-after.png",
-    alt: "Oliver Nino before and after follower growth proof",
-    title: "600,000 new followers",
-    shape: "wide",
-  },
-  {
-    src: "youtube-100k-plaque.png",
-    alt: "YouTube 100K subscriber plaque",
-    title: "100K YouTube subscribers",
-    shape: "square",
-  },
-  {
-    src: "jessica-client-message.png",
-    alt: "Client message praising new content",
-    title: "Client loved the new content",
-    shape: "message",
-  },
-  {
-    src: "sabrina-client-message.png",
-    alt: "Client message praising edits and music",
-    title: "Edits praised by client",
-    shape: "message",
+    src: "amber-rae-bestseller.png",
+    alt: "USA Today bestselling booklist proof for Amber Rae",
+    size: "standard",
   },
   {
     src: "amber-reel-comment.png",
     alt: "Client comment about one million views on the first reel",
-    title: "1M views on the first reel",
-    shape: "message",
+    size: "standard",
+  },
+  {
+    src: "jessica-client-message.png",
+    alt: "Client message praising new content",
+    size: "standard",
+  },
+  {
+    src: "sabrina-client-message.png",
+    alt: "Client message praising edits and music",
+    size: "standard",
   },
 ];
 
+const featuredProofTile = proofTiles[0];
 const proofColumns = [
-  [proofTiles[0], proofTiles[1], proofTiles[4], proofTiles[10]],
-  [proofTiles[2], proofTiles[3], proofTiles[5], proofTiles[11]],
-  [proofTiles[9], proofTiles[6], proofTiles[7], proofTiles[8], proofTiles[12]],
+  [proofTiles[1], proofTiles[3], proofTiles[5], proofTiles[7]],
+  [proofTiles[2], proofTiles[4], proofTiles[6], proofTiles[8]],
 ];
 ---
 
@@ -138,61 +107,75 @@ const proofColumns = [
   <div class="audience-skyrocket__panel">
     <h2 id="audience-skyrocket-title" class="audience-skyrocket__title">
       Watch Your<br />
-      Audience <em>Skyrocket</em> <span aria-hidden="true">🚀</span>
+      Audience <em>Skyrocket</em> <span aria-hidden="true">&#128640;</span>
     </h2>
 
     <div class="audience-skyrocket__comparison" aria-label="Before and after client growth screenshots">
       {
-        comparisonCards.map((card) => (
-          <figure class={`skyrocket-card ${card.variant.split(" ").map((item) => `skyrocket-card--${item}`).join(" ")}`}>
-            <div class={`skyrocket-card__bar skyrocket-card__bar--${card.label.toLowerCase()}`}>
-              {card.label}
-            </div>
-            <div class="skyrocket-card__media">
-              <img
-                src={`${imageBase}${card.src}`}
-                alt={card.alt}
-                loading="eager"
-                fetchpriority="low"
-                decoding="async"
-                style={`object-position: ${card.position};`}
-              />
-            </div>
-          </figure>
+        comparisonRows.map((row) => (
+          <div class={`skyrocket-row skyrocket-row--${row.shape}`}>
+            <figure class="skyrocket-card">
+              <div class="skyrocket-card__bar skyrocket-card__bar--before">Before</div>
+              <div class="skyrocket-card__media">
+                <img
+                  src={`${imageBase}${row.before.src}`}
+                  alt={row.before.alt}
+                  loading="eager"
+                  fetchpriority="low"
+                  decoding="async"
+                />
+              </div>
+            </figure>
+            <figure class="skyrocket-card">
+              <div class="skyrocket-card__bar skyrocket-card__bar--after">After</div>
+              <div class="skyrocket-card__media">
+                <img
+                  src={`${imageBase}${row.after.src}`}
+                  alt={row.after.alt}
+                  loading="eager"
+                  fetchpriority="low"
+                  decoding="async"
+                />
+              </div>
+            </figure>
+          </div>
         ))
       }
     </div>
 
     <div class="audience-skyrocket__proof-heading">
       <div class="audience-skyrocket__proof-rule" aria-hidden="true"></div>
-      <p class="audience-skyrocket__eyebrow">More proof behind the growth</p>
-      <h3>Metrics, media wins, and client receipts</h3>
-      <p class="audience-skyrocket__proof-copy">
-        Reach spikes, follower jumps, platform rankings, subscriber milestones,
-        and direct client feedback from the same growth engine.
-      </p>
+      <h3>More Proof Behind The Growth</h3>
     </div>
 
     <div class="audience-skyrocket__proof" aria-label="Additional client proof screenshots">
-      {
-        proofColumns.map((column) => (
-          <div class="audience-skyrocket__proof-column">
-            {column.map((tile) => (
-              <figure class={`proof-tile proof-tile--${tile.shape}`}>
-                <div class="proof-tile__media">
+      <figure class="proof-tile proof-tile--featured">
+        <img
+          src={`${imageBase}${featuredProofTile.src}`}
+          alt={featuredProofTile.alt}
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <div class="audience-skyrocket__proof-columns">
+        {
+          proofColumns.map((column) => (
+            <div class="audience-skyrocket__proof-column">
+              {column.map((tile) => (
+                <figure class="proof-tile">
                   <img
                     src={`${imageBase}${tile.src}`}
                     alt={tile.alt}
                     loading="lazy"
                     decoding="async"
                   />
-                </div>
-                <figcaption>{tile.title}</figcaption>
-              </figure>
-            ))}
-          </div>
-        ))
-      }
+                </figure>
+              ))}
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
@@ -206,7 +189,7 @@ const proofColumns = [
   }
 
   .audience-skyrocket__panel {
-    width: min(1040px, 95%);
+    width: min(1120px, 95%);
     margin: 0 auto;
     padding: 48px 0 96px;
     border: 1px solid rgba(40, 129, 255, 0.18);
@@ -215,7 +198,7 @@ const proofColumns = [
   }
 
   .audience-skyrocket__title {
-    width: min(560px, 92%);
+    width: min(620px, 92%);
     margin: 0 auto 56px;
     color: #fff;
     font-family: "Inter Tight", Arial, sans-serif;
@@ -232,12 +215,25 @@ const proofColumns = [
   }
 
   .audience-skyrocket__comparison {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 420px));
-    justify-content: center;
+    display: flex;
+    width: min(936px, calc(100% - 48px));
+    flex-direction: column;
     gap: 16px;
-    width: min(856px, calc(100% - 48px));
     margin: 0 auto;
+  }
+
+  .skyrocket-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .skyrocket-row--wide {
+    --skyrocket-card-ratio: 2048 / 1360;
+  }
+
+  .skyrocket-row--tall {
+    --skyrocket-card-ratio: 2336 / 1744;
   }
 
   .skyrocket-card {
@@ -271,9 +267,10 @@ const proofColumns = [
   .skyrocket-card__media {
     display: flex;
     width: 100%;
+    aspect-ratio: var(--skyrocket-card-ratio);
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
     background: #fff;
   }
 
@@ -284,26 +281,8 @@ const proofColumns = [
     object-fit: contain;
   }
 
-  .skyrocket-card--crop .skyrocket-card__media {
-    aspect-ratio: 420 / 292;
-  }
-
-  .skyrocket-card--crop .skyrocket-card__media img {
-    object-fit: cover;
-  }
-
-  .skyrocket-card--short .skyrocket-card__media {
-    height: 292px;
-    background: #0b0f17;
-  }
-
-  .skyrocket-card--phone .skyrocket-card__media {
-    height: 490px;
-    background: #05070b;
-  }
-
   .audience-skyrocket__proof-heading {
-    width: min(856px, calc(100% - 48px));
+    width: min(936px, calc(100% - 48px));
     margin: 72px auto 0;
     text-align: center;
   }
@@ -321,60 +300,44 @@ const proofColumns = [
     );
   }
 
-  .audience-skyrocket__eyebrow {
-    margin: 0 0 10px;
-    color: #d39e29;
-    font-family: "Inter", Arial, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 18px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
   .audience-skyrocket__proof-heading h3 {
     margin: 0;
     color: #fff;
     font-family: "Inter Tight", Arial, sans-serif;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
-    line-height: 36px;
+    line-height: 40px;
     letter-spacing: 0;
   }
 
-  .audience-skyrocket__proof-copy {
-    width: min(620px, 100%);
-    margin: 12px auto 0;
-    color: #c4c4c4;
-    font-family: "Inter", Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 25px;
+  .audience-skyrocket__proof {
+    display: flex;
+    width: min(936px, calc(100% - 48px));
+    flex-direction: column;
+    gap: 18px;
+    margin: 28px auto 0;
   }
 
-  .audience-skyrocket__proof {
+  .audience-skyrocket__proof-columns {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    width: min(856px, calc(100% - 48px));
-    margin: 32px auto 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
   }
 
   .audience-skyrocket__proof-column {
     display: flex;
     min-width: 0;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
   }
 
   .proof-tile {
     display: flex;
     min-width: 0;
     width: 100%;
-    flex-direction: column;
-    gap: 12px;
     margin: 0;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid rgba(131, 49, 232, 0.55);
     border-radius: 8px;
     background:
@@ -382,29 +345,17 @@ const proofColumns = [
       rgba(9, 4, 20, 0.72);
   }
 
-  .proof-tile__media {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    min-height: 0;
-    border-radius: 4px;
-    background: #fff;
+  .proof-tile--featured {
+    width: 100%;
   }
 
-  .proof-tile__media img {
+  .proof-tile img {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 4px;
+    background: #fff;
     object-fit: contain;
-  }
-
-  .proof-tile figcaption {
-    color: #fff;
-    font-family: "Inter", Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 20px;
   }
 
   @media (max-width: 900px) {
@@ -421,10 +372,6 @@ const proofColumns = [
     .audience-skyrocket__proof-heading,
     .audience-skyrocket__proof {
       width: calc(100% - 48px);
-    }
-
-    .audience-skyrocket__proof {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
@@ -447,7 +394,11 @@ const proofColumns = [
 
     .audience-skyrocket__comparison {
       width: 100%;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .skyrocket-row {
+      grid-template-columns: 1fr;
       gap: 10px;
     }
 
@@ -460,19 +411,9 @@ const proofColumns = [
       margin-bottom: 24px;
     }
 
-    .audience-skyrocket__eyebrow {
-      font-size: 11px;
-      line-height: 16px;
-    }
-
     .audience-skyrocket__proof-heading h3 {
       font-size: 24px;
       line-height: 28px;
-    }
-
-    .audience-skyrocket__proof-copy {
-      font-size: 14px;
-      line-height: 21px;
     }
 
     .skyrocket-card__bar {
@@ -481,15 +422,13 @@ const proofColumns = [
       line-height: 14px;
     }
 
-    .skyrocket-card--short .skyrocket-card__media,
-    .skyrocket-card--phone .skyrocket-card__media {
-      height: 270px;
-    }
-
     .audience-skyrocket__proof {
       width: 100%;
-      grid-template-columns: 1fr;
       margin-top: 24px;
+    }
+
+    .audience-skyrocket__proof-columns {
+      grid-template-columns: 1fr;
     }
   }
 </style>
