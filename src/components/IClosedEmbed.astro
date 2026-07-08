@@ -36,7 +36,11 @@ const {
 // iClosed's own card shows on the page background — matching the Growth Topia
 // reference, which embeds the bare transparent iframe with no wrapper at all.
 const cardClass = "overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5";
-const wrapperClass = card ? `${cardClass} ${className}` : className;
+const wrapperClass = [
+  "iclosed-embed",
+  card ? cardClass : "",
+  className,
+].filter(Boolean).join(" ");
 
 const bookingUrl =
   url ?? (linkPrefix ? `https://app.iclosed.io/e/${linkPrefix}` : null);
@@ -52,7 +56,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
 {
   bookingUrl ? (
-    <div class={wrapperClass}>
+    <div class={wrapperClass} data-iclosed-embed data-ready="false">
       <div
         class="iclosed-widget"
         data-url={bookingUrl}
@@ -103,6 +107,104 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             }
           });
         }
+      </script>
+      <script is:inline>
+        /* Keep iClosed's injected iframe hidden until its initial load/height
+           messages settle. This prevents the transient white iframe boxes and
+           resize flicker while preserving iClosed's final card exactly. */
+        (function () {
+          if (window.__ssIClosedStabilizer) {
+            window.__ssIClosedStabilizer.init();
+            return;
+          }
+
+          var ICLOSED_ORIGINS = {
+            "https://dev.iclosed.io": true,
+            "https://stage.iclosed.io": true,
+            "https://app.iclosed.io": true,
+          };
+
+          function stabilize(root) {
+            if (!root || root.__ssIClosedReadySetup) return;
+            root.__ssIClosedReadySetup = true;
+
+            var readyTimer = null;
+            var fallbackTimer = null;
+            var loaded = false;
+            var iframeSeenAt = 0;
+
+            function iframe() {
+              return root.querySelector("iframe");
+            }
+
+            function show() {
+              if (!iframe()) return;
+              root.setAttribute("data-ready", "true");
+              if (readyTimer) clearTimeout(readyTimer);
+              if (fallbackTimer) clearTimeout(fallbackTimer);
+            }
+
+            function showAfterQuiet(delay) {
+              if (root.getAttribute("data-ready") === "true") return;
+              if (readyTimer) clearTimeout(readyTimer);
+              readyTimer = setTimeout(function () {
+                var iframeAge = iframeSeenAt ? Date.now() - iframeSeenAt : 0;
+                if ((loaded && iframeAge > 1200) || iframeAge > 3600) show();
+                else showAfterQuiet(220);
+              }, delay);
+            }
+
+            function watchIframe(node) {
+              if (!node || node.__ssIClosedLoadWatched) return;
+              iframeSeenAt = iframeSeenAt || Date.now();
+              node.__ssIClosedLoadWatched = true;
+              node.addEventListener("load", function () {
+                loaded = true;
+                showAfterQuiet(1200);
+              });
+              showAfterQuiet(1800);
+            }
+
+            var observer = new MutationObserver(function () {
+              watchIframe(iframe());
+            });
+            observer.observe(root, { childList: true, subtree: true });
+            watchIframe(iframe());
+
+            fallbackTimer = setTimeout(show, 7000);
+          }
+
+          function init() {
+            document.querySelectorAll("[data-iclosed-embed]").forEach(stabilize);
+          }
+
+          window.addEventListener("message", function (event) {
+            if (!ICLOSED_ORIGINS[event.origin]) return;
+            if (!event.data || event.data.type !== "iclosed.widget_height") return;
+
+            document.querySelectorAll("[data-iclosed-embed]").forEach(function (root) {
+              var frame = root.querySelector("iframe");
+              if (frame && frame.contentWindow === event.source) {
+                stabilize(root);
+                var delay = root.getAttribute("data-ready") === "true" ? 0 : 1200;
+                if (delay) {
+                  if (root.__ssIClosedHeightTimer) clearTimeout(root.__ssIClosedHeightTimer);
+                  root.__ssIClosedHeightTimer = setTimeout(function () {
+                    root.setAttribute("data-ready", "true");
+                  }, delay);
+                }
+              }
+            });
+          });
+
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init);
+          } else {
+            init();
+          }
+
+          window.__ssIClosedStabilizer = { init: init };
+        })();
       </script>
     </div>
   ) : (
@@ -187,3 +289,26 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
     </div>
   )
 }
+
+<style is:global>
+  .iclosed-embed {
+    position: relative;
+  }
+
+  .iclosed-embed > .iclosed-widget {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  .iclosed-embed[data-ready="true"] > .iclosed-widget {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .iclosed-embed > .iclosed-widget {
+      transition: none;
+    }
+  }
+</style>
