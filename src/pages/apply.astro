@@ -63,15 +63,16 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
-           iClosed's scheduler is a CONTAINER-QUERY layout: the form and calendar
-           only sit side by side once the widget is >= 900px wide
-           (@container (min-width:900px)), and iClosed caps its own content at
-           900px. So we size this column just above 900px — wide enough for the
-           two-column shape, tight enough that iClosed's content fills it with
-           no blank side margins (matching the Growth Topia reference). Below
-           900px iClosed stacks the form above the calendar. -->
+           iClosed's scheduler snaps its content to fixed width tiers (its
+           .container maxes at 900px, then 1025px, then 1280px) and only goes
+           two-column at >= 900px wide. At ~912px the content was stuck on the
+           900px tier — small, centered, with iClosed's own padding, so it read
+           as narrow with blank sides. Sizing this column to 1040px puts iClosed
+           on its 1025px content tier: the form + calendar render larger and
+           fill the card (matching the wider Growth Topia reference) while
+           staying two-column. Below 900px it stacks (correct for mobile). -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[912px]">
+        <div class="mx-auto w-[95%] max-w-[1040px]">
           <IClosedEmbed
             linkPrefix="synchrosocial/social-media-consultation"
             title="Social Media Consultation"
