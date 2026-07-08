@@ -88,7 +88,7 @@ Rules:
   stream with different (custom) names — they never dedupe against ours.
   Optimization points at one stream deliberately.
 
-## 5. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`)
+## 5. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`, [PR #27](https://github.com/sidney-afk/synchrosocial/pull/27))
 
 - [x] `src/components/MetaPixel.astro` — official base snippet, pixel ID
   `4309835332571875`, PageView everywhere, `noscript` fallback, optional
