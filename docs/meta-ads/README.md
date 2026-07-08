@@ -30,11 +30,48 @@ in the Google Doc ["Meta Ads Checklist / Paid Ads Launch Gameplan"](https://docs
 **Ads will run to the MAIN funnel** (purple, synchrosocial.com), *not* the AI
 funnel (`/ai`) — per Sidney, July 2026.
 
+## Current status (2026-07-08)
+
+Step 2 is mostly complete for launch tracking, but not complete for the full
+CAC feedback loop.
+
+Completed today:
+- PR #27 was merged and the Meta Pixel is live on `synchrosocial.com`.
+- Meta domain verification was added via meta tag in `Layout.astro`, deployed
+  to GitHub Pages, confirmed in live HTML, and verified in Meta Business
+  Settings.
+- Browser events were tested live in Meta Test Events: `PageView`,
+  `ViewContent` on `/apply`, `Schedule`, `Lead`, `iclosed_potential`,
+  `iclosed_qualified`, and iClosed-native mapped events (`Potential`,
+  `Qualified`, `invitee_meeting_scheduled`).
+- Duplicate `Schedule`/`Lead` rows were expected and Meta deduplicated them by
+  event ID.
+- n8n workflow `Sales - Call Booked (iClosed)` (`xoPqojySDriQ8Mzh`) was
+  published with the `social-media-consultation` route live. It now calls
+  `Normal Sales - Booking Handler` (`ghpbQQJizAnR6p2b`).
+- End-to-end booking tests passed for both returning-contact and new-lead
+  paths: HubSpot contact/deal behavior, confirmation email, and nurture start.
+- iClosed Meta Pixel integration is connected for dataset `4309835332571875`
+  and shows trigger activity inside iClosed.
+
+Still not proven:
+- iClosed Conversions API/server-side delivery is not confirmed. Meta Test
+  Events still showed iClosed-mapped events as `Received From: Browser` and
+  `Setup Method: Manual Setup`, not `Server` / `Conversions API`.
+- CRM feedback events are not yet pushed back to Meta when HubSpot marks a
+  lead qualified, bad fit, closed won, or assigns deal value.
+- HubSpot contacts/deals are created, but the normal booking workflow does not
+  yet store detailed ad source/campaign/quality fields.
+
+Security note:
+- A CAPI token was exposed in screenshots during setup. Regenerate it before
+  using CAPI in production, even if testing continues with the old token.
+
 ## 2. Accounts & IDs
 
 | Thing | Value |
 | --- | --- |
-| Domain | `synchrosocial.com` (GitHub Pages, repo `sidney-afk/synchrosocial`, auto-deploys `main`) |
+| Domain | `synchrosocial.com` (GitHub Pages, repo `sidney-afk/synchrosocial`, auto-deploys `main`; Meta domain verification completed 2026-07-08 via meta tag) |
 | Meta business portfolio | "Synchro Social", ID `895720379894006` |
 | Meta ad account | "SynchroSocial Ads", ID `24069488506082034` (campaigns + billing live here; never goes in code) |
 | Meta Events Manager dataset | **"Synchro Social Data", ID `4309835332571875`** (= the pixel ID — the ONLY Meta ID used in code). Created by Sidney Mar 31, 2026; already linked to the ad account (visible in dataset Settings → Sharing) |
@@ -103,6 +140,12 @@ Rules:
 - [x] `/apply` + `/call` — ViewContent.
 - [x] `docs/meta-ads/RESEARCH.md` — verified 2026 research findings + sources.
 - Build verified (`npm run build`, events confirmed in `dist/`).
+- [x] PR #27 merged to `main` and deployed.
+- [x] Meta domain verification tag added to `Layout.astro` and deployed in
+  commit `0c6232d` (`Add Meta domain verification tag`).
+- [x] Live Meta Test Events confirmed browser `PageView`, `ViewContent`,
+  `Schedule`, `Lead`, iClosed bridge custom events, and iClosed-native mapped
+  events.
 
 ## 6. Decisions log
 
@@ -111,16 +154,45 @@ Rules:
 | 2026-07-08 | Ads target main funnel, not `/ai` | Sidney's instruction |
 | 2026-07-08 | Fresh start on dataset `4309835332571875`; old Framer pixel abandoned | Old pixel wasn't migrated; dataset already created in Events Manager |
 | 2026-07-08 | Pixel installed site-wide via one component in `Layout.astro` | Single source of truth; every page auto-covered |
-| 2026-07-08 | Launch browser-pixel-first; CAPI = phase 2 via **iClosed's native integration** (NOT CAPI Gateway, NOT Stape, NOT n8n for the booking event) | Research: Gateway needs a paid cloud instance; iClosed sends CAPI events (incl. `Call booked`) from its own servers with hashed em/ph + fbp/fbc, free, ~10 min to set up |
+| 2026-07-08 | Launch browser-pixel-first; attempt CAPI via **iClosed's native integration** before considering n8n for booking events | Gateway needs a paid cloud instance; iClosed is the normal native path. Field test note: iClosed mapping works, but server/CAPI delivery is not yet proven in Meta Test Events. |
 | 2026-07-08 | Booked call fires BOTH `Schedule` and `Lead` (same eventID root) at the bridge + `/thank-you` fallback | Semantics unresolved by research; both available in Ads Manager, pick one, no code change needed |
-| 2026-07-08 | n8n reserved for phase 3 (CRM offline events: qualified/closed → CAPI) | iClosed covers the booking event; n8n's existing Contract-Signed/deal-stage workflows are the natural hook for CAC events |
+| 2026-07-08 | n8n router must support `social-media-consultation` | The main `/apply` funnel uses this iClosed slug. The router was updated and published on 2026-07-08. |
+| 2026-07-08 | iClosed CAPI is connected but not proven server-side | iClosed mapped events show in Meta, but Meta Test Events still labels them Browser / Manual Setup. Treat native CAPI as unconfirmed until iClosed support or Events Manager proves Server / Conversions API. |
+| 2026-07-08 | n8n reserved primarily for phase 3 CRM offline events (qualified/closed -> CAPI), unless iClosed CAPI cannot be proven | iClosed should be the native booking-event path, but this account has not yet proven Server / Conversions API delivery. n8n's existing deal-stage workflows remain the natural hook for CAC events. |
 | 2026-07-08 | No AEM/web-event config work | Research: prioritization eliminated, AEM tab removed (2026) |
-| 2026-07-08 | Domain verification = recommended, not blocking | Research: not required for event processing |
+| 2026-07-08 | Domain verification completed by meta tag | Not required for event processing, but it is now done and verified. |
 | 2026-07-08 | No cookie-consent banner for now | US-targeted traffic; revisit if targeting EU (GDPR) |
 
 ## 7. What remains (the checklist)
 
 Detailed steps live in `SETUP_RUNBOOK.md`. Summary:
+
+### Current checklist (authoritative after 2026-07-08 live tests)
+
+Launch readiness:
+- [x] PR #27 merged to `main`; pixel deployed to production.
+- [x] Domain verification tag deployed and domain verified in Meta.
+- [x] Browser Test Events passed for page view, apply view, booking, and
+  deduplication.
+- [x] n8n booking router published for `social-media-consultation`.
+- [x] New-lead and returning-contact booking automation tested end to end.
+- [ ] Confirm ad account payment method before paid spend.
+
+Server-side / CAPI:
+- [x] iClosed Meta Pixel integration connected to dataset `4309835332571875`.
+- [ ] Regenerate the CAPI token before production use; the setup token was
+  exposed in screenshots.
+- [ ] Confirm whether iClosed sends true server/CAPI events. Current Meta Test
+  Events result still shows iClosed-mapped events as Browser / Manual Setup.
+- [ ] If iClosed cannot be confirmed, decide whether to use n8n for server
+  booking events or only for CRM outcome events.
+
+CRM feedback loop:
+- [ ] Push qualified, bad-fit, closed-won, and deal-value outcomes back to Meta.
+- [ ] Add/confirm HubSpot properties for paid source, campaign, lead quality,
+  and CAC reporting.
+
+### Historical checklist from PR #27 handoff
 
 ### Launch blockers
 - [ ] **Merge this branch to `main`** → auto-deploys the pixel to production
@@ -147,6 +219,24 @@ Detailed steps live in `SETUP_RUNBOOK.md`. Summary:
   (if it works on free, it may replace the n8n CAPI calls)
 
 ## 8. Events Manager state (verified with Sidney, 2026-07-08)
+
+Post-test update (same day):
+
+- **Domain verification: COMPLETE.** The meta tag is in `Layout.astro`, commit
+  `0c6232d`, and the domain shows verified in Meta Business Settings.
+- **Browser tracking: COMPLETE.** Live Test Events showed `PageView`,
+  `ViewContent`, `Schedule`, and `Lead` from the browser.
+- **Deduplication: WORKING.** Repeated `Schedule` and `Lead` rows with the
+  same event ID were deduplicated by Meta.
+- **iClosed integration: CONNECTED.** iClosed shows "Synchro Social Data" as a
+  connected pixel and records Page View, Potential, Qualified, and Call booked
+  triggers from "Social Media Consultation".
+- **iClosed CAPI/server source: NOT CONFIRMED.** Meta receives `Potential`,
+  `Qualified`, and `invitee_meeting_scheduled`, but the rows still display
+  `Received From: Browser` and `Setup Method: Manual Setup`.
+- **Dataset Quality API: ENABLED.** Meta's UI says opt-out is unavailable once
+  configured. This is expected and is not a blocker, but it does not prove
+  server events are arriving.
 
 Sidney walked the dataset UI with Claude; current state of
 "Synchro Social Data" (4309835332571875):
@@ -175,6 +265,25 @@ Sidney walked the dataset UI with Claude; current state of
 
 ## 9. Known issues / open items
 
+Current open items:
+
+1. **iClosed CAPI not confirmed:** iClosed native integration is connected and
+   mapped events show in iClosed + Meta, but Meta Test Events still labels them
+   as Browser / Manual Setup. Ask iClosed support whether their integration
+   sends true Conversions API events and whether they pass `test_event_code`.
+2. **CAPI token exposed:** regenerate before production use.
+3. **CRM feedback loop not implemented:** HubSpot stage/value outcomes are not
+   yet pushed back to Meta. This is the key remaining Step 2 item for "CAC,
+   not CPL."
+4. **HubSpot source/quality tagging incomplete:** contacts/deals are created,
+   but the current n8n normal booking handler does not yet persist ad campaign,
+   source, quality, bad-fit, or closed-won value fields for reporting.
+5. **Resolved:** n8n router slug gap. Published workflow version
+   `9e70e07e-6e49-4b0f-a040-1be7e1f0f97d` routes
+   `social-media-consultation` to the normal funnel handler.
+
+Historical items from PR #27 handoff:
+
 1. ⚠️ **n8n router slug gap (PRODUCTION BUG, pre-existing):** workflow
    "Sales — Call Booked (iClosed)" (`xoPqojySDriQ8Mzh`, webhook
    `/webhook/iclosed-call-booked`) filters `event_slug` for `ai-intro-call`
@@ -193,6 +302,18 @@ Sidney walked the dataset UI with Claude; current state of
    as a KPI.
 
 ## 10. Session log
+
+- **2026-07-08 (implementation + live testing)** - PR #27 was merged.
+  Published the n8n router fix for `social-media-consultation`; verified
+  execution `224608` (returning contact confirmation) and execution `224667`
+  (new contact + deal + confirmation + nurture). Added and deployed Meta
+  domain verification tag in commit `0c6232d`; Meta domain verified. Tested
+  live browser events in Events Manager: `PageView`, `ViewContent`, `Schedule`,
+  `Lead`, and deduplication all worked. Connected iClosed Meta Pixel
+  integration and observed `Potential`, `Qualified`, and
+  `invitee_meeting_scheduled`; however Meta still reported these as Browser
+  events, so iClosed CAPI remains unconfirmed. Setup token was exposed in
+  screenshots; regenerate before production CAPI use.
 
 - **2026-07-08 (later)** — Walked Events Manager with Sidney: captured full
   account IDs, confirmed AAM already on / ad account linked / domain

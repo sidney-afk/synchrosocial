@@ -6,7 +6,34 @@
 >
 > Context and architecture: `docs/meta-ads/README.md`.
 
+## Current state after 2026-07-08 live setup
+
+Done:
+- Meta domain verification is complete via meta tag on the live site.
+- PR #27 is merged and deployed.
+- Browser pixel events are live and tested: `PageView`, `ViewContent`,
+  `Schedule`, `Lead`, and deduplication.
+- n8n booking router is fixed/published for `social-media-consultation`.
+- iClosed Meta Pixel integration is connected and shows trigger activity.
+- End-to-end booking automation works for returning contacts and new leads.
+
+Still open:
+- Confirm ad account payment method before launch.
+- Regenerate the CAPI token because the setup token was exposed in screenshots.
+- Prove or disprove iClosed server-side CAPI delivery. Current Meta Test Events
+  display is Browser / Manual Setup only.
+- Implement CRM outcome feedback to Meta: qualified, bad fit, closed won, and
+  deal value.
+
+The detailed checklist below is retained for process context. If an older
+unchecked box conflicts with this current-state section, the current-state
+section is authoritative.
+
 ## A. Business Manager foundations (once, ~30 min)
+
+Current note: A3 is complete. The domain was verified on 2026-07-08 with the
+meta-tag method in `src/layouts/Layout.astro` and deploy commit `0c6232d`.
+The remaining launch foundation to confirm is the ad account payment method.
 
 - [x] **A1. Business portfolio** — exists: "Synchro Social", ID
   `895720379894006`. Still worth doing: add a second admin (Kasper?) as
@@ -40,6 +67,11 @@
 
 ## B. Pixel verification (after the site deploys with the pixel)
 
+Current note: B1, B2, and B5 are complete as of 2026-07-08. Browser
+`PageView`, `ViewContent`, `Schedule`, and `Lead` events were received by Meta.
+Booking tests proved the n8n route, HubSpot contact/deal behavior, confirmation
+emails, and nurture start. The old router-gap warning below is historical.
+
 - [ ] **B1. Deploy** — merge the `claude/meta-ads-infrastructure-w47kkb` PR to
   `main`; GitHub Actions deploys to synchrosocial.com automatically (~2 min).
 - [ ] **B2. Test Events** — Events Manager → dataset → **Test events** tab →
@@ -68,6 +100,13 @@
   no nurture). Fix the filter before this test — see README §open items.
 
 ## C. iClosed checks (iClosed dashboard, app.iclosed.io)
+
+Current note: iClosed Meta Pixel integration is connected and trigger activity
+is visible in iClosed. Meta receives `Potential`, `Qualified`, and
+`invitee_meeting_scheduled`, but currently labels them as Browser / Manual
+Setup. Treat true server-side CAPI as unconfirmed until iClosed support or
+Events Manager proves Server / Conversions API delivery. Regenerate the CAPI
+token before production use because it was exposed in screenshots.
 
 - [ ] **C1.** Confirm the "Call booked" webhook → 
   `https://synchrosocial.app.n8n.cloud/webhook/iclosed-call-booked` fires for

@@ -47,7 +47,8 @@ flowchart TD
 
   %% ---------- Flows ----------
   DIRECT --> HOME
-  ADS --> AILAND
+  ADS --> HOME
+  ADS --> APPLY
   EVENTS --> EVENTHUB
 
   HOME -->|Apply Now| APPLY
@@ -89,6 +90,11 @@ flowchart TD
 | SyncView | `syncview.synchrosocial.com` | Internal Instagram analytics + content-ops dashboard (the `client-analytics` repo). Used by the team **after** a client signs; not part of booking. |
 
 ## Entry points → booking calendar
+
+Current paid Meta plan (2026-07-08): ads run to the main purple funnel,
+`/` or `/apply`, using the Social Media Consultation calendar
+(`social-media-consultation`). The older `/ai` -> `/call` cold-ad path below is
+kept as a site surface, not the current Meta launch target.
 
 | Entry point | Page | Theme | Calendar | Qualifies? | After booking |
 | --- | --- | --- | --- | --- | --- |

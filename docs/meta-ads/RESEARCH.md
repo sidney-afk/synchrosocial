@@ -7,6 +7,27 @@
 > Meta's tooling changes fast (they shipped one-click "Meta-enabled CAPI"
 > in April 2026).
 
+## Field-test update from our account (2026-07-08)
+
+The native iClosed Meta Pixel integration was connected to dataset
+`4309835332571875` with Conversion API enabled. iClosed shows trigger activity
+for Page View, Potential, Qualified, and Call booked; Meta Test Events receives
+`Potential`, `Qualified`, and `invitee_meeting_scheduled`.
+
+However, Meta currently labels those events as `Received From: Browser` and
+`Setup Method: Manual Setup`, not `Server` / `Conversions API`. Treat the
+server-to-server part of iClosed's integration as **not confirmed for this
+account** until either:
+
+- iClosed support confirms how their CAPI events appear in Meta and whether
+  they pass `test_event_code`, or
+- Events Manager later shows Server / Conversions API / Browser and Server for
+  these events.
+
+Dataset Quality API was enabled during Meta's token generation flow. Meta's UI
+states that opt-out is unavailable once configured. That is not a blocker and
+does not by itself prove CAPI delivery.
+
 ## Confirmed findings (all 3-0 verifier votes unless noted)
 
 ### Pixel & datasets
