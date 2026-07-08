@@ -1,17 +1,22 @@
 ---
 import "../styles/global.css";
+import MetaPixel from "../components/MetaPixel.astro";
 
 interface Props {
   title?: string;
   description?: string;
   /** Background color class for the page body wrapper. */
   bodyClass?: string;
+  /** Extra Meta Pixel event to fire on this page (besides PageView),
+      e.g. { name: "Schedule" } on /thank-you. See docs/meta-ads/. */
+  metaEvent?: { name: string; params?: Record<string, string | number> };
 }
 
 const {
   title = "Synchro Social — Social media growth for coaches & thought leaders",
   description = "We help impact-driven coaches and thought leaders share their journey on social media. Grow exceptionally, but with intention.",
   bodyClass = "bg-white",
+  metaEvent = null,
 } = Astro.props;
 ---
 
@@ -41,6 +46,8 @@ const {
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
       rel="stylesheet"
     />
+
+    <MetaPixel event={metaEvent?.name} params={metaEvent?.params} />
   </head>
   <body class={bodyClass}>
     <slot />
