@@ -63,13 +63,13 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
-           iClosed's scheduler is a CONTAINER-QUERY layout: the form and calendar
-           only sit side by side once the widget is >= 900px wide
-           (@container (min-width:900px)), and iClosed caps its own content at
-           900px. So we size this column just above 900px — wide enough for the
-           two-column shape, tight enough that iClosed's content fills it with
-           no blank side margins (matching the Growth Topia reference). Below
-           900px iClosed stacks the form above the calendar. -->
+           iClosed only lays the form + calendar side by side once the widget is
+           >= 900px wide (a @container query). We keep this column at 912px —
+           the tightest two-column size. iClosed's own form (max 512px) and
+           calendar grid don't fill the full width even at their minimum
+           two-column size, so some inner white space is iClosed's own layout
+           (inside their iframe) and is NOT controlled by this width — making the
+           column wider only enlarges that inner gap. Below 900px it stacks. -->
       <div id="book" class="w-full min-h-[542px]">
         <div class="mx-auto w-[95%] max-w-[912px]">
           <IClosedEmbed
