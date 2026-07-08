@@ -8,13 +8,12 @@
 
 ## A. Business Manager foundations (once, ~30 min)
 
-- [ ] **A1. Business portfolio** — exists already: "Synchro Social"
-  (`business.facebook.com`, ID starts 895720379894…). Confirm you have full
-  admin access, and add a second admin (Kasper?) as backup — one-admin
-  accounts get locked out permanently if the admin loses access.
-- [ ] **A2. Ad account** — in Business Settings → Accounts → Ad accounts,
-  confirm an ad account exists (create one if not, currency USD, timezone
-  America/New_York to match HubSpot). Add a payment method
+- [x] **A1. Business portfolio** — exists: "Synchro Social", ID
+  `895720379894006`. Still worth doing: add a second admin (Kasper?) as
+  backup — one-admin accounts get locked out permanently if the admin loses
+  access.
+- [ ] **A2. Ad account** — exists: "SynchroSocial Ads", ID
+  `24069488506082034`. Remaining: confirm a payment method is added
   (Billing → Payment methods). Ads cannot launch without this.
 - [ ] **A3. Verify the domain** — recommended but NOT a launch blocker
   (research-confirmed: verification is no longer required for event
@@ -26,15 +25,18 @@
   `dig NS synchrosocial.com`). Alternative: the meta-tag method can be done
   in this repo (`src/layouts/Layout.astro`) — tell Claude the content value
   and it takes 2 minutes + a deploy.
-- [ ] **A6. Enable Automatic Advanced Matching** — Events Manager → dataset →
-  Settings → Automatic advanced matching → ON. (Manual advanced matching
-  isn't possible browser-side — the booking form is inside iClosed's iframe —
-  but iClosed's CAPI integration (C2) sends hashed email/phone server-side.)
 - [ ] **A4. Connect assets** — Business Settings: confirm the Facebook Page and
   Instagram account are added as assets and linked to the ad account.
-- [ ] **A5. Dataset ↔ ad account link** — Events Manager → dataset
-  "Synchro Social Data" (4309835332571875) → Settings → connected ad accounts:
-  make sure the ad account is linked so campaigns can use the pixel's events.
+- [x] **A5. Dataset ↔ ad account link** — DONE (verified 2026-07-08: dataset
+  Settings → Sharing shows "SynchroSocial Ads" `24069488506082034`).
+- [x] **A6. Automatic Advanced Matching** — DONE (verified 2026-07-08:
+  already ON, along with first-party cookies; "track events automatically
+  without code" correctly OFF). Manual advanced matching isn't possible
+  browser-side — the booking form is inside iClosed's iframe — but iClosed's
+  CAPI integration (C2) sends hashed email/phone server-side.
+- [x] **A7. Domain allow list** — DONE (verified 2026-07-08:
+  `synchrosocial.com` is on the dataset's traffic-permissions allow list).
+  The Diagnostics warning about it is stale — see B4.
 
 ## B. Pixel verification (after the site deploys with the pixel)
 
@@ -49,9 +51,11 @@
 - [ ] **B3. Meta Pixel Helper** — install the Chrome extension "Meta Pixel
   Helper", visit the live site, confirm the pixel fires green with ID
   4309835332571875.
-- [ ] **B4. Diagnostics** — check the Diagnostics tab (currently shows 1
-  warning). With zero events flowing, warnings are usually "no recent
-  activity" — re-check after events flow; resolve anything that remains.
+- [ ] **B4. Diagnostics** — the current warning ("Confirm domain that belong
+  to you", detected Jun 3) is STALE: `synchrosocial.com` is already on the
+  allow list (verified 2026-07-08). Dismiss it via the ⋯ menu or let it
+  self-clear once new events flow post-merge. Re-check the tab after B2 for
+  anything genuinely new (e.g. duplicate-event warnings → tell Claude).
 - [ ] **B5. Do a REAL test booking** — book the Social Media Consultation on
   `/apply` with a test email, confirm:
   - the browser lands on `/thank-you` and the booked-call event appears in

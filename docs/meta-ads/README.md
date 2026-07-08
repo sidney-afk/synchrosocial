@@ -35,8 +35,9 @@ funnel (`/ai`) — per Sidney, July 2026.
 | Thing | Value |
 | --- | --- |
 | Domain | `synchrosocial.com` (GitHub Pages, repo `sidney-afk/synchrosocial`, auto-deploys `main`) |
-| Meta business portfolio | "Synchro Social" (ID starts `895720379894…` — see Events Manager header) |
-| Meta Events Manager dataset | **"Synchro Social Data", ID `4309835332571875`** (= the pixel ID) |
+| Meta business portfolio | "Synchro Social", ID `895720379894006` |
+| Meta ad account | "SynchroSocial Ads", ID `24069488506082034` (campaigns + billing live here; never goes in code) |
+| Meta Events Manager dataset | **"Synchro Social Data", ID `4309835332571875`** (= the pixel ID — the ONLY Meta ID used in code). Created by Sidney Mar 31, 2026; already linked to the ad account (visible in dataset Settings → Sharing) |
 | Old Framer pixel | Existed on the Framer site; NOT carried over. Repo had zero tracking code before this branch. Whether the old pixel is a *different* ID in Events Manager: unconfirmed — check Events Manager and prefer the "Synchro Social Data" dataset. |
 | HubSpot | **Free tier**, account ID `245312721`, NA2 (`app-na2.hubspot.com`), USD, US/Eastern |
 | HubSpot lifecycle stages | `subscriber, lead, opportunity, customer` |
@@ -145,7 +146,34 @@ Detailed steps live in `SETUP_RUNBOOK.md`. Summary:
 - [ ] Resolve open question: HubSpot free tier's native Meta conversion sync
   (if it works on free, it may replace the n8n CAPI calls)
 
-## 8. Known issues / open items
+## 8. Events Manager state (verified with Sidney, 2026-07-08)
+
+Sidney walked the dataset UI with Claude; current state of
+"Synchro Social Data" (4309835332571875):
+
+- **Automatic advanced matching: ON** (runbook A6 — already done)
+- **First-party cookies: ON** — correct, leave on
+- **"Track events automatically without code": OFF** — correct, leave OFF
+  (we fire events explicitly; auto-tracking would add noise/dupes)
+- **"Automatically include more detailed page info": ON** — harmless
+- **Auto tracking (offline events → campaigns): OFF** — turn on in phase 3
+- **Ad account already linked** (Settings → Sharing → SynchroSocial Ads)
+- **Domain allow list: `synchrosocial.com` already on it** (19 historic
+  events received, "no activity for 27 days" — the old test data)
+- **Diagnostics shows 1 stale warning**: "Confirm domain that belong to you"
+  (detected Jun 3, 2026). The domain IS allowlisted; the warning predates
+  that and only re-evaluates when new events flow. Resolution: dismiss via
+  the ⋯ menu on the Diagnostics tab, or just wait — it self-clears once the
+  merged pixel starts sending events. NOT a blocker.
+- **CAPI setup options in the dataset Settings**: "Set up with Meta"
+  (April-2026 one-click), "Set up direct integration", "partner
+  integration". For the iClosed plan use **"Set up direct integration"**
+  → generate the access token there (with Dataset Quality API is fine) →
+  paste token + dataset ID into iClosed → Integrations → Meta Pixel.
+  Do NOT use one-click "Set up with Meta" — it's Meta-managed and separate
+  from iClosed's token-based integration.
+
+## 9. Known issues / open items
 
 1. ⚠️ **n8n router slug gap (PRODUCTION BUG, pre-existing):** workflow
    "Sales — Call Booked (iClosed)" (`xoPqojySDriQ8Mzh`, webhook
@@ -164,8 +192,13 @@ Detailed steps live in `SETUP_RUNBOOK.md`. Summary:
    when the form collects email AND phone) — fine for audiences, don't use it
    as a KPI.
 
-## 9. Session log
+## 10. Session log
 
+- **2026-07-08 (later)** — Walked Events Manager with Sidney: captured full
+  account IDs, confirmed AAM already on / ad account linked / domain
+  allowlisted, diagnosed the Diagnostics warning as stale (see §8), decided
+  the CAPI token path ("Set up direct integration", not one-click). PR #27
+  open, awaiting Sidney's merge. n8n router fix still awaiting go-ahead.
 - **2026-07-08** — Project kickoff (this branch). Read the gameplan Google Doc;
   audited repo + live site (no existing tracking found); confirmed funnel map;
   pulled HubSpot portal facts via connector. Discovered existing n8n sales-ops

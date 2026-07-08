@@ -78,6 +78,11 @@ list of images to provide.
 
 ## Integrations (already wired)
 
+- **Meta Pixel:** dataset `4309835332571875` loads on every page
+  (`src/components/MetaPixel.astro` via the shared layout; manual snippet in
+  `public/ai-invite/*.html`). Booking conversions fire from the iClosed embed
+  bridge + `/thank-you`. Architecture, event map, and remaining setup:
+  `docs/meta-ads/README.md`.
 - **iClosed:** all booking runs on iClosed (`app.iclosed.io`). By page:
   `/apply` → `synchrosocial/social-media-consultation`; `/call` →
   `synchrosocial/ai-intro-call`; `/onboarding_step3` →
