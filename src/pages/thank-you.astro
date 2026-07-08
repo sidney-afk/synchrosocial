@@ -92,6 +92,34 @@ const year = new Date().getFullYear();
   description="Two quick steps to confirm your call with Synchro Social."
   bodyClass="v2"
 >
+  <script is:inline>
+    /* Booked-call conversion, fallback path. iClosed's "Social Media
+       Consultation" calendar redirects here after booking. The embed bridge
+       (IClosedEmbed.astro) normally already fired Schedule+Lead at booking
+       time and stored the event ID; re-firing with the SAME ID lets Meta
+       deduplicate, while a missed/blocked bridge still gets counted here
+       with a fresh ID. Direct visits to /thank-you overcount slightly —
+       accepted (see docs/meta-ads/README.md). */
+    (function () {
+      if (typeof window.fbq !== "function") return;
+      var eid = null;
+      try {
+        var stored = JSON.parse(sessionStorage.getItem("ss_booked_eid") || "null");
+        // Only trust a booking from the last hour — a stale ID from an older
+        // session would wrongly dedupe a genuine second booking.
+        if (stored && Date.now() - stored.at < 3600000) eid = stored.eid;
+      } catch (err) {}
+      if (!eid) {
+        eid =
+          window.crypto && crypto.randomUUID
+            ? crypto.randomUUID()
+            : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+      }
+      fbq("track", "Schedule", {}, { eventID: eid });
+      fbq("track", "Lead", {}, { eventID: "lead-" + eid });
+    })();
+  </script>
+
   <SiteNav />
 
   <!-- ===================== HERO ===================== -->

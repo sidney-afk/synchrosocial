@@ -54,6 +54,44 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         src="https://app.iclosed.io/assets/widget.js"
         async
       />
+      <script is:inline>
+        /* iClosed → Meta Pixel bridge.
+           The booking iframe posts lifecycle events to this page (documented
+           in iClosed's GTM guide): iclosed.potential / .qualified /
+           .disqualified / .call_scheduled. Firing the pixel here catches the
+           booking the moment it happens — including calendars that use
+           iClosed-internal confirmation and never redirect (e.g. /call).
+           The event ID is stored so /thank-you can re-fire the same booking
+           with the SAME ID and Meta deduplicates (event name + ID, 48h).
+           See docs/meta-ads/README.md for the full event map. */
+        if (!window.__iclosedMetaBridge) {
+          window.__iclosedMetaBridge = true;
+          window.addEventListener("message", function (e) {
+            if (e.origin !== "https://app.iclosed.io") return;
+            var t = e.data && e.data.type;
+            if (!t || typeof window.fbq !== "function") return;
+            if (t === "iclosed.potential") fbq("trackCustom", "iclosed_potential");
+            if (t === "iclosed.qualified") fbq("trackCustom", "iclosed_qualified");
+            if (t === "iclosed.disqualified") fbq("trackCustom", "iclosed_disqualified");
+            if (t === "iclosed.call_scheduled") {
+              var eid =
+                window.crypto && crypto.randomUUID
+                  ? crypto.randomUUID()
+                  : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+              try {
+                sessionStorage.setItem(
+                  "ss_booked_eid",
+                  JSON.stringify({ eid: eid, at: Date.now() })
+                );
+              } catch (err) {}
+              /* Schedule + Lead mark the same moment; pick ONE as the
+                 campaign's optimization event in Ads Manager. */
+              fbq("track", "Schedule", {}, { eventID: eid });
+              fbq("track", "Lead", {}, { eventID: "lead-" + eid });
+            }
+          });
+        }
+      </script>
     </div>
   ) : (
     <div class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}>

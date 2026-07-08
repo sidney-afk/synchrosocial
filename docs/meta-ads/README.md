@@ -70,74 +70,110 @@ Key facts from the site audit (July 8, 2026):
 - `/thank-you` can in principle be visited directly (bookmark/typed URL), so
   tiny overcount risk on the booked-call event; accepted.
 
-## 4. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`)
+## 4. The event map (FINAL — implemented)
+
+| Event | Where it fires | How |
+| --- | --- | --- |
+| `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
+| `ViewContent` (content_name `apply` / `call`) | `/apply`, `/call` | `metaEvent` prop on `Layout` |
+| `iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified` (custom) | any page with an iClosed embed | postMessage bridge in `IClosedEmbed.astro` — mid-funnel signals for retargeting + fallback optimization if booking volume is too thin |
+| **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; `/thank-you` re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
+
+Rules:
+- **Schedule and Lead mark the same moment.** Pick ONE as the campaign's
+  optimization event in Ads Manager (gameplan says booked-call → `Schedule`);
+  never report them summed.
+- Direct visits to `/thank-you` overcount slightly — accepted, tiny.
+- iClosed's server-side CAPI events (once connected, see §6) are a SEPARATE
+  stream with different (custom) names — they never dedupe against ours.
+  Optimization points at one stream deliberately.
+
+## 5. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`)
 
 - [x] `src/components/MetaPixel.astro` — official base snippet, pixel ID
-  `4309835332571875`, fires PageView everywhere, `noscript` fallback.
-  Supports an optional per-page event with a random `eventID` (stored in
-  `sessionStorage.mp_last_event`) so a future CAPI relay can deduplicate.
-- [x] `Layout.astro` accepts `metaEvent={{ name, params }}` and passes it through.
-- [x] Pixel snippet added to `public/ai-invite/index.html`, `schedule-clients.html`,
+  `4309835332571875`, PageView everywhere, `noscript` fallback, optional
+  per-page event with `eventID`.
+- [x] `Layout.astro` accepts `metaEvent={{ name, params }}`.
+- [x] Pixel snippet in `public/ai-invite/index.html`, `schedule-clients.html`,
   `schedule-investors.html`.
-- [ ] Funnel conversion events on `/apply` and `/thank-you` — pending the
-  deep-research conclusions on event naming (Schedule vs Lead vs
-  SubmitApplication) and dedup pattern. **NEXT THING TO FINISH.**
+- [x] `IClosedEmbed.astro` — iClosed→Meta postMessage bridge (booking +
+  mid-funnel events, sessionStorage eventID handoff).
+- [x] `/thank-you` — Schedule+Lead fallback with dedup via stored eventID.
+- [x] `/apply` + `/call` — ViewContent.
+- [x] `docs/meta-ads/RESEARCH.md` — verified 2026 research findings + sources.
+- Build verified (`npm run build`, events confirmed in `dist/`).
 
-## 5. Decisions log
+## 6. Decisions log
 
 | Date | Decision | Why |
 | --- | --- | --- |
 | 2026-07-08 | Ads target main funnel, not `/ai` | Sidney's instruction |
 | 2026-07-08 | Fresh start on dataset `4309835332571875`; old Framer pixel abandoned | Old pixel wasn't migrated; dataset already created in Events Manager |
 | 2026-07-08 | Pixel installed site-wide via one component in `Layout.astro` | Single source of truth; every page auto-covered |
-| 2026-07-08 | Launch browser-pixel-first; add CAPI as phase 2 | Static host = no server; don't block ad launch on relay infrastructure |
+| 2026-07-08 | Launch browser-pixel-first; CAPI = phase 2 via **iClosed's native integration** (NOT CAPI Gateway, NOT Stape, NOT n8n for the booking event) | Research: Gateway needs a paid cloud instance; iClosed sends CAPI events (incl. `Call booked`) from its own servers with hashed em/ph + fbp/fbc, free, ~10 min to set up |
+| 2026-07-08 | Booked call fires BOTH `Schedule` and `Lead` (same eventID root) at the bridge + `/thank-you` fallback | Semantics unresolved by research; both available in Ads Manager, pick one, no code change needed |
+| 2026-07-08 | n8n reserved for phase 3 (CRM offline events: qualified/closed → CAPI) | iClosed covers the booking event; n8n's existing Contract-Signed/deal-stage workflows are the natural hook for CAC events |
+| 2026-07-08 | No AEM/web-event config work | Research: prioritization eliminated, AEM tab removed (2026) |
+| 2026-07-08 | Domain verification = recommended, not blocking | Research: not required for event processing |
 | 2026-07-08 | No cookie-consent banner for now | US-targeted traffic; revisit if targeting EU (GDPR) |
 
-## 6. What remains (the checklist)
+## 7. What remains (the checklist)
 
-### In Meta Business Suite / Events Manager (manual, needs Sidney or admin)
-- [ ] Verify the domain `synchrosocial.com` (Business Settings → Brand Safety →
-  Domains; DNS TXT record is easiest — DNS lives wherever synchrosocial.com is registered)
-- [ ] Check the **Diagnostics (1)** warning on the dataset once events flow
-- [ ] Confirm ad account exists, payment method set, and the dataset is linked
-  to the ad account
-- [ ] After pixel deploys: use **Test Events** with the live site to verify
-  PageView + conversion events
-- [ ] Configure the conversion event for campaign optimization once it exists
+Detailed steps live in `SETUP_RUNBOOK.md`. Summary:
 
-### In this repo
-- [ ] Fire the booked-call conversion on `/thank-you` and a funnel-step event on
-  `/apply` (names pending research — see §7)
-- [ ] Merge to `main` → auto-deploys to production
+### Launch blockers
+- [ ] **Merge this branch to `main`** → auto-deploys the pixel to production
+- [ ] Ad account + payment method confirmed, dataset linked to ad account (runbook A)
+- [ ] Verify events with Test Events + a real test booking (runbook B)
+- [ ] ⚠️ **Fix the n8n booking router** (see §8 #1) — main-funnel bookings
+  currently create NO HubSpot contact/deal/emails. Needs Sidney's go-ahead
+  (touches live sales automation).
 
-### CAPI (phase 2 — research pending)
-- [ ] Choose relay: Meta CAPI Gateway vs Stape vs self-hosted n8n (an n8n
-  instance IS connected to Sidney's toolset) vs HubSpot-native option
-- [ ] Wire booked-call event server-side with same `eventID` for dedup
+### Phase 2 — server-side (fast follow, ~10 min manual)
+- [ ] Connect iClosed's native Meta CAPI: Events Manager → dataset Settings →
+  Generate access token ("Set up manually") → paste dataset ID + token in
+  iClosed → Integrations → Meta Pixel (runbook C2)
+- [ ] Create a custom conversion wrapping iClosed's `Call booked` custom event
+  (so it can be compared against / swapped in as the optimization goal)
+- [ ] Enable Automatic Advanced Matching in dataset Settings
 
-### CRM feedback loop (phase 3)
-- [ ] Get iClosed bookings into HubSpot as contacts (check iClosed native
-  integrations; worst case n8n/Zapier/manual)
-- [ ] Tag lead source (`hs_analytics_source = PAID_SOCIAL`, UTMs) on ad-driven contacts
-- [ ] Push qualified (`opportunity`) and closed (`customer`) stages back to
-  Meta as offline/CRM events so campaigns can optimize toward CAC, not CPL
+### Phase 3 — CRM feedback loop (CAC, not CPL)
+- [ ] Extend n8n "Sales — Contract Signed" (deal → closedwon) to send a CAPI
+  `Purchase`-class event with hashed email/phone + engagement value
+- [ ] Same for the qualified stage (deal past discovery / lead CONNECTED)
+- [ ] Tag ad-sourced contacts (UTMs; `hs_analytics_source = PAID_SOCIAL`)
+- [ ] Resolve open question: HubSpot free tier's native Meta conversion sync
+  (if it works on free, it may replace the n8n CAPI calls)
 
-## 7. Open questions (research in flight)
+## 8. Known issues / open items
 
-A deep-research report on the 2026 technical specifics was commissioned on
-2026-07-08 (results to be appended as `docs/meta-ads/RESEARCH.md`):
+1. ⚠️ **n8n router slug gap (PRODUCTION BUG, pre-existing):** workflow
+   "Sales — Call Booked (iClosed)" (`xoPqojySDriQ8Mzh`, webhook
+   `/webhook/iclosed-call-booked`) filters `event_slug` for `ai-intro-call`
+   and `vsl-funnel` only. `/apply` now books **`social-media-consultation`**
+   (re-pointed ~Jul 7), which falls into "Ignore Other Event Types" → no
+   HubSpot contact, no deal, no confirmation email, no nurture. Fix: change
+   the "Is Normal Funnel Event?" condition `vsl-funnel` →
+   `social-media-consultation` (or match both). One string. NOT yet applied —
+   awaiting Sidney's OK since it activates live customer emails.
+2. iClosed redirect query params on `/thank-you` — unknown; check with a test
+   booking (would enable browser-side advanced matching + richer dedup).
+3. HubSpot free tier Meta integration limits — unresearched (see RESEARCH.md).
+4. Events Manager Diagnostics warning — read it once events flow.
+5. The `iclosed_potential` custom event can fire twice per lead (iClosed quirk
+   when the form collects email AND phone) — fine for audiences, don't use it
+   as a KPI.
 
-1. Best standard event for a booked call (Schedule vs Lead vs SubmitApplication) and how optimization treats each
-2. CAPI options with no server + free HubSpot (Gateway pricing, Stape, n8n community node)
-3. iClosed tracking hooks: postMessage events? native pixel field? query params on the /thank-you redirect (→ advanced matching)?
-4. HubSpot free tier: what Meta lead-sync / offline-event features are included
-5. Whether Aggregated Event Measurement / event prioritization still applies in 2026
-6. Advanced matching options on a static site
-
-## 8. Session log
+## 9. Session log
 
 - **2026-07-08** — Project kickoff (this branch). Read the gameplan Google Doc;
   audited repo + live site (no existing tracking found); confirmed funnel map;
-  pulled HubSpot portal facts via connector; installed pixel base code
-  site-wide + static pages; commissioned deep research on 2026 Meta setup
-  specifics. Pending: conversion events, research doc, Events Manager runbook.
+  pulled HubSpot portal facts via connector. Discovered existing n8n sales-ops
+  layer (iClosed booking webhook → HubSpot contact+deal; contract-signed →
+  closedwon) and the router slug gap (§8.1). Ran deep research (23 sources,
+  25 claims adversarially verified → RESEARCH.md). Implemented: site-wide
+  pixel, iClosed postMessage bridge, Schedule+Lead conversion with
+  sessionStorage dedup, ViewContent on /apply + /call, static-page snippets.
+  Wrote README (this file), SETUP_RUNBOOK.md, RESEARCH.md. All pushed to
+  `claude/meta-ads-infrastructure-w47kkb`. Not done: n8n router fix (needs
+  go-ahead), everything in §7 manual checklists.

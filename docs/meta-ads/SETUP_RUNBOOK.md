@@ -16,14 +16,20 @@
   confirm an ad account exists (create one if not, currency USD, timezone
   America/New_York to match HubSpot). Add a payment method
   (Billing → Payment methods). Ads cannot launch without this.
-- [ ] **A3. Verify the domain** — Business Settings → Brand safety → Domains →
-  Add `synchrosocial.com`. Use the **DNS TXT method**: add the
-  `facebook-domain-verification=…` TXT record at the DNS host.
-  ⚠️ The site is GitHub Pages, so DNS lives at the domain registrar (wherever
-  synchrosocial.com's nameservers point — check with `dig NS synchrosocial.com`).
-  Alternative: the meta-tag method can be done in this repo
-  (`src/layouts/Layout.astro`, add the `<meta name="facebook-domain-verification">`
-  tag) — tell Claude the content value and it takes 2 minutes + a deploy.
+- [ ] **A3. Verify the domain** — recommended but NOT a launch blocker
+  (research-confirmed: verification is no longer required for event
+  processing; it matters for link editing/brand safety). Business Settings →
+  Brand safety → Domains → Add `synchrosocial.com`. Use the **DNS TXT
+  method**: add the `facebook-domain-verification=…` TXT record at the DNS
+  host. ⚠️ The site is GitHub Pages, so DNS lives at the domain registrar
+  (wherever synchrosocial.com's nameservers point — check with
+  `dig NS synchrosocial.com`). Alternative: the meta-tag method can be done
+  in this repo (`src/layouts/Layout.astro`) — tell Claude the content value
+  and it takes 2 minutes + a deploy.
+- [ ] **A6. Enable Automatic Advanced Matching** — Events Manager → dataset →
+  Settings → Automatic advanced matching → ON. (Manual advanced matching
+  isn't possible browser-side — the booking form is inside iClosed's iframe —
+  but iClosed's CAPI integration (C2) sends hashed email/phone server-side.)
 - [ ] **A4. Connect assets** — Business Settings: confirm the Facebook Page and
   Instagram account are added as assets and linked to the ad account.
 - [ ] **A5. Dataset ↔ ad account link** — Events Manager → dataset
@@ -35,8 +41,10 @@
 - [ ] **B1. Deploy** — merge the `claude/meta-ads-infrastructure-w47kkb` PR to
   `main`; GitHub Actions deploys to synchrosocial.com automatically (~2 min).
 - [ ] **B2. Test Events** — Events Manager → dataset → **Test events** tab →
-  enter `https://synchrosocial.com` → browse the site. You should see
-  `PageView` on every page plus the funnel events (see README §event map).
+  enter `https://synchrosocial.com` → browse the site. Expected:
+  `PageView` everywhere; `ViewContent` on `/apply` and `/call`;
+  `iclosed_potential` / `iclosed_qualified` as you fill the booking form;
+  `Schedule` + `Lead` at booking and again (deduplicated) on `/thank-you`.
   Also test on your phone (real-world traffic is mostly mobile).
 - [ ] **B3. Meta Pixel Helper** — install the Chrome extension "Meta Pixel
   Helper", visit the live site, confirm the pixel fires green with ID
@@ -60,10 +68,21 @@
 - [ ] **C1.** Confirm the "Call booked" webhook → 
   `https://synchrosocial.app.n8n.cloud/webhook/iclosed-call-booked` fires for
   **all** event types (or at least Social Media Consultation + AI Intro Call).
-- [ ] **C2.** Check iClosed's settings for a native "Meta Pixel ID" /
-  conversion-tracking field on the booking page or event type — if it exists,
-  adding pixel 4309835332571875 there tracks the steps INSIDE the booking
-  iframe (form started, time picked) that our page-level pixel can't see.
+- [ ] **C2. Connect iClosed's native Meta CAPI** (research-confirmed; this IS
+  our Conversions API — no server, no Stape, no Gateway needed):
+  1. Events Manager → dataset "Synchro Social Data" → Settings →
+     Conversions API → **"Set up manually" → Generate access token** (copy it).
+  2. iClosed dashboard → Integrations → **Meta Pixel** → paste
+     Pixel/Dataset ID `4309835332571875` + the access token.
+  3. iClosed then sends server-side events as leads move through the form:
+     Page view, Potential, Qualified, Disqualified, **Call booked** — with
+     hashed email/phone, IP, user agent, fbp/fbc. Note plan limits: 1 pixel
+     on Startup plan, 5 on Business/Enterprise.
+  4. In Events Manager, confirm the custom events arrive (names like
+     `invitee_meeting_scheduled`), then create a **custom conversion**
+     wrapping the "Call booked" event so it's usable as an optimization goal.
+     ⚠️ These custom events do NOT dedupe against our site's Schedule/Lead
+     (different names, by design) — optimization must point at ONE stream.
 - [ ] **C3.** Check whether the post-booking redirect to `/thank-you` can
   append query params (invitee email / booking id). If yes, enable it —
   Claude can then upgrade the thank-you event with advanced matching +
@@ -72,8 +91,11 @@
 ## D. Campaign-side wiring (in Ads Manager, before launch)
 
 - [ ] **D1.** Create campaign → Leads objective → conversion location Website →
-  performance goal = maximize conversions → select the dataset + the
-  booked-call conversion event (see README §event map for the final name).
+  performance goal = maximize conversions → select the dataset + conversion
+  event **`Schedule`** (the booked call; `Lead` is an identical twin if the
+  UI or volume favors it — never optimize/report on both). If booking volume
+  is too thin for learning, temporarily optimize on `ViewContent` or the
+  `iclosed_qualified` custom event and move down-funnel once volume allows.
 - [ ] **D2.** UTM template on every ad (so HubSpot + analytics can attribute):
   `utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}`
 - [ ] **D3.** Confirm the ad's landing page is the main funnel (`/` or `/apply`),
