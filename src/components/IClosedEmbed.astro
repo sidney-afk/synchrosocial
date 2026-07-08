@@ -176,8 +176,8 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               var quietFor = lastHeightMessageAt ? now - lastHeightMessageAt : 0;
 
               if (heightMessageCount > 0 && quietFor >= 1400) return true;
-              if (iframeLoaded && iframeAge >= 6500) return true;
-              return iframeAge >= 9000;
+              if (iframeLoaded && iframeAge >= 5200) return true;
+              return iframeAge >= 7200;
             }
 
             function showAfterQuiet(delay) {
@@ -213,7 +213,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             observer.observe(root, { childList: true, subtree: true });
             watchIframe(iframe());
 
-            fallbackTimer = setTimeout(show, 9500);
+            fallbackTimer = setTimeout(show, 7600);
           }
 
           function init() {
@@ -224,9 +224,15 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             if (!ICLOSED_ORIGINS[event.origin]) return;
             if (!event.data || event.data.type !== "iclosed.widget_height") return;
 
-            document.querySelectorAll("[data-iclosed-embed]").forEach(function (root) {
+            var roots = Array.prototype.slice
+              .call(document.querySelectorAll("[data-iclosed-embed]"))
+              .filter(function (root) {
+                return root.querySelector("iframe");
+              });
+
+            roots.forEach(function (root) {
               var frame = root.querySelector("iframe");
-              if (frame && frame.contentWindow === event.source) {
+              if (roots.length === 1 || frame.contentWindow === event.source) {
                 stabilize(root);
                 if (root.__ssIClosedNoteHeight) root.__ssIClosedNoteHeight();
               }
