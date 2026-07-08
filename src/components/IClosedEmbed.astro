@@ -16,6 +16,7 @@ interface Props {
   title?: string;
   class?: string;
   card?: boolean;
+  resize?: boolean;
 }
 const {
   url = null,
@@ -24,6 +25,7 @@ const {
   title = "Book a call",
   class: className = "",
   card = true,
+  resize = true,
 } = Astro.props;
 
 // iClosed's inline widget is transparent and renders its OWN white card (with
@@ -56,35 +58,14 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
 {
   bookingUrl ? (
-    <div
-      class={wrapperClass}
-      data-iclosed-embed
-      data-ready="false"
-      style={`--iclosed-embed-height:${height};`}
-    >
+    <div class={wrapperClass}>
       <div
         class="iclosed-widget"
         data-url={bookingUrl}
-        data-resize="true"
+        data-resize={resize ? "true" : undefined}
         title={title}
-        style={`width:100%;min-width:320px;height:${height};`}
+        style={`width:100%;${resize ? "min-width:320px;" : ""}height:${height};`}
       />
-      <div class="iclosed-embed__loader" aria-hidden="true">
-        <div class="iclosed-embed__loader-card">
-          <div class="iclosed-embed__loader-header">
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--header" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--header" />
-          </div>
-          <div class="iclosed-embed__loader-body">
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--title" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--label" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--field" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--label" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--field" />
-            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--button" />
-          </div>
-        </div>
-      </div>
       <script
         is:inline
         type="text/javascript"
@@ -128,125 +109,6 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             }
           });
         }
-      </script>
-      <script is:inline>
-        /* Show a stable loader while iClosed injects and resizes its iframe.
-           Then swap to the real scheduler once the initial height burst is
-           quiet, preserving iClosed's final card exactly. */
-        (function () {
-          if (window.__ssIClosedStabilizer) {
-            window.__ssIClosedStabilizer.init();
-            return;
-          }
-
-          var ICLOSED_ORIGINS = {
-            "https://dev.iclosed.io": true,
-            "https://stage.iclosed.io": true,
-            "https://app.iclosed.io": true,
-          };
-
-          function stabilize(root) {
-            if (!root || root.__ssIClosedReadySetup) return;
-            root.__ssIClosedReadySetup = true;
-
-            var readyTimer = null;
-            var fallbackTimer = null;
-            var iframeSeenAt = 0;
-            var iframeLoaded = false;
-            var heightMessageCount = 0;
-            var lastHeightMessageAt = 0;
-
-            function iframe() {
-              return root.querySelector("iframe");
-            }
-
-            function show() {
-              if (!iframe()) return;
-              root.setAttribute("data-ready", "true");
-              if (readyTimer) clearTimeout(readyTimer);
-              if (fallbackTimer) clearTimeout(fallbackTimer);
-            }
-
-            function shouldShow() {
-              var node = iframe();
-              if (!node) return false;
-
-              var now = Date.now();
-              var iframeAge = iframeSeenAt ? now - iframeSeenAt : 0;
-              var quietFor = lastHeightMessageAt ? now - lastHeightMessageAt : 0;
-
-              if (heightMessageCount > 0 && quietFor >= 1400) return true;
-              if (iframeLoaded && iframeAge >= 5200) return true;
-              return iframeAge >= 7200;
-            }
-
-            function showAfterQuiet(delay) {
-              if (root.getAttribute("data-ready") === "true") return;
-              if (readyTimer) clearTimeout(readyTimer);
-              readyTimer = setTimeout(function () {
-                if (shouldShow()) show();
-                else showAfterQuiet(250);
-              }, delay);
-            }
-
-            root.__ssIClosedNoteHeight = function () {
-              iframeSeenAt = iframeSeenAt || Date.now();
-              heightMessageCount += 1;
-              lastHeightMessageAt = Date.now();
-              showAfterQuiet(1450);
-            };
-
-            function watchIframe(node) {
-              if (!node || node.__ssIClosedLoadWatched) return;
-              iframeSeenAt = iframeSeenAt || Date.now();
-              node.__ssIClosedLoadWatched = true;
-              node.addEventListener("load", function () {
-                iframeLoaded = true;
-                showAfterQuiet(1800);
-              });
-              showAfterQuiet(2600);
-            }
-
-            var observer = new MutationObserver(function () {
-              watchIframe(iframe());
-            });
-            observer.observe(root, { childList: true, subtree: true });
-            watchIframe(iframe());
-
-            fallbackTimer = setTimeout(show, 7600);
-          }
-
-          function init() {
-            document.querySelectorAll("[data-iclosed-embed]").forEach(stabilize);
-          }
-
-          window.addEventListener("message", function (event) {
-            if (!ICLOSED_ORIGINS[event.origin]) return;
-            if (!event.data || event.data.type !== "iclosed.widget_height") return;
-
-            var roots = Array.prototype.slice
-              .call(document.querySelectorAll("[data-iclosed-embed]"))
-              .filter(function (root) {
-                return root.querySelector("iframe");
-              });
-
-            roots.forEach(function (root) {
-              var frame = root.querySelector("iframe");
-              if (roots.length === 1 || frame.contentWindow === event.source) {
-                stabilize(root);
-                if (root.__ssIClosedNoteHeight) root.__ssIClosedNoteHeight();
-              }
-            });
-          });
-
-          if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", init);
-          } else {
-            init();
-          }
-
-          window.__ssIClosedStabilizer = { init: init };
-        })();
       </script>
     </div>
   ) : (
@@ -331,146 +193,3 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
     </div>
   )
 }
-
-<style is:global>
-  .iclosed-embed {
-    position: relative;
-  }
-
-  .iclosed-embed[data-ready="false"] {
-    min-height: var(--iclosed-embed-height, 620px);
-  }
-
-  .iclosed-embed__loader {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    pointer-events: none;
-  }
-
-  .iclosed-embed__loader-card {
-    width: min(730px, 100%);
-    height: min(392px, 100%);
-    overflow: hidden;
-    border: 1px solid rgba(15, 23, 42, 0.1);
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
-  }
-
-  .iclosed-embed__loader-header {
-    display: flex;
-    height: 64px;
-    align-items: center;
-    justify-content: center;
-    gap: 26px;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
-  }
-
-  .iclosed-embed__loader-body {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px 10% 26px;
-  }
-
-  .iclosed-embed__skeleton {
-    display: block;
-    border-radius: 999px;
-    background:
-      linear-gradient(
-        90deg,
-        #f3f4f7 0%,
-        #eceef3 46%,
-        #f7f8fa 58%,
-        #f3f4f7 100%
-      );
-    background-size: 220% 100%;
-    animation: iclosed-embed-shimmer 1.15s ease-in-out infinite;
-  }
-
-  .iclosed-embed__skeleton--header {
-    width: 140px;
-    height: 16px;
-  }
-
-  .iclosed-embed__skeleton--title {
-    width: 160px;
-    height: 20px;
-    margin: 2px 0 36px;
-  }
-
-  .iclosed-embed__skeleton--label {
-    width: 80px;
-    height: 12px;
-    margin-bottom: 10px;
-  }
-
-  .iclosed-embed__skeleton--field {
-    width: min(240px, 72%);
-    height: 24px;
-    margin-bottom: 54px;
-  }
-
-  .iclosed-embed__skeleton--button {
-    width: 100%;
-    height: 42px;
-    border-radius: 6px;
-  }
-
-  .iclosed-embed > .iclosed-widget {
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  .iclosed-embed[data-ready="false"] > .iclosed-widget {
-    height: var(--iclosed-embed-height, 620px) !important;
-    overflow: hidden;
-  }
-
-  .iclosed-embed[data-ready="true"] > .iclosed-widget {
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .iclosed-embed[data-ready="true"] > .iclosed-embed__loader {
-    display: none;
-  }
-
-  @keyframes iclosed-embed-shimmer {
-    0% {
-      background-position: 120% 0;
-    }
-    100% {
-      background-position: -120% 0;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .iclosed-embed__loader-card {
-      height: min(390px, 100%);
-    }
-
-    .iclosed-embed__loader-header {
-      height: 56px;
-      gap: 16px;
-    }
-
-    .iclosed-embed__loader-body {
-      padding: 22px 8% 24px;
-    }
-
-    .iclosed-embed__skeleton--header {
-      width: 118px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .iclosed-embed__skeleton {
-      animation: none;
-    }
-  }
-</style>
