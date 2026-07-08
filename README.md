@@ -79,9 +79,9 @@ list of images to provide.
 ## Integrations (already wired)
 
 - **iClosed:** all booking runs on iClosed (`app.iclosed.io`). By page:
-  `/apply` → `synchrosocial/vsl-funnel`; `/call` →
+  `/apply` → `synchrosocial/social-media-consultation`; `/call` →
   `synchrosocial/ai-intro-call`; `/onboarding_step3` →
-  `synchrosocial/strategy-session`; `/ai_onboarding_step3` →
+  `synchrosocial/kickoff-call`; `/ai_onboarding_step3` →
   `synchrosocial/ai-clone-consultation`; events/clients (`/event`,
   `/ai-invite/schedule-clients`, `/old`) → `synchrosocial/demo`; investors
   (`/ai-invite/schedule-investors`) → `synchrosocial/1-1-call-with-kasper`.
