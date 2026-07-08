@@ -33,7 +33,7 @@ flowchart TD
     AICALL{{"AI Intro Call<br/>ai-intro-call · ★ QUALIFY+DISQUALIFY<br/>internal confirm (no redirect)"}}
     DEMO["demo<br/>synchrosocial/demo<br/>internal confirm"]
     ONE["1:1 Call with Kasper<br/>1-1-call-with-kasper<br/>internal confirm"]
-    KICK["Synchro Client Kickoff Call<br/>strategy-session · 60 min<br/>internal confirm"]
+    KICK["Synchro Client Kickoff Call<br/>kickoff-call · 60 min<br/>internal confirm"]
     AICC["AI Clone Consultation<br/>ai-clone-consultation<br/>internal confirm"]
   end
 
@@ -98,7 +98,7 @@ flowchart TD
 | AI invite — Clients | `/ai-invite/schedule-clients` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Investors | `/ai-invite/schedule-investors` | — | **1:1 Call** (`1-1-call-with-kasper`) | No | internal |
 | Legacy homepage | `/old` | — | **demo** (`synchrosocial/demo`) | No | internal |
-| Main onboarding step 3 | `/onboarding_step3` | purple | **Kickoff Call** (`strategy-session`, 60 min) | No | internal → step 4 |
+| Main onboarding step 3 | `/onboarding_step3` | purple | **Kickoff Call** (`kickoff-call`, 60 min) | No | internal → step 4 |
 | AI onboarding step 3 | `/ai_onboarding_step3` | coral | **AI Clone Consultation** (`ai-clone-consultation`) | No | internal → step 4 |
 
 ## Why this is coherent
