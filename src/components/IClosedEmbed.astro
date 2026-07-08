@@ -64,6 +64,22 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         title={title}
         style={`width:100%;min-width:320px;height:${height};`}
       />
+      <div class="iclosed-embed__loader" aria-hidden="true">
+        <div class="iclosed-embed__loader-card">
+          <div class="iclosed-embed__loader-header">
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--header" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--header" />
+          </div>
+          <div class="iclosed-embed__loader-body">
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--title" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--label" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--field" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--label" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--field" />
+            <span class="iclosed-embed__skeleton iclosed-embed__skeleton--button" />
+          </div>
+        </div>
+      </div>
       <script
         is:inline
         type="text/javascript"
@@ -109,9 +125,9 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         }
       </script>
       <script is:inline>
-        /* Keep iClosed's injected iframe hidden until its initial load/height
-           messages settle. This prevents the transient white iframe boxes and
-           resize flicker while preserving iClosed's final card exactly. */
+        /* Show a stable loader while iClosed injects and resizes its iframe.
+           Then swap to the real scheduler once the initial height burst is
+           quiet, preserving iClosed's final card exactly. */
         (function () {
           if (window.__ssIClosedStabilizer) {
             window.__ssIClosedStabilizer.init();
@@ -149,8 +165,8 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               if (readyTimer) clearTimeout(readyTimer);
               readyTimer = setTimeout(function () {
                 var iframeAge = iframeSeenAt ? Date.now() - iframeSeenAt : 0;
-                if ((loaded && iframeAge > 1200) || iframeAge > 3600) show();
-                else showAfterQuiet(220);
+                if ((loaded && iframeAge > 700) || iframeAge > 1800) show();
+                else showAfterQuiet(140);
               }, delay);
             }
 
@@ -160,9 +176,9 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               node.__ssIClosedLoadWatched = true;
               node.addEventListener("load", function () {
                 loaded = true;
-                showAfterQuiet(1200);
+                showAfterQuiet(650);
               });
-              showAfterQuiet(1800);
+              showAfterQuiet(1200);
             }
 
             var observer = new MutationObserver(function () {
@@ -171,7 +187,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             observer.observe(root, { childList: true, subtree: true });
             watchIframe(iframe());
 
-            fallbackTimer = setTimeout(show, 7000);
+            fallbackTimer = setTimeout(show, 3200);
           }
 
           function init() {
@@ -186,7 +202,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               var frame = root.querySelector("iframe");
               if (frame && frame.contentWindow === event.source) {
                 stabilize(root);
-                var delay = root.getAttribute("data-ready") === "true" ? 0 : 1200;
+                var delay = root.getAttribute("data-ready") === "true" ? 0 : 500;
                 if (delay) {
                   if (root.__ssIClosedHeightTimer) clearTimeout(root.__ssIClosedHeightTimer);
                   root.__ssIClosedHeightTimer = setTimeout(function () {
@@ -295,20 +311,131 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
     position: relative;
   }
 
-  .iclosed-embed > .iclosed-widget {
-    opacity: 0;
+  .iclosed-embed__loader {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     pointer-events: none;
-    transition: opacity 160ms ease;
+  }
+
+  .iclosed-embed__loader-card {
+    width: min(730px, 100%);
+    height: min(392px, 100%);
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.1);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+  }
+
+  .iclosed-embed__loader-header {
+    display: flex;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+  }
+
+  .iclosed-embed__loader-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 10% 26px;
+  }
+
+  .iclosed-embed__skeleton {
+    display: block;
+    border-radius: 999px;
+    background:
+      linear-gradient(
+        90deg,
+        #f3f4f7 0%,
+        #eceef3 46%,
+        #f7f8fa 58%,
+        #f3f4f7 100%
+      );
+    background-size: 220% 100%;
+    animation: iclosed-embed-shimmer 1.15s ease-in-out infinite;
+  }
+
+  .iclosed-embed__skeleton--header {
+    width: 140px;
+    height: 16px;
+  }
+
+  .iclosed-embed__skeleton--title {
+    width: 160px;
+    height: 20px;
+    margin: 2px 0 36px;
+  }
+
+  .iclosed-embed__skeleton--label {
+    width: 80px;
+    height: 12px;
+    margin-bottom: 10px;
+  }
+
+  .iclosed-embed__skeleton--field {
+    width: min(240px, 72%);
+    height: 24px;
+    margin-bottom: 54px;
+  }
+
+  .iclosed-embed__skeleton--button {
+    width: 100%;
+    height: 42px;
+    border-radius: 6px;
+  }
+
+  .iclosed-embed > .iclosed-widget {
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .iclosed-embed[data-ready="true"] > .iclosed-widget {
-    opacity: 1;
+    visibility: visible;
     pointer-events: auto;
   }
 
+  .iclosed-embed[data-ready="true"] > .iclosed-embed__loader {
+    display: none;
+  }
+
+  @keyframes iclosed-embed-shimmer {
+    0% {
+      background-position: 120% 0;
+    }
+    100% {
+      background-position: -120% 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .iclosed-embed__loader-card {
+      height: min(390px, 100%);
+    }
+
+    .iclosed-embed__loader-header {
+      height: 56px;
+      gap: 16px;
+    }
+
+    .iclosed-embed__loader-body {
+      padding: 22px 8% 24px;
+    }
+
+    .iclosed-embed__skeleton--header {
+      width: 118px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .iclosed-embed > .iclosed-widget {
-      transition: none;
+    .iclosed-embed__skeleton {
+      animation: none;
     }
   }
 </style>
