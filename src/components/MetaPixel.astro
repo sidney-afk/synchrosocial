@@ -1,0 +1,74 @@
+---
+// Meta Pixel — loaded in <head> by Layout.astro on every page.
+//
+// The pixel ID is the Events Manager dataset "Synchro Social Data"
+// (business portfolio "Synchro Social", ID 895720379894...). Base code fires
+// PageView automatically on every page load.
+//
+// Pages can fire ONE additional funnel event by passing `event` through
+// Layout (e.g. /thank-you fires the booked-call conversion). Every event is
+// sent with a random eventID so the same event can later be re-sent through
+// the Conversions API and deduplicated by Meta (event name + eventID pair).
+// The eventID is also kept in sessionStorage so a future CAPI relay could
+// pick it up from the browser if we ever forward events client-side.
+//
+// See docs/meta-ads/ for the full tracking architecture.
+export const META_PIXEL_ID = "4309835332571875";
+
+interface Props {
+  /** Optional standard event to fire after PageView, e.g. "Schedule". */
+  event?: string;
+  /** Optional params for the event (content_name etc.). */
+  params?: Record<string, string | number>;
+}
+const { event = null, params = {} } = Astro.props;
+---
+
+<script
+  is:inline
+  define:vars={{ pixelId: META_PIXEL_ID, evt: event, evtParams: params }}
+>
+  /* Meta Pixel base code (official snippet). */
+  !(function (f, b, e, v, n, t, s) {
+    if (f.fbq) return;
+    n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n;
+    n.push = n;
+    n.loaded = !0;
+    n.version = "2.0";
+    n.queue = [];
+    t = b.createElement(e);
+    t.async = !0;
+    t.src = v;
+    s = b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t, s);
+  })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+
+  fbq("init", pixelId);
+  fbq("track", "PageView");
+
+  if (evt) {
+    // Random UUID as eventID → lets a server-side Conversions API resend the
+    // same event without double counting (Meta dedupes on event name + ID).
+    var eventID =
+      window.crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+    fbq("track", evt, evtParams, { eventID: eventID });
+    try {
+      sessionStorage.setItem("mp_last_event", JSON.stringify({ evt, eventID }));
+    } catch (e) {}
+  }
+</script>
+
+<noscript>
+  <img
+    height="1"
+    width="1"
+    style="display:none"
+    src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+    alt=""
+  />
+</noscript>
