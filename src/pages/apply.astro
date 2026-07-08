@@ -65,22 +65,15 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
-           iClosed lays the form + calendar side by side once the widget is
-           >= 900px wide (a @container query), so this column stays at 912px.
-           iClosed's scheduler renders inside a TRANSPARENT iframe as its own
-           ~811px-wide white card (fixed width; it never grows), centered in the
-           iframe. So we render it card-less (`card={false}`): only iClosed's own
-           card shows, sitting on the purple hero — matching the Growth Topia
-           reference. Wrapping it in our own wider white card (the old default)
-           left empty white bands on either side of the 811px content. -->
+           Original beginning-of-day behavior: keep our white wrapper card and
+           give iClosed a 960px column so its official auto-resizing inline
+           widget handles loading and height changes exactly as before. -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[912px]">
+        <div class="mx-auto w-[95%] max-w-[960px]">
           <IClosedEmbed
             linkPrefix="synchrosocial/social-media-consultation"
             title="Social Media Consultation"
             height="620px"
-            card={false}
-            resize={false}
           />
         </div>
       </div>
