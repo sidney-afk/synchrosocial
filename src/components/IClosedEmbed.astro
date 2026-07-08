@@ -15,6 +15,8 @@ interface Props {
   height?: string;
   title?: string;
   class?: string;
+  card?: boolean;
+  resize?: boolean;
 }
 const {
   url = null,
@@ -22,10 +24,19 @@ const {
   height = "760px",
   title = "Book a call",
   class: className = "",
+  card = true,
+  resize = true,
 } = Astro.props;
 
 const bookingUrl =
   url ?? (linkPrefix ? `https://app.iclosed.io/e/${linkPrefix}` : null);
+
+// iClosed renders its own white scheduler card inside a transparent iframe.
+// On /apply, use the bare official inline embed so our wider wrapper does not
+// show as empty white side gutters around iClosed's card.
+const cardClass = "overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5";
+const wrapperClass = [card ? cardClass : "", className].filter(Boolean).join(" ");
+const widgetStyle = `width:100%;${resize ? "min-width:320px;" : ""}height:${height};`;
 
 // Static day grid — purely decorative for the placeholder.
 const days = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -38,15 +49,13 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
 {
   bookingUrl ? (
-    <div
-      class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}
-    >
+    <div class={wrapperClass || undefined}>
       <div
         class="iclosed-widget"
         data-url={bookingUrl}
-        data-resize="true"
+        data-resize={resize ? "true" : undefined}
         title={title}
-        style={`width:100%;min-width:320px;height:${height};`}
+        style={widgetStyle}
       />
       <script
         is:inline
