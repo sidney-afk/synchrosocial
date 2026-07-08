@@ -14,7 +14,7 @@ import { caseStudies, slug } from "../data/caseStudies.js";
    80px-padded case-study band, minimal rights-only footer.
 
    Booking uses Kasper's iClosed "Social Media Consultation" calendar
-   (synchrosocial/vsl-funnel), which redirects to /thank-you. /call uses a
+   (synchrosocial/social-media-consultation), which redirects to /thank-you. /call uses a
    sibling calendar (synchrosocial/ai-intro-call) — same questions, but an
    internal confirmation so the coral AI funnel doesn't jump to purple.
 =========================================================================== */
@@ -62,17 +62,18 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="w-full" />
       </div>
 
-      <!-- Booking — Kasper's demo calendar (same one used on / and /call).
-           iClosed's scheduler is a CONTAINER-QUERY layout: it only places the
-           form and calendar side by side once the widget itself is >= 900px
-           wide (@container (min-width:900px) in iClosed's stylesheet). So this
-           column must be wider than 900px to get the two-column shape that
-           matches the Growth Topia reference — below 900px iClosed stacks them
-           (which is what an 810px column was doing). -->
+      <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
+           iClosed's scheduler is a CONTAINER-QUERY layout: the form and calendar
+           only sit side by side once the widget is >= 900px wide
+           (@container (min-width:900px)), and iClosed caps its own content at
+           900px. So we size this column just above 900px — wide enough for the
+           two-column shape, tight enough that iClosed's content fills it with
+           no blank side margins (matching the Growth Topia reference). Below
+           900px iClosed stacks the form above the calendar. -->
       <div id="book" class="w-full min-h-[542px]">
-        <div class="mx-auto w-[95%] max-w-[960px]">
+        <div class="mx-auto w-[95%] max-w-[912px]">
           <IClosedEmbed
-            linkPrefix="synchrosocial/vsl-funnel"
+            linkPrefix="synchrosocial/social-media-consultation"
             title="Social Media Consultation"
             height="620px"
           />

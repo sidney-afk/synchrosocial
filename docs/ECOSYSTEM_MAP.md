@@ -29,7 +29,7 @@ flowchart TD
 
   %% ---------- Booking calendars (iClosed) ----------
   subgraph CALS["iClosed calendars — kasper@synchrosocial.com (Zoom)"]
-    SMC{{"Social Media Consultation<br/>vsl-funnel · ★ QUALIFY+DISQUALIFY<br/>→ /thank-you"}}
+    SMC{{"Social Media Consultation<br/>social-media-consultation · ★ QUALIFY+DISQUALIFY<br/>→ /thank-you"}}
     AICALL{{"AI Intro Call<br/>ai-intro-call · ★ QUALIFY+DISQUALIFY<br/>internal confirm (no redirect)"}}
     DEMO["demo<br/>synchrosocial/demo<br/>internal confirm"]
     ONE["1:1 Call with Kasper<br/>1-1-call-with-kasper<br/>internal confirm"]
@@ -93,7 +93,7 @@ flowchart TD
 | Entry point | Page | Theme | Calendar | Qualifies? | After booking |
 | --- | --- | --- | --- | --- | --- |
 | Cold ads | `/ai` → `/call` | coral | **AI Intro Call** (`ai-intro-call`) | **YES — filter** | internal (no redirect) |
-| Main site | `/` → `/apply` | purple | **Social Media Consultation** (`vsl-funnel`) | **YES — filter** | → `/thank-you` |
+| Main site | `/` → `/apply` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
 | Events Hub "Book a call" | `/event` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Clients | `/ai-invite/schedule-clients` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Investors | `/ai-invite/schedule-investors` | — | **1:1 Call** (`1-1-call-with-kasper`) | No | internal |
