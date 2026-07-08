@@ -56,7 +56,12 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
 {
   bookingUrl ? (
-    <div class={wrapperClass} data-iclosed-embed data-ready="false">
+    <div
+      class={wrapperClass}
+      data-iclosed-embed
+      data-ready="false"
+      style={`--iclosed-embed-height:${height};`}
+    >
       <div
         class="iclosed-widget"
         data-url={bookingUrl}
@@ -146,8 +151,10 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
 
             var readyTimer = null;
             var fallbackTimer = null;
-            var loaded = false;
             var iframeSeenAt = 0;
+            var iframeLoaded = false;
+            var heightMessageCount = 0;
+            var lastHeightMessageAt = 0;
 
             function iframe() {
               return root.querySelector("iframe");
@@ -160,25 +167,44 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               if (fallbackTimer) clearTimeout(fallbackTimer);
             }
 
+            function shouldShow() {
+              var node = iframe();
+              if (!node) return false;
+
+              var now = Date.now();
+              var iframeAge = iframeSeenAt ? now - iframeSeenAt : 0;
+              var quietFor = lastHeightMessageAt ? now - lastHeightMessageAt : 0;
+
+              if (heightMessageCount > 0 && quietFor >= 1400) return true;
+              if (iframeLoaded && iframeAge >= 6500) return true;
+              return iframeAge >= 9000;
+            }
+
             function showAfterQuiet(delay) {
               if (root.getAttribute("data-ready") === "true") return;
               if (readyTimer) clearTimeout(readyTimer);
               readyTimer = setTimeout(function () {
-                var iframeAge = iframeSeenAt ? Date.now() - iframeSeenAt : 0;
-                if ((loaded && iframeAge > 700) || iframeAge > 1800) show();
-                else showAfterQuiet(140);
+                if (shouldShow()) show();
+                else showAfterQuiet(250);
               }, delay);
             }
+
+            root.__ssIClosedNoteHeight = function () {
+              iframeSeenAt = iframeSeenAt || Date.now();
+              heightMessageCount += 1;
+              lastHeightMessageAt = Date.now();
+              showAfterQuiet(1450);
+            };
 
             function watchIframe(node) {
               if (!node || node.__ssIClosedLoadWatched) return;
               iframeSeenAt = iframeSeenAt || Date.now();
               node.__ssIClosedLoadWatched = true;
               node.addEventListener("load", function () {
-                loaded = true;
-                showAfterQuiet(650);
+                iframeLoaded = true;
+                showAfterQuiet(1800);
               });
-              showAfterQuiet(1200);
+              showAfterQuiet(2600);
             }
 
             var observer = new MutationObserver(function () {
@@ -187,7 +213,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
             observer.observe(root, { childList: true, subtree: true });
             watchIframe(iframe());
 
-            fallbackTimer = setTimeout(show, 3200);
+            fallbackTimer = setTimeout(show, 9500);
           }
 
           function init() {
@@ -202,13 +228,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
               var frame = root.querySelector("iframe");
               if (frame && frame.contentWindow === event.source) {
                 stabilize(root);
-                var delay = root.getAttribute("data-ready") === "true" ? 0 : 500;
-                if (delay) {
-                  if (root.__ssIClosedHeightTimer) clearTimeout(root.__ssIClosedHeightTimer);
-                  root.__ssIClosedHeightTimer = setTimeout(function () {
-                    root.setAttribute("data-ready", "true");
-                  }, delay);
-                }
+                if (root.__ssIClosedNoteHeight) root.__ssIClosedNoteHeight();
               }
             });
           });
@@ -311,6 +331,10 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
     position: relative;
   }
 
+  .iclosed-embed[data-ready="false"] {
+    min-height: var(--iclosed-embed-height, 620px);
+  }
+
   .iclosed-embed__loader {
     position: absolute;
     inset: 0;
@@ -394,6 +418,11 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
   .iclosed-embed > .iclosed-widget {
     visibility: hidden;
     pointer-events: none;
+  }
+
+  .iclosed-embed[data-ready="false"] > .iclosed-widget {
+    height: var(--iclosed-embed-height, 620px) !important;
+    overflow: hidden;
   }
 
   .iclosed-embed[data-ready="true"] > .iclosed-widget {
