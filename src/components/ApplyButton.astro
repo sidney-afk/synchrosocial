@@ -29,7 +29,7 @@ const text = size === "lg" ? "text-xl leading-none" : "text-base leading-[150%]"
   href={href}
   class={`btn-g relative flex items-center justify-center gap-2 overflow-hidden rounded-xl font-semibold capitalize text-white ${pad} ${className}`}
 >
-  <span class={text}>{label}</span>
+  <span class={`${text} whitespace-nowrap`}>{label}</span>
   {
     arrow && (
       <span
