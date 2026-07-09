@@ -56,47 +56,47 @@ const comparisonRows = [
 
 const proofTiles = [
   {
-    src: "danny-morel-podcast-millions.png",
+    src: "danny-morel-podcast-millions.jpg",
     alt: "Podcast clips with millions of views",
     size: "featured",
   },
   {
-    src: "danny-morel-2025-growth.png",
+    src: "danny-morel-2025-growth.jpg",
     alt: "Danny Morel thirty day Instagram growth analytics",
     size: "standard",
   },
   {
-    src: "danny-podcast-chart.png",
+    src: "danny-podcast-chart.jpg",
     alt: "Apple Podcasts chart showing Danny Morel at number one",
     size: "standard",
   },
   {
-    src: "danny-morel-tiktok.png",
+    src: "danny-morel-tiktok.jpg",
     alt: "Danny Morel TikTok profile at one million followers",
     size: "standard",
   },
   {
-    src: "jessica-growth-chart.png",
+    src: "jessica-growth-chart.jpg",
     alt: "Jessica Winterstern follower growth chart",
     size: "standard",
   },
   {
-    src: "amber-rae-bestseller.png",
+    src: "amber-rae-bestseller.jpg",
     alt: "USA Today bestselling booklist proof for Amber Rae",
     size: "standard",
   },
   {
-    src: "amber-reel-comment.png",
+    src: "amber-reel-comment.jpg",
     alt: "Client comment about one million views on the first reel",
     size: "standard",
   },
   {
-    src: "jessica-client-message.png",
+    src: "jessica-client-message.jpg",
     alt: "Client message praising new content",
     size: "standard",
   },
   {
-    src: "sabrina-client-message.png",
+    src: "sabrina-client-message.jpg",
     alt: "Client message praising edits and music",
     size: "standard",
   },
@@ -159,7 +159,7 @@ const proofColumns = [
         <img
           src={`${imageBase}${featuredProofTile.src}`}
           alt={featuredProofTile.alt}
-          loading="lazy"
+          loading="eager"
           decoding="async"
         />
       </figure>
@@ -173,7 +173,7 @@ const proofColumns = [
                   <img
                     src={`${imageBase}${tile.src}`}
                     alt={tile.alt}
-                    loading="lazy"
+                    loading="eager"
                     decoding="async"
                   />
                 </figure>
