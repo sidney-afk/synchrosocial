@@ -1,7 +1,7 @@
 ---
 // Sticky top nav for the v2 pages, matched to the reference geometry:
 // solid black bar with a hairline bottom border, 1040px/95% wrapper with
-// 12px vertical padding, logo zone up to 200px wide, links centered in the
+// 12px vertical padding, logo zone up to 240px wide, links centered in the
 // bar, and a flat-purple Apply button on the right.
 // `minimal` = logo only, centered (used on the focused /apply page).
 import ApplyButton from "./ApplyButton.astro";
@@ -25,13 +25,13 @@ const links = [
   >
     <a
       href="/"
-      class={`inline-flex w-full max-w-[200px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto"}`}
+      class={`inline-flex w-full max-w-[240px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto"}`}
       aria-label="Synchro Social"
     >
       <img
         src="/images/logo.png"
         alt="Synchro Social"
-        class="h-12 w-auto shrink-0"
+        class="h-20 w-auto shrink-0 max-md:h-16"
       />
     </a>
 
