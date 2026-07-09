@@ -57,6 +57,23 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         title={title}
         style={widgetStyle}
       />
+      <script is:inline>
+        /* Test-mode pass-through: /apply?test-pixel=true should exercise the
+           same embedded website flow while letting iClosed mark its server
+           events for Meta Test Events. Normal visitors are unaffected. */
+        (function () {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("test-pixel") !== "true") return;
+          var widget = document.currentScript && document.currentScript.previousElementSibling;
+          if (!widget || !widget.classList || !widget.classList.contains("iclosed-widget")) return;
+          try {
+            var url = new URL(widget.getAttribute("data-url"));
+            if (url.origin !== "https://app.iclosed.io") return;
+            url.searchParams.set("test-pixel", "true");
+            widget.setAttribute("data-url", url.toString());
+          } catch (err) {}
+        })();
+      </script>
       <script
         is:inline
         type="text/javascript"

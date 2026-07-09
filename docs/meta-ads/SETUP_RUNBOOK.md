@@ -15,13 +15,20 @@ Done:
   `Schedule`, `Lead`, and deduplication.
 - n8n booking router is fixed/published for `social-media-consultation`.
 - iClosed Meta Pixel integration is connected and shows trigger activity.
+- Direct Meta CAPI smoke test worked (`events_received: 1`) and appeared as
+  `Received From: Server` in Meta Test Events.
+- iClosed `test-pixel=true` flow produced server-side `Potential`,
+  `Qualified`, `invitee_meeting_scheduled`, and `PageView` in Meta Test
+  Events.
+- The website embed supports `/apply?test-pixel=true`, which passes test mode
+  into iClosed without changing normal visitor behavior.
 - End-to-end booking automation works for returning contacts and new leads.
 
 Still open:
 - Confirm ad account payment method before launch.
 - Regenerate the CAPI token because the setup token was exposed in screenshots.
-- Prove or disprove iClosed server-side CAPI delivery. Current Meta Test Events
-  display is Browser / Manual Setup only.
+- Run one final embedded booking test at `/apply?test-pixel=true` and confirm
+  the iClosed server events appear from the real website embed.
 - Implement CRM outcome feedback to Meta: qualified, bad fit, closed won, and
   deal value.
 
@@ -102,11 +109,13 @@ emails, and nurture start. The old router-gap warning below is historical.
 ## C. iClosed checks (iClosed dashboard, app.iclosed.io)
 
 Current note: iClosed Meta Pixel integration is connected and trigger activity
-is visible in iClosed. Meta receives `Potential`, `Qualified`, and
-`invitee_meeting_scheduled`, but currently labels them as Browser / Manual
-Setup. Treat true server-side CAPI as unconfirmed until iClosed support or
-Events Manager proves Server / Conversions API delivery. Regenerate the CAPI
-token before production use because it was exposed in screenshots.
+is visible in iClosed. True server-side CAPI is proven in test mode: direct
+Meta smoke test returned `events_received: 1`, and iClosed's
+`test-pixel=true` flow produced Server rows for `Potential`, `Qualified`,
+`invitee_meeting_scheduled`, and `PageView`. For the embedded website path,
+open `/apply?test-pixel=true`; the site passes that flag into the iClosed
+embed before the widget loads. Regenerate the CAPI token before production use
+because it was exposed in screenshots.
 
 - [ ] **C1.** Confirm the "Call booked" webhook → 
   `https://synchrosocial.app.n8n.cloud/webhook/iclosed-call-booked` fires for

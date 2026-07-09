@@ -53,11 +53,20 @@ Completed today:
   paths: HubSpot contact/deal behavior, confirmation email, and nurture start.
 - iClosed Meta Pixel integration is connected for dataset `4309835332571875`
   and shows trigger activity inside iClosed.
+- A direct Meta Conversions API smoke test returned `events_received: 1` and
+  appeared in Meta Test Events as `Received From: Server`.
+- iClosed's `test-pixel=true` flow produced server-side `Potential`,
+  `Qualified`, `invitee_meeting_scheduled`, and `PageView` rows in Meta Test
+  Events. This proves the token, dataset, and iClosed CAPI path work.
+- `IClosedEmbed.astro` now passes `?test-pixel=true` from the parent page into
+  the embedded iClosed URL, so `/apply?test-pixel=true` can test the real
+  embedded website flow without affecting normal visitors.
 
-Still not proven:
-- iClosed Conversions API/server-side delivery is not confirmed. Meta Test
-  Events still showed iClosed-mapped events as `Received From: Browser` and
-  `Setup Method: Manual Setup`, not `Server` / `Conversions API`.
+Still not complete:
+- The normal `/apply` embedded flow does not carry iClosed's `test-pixel=true`
+  flag unless the parent page is opened as `/apply?test-pixel=true`. Without
+  that flag, iClosed may still send production CAPI events, but they will not
+  reliably appear in Meta Test Events as test rows.
 - CRM feedback events are not yet pushed back to Meta when HubSpot marks a
   lead qualified, bad fit, closed won, or assigns deal value.
 - HubSpot contacts/deals are created, but the normal booking workflow does not
@@ -154,11 +163,11 @@ Rules:
 | 2026-07-08 | Ads target main funnel, not `/ai` | Sidney's instruction |
 | 2026-07-08 | Fresh start on dataset `4309835332571875`; old Framer pixel abandoned | Old pixel wasn't migrated; dataset already created in Events Manager |
 | 2026-07-08 | Pixel installed site-wide via one component in `Layout.astro` | Single source of truth; every page auto-covered |
-| 2026-07-08 | Launch browser-pixel-first; attempt CAPI via **iClosed's native integration** before considering n8n for booking events | Gateway needs a paid cloud instance; iClosed is the normal native path. Field test note: iClosed mapping works, but server/CAPI delivery is not yet proven in Meta Test Events. |
+| 2026-07-08 | Launch browser-pixel-first; use **iClosed's native CAPI integration** for scheduler funnel events before considering n8n for booking events | Gateway needs a paid cloud instance; iClosed is the normal native path. Direct CAPI smoke test and iClosed `test-pixel=true` both produced Server rows in Meta Test Events. |
 | 2026-07-08 | Booked call fires BOTH `Schedule` and `Lead` (same eventID root) at the bridge + `/thank-you` fallback | Semantics unresolved by research; both available in Ads Manager, pick one, no code change needed |
 | 2026-07-08 | n8n router must support `social-media-consultation` | The main `/apply` funnel uses this iClosed slug. The router was updated and published on 2026-07-08. |
-| 2026-07-08 | iClosed CAPI is connected but not proven server-side | iClosed mapped events show in Meta, but Meta Test Events still labels them Browser / Manual Setup. Treat native CAPI as unconfirmed until iClosed support or Events Manager proves Server / Conversions API. |
-| 2026-07-08 | n8n reserved primarily for phase 3 CRM offline events (qualified/closed -> CAPI), unless iClosed CAPI cannot be proven | iClosed should be the native booking-event path, but this account has not yet proven Server / Conversions API delivery. n8n's existing deal-stage workflows remain the natural hook for CAC events. |
+| 2026-07-08 | iClosed CAPI is proven in test mode, but embedded website testing needs `?test-pixel=true` pass-through | Direct iClosed test URL produced Server rows. The production embed URL does not include the test flag, so Meta Test Events will not prove embedded CAPI unless `/apply?test-pixel=true` is used. |
+| 2026-07-08 | n8n reserved primarily for phase 3 CRM offline events (qualified/closed -> CAPI), not booking events | iClosed covers the booking funnel CAPI path. n8n's existing deal-stage workflows remain the natural hook for CAC/outcome events. |
 | 2026-07-08 | No AEM/web-event config work | Research: prioritization eliminated, AEM tab removed (2026) |
 | 2026-07-08 | Domain verification completed by meta tag | Not required for event processing, but it is now done and verified. |
 | 2026-07-08 | No cookie-consent banner for now | US-targeted traffic; revisit if targeting EU (GDPR) |
@@ -180,12 +189,16 @@ Launch readiness:
 
 Server-side / CAPI:
 - [x] iClosed Meta Pixel integration connected to dataset `4309835332571875`.
+- [x] Direct Meta CAPI smoke test accepted one server `Lead`
+  (`events_received: 1`) and Meta displayed it as `Received From: Server`.
+- [x] iClosed `test-pixel=true` flow displayed server `Potential`,
+  `Qualified`, `invitee_meeting_scheduled`, and `PageView` rows in Meta.
+- [x] Website embed supports `/apply?test-pixel=true` for testing the real
+  embedded flow with iClosed test mode.
 - [ ] Regenerate the CAPI token before production use; the setup token was
   exposed in screenshots.
-- [ ] Confirm whether iClosed sends true server/CAPI events. Current Meta Test
-  Events result still shows iClosed-mapped events as Browser / Manual Setup.
-- [ ] If iClosed cannot be confirmed, decide whether to use n8n for server
-  booking events or only for CRM outcome events.
+- [ ] Run a final embedded-flow test at `/apply?test-pixel=true` and confirm
+  the same iClosed server events appear from the real website embed.
 
 CRM feedback loop:
 - [ ] Push qualified, bad-fit, closed-won, and deal-value outcomes back to Meta.
@@ -231,9 +244,14 @@ Post-test update (same day):
 - **iClosed integration: CONNECTED.** iClosed shows "Synchro Social Data" as a
   connected pixel and records Page View, Potential, Qualified, and Call booked
   triggers from "Social Media Consultation".
-- **iClosed CAPI/server source: NOT CONFIRMED.** Meta receives `Potential`,
-  `Qualified`, and `invitee_meeting_scheduled`, but the rows still display
-  `Received From: Browser` and `Setup Method: Manual Setup`.
+- **iClosed CAPI/server source: CONFIRMED IN TEST MODE.** Direct CAPI smoke
+  test returned `events_received: 1` and iClosed's `test-pixel=true` flow
+  produced server rows for `Potential`, `Qualified`,
+  `invitee_meeting_scheduled`, and `PageView`.
+- **Embedded website test mode: ADDED.** The production embed URL does not
+  include `test-pixel=true`, so normal `/apply` is not expected to expose
+  iClosed server events in Meta Test Events. Visit `/apply?test-pixel=true`
+  for a true embedded-flow test.
 - **Dataset Quality API: ENABLED.** Meta's UI says opt-out is unavailable once
   configured. This is expected and is not a blocker, but it does not prove
   server events are arriving.
@@ -267,10 +285,10 @@ Sidney walked the dataset UI with Claude; current state of
 
 Current open items:
 
-1. **iClosed CAPI not confirmed:** iClosed native integration is connected and
-   mapped events show in iClosed + Meta, but Meta Test Events still labels them
-   as Browser / Manual Setup. Ask iClosed support whether their integration
-   sends true Conversions API events and whether they pass `test_event_code`.
+1. **Final embedded-flow proof:** CAPI is proven directly and through iClosed
+   test mode. Still run one test at `/apply?test-pixel=true` so the actual
+   website embed path carries iClosed's test flag and shows Server rows in Meta
+   Test Events.
 2. **CAPI token exposed:** regenerate before production use.
 3. **CRM feedback loop not implemented:** HubSpot stage/value outcomes are not
    yet pushed back to Meta. This is the key remaining Step 2 item for "CAC,
@@ -302,6 +320,15 @@ Historical items from PR #27 handoff:
    as a KPI.
 
 ## 10. Session log
+
+- **2026-07-08 (CAPI audit + embedded test-mode pass-through)** - Ran a direct
+  CAPI smoke test against dataset `4309835332571875`; Meta accepted it
+  (`events_received: 1`) and displayed the test `Lead` as `Received From:
+  Server`. Tested iClosed's `test-pixel=true` flow and saw server-side
+  `Potential`, `Qualified`, `invitee_meeting_scheduled`, and `PageView`.
+  Audited the repo and found the normal website embed uses the production
+  iClosed URL without `test-pixel=true`; added a safe pass-through so
+  `/apply?test-pixel=true` tests the actual embedded flow in Meta Test Events.
 
 - **2026-07-08 (implementation + live testing)** - PR #27 was merged.
   Published the n8n router fix for `social-media-consultation`; verified

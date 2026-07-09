@@ -11,18 +11,20 @@
 
 The native iClosed Meta Pixel integration was connected to dataset
 `4309835332571875` with Conversion API enabled. iClosed shows trigger activity
-for Page View, Potential, Qualified, and Call booked; Meta Test Events receives
-`Potential`, `Qualified`, and `invitee_meeting_scheduled`.
+for Page View, Potential, Qualified, and Call booked.
 
-However, Meta currently labels those events as `Received From: Browser` and
-`Setup Method: Manual Setup`, not `Server` / `Conversions API`. Treat the
-server-to-server part of iClosed's integration as **not confirmed for this
-account** until either:
+Follow-up audit result: server-side delivery is **confirmed in test mode**.
+A direct CAPI smoke test returned `events_received: 1` and appeared in Meta as
+`Received From: Server`. iClosed's own `test-pixel=true` flow also produced
+Server rows for `Potential`, `Qualified`, `invitee_meeting_scheduled`, and
+`PageView`.
 
-- iClosed support confirms how their CAPI events appear in Meta and whether
-  they pass `test_event_code`, or
-- Events Manager later shows Server / Conversions API / Browser and Server for
-  these events.
+Important testing distinction: the normal embedded `/apply` page uses the
+production iClosed URL, so it does not automatically carry iClosed's
+`test-pixel=true` flag into the iframe. That can make server events invisible
+in Meta Test Events even if production CAPI is working. The website now passes
+the flag through when opened as `/apply?test-pixel=true`, which is the right
+way to prove the real embedded website flow.
 
 Dataset Quality API was enabled during Meta's token generation flow. Meta's UI
 states that opt-out is unavailable once configured. That is not a blocker and
