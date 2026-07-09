@@ -22,13 +22,17 @@ Done:
   Events.
 - The website embed supports `/apply?test-pixel=true`, which passes test mode
   into iClosed without changing normal visitor behavior.
+- Homepage Apply buttons preserve `?test-pixel=true`, so
+  `/?test-pixel=true` can test the full homepage -> apply -> embedded calendar
+  path.
 - End-to-end booking automation works for returning contacts and new leads.
 
 Still open:
 - Confirm ad account payment method before launch.
 - Regenerate the CAPI token because the setup token was exposed in screenshots.
-- Run one final embedded booking test at `/apply?test-pixel=true` and confirm
-  the iClosed server events appear from the real website embed.
+- Run one final embedded booking test at `/apply?test-pixel=true` or
+  `/?test-pixel=true` and confirm the iClosed server events appear from the
+  real website embed.
 - Implement CRM outcome feedback to Meta: qualified, bad fit, closed won, and
   deal value.
 
@@ -114,8 +118,10 @@ Meta smoke test returned `events_received: 1`, and iClosed's
 `test-pixel=true` flow produced Server rows for `Potential`, `Qualified`,
 `invitee_meeting_scheduled`, and `PageView`. For the embedded website path,
 open `/apply?test-pixel=true`; the site passes that flag into the iClosed
-embed before the widget loads. Regenerate the CAPI token before production use
-because it was exposed in screenshots.
+embed before the widget loads. To test the whole homepage path, open
+`/?test-pixel=true`; Apply buttons preserve the flag when they send the user to
+`/apply`. Regenerate the CAPI token before production use because it was
+exposed in screenshots.
 
 - [ ] **C1.** Confirm the "Call booked" webhook → 
   `https://synchrosocial.app.n8n.cloud/webhook/iclosed-call-booked` fires for

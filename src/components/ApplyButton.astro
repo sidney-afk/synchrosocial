@@ -69,3 +69,21 @@ const text = size === "lg" ? "text-xl leading-none" : "text-base leading-[150%]"
     )
   }
 </a>
+<script is:inline>
+  /* Preserve Meta/iClosed test mode when testing the full homepage -> apply
+     path. Normal visitors never have this query param, so production links are
+     unchanged. */
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("test-pixel") !== "true") return;
+    var link = document.currentScript && document.currentScript.previousElementSibling;
+    if (!link || link.tagName !== "A") return;
+    var href = link.getAttribute("href") || "";
+    if (!href.startsWith("/apply")) return;
+    try {
+      var url = new URL(href, window.location.origin);
+      url.searchParams.set("test-pixel", "true");
+      link.setAttribute("href", url.pathname + url.search + url.hash);
+    } catch (err) {}
+  })();
+</script>

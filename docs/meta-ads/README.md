@@ -61,6 +61,9 @@ Completed today:
 - `IClosedEmbed.astro` now passes `?test-pixel=true` from the parent page into
   the embedded iClosed URL, so `/apply?test-pixel=true` can test the real
   embedded website flow without affecting normal visitors.
+- `ApplyButton.astro` preserves `?test-pixel=true` on `/apply` links, so
+  `/?test-pixel=true` can test the full homepage -> apply -> embedded calendar
+  path.
 
 Still not complete:
 - The normal `/apply` embedded flow does not carry iClosed's `test-pixel=true`
@@ -195,6 +198,8 @@ Server-side / CAPI:
   `Qualified`, `invitee_meeting_scheduled`, and `PageView` rows in Meta.
 - [x] Website embed supports `/apply?test-pixel=true` for testing the real
   embedded flow with iClosed test mode.
+- [x] Homepage Apply buttons preserve `?test-pixel=true`, allowing
+  `/?test-pixel=true` to test the full site path.
 - [ ] Regenerate the CAPI token before production use; the setup token was
   exposed in screenshots.
 - [ ] Run a final embedded-flow test at `/apply?test-pixel=true` and confirm
@@ -251,7 +256,8 @@ Post-test update (same day):
 - **Embedded website test mode: ADDED.** The production embed URL does not
   include `test-pixel=true`, so normal `/apply` is not expected to expose
   iClosed server events in Meta Test Events. Visit `/apply?test-pixel=true`
-  for a true embedded-flow test.
+  for a true embedded-flow test, or `/?test-pixel=true` for the full homepage
+  -> apply -> calendar path.
 - **Dataset Quality API: ENABLED.** Meta's UI says opt-out is unavailable once
   configured. This is expected and is not a blocker, but it does not prove
   server events are arriving.
@@ -329,6 +335,8 @@ Historical items from PR #27 handoff:
   Audited the repo and found the normal website embed uses the production
   iClosed URL without `test-pixel=true`; added a safe pass-through so
   `/apply?test-pixel=true` tests the actual embedded flow in Meta Test Events.
+  Added Apply-button preservation so `/?test-pixel=true` tests the full
+  homepage -> apply path without dropping the flag.
 
 - **2026-07-08 (implementation + live testing)** - PR #27 was merged.
   Published the n8n router fix for `social-media-consultation`; verified
