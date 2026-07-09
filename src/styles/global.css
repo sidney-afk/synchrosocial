@@ -312,3 +312,11 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee { animation: none; }
 }
+
+@media (max-width: 767px) {
+  .case-study-video {
+    max-width: 312px;
+    margin-inline: auto;
+    border-radius: 5px;
+  }
+}
