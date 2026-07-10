@@ -6,6 +6,7 @@ import VideoEmbed from "../components/VideoEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
+import { alliTestimonial } from "../data/alliTestimonial.js";
 
 /* ===========================================================================
    THANK-YOU / "Your call is not confirmed" page.
@@ -72,11 +73,7 @@ const testimonials = [
   "Lucas Salame",
   "Jessica Winterstern",
 ];
-const mobileTestimonial = {
-  name: "Alli Shaper",
-  role: "Feminine embodiment & relationship coach",
-  wistia: "cqaowe93yn",
-};
+const mobileTestimonial = alliTestimonial;
 
 // Step 7 — social-proof carousel: the same Instagram-feed cards the homepage
 // uses (profile header + a 3-col grid of the client's reels). Shared shape so

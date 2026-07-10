@@ -1,4 +1,6 @@
 ---
+import AlliTestimonialCard from "./AlliTestimonialCard.astro";
+
 interface Props {
   ctaHref?: string;
 }
@@ -149,6 +151,10 @@ const proofColumns = [
       <h3>More Proof Behind The Growth</h3>
     </div>
 
+    <div class="audience-skyrocket__testimonial">
+      <AlliTestimonialCard articleClass="!min-h-0" videoClass="w-[220px] max-md:mx-auto max-md:w-full max-md:max-w-[306px]" />
+    </div>
+
     <div class="audience-skyrocket__proof" aria-label="Additional client proof screenshots">
       <figure class="proof-tile proof-tile--featured">
         <img
@@ -197,7 +203,7 @@ const proofColumns = [
 <style>
   .audience-skyrocket {
     width: 100%;
-    padding: 160px 0;
+    padding: 88px 0 140px;
     background: #010b13;
     color: #fff;
   }
@@ -329,7 +335,13 @@ const proofColumns = [
     width: min(936px, calc(100% - 48px));
     flex-direction: column;
     gap: 18px;
-    margin: 28px auto 0;
+    margin: 32px auto 0;
+  }
+
+  .audience-skyrocket__testimonial {
+    width: min(936px, calc(100% - 48px));
+    margin: 32px auto 0;
+    text-align: left;
   }
 
   .audience-skyrocket__proof-columns {
@@ -464,7 +476,7 @@ const proofColumns = [
 
   @media (max-width: 900px) {
     .audience-skyrocket {
-      padding: 80px 0;
+      padding: 56px 0 80px;
     }
 
     .audience-skyrocket__panel {
@@ -474,6 +486,7 @@ const proofColumns = [
 
     .audience-skyrocket__comparison,
     .audience-skyrocket__proof-heading,
+    .audience-skyrocket__testimonial,
     .audience-skyrocket__proof {
       width: calc(100% - 48px);
     }
@@ -481,7 +494,7 @@ const proofColumns = [
 
   @media (max-width: 560px) {
     .audience-skyrocket {
-      padding: 60px 0;
+      padding: 40px 0 60px;
     }
 
     .audience-skyrocket__panel {
@@ -509,6 +522,11 @@ const proofColumns = [
     .audience-skyrocket__proof-heading {
       width: 100%;
       margin-top: 44px;
+    }
+
+    .audience-skyrocket__testimonial {
+      width: 100%;
+      margin-top: 24px;
     }
 
     .audience-skyrocket__proof-rule {

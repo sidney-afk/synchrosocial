@@ -5,6 +5,7 @@ import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import Avatar from "../components/Avatar.astro";
 import Icon from "../components/Icon.astro";
+import AlliTestimonialCard from "../components/AlliTestimonialCard.astro";
 
 /* ===========================================================================
    HOMEPAGE — growthopia.io layout, rebuilt in Synchro Social purple.
@@ -110,17 +111,6 @@ const features = [
   { icon: "share-2", title: "Creator Network", desc: "Tap our network of creators for co-branded content." },
   { icon: "shield", title: "Reputation Management", desc: "Handle any PR moment with confidence." },
 ];
-
-// --- Customer testimonial --------------------------------------------------
-const testimonial = {
-  name: "Alli Shaper",
-  role: "Feminine embodiment & relationship coach",
-  wistia: "cqaowe93yn",
-  title:
-    "Alli Shaper shares how Synchro Social made the content process clearer, easier, and supported from start to finish.",
-  body:
-    "Alli came to Synchro Social looking for a team that could make the content process clearer, easier, and more consistent. In her testimonial, she talks through the support, communication, and guidance she received while working with the team. The important part was not just having another video made. It was having a partner who listened, kept the process moving, and helped her feel confident about showing up online. Her experience reflects the standard we aim to bring to every client: strategic direction, clean execution, and a team that cares about the details behind the scenes.",
-};
 
 // --- "Why We're Different" comparison --------------------------------------
 const othersList = [
@@ -498,43 +488,7 @@ const compactCount = (s: string) =>
         </p>
       </div>
 
-      <div class="flex w-full flex-col gap-[30px]">
-        <div class="w-full overflow-hidden">
-          <div class="flex w-max gap-5 max-md:overflow-x-auto max-md:pb-1">
-            <div class="testimonial-tab flex h-20 w-[270px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6">
-              <p class="text-base font-medium leading-6 text-white">{testimonial.name}</p>
-              <p class="text-sm leading-5 text-[#c4c4c4]">
-                <span class="max-md:hidden">Client Testimonial</span>
-                <span class="hidden max-md:inline">{testimonial.role}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <article class="min-h-[770px] w-full rounded-[50px] border border-[#262626] bg-[#141414] px-10 py-10 max-lg:min-h-[680px] max-md:min-h-0 max-md:rounded-[32px] max-md:px-6 max-md:py-6">
-          <div class="flex items-start gap-10 max-md:flex-col max-md:gap-6">
-            <div class="relative aspect-[9/16] w-[250px] shrink-0 overflow-hidden bg-black max-md:w-full">
-              <iframe
-                src={`https://fast.wistia.net/embed/iframe/${testimonial.wistia}?seo=false&videoFoam=false`}
-                class="absolute inset-0 h-full w-full"
-                title={`${testimonial.name} testimonial`}
-                allow="autoplay; fullscreen"
-                allowfullscreen
-                loading="lazy"
-              ></iframe>
-            </div>
-
-            <div class="flex max-w-[655px] flex-col gap-6 pt-1 max-md:max-w-none max-md:pt-0">
-              <h3 class="text-2xl font-medium leading-[133%] text-white max-md:text-xl">
-                {testimonial.title}
-              </h3>
-              <p class="text-base leading-[157%] text-[#c4c4c4]">
-                {testimonial.body}
-              </p>
-            </div>
-          </div>
-        </article>
-      </div>
+      <AlliTestimonialCard />
 
       <div class="flex w-full max-w-[420px] flex-col gap-4 text-center max-md:max-w-full">
         <ApplyButton href="/apply" label="Apply Now" class="w-full" />

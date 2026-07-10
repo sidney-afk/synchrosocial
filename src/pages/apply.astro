@@ -7,6 +7,7 @@ import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
+import AlliTestimonialCard from "../components/AlliTestimonialCard.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
 
 /* ===========================================================================
@@ -25,15 +26,6 @@ import { caseStudies, slug } from "../data/caseStudies.js";
 // pages never drift. Edit src/data/caseStudies.js to update both.
 
 const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
-const mobileTestimonial = {
-  name: "Alli Shaper",
-  role: "Feminine embodiment & relationship coach",
-  wistia: "cqaowe93yn",
-  title:
-    "Alli Shaper shares how Synchro Social made the content process clearer, easier, and supported from start to finish.",
-  body:
-    "Alli came to Synchro Social looking for a team that could make the content process clearer, easier, and more consistent. Her experience reflects the standard we aim to bring to every client: strategic direction, clean execution, and a team that cares about the details behind the scenes.",
-};
 ---
 
 <Layout
@@ -46,7 +38,7 @@ const mobileTestimonial = {
   <IClosedLiftWidget />
 
   <!-- ===================== HERO + BOOKING ===================== -->
-  <section class="relative min-h-[100svh] pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10 max-md:pt-[18px]">
+  <section class="relative min-h-[100svh] pb-2 pt-20 max-lg:pb-2 max-lg:pt-10 max-md:pt-[18px]">
     <!-- Backdrop: transparent fading down to solid brand purple -->
     <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
@@ -78,14 +70,13 @@ const mobileTestimonial = {
       <!-- Booking — Kasper's iClosed "Social Media Consultation" calendar.
            Match Growthtopia/iClosed's official inline embed: a transparent
            full-width iframe host, no extra white wrapper, no custom loader gate. -->
-      <div id="book" class="w-full min-h-[620px] scroll-mt-[128px] max-md:scroll-mt-[96px]">
-        <div class="mx-auto w-full min-h-[620px] max-md:w-[calc(100%-32px)]">
+      <div id="book" class="w-full min-h-[500px] scroll-mt-[128px] max-md:min-h-[560px] max-md:scroll-mt-[96px]">
+        <div class="mx-auto w-full min-h-[500px] max-md:min-h-[560px] max-md:w-[calc(100%-32px)]">
           <IClosedEmbed
             linkPrefix="synchrosocial/social-media-consultation"
             title="Social Media Consultation"
-            height="620px"
+            height="500px"
             card={false}
-            resize={false}
           />
         </div>
       </div>
@@ -103,42 +94,12 @@ const mobileTestimonial = {
         </p>
       </div>
 
-      <div class="w-full overflow-hidden">
-        <div class="flex w-max">
-          <div class="flex h-20 w-[270px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6">
-            <p class="text-base font-medium leading-6 text-white">{mobileTestimonial.name}</p>
-            <p class="text-sm leading-5 text-[#c4c4c4]">{mobileTestimonial.role}</p>
-          </div>
-        </div>
-      </div>
-
-      <article class="w-full rounded-[32px] border border-[#262626] bg-[#141414] px-6 py-6">
-        <div class="flex flex-col gap-6">
-          <div class="relative mx-auto aspect-[9/16] w-full max-w-[306px] overflow-hidden rounded-[5px] bg-black">
-            <iframe
-              src={`https://fast.wistia.net/embed/iframe/${mobileTestimonial.wistia}?seo=false&videoFoam=false`}
-              class="absolute inset-0 h-full w-full"
-              title={`${mobileTestimonial.name} testimonial`}
-              allow="autoplay; fullscreen"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </div>
-          <div class="flex flex-col gap-4">
-            <h3 class="text-xl font-medium leading-[133%] text-white">
-              {mobileTestimonial.title}
-            </h3>
-            <p class="text-base leading-[157%] text-[#c4c4c4]">
-              {mobileTestimonial.body}
-            </p>
-          </div>
-        </div>
-      </article>
+      <AlliTestimonialCard articleClass="!min-h-0" videoClass="mx-auto w-full max-w-[306px]" />
     </div>
   </section>
 
   <!-- ===================== CASE STUDIES ===================== -->
-  <section class="w-full bg-white py-20 text-black max-lg:py-16">
+  <section class="w-full bg-white pb-14 pt-6 text-black max-lg:pb-12 max-lg:pt-6">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
       <div class="flex w-full flex-col items-center gap-4 text-center">
         <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
