@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
+import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import ApplyButton from "../components/ApplyButton.astro";
@@ -42,6 +43,7 @@ const mobileTestimonial = {
   metaEvent={{ name: "ViewContent", params: { content_name: "apply" } }}
 >
   <SiteNav minimal />
+  <IClosedLiftWidget />
 
   <!-- ===================== HERO + BOOKING ===================== -->
   <section class="relative min-h-[100svh] pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10 max-md:pt-[18px]">
