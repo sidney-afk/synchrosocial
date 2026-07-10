@@ -315,10 +315,10 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
 
 @media (max-width: 767px) {
   .site-nav-cta {
-    min-width: 152px;
-    height: 52px;
-    padding: 0 20px;
-    border-radius: 14px;
+    min-width: 150px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 12px;
   }
 
   .site-nav-cta > span {
