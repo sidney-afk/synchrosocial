@@ -326,6 +326,11 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     line-height: 21px;
   }
 
+  .btn-g:not(.site-nav-cta) {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
   .site-mobile-menu {
     position: relative;
     flex-shrink: 0;
@@ -364,7 +369,7 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     top: calc(100% + 10px);
     right: 0;
     z-index: 10;
-    display: flex;
+    display: none;
     width: 180px;
     flex-direction: column;
     overflow: hidden;
@@ -372,6 +377,10 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     border-radius: 12px;
     background: #141414;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .site-mobile-menu[open] .site-mobile-menu-panel {
+    display: flex;
   }
 
   .site-mobile-menu-panel a {
