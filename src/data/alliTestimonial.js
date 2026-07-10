@@ -1,7 +1,7 @@
 export const alliTestimonial = {
   name: "Alli Schaper",
   role: "CEO & Co-Founder of SuperMush, Forbes 30 Under 30",
-  wistia: "cqaowe93yn",
+  wistia: "ut3u94faa0",
   title:
     "Alli Schaper built SuperMush into a national mushroom wellness brand. Synchro Social helped make the content process clearer, easier, and more supported.",
   body:
