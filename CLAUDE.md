@@ -7,6 +7,11 @@ guide.
 
 ## Key docs — read before working on the related area
 
+- **`docs/CLIENT_LIFECYCLE_MAP.md`** — the master map of the entire client
+  lifecycle: traffic → booking → nurture → sales close → contract/invoice →
+  onboarding → provisioning → samples → production. Includes the full n8n
+  workflow inventory and the cross-system relationship map. Read this to
+  understand how anything connects to anything.
 - **`docs/ECOSYSTEM_MAP.md`** — how every page, funnel, and iClosed booking
   calendar connects. Read this before touching any funnel/booking page.
 - **`docs/meta-ads/README.md`** — the Meta ads project memory: accounts/IDs,

@@ -3,6 +3,11 @@
 > One place to see how every property, funnel, page, and booking calendar connects —
 > so we (and anyone we hand this to) don't get lost. Reflects the completed
 > Calendly → iClosed migration. All booking runs on iClosed (`app.iclosed.io`).
+>
+> **This doc covers the booking layer only.** For the full client lifecycle —
+> what happens *after* a booking (nurture, sales close, contract/invoice,
+> onboarding, provisioning, samples, production) — see
+> **`docs/CLIENT_LIFECYCLE_MAP.md`**.
 
 ## The big picture
 
@@ -119,3 +124,11 @@ kept as a site surface, not the current Meta launch target.
 
 - Confirmation-page + disqualification settings are configured per event in the **iClosed dashboard** (the public API is read-only for event config), not in this repo.
 - `/old` is a kept legacy homepage; its booking uses `demo` like the other warm entry points.
+- **Two more booking surfaces not in the diagram above:**
+  - The floating **iClosed LIFT widget** (`IClosedLiftWidget.astro`, widget id
+    `Pk9Vea_CtsCr`) on `/`, `/apply`, and `/thank-you`. Its target calendar is
+    configured in the iClosed dashboard, not in code — confirm there which
+    calendar it books.
+  - A **`check-in`** calendar (`synchrosocial/check-in`) used only by the
+    n8n *Clients — Monthly Check-in* automation (monthly email to existing
+    clients). It's embedded on no page.
