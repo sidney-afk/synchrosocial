@@ -313,7 +313,74 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   .animate-marquee { animation: none; }
 }
 
+.site-mobile-wordmark {
+  display: none;
+}
+
 @media (max-width: 767px) {
+  .site-mobile-wordmark {
+    display: inline-flex;
+    width: 132px;
+    height: 30px;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 7px;
+    color: #b724ff;
+    text-transform: uppercase;
+  }
+
+  .site-logo-minimal .site-mobile-wordmark {
+    width: 200px;
+    height: 46px;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .site-mobile-wordmark-icon {
+    display: block;
+    color: #b724ff;
+    font-family: Arial, sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    transform: scaleX(1.35);
+  }
+
+  .site-logo-minimal .site-mobile-wordmark-icon {
+    font-size: 50px;
+  }
+
+  .site-mobile-wordmark-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    color: #fff;
+    font-family: "Inter", Arial, sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .site-mobile-wordmark-text span:first-child {
+    font-size: 19px;
+  }
+
+  .site-mobile-wordmark-text span:last-child {
+    color: #b724ff;
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+  .site-logo-minimal .site-mobile-wordmark-text span:first-child {
+    font-size: 29px;
+  }
+
+  .site-logo-minimal .site-mobile-wordmark-text span:last-child {
+    font-size: 12px;
+    letter-spacing: 4px;
+  }
+
   .site-nav-cta {
     min-width: 150px;
     height: 38px;

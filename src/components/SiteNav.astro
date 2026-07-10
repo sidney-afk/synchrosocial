@@ -25,14 +25,21 @@ const links = [
   >
     <a
       href="/"
-      class={`inline-flex w-full max-w-[240px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto max-md:mr-0 max-md:w-auto max-md:max-w-none"}`}
+      class={`site-logo-link ${minimal ? "site-logo-minimal justify-center" : "site-logo-full mr-auto max-md:mr-0 max-md:w-auto max-md:max-w-none"} inline-flex w-full max-w-[240px] items-center gap-2 text-white`}
       aria-label="Synchro Social"
     >
       <img
         src="/images/logo.png"
         alt="Synchro Social"
-        class="h-20 w-auto shrink-0 max-md:h-[46px]"
+        class="h-20 w-auto shrink-0 max-md:hidden"
       />
+      <span class="site-mobile-wordmark" aria-hidden="true">
+        <span class="site-mobile-wordmark-icon">&infin;</span>
+        <span class="site-mobile-wordmark-text">
+          <span>Synchro</span>
+          <span>Social</span>
+        </span>
+      </span>
     </a>
 
     {
