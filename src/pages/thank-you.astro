@@ -5,8 +5,8 @@ import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
+import AlliTestimonialCard from "../components/AlliTestimonialCard.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
-import { alliTestimonial } from "../data/alliTestimonial.js";
 
 /* ===========================================================================
    THANK-YOU / "Your call is not confirmed" page.
@@ -60,20 +60,6 @@ const qaVideos = [
   { id: "8j0lpgua9g", title: "How Much Time Will This Take?" },
   { id: "m5wz3w5kji", title: "Do I Have To Be On Camera?" },
 ];
-
-// Step 5 — testimonials ⟨PLACEHOLDER videos⟩ (real Synchro clients)
-const testimonials = [
-  "Baya Voce",
-  "Danny Morel",
-  "Morgan Burch",
-  "Mastin Kipp",
-  "Garrain Jones",
-  "Kute Blackson",
-  "Alexi Panos",
-  "Lucas Salame",
-  "Jessica Winterstern",
-];
-const mobileTestimonial = alliTestimonial;
 
 // Step 7 — social-proof carousel: the same Instagram-feed cards the homepage
 // uses (profile header + a 3-col grid of the client's reels). Shared shape so
@@ -264,39 +250,7 @@ const year = new Date().getFullYear();
         We're happy to keep helping our customers achieve their goals.
       </p>
 
-      <div class="mt-12 hidden w-full flex-col items-center gap-6 max-md:flex">
-        <div class="flex h-20 w-full max-w-[270px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6 text-left">
-          <p class="text-base font-medium leading-6 text-white">{mobileTestimonial.name}</p>
-          <p class="text-sm leading-5 text-[#c4c4c4]">{mobileTestimonial.role}</p>
-        </div>
-        <article class="w-full rounded-[32px] border border-[#262626] bg-[#141414] px-6 py-6">
-          <div class="relative mx-auto aspect-[9/16] w-full max-w-[306px] overflow-hidden rounded-[5px] bg-black">
-            <iframe
-              src={`https://fast.wistia.net/embed/iframe/${mobileTestimonial.wistia}?seo=false&videoFoam=false`}
-              class="absolute inset-0 h-full w-full"
-              title={`${mobileTestimonial.name} testimonial`}
-              allow="autoplay; fullscreen"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </div>
-        </article>
-      </div>
-
-      <div class="mt-12 grid w-full grid-cols-3 gap-x-8 gap-y-10 max-md:hidden">
-        {
-          testimonials.map((name) => (
-            <div class="flex flex-col items-center gap-4">
-              <div class="relative aspect-[9/16] w-full overflow-hidden rounded-[5px]">
-                <VideoEmbed provider="placeholder" title={`${name} testimonial`} frame={false} class="!aspect-[9/16]" />
-              </div>
-              <h3 class="text-center text-2xl font-bold leading-none text-white">
-                {name}
-              </h3>
-            </div>
-          ))
-        }
-      </div>
+      <AlliTestimonialCard class="mt-12 text-left" />
     </div>
   </section>
 
