@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
+import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
@@ -73,7 +74,7 @@ const testimonials = [
 ];
 const mobileTestimonial = {
   name: "Alli Shaper",
-  role: "Client Testimonial",
+  role: "Feminine embodiment & relationship coach",
   wistia: "cqaowe93yn",
 };
 
@@ -126,6 +127,7 @@ const year = new Date().getFullYear();
   </script>
 
   <SiteNav />
+  <IClosedLiftWidget />
 
   <!-- ===================== HERO ===================== -->
   <section class="relative overflow-hidden">
@@ -134,20 +136,20 @@ const year = new Date().getFullYear();
     <div class="bg-hero-fade pointer-events-none absolute inset-x-0 bottom-0 top-[40%]" aria-hidden="true"></div>
 
     <div
-      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center"
+      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center max-md:pb-7 max-md:pt-4"
     >
       <img src="/images/logo.png" alt="Synchro Social" class="h-[80px] w-auto" />
 
-      <h1 class="mt-9 font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[2rem]">
+      <h1 class="mt-9 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-6 max-md:text-[27.2px] max-md:leading-[27.2px]">
         Your Call Is Not Confirmed
       </h1>
-      <p class="mt-4 text-xl leading-[26px] text-white max-md:text-base">
+      <p class="mt-4 text-xl leading-[26px] text-white max-md:mt-3 max-md:max-w-[340px] max-md:text-[16px] max-md:leading-[25.12px]">
         Make sure to do these 2 steps so you can confirm your call with us
       </p>
 
       <!-- STEP 1 — filled bar (the reference's solid hero step bar) -->
       <div
-        class="mt-7 flex w-full max-w-[880px] items-center justify-center gap-3 rounded-[15px] border-2 border-[var(--g-purple)] bg-[var(--g-purple)] px-8 py-2 text-center text-2xl font-normal leading-[26px] text-black max-lg:text-lg max-md:text-sm"
+        class="mt-7 flex w-full max-w-[880px] items-center justify-center gap-3 rounded-[15px] border-2 border-[var(--g-purple)] bg-[var(--g-purple)] px-8 py-2 text-center text-2xl font-normal leading-[26px] text-black max-lg:text-lg max-md:mt-6 max-md:min-h-[52px] max-md:w-[calc(100vw-32px)] max-md:justify-start max-md:px-4 max-md:text-left max-md:text-[16px] max-md:leading-[17.6px]"
       >
         <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black/85 text-white">
           <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -158,25 +160,25 @@ const year = new Date().getFullYear();
       </div>
 
       <!-- Step 1 prep video — "Watch This First - What Happens Next" (Wistia) -->
-      <div id="step-1-video" class="mt-9 w-full scroll-mt-24">
+      <div id="step-1-video" class="mt-9 w-full scroll-mt-24 max-md:mt-4 max-md:w-[calc(100vw-32px)]">
         <VideoEmbed provider="wistia" id="feucj6axzn" title="Watch This First — What Happens Next" frame={false} class="shadow-2xl" />
       </div>
 
-      <p class="mt-9 text-xl leading-[26px] text-white">
+      <p class="mt-9 text-xl leading-[26px] text-white max-md:mt-4 max-md:text-[16px] max-md:leading-[25.12px]">
         You'll get a confirmation text from us.
       </p>
     </div>
   </section>
 
   <!-- ===================== STEP 2 ===================== -->
-  <section class="w-full bg-white py-20 text-black">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
+  <section class="w-full bg-white py-20 text-black max-md:py-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center max-md:w-[calc(100vw-32px)]">
       <span class="step-pill">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 2
       </span>
 
-      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:text-2xl">
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-8 max-md:text-2xl">
         Press The "I Know The Sender" Button In Your Event Email &amp; Accept
         The Calendar Invite We Just Sent You
       </h2>
@@ -184,11 +186,11 @@ const year = new Date().getFullYear();
       <img
         src="/images/thank-you/i-know-the-sender.webp"
         alt={'Gmail "I know the sender" button highlighted on the calendar invite'}
-        class="mt-8 w-full rounded-[5px]"
+        class="mt-8 w-full rounded-[5px] max-md:w-[calc(100vw-32px)]"
         loading="lazy"
       />
 
-      <p class="mt-8 text-2xl leading-[38px] text-black max-md:text-lg">
+      <p class="mt-8 text-2xl leading-[38px] text-black max-md:mt-6 max-md:text-[16px] max-md:leading-[25.12px]">
         Otherwise the event you just scheduled with us will not show up in your
         calendar and you will likely miss the call.
       </p>
@@ -196,21 +198,21 @@ const year = new Date().getFullYear();
   </section>
 
   <!-- ===================== STEP 3 ===================== -->
-  <section class="bg-brand-tint w-full py-20 text-black">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
+  <section class="bg-brand-tint w-full py-20 text-black max-md:py-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center max-md:w-[calc(100vw-32px)]">
       <span class="step-pill">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 3
       </span>
 
-      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:text-2xl">
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-0 max-md:text-2xl">
         Pre-Call Checklist: Please Review Before Your Call
       </h2>
 
-      <ol class="mt-10 flex w-full flex-col gap-7 text-left">
+      <ol class="mt-10 flex w-full flex-col gap-7 text-left max-md:mt-6 max-md:gap-5">
         {
           checklist.map((c) => (
-            <li class="text-2xl leading-[38px] text-black max-md:text-lg">
+            <li class="text-2xl leading-[38px] text-black max-md:text-[16px] max-md:leading-[25.12px]">
               <span class="font-bold text-[var(--g-purple-text)]">
                 {c.n}. {c.title}
               </span>{" "}
@@ -258,10 +260,10 @@ const year = new Date().getFullYear();
         STEP 5
       </span>
 
-      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-2xl">
+      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:max-w-[332px] max-md:text-[28px]">
         Here's What Other Customers Are Saying
       </h2>
-      <p class="mt-3 text-xl leading-[31px] text-[#c4c4c4] max-md:text-base">
+      <p class="mt-3 max-w-[332px] text-xl leading-[31px] text-[#c4c4c4] max-md:text-base">
         We're happy to keep helping our customers achieve their goals.
       </p>
 
@@ -351,7 +353,7 @@ const year = new Date().getFullYear();
                 </div>
               </div>
 
-              <div class="mx-auto mt-9 flex w-full items-center gap-4 text-2xl font-normal leading-[20px] max-md:mt-6 max-md:justify-center">
+              <div class="mx-auto mt-9 flex w-full items-center gap-4 text-2xl font-normal leading-[20px] max-md:mt-6 max-md:flex-col max-md:justify-center">
                 <span>Platforms:</span>
                 <div class="flex items-center gap-2">
                   {cs.platforms.map((p) => (
@@ -401,7 +403,7 @@ const year = new Date().getFullYear();
           [...proofCards, ...proofCards].map((c) => (
             <div class="h-[70vh] max-h-[850px] min-h-[500px] w-[360px] shrink-0 overflow-hidden rounded-[20px] bg-white max-md:h-[500px] max-md:min-h-0">
               <div class="flex items-center gap-3 p-3">
-                <div class="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
+                <div class="proof-card-avatar relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
                   <div class="flex h-full w-full items-center justify-center text-sm font-bold text-white">
                     {c.handle.replace("@", "").slice(0, 2).toUpperCase()}
                   </div>

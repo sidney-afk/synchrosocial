@@ -21,18 +21,25 @@ const links = [
 
 <header class="sticky top-0 z-[100] border-b border-[#f5f5f51f] bg-black">
   <nav
-    class={`relative mx-auto flex w-[95%] max-w-[1040px] items-center py-3 ${minimal ? "justify-center" : ""}`}
+    class={`relative mx-auto flex w-[95%] max-w-[1040px] items-center py-3 ${minimal ? "justify-center" : "justify-between max-md:py-1"}`}
   >
     <a
       href="/"
-      class={`inline-flex w-full max-w-[240px] items-center gap-2 text-white ${minimal ? "justify-center" : "mr-auto"}`}
+      class={`site-logo-link ${minimal ? "site-logo-minimal justify-center" : "site-logo-full mr-auto max-md:mr-0 max-md:w-auto max-md:max-w-none"} inline-flex w-full max-w-[240px] items-center gap-2 text-white`}
       aria-label="Synchro Social"
     >
       <img
         src="/images/logo.png"
         alt="Synchro Social"
-        class="h-20 w-auto shrink-0 max-md:h-16"
+        class="h-20 w-auto shrink-0 max-md:hidden"
       />
+      <span class="site-mobile-wordmark" aria-hidden="true">
+        <span class="site-mobile-wordmark-icon">&infin;</span>
+        <span class="site-mobile-wordmark-text">
+          <span>Synchro</span>
+          <span>Social</span>
+        </span>
+      </span>
     </a>
 
     {
@@ -51,8 +58,20 @@ const links = [
             ))}
           </ul>
 
-          <div class="ml-auto flex items-center justify-end gap-6">
-            <ApplyButton href="/apply" label="Apply Now" size="md" arrow={false} />
+          <div class="ml-auto flex items-center justify-end gap-6 max-md:gap-2">
+            <ApplyButton href="/apply" label="Apply Now" size="md" arrow={false} class="site-nav-cta" />
+            <details class="site-mobile-menu md:hidden">
+              <summary class="site-mobile-menu-button" aria-label="Open menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </summary>
+              <div class="site-mobile-menu-panel">
+                {links.map((l) => (
+                  <a href={l.href}>{l.label}</a>
+                ))}
+              </div>
+            </details>
           </div>
         </>
       )

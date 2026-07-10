@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
+import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import Avatar from "../components/Avatar.astro";
 import Icon from "../components/Icon.astro";
@@ -21,18 +22,18 @@ import Icon from "../components/Icon.astro";
 
 // --- Leaders we've worked with (real Synchro clients + photos) -------------
 const clients = [
-  { name: "Danny Morel", followers: "1,500,000+", img: "/images/danny-morel.jpg" },
-  { name: "Tu Lam", followers: "640,000+", img: "/images/tu-lam.jpg" },
-  { name: "Morgan Burch", followers: "600,000+", img: "/images/morgan.jpg" },
-  { name: "Mastin Kipp", followers: "400,000+", img: "/images/mastin.jpg" },
-  { name: "Baya Voce", followers: "350,000+", img: "/images/baya.jpg" },
-  { name: "Garrain Jones", followers: "300,000+", img: "/images/garrain.jpg" },
-  { name: "Kute Blackson", followers: "300,000+", img: "/images/kute.jpg" },
-  { name: "Stefanos Sifandos", followers: "200,000+", img: "/images/stefanos.jpg" },
-  { name: "Alexi Panos", followers: "150,000+", img: "/images/alexi.jpg" },
-  { name: "Lucas Salame", followers: "140,000+", img: "/images/lucas.jpg" },
-  { name: "Daniel Raphael", followers: "100,000+", img: "/images/daniel.jpg" },
-  { name: "Jessica Winterstern", followers: "100,000+", img: "/images/jessica.jpg" },
+  { name: "Danny Morel", handle: "@dannymorel", followers: "1,500,000+", img: "/images/danny-morel.jpg" },
+  { name: "Tu Lam", handle: "@tulambjj", followers: "640,000+", img: "/images/tu-lam.jpg" },
+  { name: "Morgan Burch", handle: "@goodmorgantherapy", followers: "600,000+", img: "/images/morgan.jpg" },
+  { name: "Mastin Kipp", handle: "@mastinkipp", followers: "400,000+", img: "/images/mastin.jpg" },
+  { name: "Baya Voce", handle: "@bayavoce", followers: "350,000+", img: "/images/baya.jpg" },
+  { name: "Garrain Jones", handle: "@garrain.jones", followers: "300,000+", img: "/images/garrain.jpg" },
+  { name: "Kute Blackson", handle: "@kuteblackson", followers: "300,000+", img: "/images/kute.jpg" },
+  { name: "Stefanos Sifandos", handle: "@stefanossifandos", followers: "200,000+", img: "/images/stefanos.jpg" },
+  { name: "Alexi Panos", handle: "@alexipanos", followers: "150,000+", img: "/images/alexi.jpg" },
+  { name: "Lucas Salame", handle: "@lucas__salame", followers: "140,000+", img: "/images/lucas.jpg" },
+  { name: "Daniel Raphael", handle: "@danielraphael", followers: "100,000+", img: "/images/daniel.jpg" },
+  { name: "Jessica Winterstern", handle: "@thefeminineheart", followers: "100,000+", img: "/images/jessica.jpg" },
 ];
 
 // Six faces for the hero social-proof cluster.
@@ -113,7 +114,7 @@ const features = [
 // --- Customer testimonial --------------------------------------------------
 const testimonial = {
   name: "Alli Shaper",
-  role: "Client Testimonial",
+  role: "Feminine embodiment & relationship coach",
   wistia: "cqaowe93yn",
   title:
     "Alli Shaper shares how Synchro Social made the content process clearer, easier, and supported from start to finish.",
@@ -233,6 +234,7 @@ const compactCount = (s: string) =>
   bodyClass="v2"
 >
   <SiteNav />
+  <IClosedLiftWidget />
 
   <!-- ===================== HERO ===================== -->
   <section class="relative pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10">
@@ -243,7 +245,7 @@ const compactCount = (s: string) =>
     <div class="relative z-[3] mx-auto w-[95%] max-w-[1040px]">
       <!-- Heading block -->
       <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <p class="font-script text-2xl font-bold capitalize leading-[157%] text-[#b794ff]">
+        <p class="font-script text-2xl font-bold capitalize leading-[157%] text-[#b794ff] max-md:hidden">
           Impact-Driven Coaches, Thought Leaders &amp; Experts
         </p>
         <h1 class="font-tight text-[56px] font-bold capitalize leading-[1.05] text-white max-md:text-[32px]">
@@ -259,13 +261,13 @@ const compactCount = (s: string) =>
         </div>
 
         <!-- Button + social proof -->
-        <div class="flex w-full max-w-[457px] flex-col gap-6 max-md:max-w-[80%] max-sm:max-w-full">
+        <div class="flex w-full max-w-[457px] flex-col gap-6 max-md:w-[calc(100vw-32px)] max-md:max-w-none">
           <ApplyButton href="/apply" label="Apply Now" class="w-full" />
           <div class="flex w-max items-center justify-center gap-4 self-center max-sm:w-full max-sm:flex-col">
             <div class="flex -space-x-1">
               {
                 heroFaces.map((c) => (
-                  <div class="rounded-full ring-2 ring-white">
+                  <div class="hero-proof-avatar rounded-full ring-2 ring-white max-md:ring-[3px] max-md:ring-black">
                     <Avatar name={c.name} src={c.img} size={48} ring={false} />
                   </div>
                 ))
@@ -297,11 +299,14 @@ const compactCount = (s: string) =>
       <ul class="grid w-full grid-cols-4 gap-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-md:gap-4">
           {
             clients.map((c) => (
-              <li class="shadow-soft-dark flex items-center justify-center gap-3 rounded-xl bg-[#262626] px-5 py-4 max-md:justify-start max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:p-4">
-                <Avatar name={c.name} src={c.img} size={59} ring={false} />
+              <li class="shadow-soft-dark flex items-center justify-center gap-3 rounded-xl bg-[#262626] px-5 py-4 max-md:min-h-[122px] max-md:justify-start max-sm:flex-col max-sm:items-start max-sm:gap-2 max-sm:p-4">
+                <div class="client-card-avatar">
+                  <Avatar name={c.name} src={c.img} size={59} ring={false} />
+                </div>
                 <div class="flex min-w-0 flex-col items-start gap-1.5">
                   <p class="max-w-full truncate text-lg font-medium leading-[120%] text-white max-md:text-base">
-                    {c.name}
+                    <span class="max-md:hidden">{c.name}</span>
+                    <span class="hidden max-md:inline">{c.handle}</span>
                   </p>
                   <p class="text-base leading-[120%] text-[#c4c4c4] max-md:text-sm">
                     {compactCount(c.followers)} Followers
@@ -322,7 +327,7 @@ const compactCount = (s: string) =>
                 [...proofCards, ...proofCards].map((c) => (
                   <div class="h-[70vh] max-h-[850px] min-h-[500px] w-[360px] shrink-0 overflow-hidden rounded-[20px] bg-white max-md:h-[500px] max-md:min-h-0">
                     <div class="flex items-center gap-3 p-3">
-                      <div class="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
+                      <div class="proof-card-avatar relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-gradient-to-br from-brand-300 to-brand-600">
                         <div class="flex h-full w-full items-center justify-center text-sm font-bold text-white">
                           {c.handle.replace("@", "").slice(0, 2).toUpperCase()}
                         </div>
@@ -481,7 +486,7 @@ const compactCount = (s: string) =>
   <section id="testimonials" class="w-full pb-[120px] pt-[60px] max-lg:py-[60px]">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px] max-md:w-[calc(100%-32px)]">
       <div class="flex w-full flex-col items-center gap-6 text-center max-md:gap-4">
-        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:max-w-[332px] max-md:text-[28px]">
           Here's What Other Customers Are Saying
         </h2>
         <p class="text-base leading-[157%] text-[#c4c4c4] max-md:max-w-[332px]">
@@ -494,7 +499,10 @@ const compactCount = (s: string) =>
           <div class="flex w-max gap-5 max-md:overflow-x-auto max-md:pb-1">
             <div class="testimonial-tab flex h-20 w-[270px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6">
               <p class="text-base font-medium leading-6 text-white">{testimonial.name}</p>
-              <p class="text-sm leading-5 text-[#c4c4c4]">{testimonial.role}</p>
+              <p class="text-sm leading-5 text-[#c4c4c4]">
+                <span class="max-md:hidden">Client Testimonial</span>
+                <span class="hidden max-md:inline">{testimonial.role}</span>
+              </p>
             </div>
           </div>
         </div>

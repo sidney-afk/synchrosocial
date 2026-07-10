@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
+import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import ApplyButton from "../components/ApplyButton.astro";
@@ -26,7 +27,7 @@ import { caseStudies, slug } from "../data/caseStudies.js";
 const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
 const mobileTestimonial = {
   name: "Alli Shaper",
-  role: "Client Testimonial",
+  role: "Feminine embodiment & relationship coach",
   wistia: "cqaowe93yn",
   title:
     "Alli Shaper shares how Synchro Social made the content process clearer, easier, and supported from start to finish.",
@@ -42,6 +43,7 @@ const mobileTestimonial = {
   metaEvent={{ name: "ViewContent", params: { content_name: "apply" } }}
 >
   <SiteNav minimal />
+  <IClosedLiftWidget />
 
   <!-- ===================== HERO + BOOKING ===================== -->
   <section class="relative min-h-[100svh] pb-[120px] pt-20 max-lg:pb-[60px] max-lg:pt-10 max-md:pt-[18px]">
@@ -50,12 +52,12 @@ const mobileTestimonial = {
 
     <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-8">
       <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <p class="font-script text-2xl font-bold leading-5 text-[#b794ff] max-md:text-[16px] max-md:font-normal max-md:leading-5">
+        <p class="font-script text-2xl font-bold leading-5 text-[#b794ff] max-md:text-[14px] max-md:font-normal max-md:leading-5">
           Impact-Driven Coaches, Thought Leaders &amp; Business Owners
         </p>
         <h1 class="font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white max-md:text-[22.5px] max-md:leading-[24.75px]">
           Hire The Team Behind{" "}
-          <span class="whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:whitespace-normal">Over 1 Billion Views</span>
+          <span class="inline-block whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:px-1">Over 1 Billion Views</span>
           <br />
           Generated For Your Favorite Brands
         </h1>
@@ -93,7 +95,7 @@ const mobileTestimonial = {
   <section class="w-full bg-black py-[60px] md:hidden">
     <div class="mx-auto flex w-[calc(100%-32px)] flex-col items-center gap-[30px]">
       <div class="flex w-full flex-col items-center gap-4 text-center">
-        <h2 class="font-tight text-[28px] font-bold capitalize leading-none text-white">
+        <h2 class="mx-auto max-w-[332px] font-tight text-[28px] font-bold capitalize leading-none text-white">
           Here's What Other Customers Are Saying
         </h2>
         <p class="max-w-[332px] text-base leading-[157%] text-[#c4c4c4]">

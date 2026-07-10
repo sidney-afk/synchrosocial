@@ -1,0 +1,15 @@
+---
+// iClosed LIFT floating CTA widget.
+const liftWidgetId = import.meta.env.PUBLIC_ICLOSED_LIFT_WIDGET_ID ?? "Pk9Vea_CtsCr";
+---
+
+{
+  liftWidgetId && (
+    <script
+      type="text/javascript"
+      src="https://app.iclosed.io/assets/widget.js"
+      data-cta-widget={liftWidgetId}
+      async
+    ></script>
+  )
+}
