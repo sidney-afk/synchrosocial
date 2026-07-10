@@ -314,6 +314,120 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
 }
 
 @media (max-width: 767px) {
+  .site-nav-cta {
+    min-width: 148px;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 12px;
+  }
+
+  .site-nav-cta > span {
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  .site-mobile-menu {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .site-mobile-menu > summary {
+    list-style: none;
+  }
+
+  .site-mobile-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .site-mobile-menu-button {
+    display: flex;
+    height: 40px;
+    width: 40px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 9999px;
+    background: #f5f5f5;
+  }
+
+  .site-mobile-menu-button span {
+    display: block;
+    height: 2px;
+    width: 16px;
+    border-radius: 9999px;
+    background: #000;
+  }
+
+  .site-mobile-menu-panel {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 10;
+    display: flex;
+    width: 180px;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    background: #141414;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .site-mobile-menu-panel a {
+    padding: 13px 16px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 18px;
+    text-decoration: none;
+  }
+
+  .site-mobile-menu-panel a + a {
+    border-top: 1px solid #262626;
+  }
+
+  .hero-proof-avatar > .relative {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .client-card-avatar {
+    overflow: hidden;
+    border: 3px solid #fff;
+    border-radius: 9px;
+    background: #fff;
+  }
+
+  .client-card-avatar > .relative {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .client-card-avatar > .relative > div,
+  .client-card-avatar img,
+  .proof-card-avatar,
+  .proof-card-avatar img {
+    border-radius: 6px !important;
+  }
+
+  .proof-card-avatar {
+    border: 3px solid #fff;
+  }
+
+  .step-pill {
+    gap: 10px;
+    border-radius: 15px;
+    padding: 7px 24px;
+    font-size: 16px;
+    line-height: 17.6px;
+  }
+
+  .step-dot {
+    height: 28px;
+    width: 28px;
+  }
+
   .case-study-video {
     max-width: 312px;
     margin-inline: auto;
