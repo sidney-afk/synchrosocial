@@ -1,5 +1,11 @@
 # Synchro Social — Client Lifecycle Map
 
+> **🔁 MIRRORED DOC — lives in BOTH repos.** Identical copies exist at
+> `synchrosocial/docs/CLIENT_LIFECYCLE_MAP.md` and
+> `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`. **If you change one, apply
+> the identical change to the other in the same session/PR.** Keep the two
+> files byte-identical.
+>
 > **The master map.** Every traffic source → page → calendar → automation →
 > human step → data store, from a stranger clicking an ad to a live client
 > getting weekly content. Mapped **2026-07-10** from the live n8n instance
@@ -8,8 +14,8 @@
 >
 > | Doc | Covers |
 > | --- | --- |
-> | `docs/ECOSYSTEM_MAP.md` (this repo) | The booking layer in detail — pages ↔ iClosed calendars |
-> | `docs/meta-ads/README.md` (this repo) | Tracking: pixel, CAPI, event map, Meta campaign memory |
+> | `synchrosocial` repo — `docs/ECOSYSTEM_MAP.md` | The booking layer in detail — pages ↔ iClosed calendars |
+> | `synchrosocial` repo — `docs/meta-ads/README.md` | Tracking: pixel, CAPI, event map, Meta campaign memory |
 > | `client-analytics` repo — `NEW_CLIENT_ONBOARDING.md` | The manual per-client setup runbook (step-by-step) |
 > | `client-analytics` repo — `TRACK_A_…` / `TRACK_B_…` specs | In-flight migrations (n8n→Edge Functions, Linear replacement) |
 >

@@ -11,7 +11,10 @@ guide.
   lifecycle: traffic → booking → nurture → sales close → contract/invoice →
   onboarding → provisioning → samples → production. Includes the full n8n
   workflow inventory and the cross-system relationship map. Read this to
-  understand how anything connects to anything.
+  understand how anything connects to anything. **MIRRORED doc:** an
+  identical copy lives in the `client-analytics` repo at the same path —
+  if you edit one, apply the identical change to the other (keep them
+  byte-identical).
 - **`docs/ECOSYSTEM_MAP.md`** — how every page, funnel, and iClosed booking
   calendar connects. Read this before touching any funnel/booking page.
 - **`docs/meta-ads/README.md`** — the Meta ads project memory: accounts/IDs,
