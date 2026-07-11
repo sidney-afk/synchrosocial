@@ -253,28 +253,29 @@ const compactCount = (s: string) =>
         <!-- Button + social proof -->
         <div class="flex w-full max-w-[457px] flex-col gap-6 max-md:w-[calc(100vw-32px)] max-md:max-w-none">
           <ApplyButton href="/apply" label="Apply Now" class="w-full" />
-          <div class="flex w-max items-center justify-center gap-4 self-center max-sm:w-full max-sm:flex-col">
-            <div class="flex -space-x-1">
+          <div class="hero-proof-row flex w-full items-center justify-center gap-4 self-center max-sm:flex-col">
+            <div class="hero-proof-faces flex -space-x-1 md:-space-x-[16.4px]">
               {
                 heroFaces.map((c) => (
-                  <div class="hero-proof-avatar rounded-full ring-2 ring-white max-md:ring-[3px] max-md:ring-black">
+                  <div class="hero-proof-avatar rounded-full ring-[3px] ring-black">
                     <Avatar name={c.name} src={c.img} size={48} ring={false} />
                   </div>
                 ))
               }
             </div>
-            <div class="flex flex-col items-start gap-1.5 max-sm:items-center">
-              <div class="flex gap-1 text-[var(--g-purple)] max-md:gap-1.5 max-md:text-[#d64cff]">
+            <div class="hero-proof-copy flex min-w-0 flex-col items-start gap-1.5 md:flex-1 max-sm:items-center">
+              <div class="hero-proof-stars flex gap-0 text-[var(--g-purple)] max-md:gap-1.5 max-md:text-[#d64cff]">
                 {
                   Array.from({ length: 5 }).map(() => (
-                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 max-md:h-6 max-md:w-6">
+                    <svg viewBox="0 0 20 20" fill="currentColor" class="h-6 w-6">
                       <path d="M10 1.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L10 15l-5.2 2.6 1-5.8L1.5 7.7l5.9-.9z" />
                     </svg>
                   ))
                 }
               </div>
-              <p class="whitespace-nowrap text-sm leading-[120%] text-[#e9e9e9] max-sm:whitespace-normal">
-                Trusted by 100+ coaches &amp; thought leaders
+              <p class="w-full text-left text-sm leading-[120%] text-[#e9e9e9] md:whitespace-nowrap md:text-[13px] max-sm:text-center">
+                <span class="max-md:hidden">Trusted by 100+ Coaches</span>
+                <span class="hidden max-md:inline">Trusted by 100+ coaches &amp; thought leaders</span>
               </p>
             </div>
           </div>

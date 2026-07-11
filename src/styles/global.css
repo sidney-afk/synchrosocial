@@ -301,6 +301,13 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     0px 3px 7px 0px rgba(178, 163, 215, 0.06);
 }
 
+@media (min-width: 768px) {
+  .home-page .hero-proof-avatar > .relative {
+    width: 59px !important;
+    height: 59px !important;
+  }
+}
+
 
 /* Auto-scrolling marquee (homepage reel collage) */
 @keyframes marquee-x {
