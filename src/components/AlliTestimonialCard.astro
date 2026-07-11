@@ -6,6 +6,7 @@ interface Props {
   articleClass?: string;
   videoClass?: string;
   compactMobile?: boolean;
+  hideTab?: boolean;
 }
 
 const {
@@ -13,11 +14,12 @@ const {
   articleClass = "",
   videoClass = "w-[250px] max-md:w-full",
   compactMobile = false,
+  hideTab = false,
 } = Astro.props;
 ---
 
 <div class={`alli-testimonial flex w-full flex-col gap-[30px] ${compactMobile ? "max-md:gap-0" : ""} ${className}`}>
-  <div class={`w-full overflow-hidden ${compactMobile ? "max-md:hidden" : ""}`}>
+  <div class={`w-full overflow-hidden ${hideTab ? "hidden" : compactMobile ? "max-md:hidden" : ""}`}>
     <div class="flex w-max gap-5 max-md:overflow-x-auto max-md:pb-1">
       <div class="testimonial-tab flex min-h-20 w-[320px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6 max-md:w-[270px]">
         <p class="text-base font-medium leading-6 text-white">{testimonial.name}</p>
