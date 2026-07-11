@@ -119,7 +119,7 @@ const year = new Date().getFullYear();
     <div class="bg-hero-fade pointer-events-none absolute inset-x-0 bottom-0 top-[40%]" aria-hidden="true"></div>
 
     <div
-      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center max-md:pb-7 max-md:pt-4"
+      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center max-md:pb-12 max-md:pt-8"
     >
       <img src="/images/thank-you-page-logo.png" alt="Synchro Social" class="h-[78px] w-auto max-md:h-[64px]" />
 
@@ -208,19 +208,19 @@ const year = new Date().getFullYear();
   </section>
 
   <!-- ===================== STEP 4 — Q&A VIDEOS ===================== -->
-  <section class="w-full bg-white py-20 text-black">
+  <section class="w-full bg-white py-20 text-black max-md:pb-8 max-md:pt-5">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
       <span class="step-pill">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 4
       </span>
 
-      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:text-2xl">
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-5 max-md:text-2xl">
         Watch These Q&amp;A Videos Answering Most Common Questions To Save Time
         In Your Decision-Making Process.
       </h2>
 
-      <div class="mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:grid-cols-1 max-md:gap-y-8">
+      <div class="mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:mt-8 max-md:grid-cols-1 max-md:gap-y-8">
         {
           qaVideos.map((v) => (
             <div class="flex flex-col items-center gap-3">
@@ -236,40 +236,44 @@ const year = new Date().getFullYear();
   </section>
 
   <!-- ===================== STEP 5 — TESTIMONIALS ===================== -->
-  <section class="w-full bg-black py-20">
+  <section class="w-full bg-black py-20 max-md:pb-8 max-md:pt-5">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
       <span class="step-pill step-pill--dark">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 5
       </span>
 
-      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:max-w-[332px] max-md:text-[28px]">
+      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:mt-5 max-md:max-w-[332px] max-md:text-[28px]">
         Here's What Other Customers Are Saying
       </h2>
       <p class="mt-3 max-w-[332px] text-xl leading-[31px] text-[#c4c4c4] max-md:text-base">
         We're happy to keep helping our customers achieve their goals.
       </p>
 
-      <AlliTestimonialCard class="mt-12 text-left" />
+      <AlliTestimonialCard
+        class="mt-12 text-left max-md:!mt-6"
+        videoClass="w-[250px] max-md:mx-auto max-md:w-[calc(100vw-32px)]"
+        compactMobile
+      />
     </div>
   </section>
 
   <!-- ===================== STEP 6 — CASE STUDIES ===================== -->
-  <section class="w-full bg-white py-20 text-black">
+  <section class="w-full bg-white py-20 text-black max-md:pb-8 max-md:pt-5">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center">
       <span class="step-pill">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 6
       </span>
-      <h2 class="mt-10 text-center font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+      <h2 class="mt-10 text-center font-tight text-5xl font-bold capitalize leading-none text-black max-md:mt-5 max-md:text-[28px]">
         Check Out (Just Some) Of Our Case Studies.
       </h2>
 
-      <div class="mt-12 flex w-full flex-col gap-14">
+      <div class="mt-12 flex w-full flex-col gap-14 max-md:mt-9">
         {
           caseStudies.map((cs) => (
             <div class="flex w-full flex-col">
-              <div class="mx-auto mb-10 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4">
+              <div class="mx-auto mb-10 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4 max-md:mb-3 max-md:border-b-0 max-md:pb-0">
                 <div class="text-lg font-light leading-[1.3]">SYNCHRO SOCIAL CASE STUDY</div>
                 <h3 class="text-center text-[40px] font-black uppercase leading-[1.3] max-md:text-[2rem]">
                   {cs.name}
@@ -337,13 +341,13 @@ const year = new Date().getFullYear();
   </section>
 
   <!-- ===================== STEP 7 — SOCIAL-PROOF MARQUEE ===================== -->
-  <section class="w-full overflow-hidden bg-black py-20">
+  <section class="w-full overflow-hidden bg-black py-20 max-md:pb-8 max-md:pt-5">
     <div class="mx-auto mb-12 flex w-[95%] max-w-[1040px] flex-col items-center text-center">
       <span class="step-pill step-pill--dark">
         <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
         STEP 7
       </span>
-      <h2 class="mt-10 max-w-[900px] font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-2xl">
+      <h2 class="mt-10 max-w-[900px] font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-5 max-md:text-2xl">
         Check Out More Of What Our Clients Are Saying About Us
       </h2>
     </div>
