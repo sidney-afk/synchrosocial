@@ -11,6 +11,7 @@ const imageBase = "/images/audience-skyrocket/";
 
 const comparisonRows = [
   {
+    mobileKey: "baya",
     shape: "wide",
     before: {
       src: "baya-before.png",
@@ -22,6 +23,7 @@ const comparisonRows = [
     },
   },
   {
+    mobileKey: "lucas",
     shape: "tall",
     before: {
       src: "lucas-before.png",
@@ -33,6 +35,7 @@ const comparisonRows = [
     },
   },
   {
+    mobileKey: "danny",
     shape: "wide",
     before: {
       src: "danny-before-feed.png",
@@ -44,6 +47,7 @@ const comparisonRows = [
     },
   },
   {
+    mobileKey: "oliver",
     shape: "tall",
     before: {
       src: "oliver-before.png",
@@ -116,7 +120,7 @@ const proofColumns = [
     <div class="audience-skyrocket__comparison" aria-label="Before and after client growth screenshots">
       {
         comparisonRows.map((row) => (
-          <div class={`skyrocket-row skyrocket-row--${row.shape}`}>
+          <div class={`skyrocket-row skyrocket-row--${row.shape} skyrocket-row--${row.mobileKey}`}>
             <figure class="skyrocket-card">
               <div class="skyrocket-card__bar skyrocket-card__bar--before">Before</div>
               <div class="skyrocket-card__media">
@@ -494,7 +498,7 @@ const proofColumns = [
 
   @media (max-width: 560px) {
     .audience-skyrocket {
-      padding: 40px 0 60px;
+      padding: 60px 0;
     }
 
     .audience-skyrocket__panel {
@@ -503,20 +507,36 @@ const proofColumns = [
     }
 
     .audience-skyrocket__title {
-      width: 100%;
-      margin-bottom: 36px;
-      font-size: 36px;
-      line-height: 38px;
+      width: max-content;
+      max-width: 100%;
+      margin-bottom: 48px;
+      font-size: 28px;
+      line-height: 28px;
     }
 
     .audience-skyrocket__comparison {
       width: 100%;
-      gap: 10px;
+      gap: 8px;
     }
 
     .skyrocket-row {
-      grid-template-columns: 1fr;
-      gap: 10px;
+      gap: 8px;
+    }
+
+    .skyrocket-row--danny {
+      order: 1;
+    }
+
+    .skyrocket-row--baya {
+      order: 2;
+    }
+
+    .skyrocket-row--lucas {
+      order: 3;
+    }
+
+    .skyrocket-row--oliver {
+      order: 4;
     }
 
     .audience-skyrocket__proof-heading {
@@ -539,9 +559,9 @@ const proofColumns = [
     }
 
     .skyrocket-card__bar {
-      height: 30px;
-      font-size: 11px;
-      line-height: 14px;
+      height: 40px;
+      font-size: 12px;
+      line-height: 20px;
     }
 
     .audience-skyrocket__proof {

@@ -318,6 +318,31 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
 }
 
 @media (max-width: 767px) {
+  .home-page header nav {
+    width: 100%;
+    padding: 9px 16px;
+  }
+
+  .home-page .home-hero {
+    padding-top: 95px;
+  }
+
+  .home-page .site-nav-actions {
+    gap: 23px;
+  }
+
+  .home-page .site-mobile-menu-button {
+    width: 28px;
+    height: 28px;
+    gap: 3px;
+  }
+
+  .home-page .site-mobile-menu-button span {
+    width: 24px;
+    height: 3px;
+    border-radius: 3px;
+  }
+
   .site-mobile-wordmark {
     display: inline-flex;
     width: 132px;
