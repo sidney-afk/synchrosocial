@@ -404,6 +404,11 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     border-radius: 14px;
   }
 
+  .apply-page-hero-cta > span:first-child {
+    font-size: 14px;
+    line-height: 1;
+  }
+
   .apply-page-hero-cta > span[aria-hidden="true"] {
     right: 18px;
     height: 32px;

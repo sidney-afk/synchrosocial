@@ -1,0 +1,21 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`flex w-full flex-col items-center ${className}`}>
+  <div class="flex aspect-[9/16] w-full max-w-[306px] flex-col items-center justify-center rounded-[5px] border border-[#262626] bg-[#141414] p-6 text-center text-white">
+    <span class="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--g-purple)]/90 text-white shadow-[0_0_28px_rgba(147,51,234,0.28)]">
+      <svg viewBox="0 0 24 24" class="ml-1 h-8 w-8" fill="currentColor" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+    <p class="mt-5 text-lg font-bold leading-tight">Client Testimonial</p>
+    <p class="mt-2 max-w-[210px] text-sm leading-[157%] text-[#c4c4c4]">
+      Placeholder video coming soon.
+    </p>
+  </div>
+</div>

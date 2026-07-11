@@ -7,7 +7,7 @@ import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
-import AlliTestimonialCard from "../components/AlliTestimonialCard.astro";
+import PlaceholderTestimonialCard from "../components/PlaceholderTestimonialCard.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
 
 /* ===========================================================================
@@ -38,7 +38,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
   <IClosedLiftWidget />
 
   <!-- ===================== HERO + BOOKING ===================== -->
-  <section class="relative min-h-[100svh] pb-[131px] pt-20 max-lg:pt-10 max-md:pb-[60px] max-md:pt-[18px]">
+  <section class="relative min-h-[100svh] pb-[131px] pt-20 max-lg:pt-10 max-md:pb-[60px] max-md:pt-[40px]">
     <!-- Backdrop: transparent fading down to solid brand purple -->
     <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
@@ -95,7 +95,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </p>
       </div>
 
-      <AlliTestimonialCard />
+      <PlaceholderTestimonialCard />
     </div>
   </section>
 
@@ -110,7 +110,7 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </p>
       </div>
 
-      <AlliTestimonialCard articleClass="!min-h-0" videoClass="mx-auto w-full max-w-[306px]" />
+      <PlaceholderTestimonialCard />
     </div>
   </section>
 
