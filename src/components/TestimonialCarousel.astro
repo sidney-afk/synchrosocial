@@ -1,0 +1,172 @@
+---
+import { testimonials } from "../data/testimonials.js";
+
+interface Props {
+  class?: string;
+  articleClass?: string;
+  videoClass?: string;
+  compactMobile?: boolean;
+  hideTabs?: boolean;
+}
+
+const {
+  class: className = "",
+  articleClass = "",
+  videoClass = "w-[250px] max-md:mx-auto max-md:w-[calc(100%-4px)]",
+  compactMobile = false,
+  hideTabs = false,
+} = Astro.props;
+---
+
+<div
+  class={`testimonial-carousel flex w-full flex-col gap-6 ${compactMobile ? "max-md:gap-0" : ""} ${className}`}
+  data-testimonial-carousel
+>
+  {
+    !hideTabs && (
+      <div class={`testimonial-tabs-shell relative w-full ${compactMobile ? "max-md:hidden" : ""}`}>
+        <div
+          class="testimonial-tabs flex w-full gap-5 overflow-x-auto pr-16 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          aria-label="Customer testimonials"
+          data-testimonial-tabs
+        >
+          {testimonials.map((testimonial, index) => (
+            <button
+              type="button"
+              class="testimonial-tab flex min-h-20 w-[270px] shrink-0 flex-col justify-center gap-0.5 rounded-xl border border-[#262626] bg-[#26262666] px-4 pr-6 text-left transition-colors hover:bg-[#202020]"
+              role="tab"
+              aria-selected={index === 0 ? "true" : "false"}
+              tabindex={index === 0 ? 0 : -1}
+              data-testimonial-tab
+              data-index={index}
+            >
+              <span class="text-base font-medium leading-6 text-white">{testimonial.name}</span>
+              <span class="text-sm leading-5 text-[#c4c4c4]">{testimonial.role}</span>
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          class="testimonial-next absolute right-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-[0_2px_12px_rgba(0,0,0,0.2)] transition hover:scale-105"
+          aria-label={`Show ${testimonials[1]?.name ?? testimonials[0].name}`}
+          data-testimonial-next
+        >
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    )
+  }
+
+  <div class="relative w-full">
+    {
+      (hideTabs || compactMobile) && (
+        <button
+          type="button"
+          class:list={[
+            "testimonial-panel-next absolute right-3 top-3 z-20 h-12 w-12 items-center justify-center rounded-full bg-white text-black shadow-[0_2px_12px_rgba(0,0,0,0.28)] transition hover:scale-105",
+            hideTabs ? "flex" : "hidden max-md:flex",
+          ]}
+          aria-label={`Show ${testimonials[1]?.name ?? testimonials[0].name}`}
+          data-testimonial-next
+        >
+          <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      )
+    }
+
+    {
+      testimonials.map((testimonial, index) => (
+        <article
+          class={`min-h-[772px] w-full rounded-[56px] border border-[#262626] bg-[#26262666] px-10 py-10 max-md:min-h-0 max-md:rounded-[20px] max-md:px-6 max-md:py-6 ${compactMobile ? "max-md:!rounded-none max-md:!border-0 max-md:!bg-transparent max-md:!p-0" : ""} ${articleClass}`}
+          role="tabpanel"
+          hidden={index !== 0}
+          data-testimonial-panel
+          data-testimonial-name={testimonial.name}
+        >
+          <div class="flex items-start gap-10 max-md:flex-col max-md:gap-6">
+            <div class={`relative aspect-[9/16] shrink-0 overflow-hidden rounded-[5px] bg-black ${videoClass}`}>
+              <iframe
+                src={`https://fast.wistia.net/embed/iframe/${testimonial.wistia}?seo=false&videoFoam=false`}
+                class="absolute inset-0 h-full w-full"
+                title={`${testimonial.name} testimonial`}
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+
+            <div class={`flex max-w-[655px] flex-col gap-6 pt-1 max-md:max-w-none max-md:pt-0 ${compactMobile ? "max-md:hidden" : ""}`}>
+              <h3 class="text-2xl font-medium leading-[133%] text-white max-md:text-xl">
+                {testimonial.title}
+              </h3>
+              <p class="text-base leading-[157%] text-[#c4c4c4]">
+                {testimonial.body}
+              </p>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const initializeTestimonialCarousels = () => {
+    document.querySelectorAll<HTMLElement>("[data-testimonial-carousel]").forEach((carousel) => {
+      if (carousel.dataset.ready === "true") return;
+      carousel.dataset.ready = "true";
+
+      const tabs = [...carousel.querySelectorAll<HTMLButtonElement>("[data-testimonial-tab]")];
+      const panels = [...carousel.querySelectorAll<HTMLElement>("[data-testimonial-panel]")];
+      const nextButtons = [...carousel.querySelectorAll<HTMLButtonElement>("[data-testimonial-next]")];
+      let activeIndex = 0;
+
+      const showTestimonial = (requestedIndex: number, focusTab = false) => {
+        activeIndex = (requestedIndex + panels.length) % panels.length;
+
+        panels.forEach((panel, index) => {
+          panel.hidden = index !== activeIndex;
+        });
+
+        tabs.forEach((tab, index) => {
+          const isActive = index === activeIndex;
+          tab.setAttribute("aria-selected", String(isActive));
+          tab.tabIndex = isActive ? 0 : -1;
+        });
+
+        const activeTab = tabs[activeIndex];
+        if (activeTab) {
+          activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+          if (focusTab) activeTab.focus();
+        }
+
+        const nextName = panels[(activeIndex + 1) % panels.length]?.dataset.testimonialName;
+        nextButtons.forEach((button) => {
+          button.setAttribute("aria-label", `Show ${nextName ?? "next testimonial"}`);
+        });
+      };
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => showTestimonial(index));
+        tab.addEventListener("keydown", (event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          showTestimonial(activeIndex + (event.key === "ArrowRight" ? 1 : -1), true);
+        });
+      });
+
+      nextButtons.forEach((button) => {
+        button.addEventListener("click", () => showTestimonial(activeIndex + 1));
+      });
+    });
+  };
+
+  initializeTestimonialCarousels();
+  document.addEventListener("astro:page-load", initializeTestimonialCarousels);
+</script>
