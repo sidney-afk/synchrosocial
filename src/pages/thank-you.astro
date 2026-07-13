@@ -5,7 +5,7 @@ import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
-import AlliTestimonialCard from "../components/AlliTestimonialCard.astro";
+import TestimonialCarousel from "../components/TestimonialCarousel.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
 
 /* ===========================================================================
@@ -250,7 +250,7 @@ const year = new Date().getFullYear();
         We're happy to keep helping our customers achieve their goals.
       </p>
 
-      <AlliTestimonialCard
+      <TestimonialCarousel
         class="mt-12 text-left max-md:!mt-6"
         videoClass="w-[250px] max-md:mx-auto max-md:w-[calc(100vw-32px)]"
         compactMobile
