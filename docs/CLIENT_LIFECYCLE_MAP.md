@@ -176,17 +176,22 @@ link, termination clause, referred-by) → `POST /webhook/sales-intake-submit`
 - Supports `preview_contract` (create + return signing URL, no email) and
   `send_existing_contract` (send a previously previewed contract).
 
-> Doc drift note: `SALES_INTAKE_DESIGN.md` in `client-analytics` still says
-> the n8n workflow is pending — it is **live and active** since 2026-07-09
-> (§15.3).
+> **Current blocker (F106/F107):** “Kasper-gated” describes only the visible per-tab UI unlock.
+> The active webhook authenticates no caller. It also acknowledges both send branches before the
+> email result, trusts browser-round-tripped preview identifiers/link state, and has no durable
+> request idempotency key. Require an active individual Kasper/Admin principal plus a server-owned
+> receipt/state machine, or deactivate this route and use the manual process.
+
+`SALES_INTAKE_DESIGN.md` is the reconciled deployed-state contract. F106/F107 and the downstream
+F115/F116 gates must all close before this funnel is operationally trusted.
 
 ---
 
 ## 4. Stage 4 — Contract + payment gates → onboarding email
 
-Two independent webhooks race; whichever lands **second** triggers the
-onboarding email. Idempotency and routing live in **HubSpot contact
-properties**:
+Two independent provider callbacks set HubSpot contact properties and attempt to trigger the
+onboarding email. The intended rule is “exactly once after both verified gates,” but current graphs
+do not safely implement it:
 
 | Property | Set by | Meaning |
 | --- | --- | --- |
@@ -196,15 +201,24 @@ properties**:
 | `first_invoice_paid` | Sales — Invoice Paid (Stripe) | first Stripe invoice done (only the first payment matters) |
 | `onboarding_sent` | onboarding-email workflows | prevents double-send |
 
-- **Sales — Contract Signed** (`/webhook/contract-signed`, verified by a
-  shared secret): deal → `closedwon`, `contract_signed=true`. If
+- **Sales — Contract Signed** (`/webhook/contract-signed`): deal → `closedwon`,
+  `contract_signed=true`. It compares a static caller-body token, not the provider's native
+  raw-body HMAC, and does not correlate the event to the agreement created for this sale. If
   `first_invoice_paid` already true and `onboarding_sent` empty → route by
   `is_ai_client` → send onboarding email.
 - **Sales — Invoice Paid (Stripe)** (`/webhook/stripe-invoice`): deal →
-  custom stage `3230372548` ("invoice paid"), `first_invoice_paid=true`.
-  Mirror-image gate check → onboarding email.
+  custom stage `3230372548` ("invoice paid"), `first_invoice_paid=true`. The unauthenticated route
+  does not verify the provider signature/raw body, event identity/type/mode/account/paid state, or
+  correlate the payment to server-owned sale state. Mirror-image gate check → onboarding email.
 - Missing HubSpot contact on either webhook → ⚠️ Slack DM to Sidney to
   handle manually.
+
+> **Current blockers (F115/F116):** both routes acknowledge on receipt and trust unverified caller
+> events. Each then decides from the contact snapshot read **before** its own flag write. A
+> simultaneous valid pair can leave both flags true while neither sends; duplicates can make more
+> than one asynchronous child pass the old `onboarding_sent` check. The children have no durable
+> unique gate job, joined completion receipt, error workflow, or reconciler. Provider-native
+> verification/correlation plus one atomic idempotent gate and resumable email job are mandatory.
 
 **Onboarding email** (Normal Client / AI Client — Send Onboarding Email):
 subject *"Synchro Social X {first_name} — doesn't that sound magnetic?"*,
@@ -256,6 +270,14 @@ form ──POST──▶ n8n /webhook/onboarding-submit        (normal)
                 n8n /webhook/onboarding-fallback → Data Table onboarding_fallback → 🛟 DM
 ```
 
+**Current acknowledgement boundary (F110):** the primary graphs respond after the intake-row
+insert/fail-soft alert, then start provisioning without waiting; credential import is a separate
+fail-soft branch. A duplicate row responds directly and runs neither. The form clears its draft/id
+and says Thank You on any 2xx, including capture-only fallback. Therefore this diagram shows
+attempted side effects, not a transaction: **captured ≠ provisioned** until a durable resumable job
+reads every step back as complete. The canonical staff handoff is the SyncView inbox/job, not the
+replaced Notion trigger (F111).
+
 A third, read-only funnel exists: **`legacy_onboarding`** — 21 old Notion
 form submissions imported into Supabase, credentials split into a
 service-role-only column. Staff read all three funnels via Edge Functions
@@ -268,6 +290,9 @@ credential-stripped; `onboarding-full` = Kasper-only, keyed, un-stripped).
 
 n8n **Client — Onboarding Provisioning** (called by both submit workflows
 with `funnel = standard | ai`):
+
+This dispatch is currently unawaited and has no durable job/step ledger, completion callback, or
+whole-run reconciliation. Each item below is an intended side effect, not a completion guarantee.
 
 1. **Google Drive**: create folder `{first}-{last}` inside the shared
    **Clients** folder (`17u2c8JMLkrKMRxAXczirMFitNv1wD-JA`).
@@ -291,9 +316,9 @@ automated today:
 | --- | --- | --- | --- |
 | 1 | HubSpot | contact + deal + lifecycle | ✅ auto (booking → gates → provisioning) |
 | 2 | Supabase `client_onboarding` / `ai_client_onboarding` | form submission | ✅ auto (form submit) |
-| 3 | Supabase `client_credentials` | login vault rows (`needs_review`) | ✅ auto (onboarding_import) |
-| 4 | Google Drive "Clients" folder | client folder | ✅ auto (provisioning) |
-| 5 | Slack `#name-creative` | internal creative channel + brief | ✅ auto (provisioning) |
+| 3 | Supabase `client_credentials` | login vault rows (`needs_review`) | ⚠️ fail-soft attempt; no joined receipt/resume (F110) |
+| 4 | Google Drive "Clients" folder | client folder | ⚠️ unawaited provisioning attempt; no completion receipt (F110) |
+| 5 | Slack `#name-creative` | internal creative channel + brief | ⚠️ unawaited provisioning attempt; no completion receipt (F110) |
 | 6 | Slack **client channel** | the channel the client is in (weekly reports, tweak pings) | ❌ manual — note the ID `C…` |
 | 7 | SYNCVIEW sheet → `Clients Info` | the **public, non-secret** row that puts the client live in SyncView (allowlist is sheet-driven): name, handles, competitors, keywords, `slack_channel_id`, `postforme_account_id` | ❌ manual |
 | 7a | Supabase `client_access` + authenticated link builder | service-role-only review token and the staff-authorized path that copies one exact client's link; **never put the token in Clients Info** (audit F33) | ❌ Track-B onboarding/distribution gap |
@@ -321,12 +346,13 @@ The onboarding form's sample video (plus brand answers) seeds **sample
 edits** — subtitle styles, thumbnail looks — approved before real content
 starts. ⚠️ Two generations coexist (`client-analytics` docs, `SAMPLES_*`):
 
-- **Content Samples** (gen 1, `content_samples` table, `?sv2` default-on):
-  simple strip — single status, single comment thread, draft → kasper →
-  client → approved. No Linear. Writes via n8n `samples-upsert`
-  (kept on n8n by explicit decision D4).
+- **Content Samples** (gen 1, `content_samples` table): the staff nav/route is retired and the old
+  client URL currently redirects unsafely into generic Sample Review (F117). The dormant strip had
+  one status/thread and `?sv2` default-on reads; its active n8n writers fan out Sheet + Supabase but
+  can continue after a Sheet failure, so `?sv2=0`/automatic Sheet fallback is not writable recovery
+  (F57). Do not restore this generation without one exact-client and coupled-authority boundary.
 - **Sample Review** (gen 2, `sample_reviews` + `sample_review_events`,
-  flag `?sxr=1`, **default OFF** — built, ships dormant): the calendar's
+  **GA default ON** since 2026-07-02 with sticky `?sxr=0` opt-out): the calendar's
   architectural twin. Components video + thumbnail; statuses In Progress →
   For SMM Approval → Kasper Approval → Client Approval → Approved (+ Tweaks
   Needed interrupt); per-component comment threads; Linear VID/GRA
@@ -369,19 +395,19 @@ The recurring engine once a client is live:
    review loop (title_status, no Linear). Thumbnail revisions are
    snapshotted for before/after evidence when tweaks are requested.
 5. **Scheduling & posting** — approved cards get scheduled/posted on the
-   calendar; `add-to-calendar` can ingest a finished Linear issue (pulls the
-   Frame.io link, transcribes via Whisper, drafts a caption via Claude,
-   writes the client-facing calendar sheet). TikTok can auto-post via Post
+   calendar. The retained `add-to-calendar` branch is **not a safe ingestion contract** (F126): it
+   accepts first-page-only children/comments as complete, can omit later work/links, writes the
+   legacy client-facing Sheet, and acknowledges without completeness. Identify and retire its
+   caller or rebuild it as a fully paged durable job. TikTok can auto-post via Post
    For Me or the first-party TikTok pilot. **Content-ready notify** emails
    the client ("Your content is ready for review! 🎉").
 
-**Linear ⇄ SyncView sync** (until Track B lands): Linear workspace webhook →
-n8n `linear-status-sync` (calendar branch + workload branch + an **embedded
-samples branch** — do not delete, §15.8) with most-recent-action-wins
-conflict rules; SyncView → Linear via `linear-set-status`; a GitHub Action
-reconciler sweeps every 10 min (dispatched by an n8n cron) to heal dropped
-webhooks; `workload_issues` is a derived cache rebuilt every 10 min powering
-the Workload view.
+**Linear ⇄ SyncView sync** (until Track B lands): current real-time inbound is the
+`linear-inbound` Edge Function; the combined n8n receiver with Calendar/Samples/Workload branches is
+inactive/unpublished and must not be represented as serving production (F46). SyncView → Linear
+uses legacy mutation routes until reroute; GitHub reconcilers heal Calendar/Samples drift, while
+`workload_issues` remains a derived Linear cache. F29/F126 mean a green reader run is not a
+completeness receipt.
 
 ---
 
@@ -389,15 +415,15 @@ the Workload view.
 
 | Automation (n8n) | Schedule | What it does |
 | --- | --- | --- |
-| CLIENTS METRICS | daily | IG (Apify) + TikTok (Apify) + YouTube stats per `Clients Info` row → appends `Metrics` sheet, updates `PostTracking` gains |
-| TOP VIDEOS / COMPETITOR RESEARCH / MARKET RESEARCH | scheduled | research briefs per client → sheets → SyncView Analytics tab |
+| CLIENTS METRICS | daily | IG (Apify) + TikTok (Apify) + YouTube stats per `Clients Info` row → appends `Metrics` / updates `PostTracking`. **F124:** source/prior-state failures can become ordinary zero/reset rows or stop later roster clients while the run succeeds; require per-client/platform coverage and last-good/degraded semantics. |
+| TOP VIDEOS / COMPETITOR RESEARCH / MARKET RESEARCH | scheduled | research briefs per client → sheets → SyncView Analytics tab. **F124:** Top Videos can treat provider errors as empty/old complete truth; valid empty and source failure are not distinguished. |
 | Weekly Slack – Top Reel | Mondays | posts each client's top reel into their client Slack channel |
 | Clients — Monthly Check-in | 1st of month, 08:00 | emails every `Monthly Checkup` row a check-in with the iClosed **`check-in`** calendar link |
 | SMM Reports — Weekly Reminder | Mondays 09:00 | emails Kasper the SMM weekly-reports viewer link |
 | SMM Reports — Manager Sync | daily 06:00 | syncs `Social Media Managers` sheet → Supabase `social_media_managers` |
 | Workload — Reconcile | every 10 min | rebuilds `workload_issues` from Linear |
 | Calendar — Linear Reconcile Trigger | every 10 min | dispatches the GitHub Action reconciler |
-| SyncView — Weekly Backup | Sundays 02:00 | dated Drive folder: SYNCVIEW sheet copy, repo zip, **all n8n workflow export**, Supabase dumps (credentials stripped) |
+| SyncView — Weekly Backup | Sundays 02:00 | dated Drive folder: Sheet copy, repo zip, workflow export, Supabase dumps. **F13:** continued errors/empty substitution mean a green run is not a complete restore set; D-1 independent manifest/readback/restore remains open. |
 | Editors — Labor Week | on demand | per-editor delivery counts from Linear history |
 | Error alert relays | event-driven | n8n errors + Supabase EF alerts → DM Sidney |
 
@@ -430,7 +456,9 @@ the Workload view.
   `Samples_<slug>` mirrors (no longer load-bearing).
 - **Client-facing content calendar** (`1XOyGrvSo52e…`): one tab per client,
   written by `add-to-calendar`.
-- **Project Central** (`1ZAGZBMoT1M…`): internal ops tracker.
+- **Project Central** (`1ZAGZBMoT1M…`): internal ops tracker. Its active unauthenticated API can
+  accept partial/empty/stale state, clear all three live tabs before append, and leave an empty or
+  partial hierarchy with no staging/revision/restore receipt (F123). Do not use it as a recovery tool.
 
 **n8n Data Tables**: `iClosed Cancelled Calls` (nurture kill-switch),
 `onboarding_fallback` (drafts / fallback / dead-letter).
@@ -477,7 +505,8 @@ Onboarding Email · ★SyncView Onboarding — Submit · ★SyncView AI Onboardi
 Submit · ★SyncView Onboarding — Fallback Capture · ★Client — Onboarding
 Provisioning · SyncView Onboarding — List · SyncView AI Onboarding — List ·
 SyncView Onboarding — Legacy List (reads superseded by Edge Functions) ·
-★New Client → Slack DM (Notion Onboarding) *(legacy, still polling — §15.10)*.
+★New Client → Slack DM (Notion Onboarding) *(replaced legacy object: active-labelled, but current
+sanitized metadata reports no production trigger and no retained executions — F111/§15.10)*.
 
 **Production core:** ★VIDEO PRODUCTION AUTOMATION (6 webhooks: video-form,
 graphic-form, linear-projects, linear-issues, add-to-calendar,
@@ -563,10 +592,10 @@ state; Supabase holds ops state; Sheets hold the client roster + analytics
 
 | Migration | Status (2026-07-10) | What changes here when it lands |
 | --- | --- | --- |
-| **Track A — n8n → Supabase Edge Functions** (interactive writes) | A1/A2/A4 merged, per-client canary flags; A3 skipped | §9 write paths; n8n calendar/sample writers become fallback-only |
-| **Track B — replace Linear** with in-app `batches`/`deliverables` | PLANNING, sign-off pending; schema live but empty; Production tab read-only behind `?prod=1` | §7 row 10, §9 (sync section dies), §11 Linear section, Workload source |
+| **Track A — n8n → Supabase Edge Functions** (interactive writes) | A1/A2/A4 merged; current Calendar/SXR/settings allowlists carry the full active roster; unauthenticated fallbacks remain F67 | §9 write paths; n8n calendar/sample writers are fallback-only |
+| **Track B — replace Linear** with in-app `batches`/`deliverables` | mirror tables populated; Production has authority-gated writes but both real teams remain Linear-authoritative; #813 is not merge-safe (F02) | §7 row 10, §9 sync, §11 Linear, Workload source |
 | **Off Google Sheets** | calendar/samples/templates/filming-plans done; **client roster (`Clients Info`) + analytics still on Sheets** | §7 rows 7–9, §10 metrics, §11 Sheets section |
-| **Off Notion** | done (form replaced 2026-06; 21 legacy rows imported) | remove the legacy Notion trigger (§15.10) |
+| **Off Notion** | product path replaced; operator docs corrected in this audit | F60-safe archive of the active-labelled/no-production-trigger legacy object after zero-use proof (§15.10/F111) |
 | **Slack → ro.am** | decided "Slack now, ro.am later" | §6, §11 Slack section |
 | **Repo reorganization** | in progress in other sessions | file paths cited here |
 
@@ -608,10 +637,14 @@ table are all slated to become automated/Supabase-native.
 9. **Two Slack channels per client** (the client channel + the auto-created
    `#name-creative`) with no documented relationship — decide whether
    provisioning should create/link both.
-10. **Legacy Notion trigger still active**: "New Client → Slack DM (Notion
-    Onboarding)" polls a dead form every minute.
-11. **Samples: two live generations** (`content_samples` on by default,
-    `sample_reviews` built but default-off). Flip or fold.
+10. **Legacy Notion trigger is misleadingly active-labelled** (F111): current sanitized metadata
+    reports no production trigger/manual-only execution, its description says setup is incomplete,
+    and retained execution metadata is empty. Do not describe it as polling or healthy; the old form
+    is replaced. Archive only after F60 backup/restore and identifier-free zero-use proof.
+11. **Samples retirement is incomplete** (F57/F117): Sample Review is GA default-on and staff old
+    routes are retired, but the old client redirect loses exact-client binding and dormant
+    `content_samples` routes/state/backends remain. `?sv2=0` is not writable recovery. Fail the old
+    URL closed, inventory stale callers/store parity, then execute owner-approved Phase 2.
 12. **Event/investor bookings (`demo`, `1-1-call-with-kasper`) create no CRM
     record** — the router ignores them by design; those leads live only in
     Kasper's calendar.
