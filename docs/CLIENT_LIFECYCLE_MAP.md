@@ -6,6 +6,15 @@
 > the identical change to the other in the same session/PR.** Keep the two
 > files byte-identical.
 >
+> **CUTOVER SAFETY NOTICE (2026-07-14): this copy is stale and non-operative for Track A/Track B.**
+> The sections that still describe per-client Track-A canaries, empty Track-B tables, an active n8n
+> Linear receiver, ten-minute-only healing, or n8n-primary app writes are historical. Current truth:
+> Track A is full-roster; the Track-B mirror is populated; the Production caller is live but
+> authority-locked; `linear-inbound` is the real-time EF lane; the legacy combined n8n receiver is
+> inactive/unpublished; and the pager participates in reconciler cadence. Do not plan, flip, restore,
+> or retire from this file. Use the current `client-analytics` System Map, cutover register, GO LIVE,
+> FLIP, and ROLLBACK until a complete byte-identical update lands in both repositories (F71).
+>
 > **The master map.** Every traffic source → page → calendar → automation →
 > human step → data store, from a stranger clicking an ad to a live client
 > getting weekly content. Mapped **2026-07-10** from the live n8n instance
@@ -286,7 +295,8 @@ automated today:
 | 4 | Google Drive "Clients" folder | client folder | ✅ auto (provisioning) |
 | 5 | Slack `#name-creative` | internal creative channel + brief | ✅ auto (provisioning) |
 | 6 | Slack **client channel** | the channel the client is in (weekly reports, tweak pings) | ❌ manual — note the ID `C…` |
-| 7 | SYNCVIEW sheet → `Clients Info` | the row that **puts the client live in SyncView** (allowlist is sheet-driven): name, handles, competitors, keywords, `slack_channel_id`, `client_review_token`, `postforme_account_id` | ❌ manual |
+| 7 | SYNCVIEW sheet → `Clients Info` | the **public, non-secret** row that puts the client live in SyncView (allowlist is sheet-driven): name, handles, competitors, keywords, `slack_channel_id`, `postforme_account_id` | ❌ manual |
+| 7a | Supabase `client_access` + authenticated link builder | service-role-only review token and the staff-authorized path that copies one exact client's link; **never put the token in Clients Info** (audit F33) | ❌ Track-B onboarding/distribution gap |
 | 8 | SYNCVIEW sheet → `Social Media Managers` | client → SMM assignment (+ per-SMM Linear key, Slack id) | ❌ manual |
 | 9 | SYNCVIEW sheet → `Monthly Checkup` | opt-in row for monthly check-in emails | ❌ manual |
 | 10 | Linear | **one project per client**, named exactly the client name, on Video (VID) + Graphics (GRA) teams (duplicate "Client Example"), SMM as lead, Slack channel linked, brand info in description | ❌ manual (→ replaced by Track B) |
