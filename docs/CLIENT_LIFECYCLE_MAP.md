@@ -292,7 +292,10 @@ n8n **Client — Onboarding Provisioning** (called by both submit workflows
 with `funnel = standard | ai`):
 
 This dispatch is currently unawaited and has no durable job/step ledger, completion callback, or
-whole-run reconciliation. Each item below is an intended side effect, not a completion guarantee.
+whole-run reconciliation. Worse, the public submit path can launch it from caller-supplied identity/
+email without invitation, verified-sale correlation, authenticated staff approval or provider
+sandbox (F128). Each item below is an intended real-provider side effect, not a completion guarantee.
+Do not run a fictional submission as TEST: there is no complete captured inverse or teardown.
 
 1. **Google Drive**: create folder `{first}-{last}` inside the shared
    **Clients** folder (`17u2c8JMLkrKMRxAXczirMFitNv1wD-JA`).
@@ -300,9 +303,12 @@ whole-run reconciliation. Each item below is an intended side effect, not a comp
    `decisionmakerboughtin` ("onboarded").
 3. **Slack**: create public channel **`#{first-last}-creative`**, invite
    Sidney + Kasper, post a kickoff message (team/resource/timeline
-   placeholders for Kasper to fill) and the **full form-answer brief**
-   (credentials excluded — those live only in Supabase). If channel creation
-   fails, the whole brief falls back to a DM to Sidney.
+   placeholders for Kasper to fill) and the **full form-answer brief**. **P0
+   correction (F129): credentials are not excluded.** The active builder includes
+   account-access and backup/recovery-code answers; if channel creation fails,
+   the same brief falls back to a DM to Sidney. No message/value was inspected,
+   so historical occurrence is unknown. Structurally exclude secrets and send
+   only protected-vault receipt metadata before further credential-bearing use.
 
 ---
 
@@ -316,9 +322,9 @@ automated today:
 | --- | --- | --- | --- |
 | 1 | HubSpot | contact + deal + lifecycle | ✅ auto (booking → gates → provisioning) |
 | 2 | Supabase `client_onboarding` / `ai_client_onboarding` | form submission | ✅ auto (form submit) |
-| 3 | Supabase `client_credentials` | login vault rows (`needs_review`) | ⚠️ fail-soft attempt; no joined receipt/resume (F110) |
+| 3 | Supabase `client_credentials` | login vault rows (`needs_review`) | ⚠️ fail-soft caller-derived owner; no canonical roster readback or joined receipt/resume (F69/F110) |
 | 4 | Google Drive "Clients" folder | client folder | ⚠️ unawaited provisioning attempt; no completion receipt (F110) |
-| 5 | Slack `#name-creative` | internal creative channel + brief | ⚠️ unawaited provisioning attempt; no completion receipt (F110) |
+| 5 | Slack `#name-creative` | internal creative channel + brief | 🚨 public-triggered unawaited provisioning; full brief currently includes raw account-access answers (F128/F129) |
 | 6 | Slack **client channel** | the channel the client is in (weekly reports, tweak pings) | ❌ manual — note the ID `C…` |
 | 7 | SYNCVIEW sheet → `Clients Info` | the **public, non-secret** row that puts the client live in SyncView (allowlist is sheet-driven): name, handles, competitors, keywords, `slack_channel_id`, `postforme_account_id` | ❌ manual |
 | 7a | Supabase `client_access` + authenticated link builder | service-role-only review token and the staff-authorized path that copies one exact client's link; **never put the token in Clients Info** (audit F33) | ❌ Track-B onboarding/distribution gap |
