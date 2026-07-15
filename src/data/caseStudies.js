@@ -30,7 +30,7 @@ export const caseStudies = [
     platforms: ["Instagram", "TikTok", "YouTube", "Facebook"],
     stats: [
       { value: "500M+", label: "Total Views Generated" },
-      { value: "+3M", label: "Total Audience Growth" },
+      { value: "+3.5M", label: "Total Audience Growth" },
     ],
     videos: [
       // tiktok.com/@dannymorel/video/7187396490350972202 (If I Was A Woman)
@@ -45,11 +45,11 @@ export const caseStudies = [
   {
     name: "Morgan Burch",
     credit: "@goodmorgantherapy",
-    period: "12 Months",
+    period: "3 Months",
     platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
-      { value: "126M", label: "Total Views Generated" },
-      { value: "+100K", label: "Total Audience Growth" },
+      { value: "15M", label: "Total Views Generated" },
+      { value: "+48K", label: "Total Audience Growth" },
     ],
     videos: [
       { wistia: "hg7zrcgsmm", views: "7.8M" },
@@ -64,7 +64,7 @@ export const caseStudies = [
     platforms: ["Instagram"],
     stats: [
       { value: "13.4M", label: "Total Views Generated" },
-      { value: "+100K", label: "Total Audience Growth" },
+      { value: "+125K", label: "Total Audience Growth" },
     ],
     videos: [
       { wistia: "dnudt15o8k", views: "2.1M" },
@@ -91,7 +91,7 @@ export const caseStudies = [
     name: "Lucas Salame",
     credit: "@lucas__salame",
     period: "12 Months",
-    platforms: ["Instagram"],
+    platforms: ["Instagram", "TikTok", "YouTube"],
     stats: [
       { value: "46.6M", label: "Total Views Generated" },
       { value: "+140K", label: "Total Audience Growth" },
