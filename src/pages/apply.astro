@@ -39,11 +39,11 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
   <!-- ===================== HERO + BOOKING ===================== -->
   <section class="relative min-h-[100svh] pb-[131px] pt-20 max-lg:pt-10 max-md:pb-[60px] max-md:pt-[40px]">
     <!-- Backdrop: transparent fading down to solid brand purple -->
-    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    <div class="apply-page-hero-backdrop bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
     <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-3">
       <div class="flex w-full flex-col items-center gap-4 text-center max-md:gap-2">
-        <p class="font-script text-2xl font-bold leading-5 text-[#b794ff] max-md:mx-auto max-md:w-[calc(100%-32px)] max-md:max-w-[385px] max-md:whitespace-nowrap max-md:text-[clamp(12px,3.75vw,16px)] max-md:font-normal max-md:leading-5">
+        <p class="font-script text-2xl font-bold leading-5 text-[#b794ff] max-md:mx-auto max-md:w-[calc(100%-32px)] max-md:max-w-[385px] max-md:whitespace-nowrap max-md:text-[16px] max-md:font-normal max-md:leading-5">
           Impact-Driven Coaches &amp; Thought Leaders
         </p>
         <h1 class="hidden font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white md:block">
@@ -67,9 +67,9 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </div>
       </div>
 
-      <!-- Apply button — sits equidistant (gap-12) between the heading and the
-           booking widget so the space above and below it matches. -->
-      <div class="flex w-full max-w-[457px] flex-col max-md:w-[calc(100%-32px)] max-md:max-w-none">
+      <!-- Mobile bottom margin keeps the CTA-to-booking gap aligned to the
+           Growthtopia reference without changing desktop spacing. -->
+      <div class="flex w-full max-w-[457px] flex-col max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="apply-page-hero-cta w-full" />
       </div>
 
