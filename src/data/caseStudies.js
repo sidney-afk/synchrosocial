@@ -61,7 +61,7 @@ export const caseStudies = [
     name: "Jessica Winterstern",
     credit: "@thefeminineheart",
     period: "12 Months",
-    platforms: ["Instagram"],
+    platforms: ["Instagram", "TikTok"],
     stats: [
       { value: "13.4M", label: "Total Views Generated" },
       { value: "+125K", label: "Total Audience Growth" },
