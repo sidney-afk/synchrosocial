@@ -480,8 +480,8 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
       180deg,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) 60%,
-      #003b80 85%,
-      #0b7ee8 100%
+      #3d146f 85%,
+      #8331e8 100%
     );
   }
 
