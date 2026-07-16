@@ -71,9 +71,9 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </div>
       </div>
 
-      <!-- Mobile bottom margin keeps the CTA-to-booking gap aligned to the
-           Growthtopia reference without changing desktop spacing. -->
-      <div class="flex w-full max-w-[457px] flex-col max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
+      <!-- Desktop offset matches the reference's 16px copy-to-CTA gap; the
+           mobile margin preserves its separate CTA-to-booking spacing. -->
+      <div class="flex w-full max-w-[457px] flex-col md:-mt-8 max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="apply-page-hero-cta w-full" />
       </div>
 
