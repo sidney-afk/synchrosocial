@@ -236,6 +236,24 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   transform: translateY(-2px) scale(1.02);
 }
 
+/* The Apply-page scroll CTA mirrors Growthtopia's flat treatment rather than
+   the elevated site-wide button skin. */
+.apply-page-hero-cta,
+.apply-page-hero-cta:hover {
+  background: var(--g-purple);
+  box-shadow: none;
+  transform: none;
+}
+
+.apply-page-hero-cta > span[aria-hidden="true"] {
+  border-radius: 0;
+  background: transparent;
+}
+
+.apply-page-hero-cta > span[aria-hidden="true"] svg {
+  color: #fff;
+}
+
 /* Hero backdrop: transparent fading down into solid brand purple. Spans the
    hero heading AND the client-cards block beneath it (one shared canvas). */
 .bg-hero-fade {
@@ -435,7 +453,7 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     padding: 0 36px;
     border-radius: 12px;
     background: var(--g-purple);
-    box-shadow: 0 0 0 1px var(--g-purple-ring);
+    box-shadow: none;
   }
 
   .apply-page-hero-cta > span:first-child {
@@ -454,8 +472,7 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   .apply-page-hero-cta > span[aria-hidden="true"] svg {
     height: 32px;
     width: 20px;
-    stroke: #fff;
-    stroke-width: 2;
+    color: #fff;
   }
 
   .apply-page-hero-backdrop {
