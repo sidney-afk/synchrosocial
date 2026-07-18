@@ -10,15 +10,22 @@
 > whether any of it is the *best* way (the owner's "software craft" angle and
 > the improvement pass) is explicitly deferred — pin P4 in the vision doc.
 >
-> **Last verified:** 2026-07-18 (Enterprise Atlas session 1). Sources: both
+> **Last verified:** 2026-07-18 (Enterprise Atlas session 2). Session 1
+> documented from artifacts; in session 2 **the owner answered all 20
+> session-1 owner questions** and the answers are folded into their floors
+> below — sanitized to patterns per the covenant — plus an owner-invited
+> **read-only rhythms research pass** over Slack and Linear. Sources: both
 > repos (`sidney-afk/synchrosocial`, `sidney-afk/client-analytics`), their docs
-> layers, and the public site source. No live systems were touched.
+> layers, the public site source, the owner's answers, and the read-only
+> sweep. No live-system writes, ever.
 >
 > **How to use this doc:** read the floor you need, then follow its links.
 > Nothing detailed is duplicated here — if a floor has a master map, this doc
 > points at it (atlas-first doctrine: link, never copy). Numbered **OQ-n**
-> items are owner questions — facts only the owner knows, each worded so it can
-> be answered in one voice message. The full list is compiled at the end.
+> items are owner questions; resolved ones keep their number and carry the
+> dated answer in place (numbers are never reused). Questions the owner
+> redirected to Kasper live in the **Kasper questions** appendix (**KQ-n**).
+> The full ledger is compiled at the end.
 
 ---
 
@@ -37,7 +44,7 @@
 | 9 | [History & decisions](#floor-9--history--the-decision-registers) | 8 — Institutional memory |
 | 10 | [Economics](#floor-10--economics) | 9 — **Owner questions only** (public repo) |
 | 11 | [The human+AI operating system](#floor-11--the-humanai-operating-system) | 10 — The meta layer |
-| — | [Maintenance covenant](#maintenance-covenant) · [Owner-question index](#owner-question-index) | — |
+| — | [Maintenance covenant](#maintenance-covenant) · [Owner-question index](#owner-question-index) · [Kasper questions](#kasper-questions) | — |
 
 ---
 
@@ -57,6 +64,12 @@ them. The homepage's public proof claims: 100+ clients, 8M+ followers grown,
 follower counts) lives in `src/pages/index.astro` — per atlas hygiene, client
 names are never copied into docs; link there.
 
+**The ideal client, in the owner's words (2026-07-18):** an expert, thought
+leader, or coach **with budget** who does not do social media themselves and
+wants it fully handled — the filter is willingness to hand it over, not just
+ability to pay. Prospects who want to stay hands-on are a worse fit than the
+positioning alone suggests.
+
 **The method as sold** (homepage, "Our Proven 3-Step Formula"):
 **Generate traffic** (audience research → messaging, angles, hooks) →
 **Nurture traffic** (on-brand engaging content) → **Monetize traffic** (leads
@@ -71,6 +84,7 @@ followers.
 | Service | Done-for-you social content & growth | AI-clone content production |
 | Cold entry | `/` → `/apply` | `/ai` → `/call` |
 | Distinguished by | iClosed calendar booked → HubSpot `is_ai_client` → Supabase table (`client_onboarding` vs `ai_client_onboarding`) | same three markers |
+| Strategic status (owner, 2026-07-18) | The core offer — current ads target this funnel exclusively | A **side offer today, a real growth bet later**: deliberately sequenced after meta-ads brings more normal-client volume |
 
 **How a client is found → sold → onboarded → served** — the master map is
 [`docs/CLIENT_LIFECYCLE_MAP.md`](CLIENT_LIFECYCLE_MAP.md) (mirrored in both
@@ -103,7 +117,7 @@ repos; the *what-breaks-without-it* view is [Floor 7](#floor-7--dependencies)):
 | Legacy data | Google Sheets | Still live for: client roster (`Clients Info` = the allowlist), SMM/editor rosters, metrics & research analytics |
 | Ops dashboard | SyncView (`syncview.synchrosocial.com`, the `client-analytics` repo) | The internal single-page app the team runs the content pipeline in |
 | Task tracking | Linear (VID + GRA + 4 more teams; one project per client) | Production tasks; being replaced in-app (Track B) |
-| Comms | Slack (per-client channels, `#name-creative`, `#video-editing`, alert DMs) | Team + client communication; ro.am migration decided "later" |
+| Comms | Slack (per-client channels, `#name-creative`, `#video-editing`, alert DMs) + **Roam** | Internal team communication moved to Roam (virtual-office app; last Slack day set 2026-07-07 — session-2 sweep). Slack remains the automation/alert rail and channel home |
 | Email | Gmail via n8n (`hello@synchrosocial.com`, single "Hello email" credential) | Every client-facing email |
 | Contracts / payment | eSignatures.com · Stripe | Agreement signing · payment links + invoice webhook |
 | Ads & tracking | Meta Pixel/CAPI (one dataset), HubSpot feedback loop planned | Paid acquisition; memory: [`docs/meta-ads/README.md`](meta-ads/README.md) |
@@ -111,16 +125,17 @@ repos; the *what-breaks-without-it* view is [Floor 7](#floor-7--dependencies)):
 | Content research | Sandcastles; Apify (IG/TikTok scraping) | Competitor/market research, metrics collection |
 | AI production | Anthropic Claude, Gemini, Replicate, OpenAI Whisper | AI thumbnail pipeline, captions, transcription |
 | Auto-posting | Post For Me + first-party TikTok pilot | TikTok publishing |
-| Files | Google Drive/Docs | Client folders, filming-plan docs, backups |
+| Files | Google Drive/Docs | Client folders (raw footage, source material), filming-plan docs, backups |
+| Edited clips | Frame.io | The edited-deliverable library (raws stay in Drive) — owner-confirmed 2026-07-18; absent from repo artifacts until then |
 | Infra | GitHub (repos, Pages hosting, Actions CI/crons), Namecheap (DNS) | Both sites deploy from `main`; reconcilers and watchdogs run as Actions |
 | Legacy | Notion (old onboarding forms, read-only import), Framer/Calendly (fully migrated off) | History only |
 
-- **OQ-1** — The homepage FAQ targets "established coaches and thought
-  leaders." In your own words: who is the *ideal* client you want the pipeline
-  optimized for today (niche, audience size, budget readiness), and who should
-  be filtered out?
-- **OQ-2** — Is the AI-clone offering a growth bet, a side offer, or on its way
-  out? How do you decide which funnel a prospect belongs in?
+- **OQ-1 — resolved (owner, 2026-07-18):** ideal client = expert/thought
+  leader/coach with money who doesn't do social media and wants it fully
+  handled. Folded into "The ideal client" above.
+- **OQ-2 — resolved (owner, 2026-07-18):** AI-clone is a side offer today and
+  a real growth bet once meta-ads brings volume — "pursue after more normal
+  clients." Folded into the offerings table above.
 
 ---
 
@@ -208,15 +223,19 @@ Stripe checkout; the onboarding form; tokenized SyncView review links
 (`?c=<name>&t=<token>` — Tier 0, never knowingly broken, per
 `docs/QUALITY_TIERS.md`); their Slack channel.
 
-- **OQ-3** — What do clients most often *complain about* or ask for that the
-  artifacts can't show — where does the lived journey feel bumpy from their
-  side?
-- **OQ-4** — When a client leaves, what's the usual stated reason, and how
-  long does a typical client stay? (Placeholder — no churn data exists in the
-  repos.)
-- **OQ-5** — Between the kickoff call and the first posted content, what does
-  the client experience day-to-day — is there a "first 30 days" script beyond
-  the samples stage, or is it per-client improvisation?
+- **OQ-3 — resolved as a knowledge gap (owner, 2026-07-18):** the owner
+  doesn't know what clients complain about or ask for — first-hand client
+  feedback concentrates with Kasper. Recorded as **KQ-1** in the
+  Kasper-questions appendix; the atlas has no complaints picture yet.
+- **OQ-4 — resolved (owner, 2026-07-18):** a typical client stays roughly
+  **6–9 months**, and the usual exit reason is **results falling short of what
+  they hoped for**. No churn *data* exists in any system — this is the
+  owner's read, not a measured number.
+- **OQ-5 — resolved (owner, 2026-07-18):** there is **no first-30-days
+  playbook** beyond onboard → samples → approve → production begins; the
+  early experience is improvised per client. Marked as a potential future
+  asset (a deliberate "what we could build" note, not a defect — this atlas
+  documents, it doesn't improve).
 
 ---
 
@@ -234,18 +253,35 @@ documentation layer:
 | Video editors / graphic designers | Linear VID / GRA teams; auto-assigned per video by open-issue count; `Video Editors` sheet | Editing craft; per-client style familiarity |
 | (Structural) | Linear also carries Reporting, Podcast Episodes, Content Research, and Executive Assistant teams | Additional functions exist beyond the core pipeline |
 
-**Structural concentration risks already visible from the artifacts:** every
+**The owner-confirmed roster shape (2026-07-18):** ~3 video editors, 1
+graphic designer, ~6 social media managers — all employees (not contractors),
+based in Argentina and Colombia; the owner is in Costa Rica. No other named
+individuals appear in this public doc by design.
+
+**The owner-confirmed division of the company (2026-07-18):** Kasper does
+**all client acquisition** — calls, networking, big-picture strategy — and
+**reviews and approves all content**. The owner does **all software, solo**:
+both repos, every site and tool integration, the entire automation/AI layer —
+plus directly managing two clients (which he'd like to hand off someday) and
+holding the AI-clone capability itself.
+
+**Structural concentration risks — sharpened by the owner's answers:** every
 alert path terminates in one person's Slack DMs (Sidney); every calendar and
 client call runs through one person (Kasper); the iClosed dashboard's
 configuration (e.g. which calendar the floating widget books) is visible only
-to whoever holds that login.
+to whoever holds that login. And the deepest one: **the entire software layer
+is one person.** Kasper holds GitHub/Supabase/n8n access but rarely uses it —
+so on the systems side, access exists but operational capability does not.
+The company is a two-pillar structure (Kasper: clients; owner: systems) where
+each pillar is a bus factor of one.
 
-- **OQ-6** — One voice message: the actual team roster today — how many SMMs,
-  editors, designers, assistants; employee vs contractor; time zones.
-- **OQ-7** — What can *only Kasper* do today (would stall if he took two weeks
-  off), and what can *only you* do?
-- **OQ-8** — Who besides you can access n8n, Supabase, the iClosed dashboard,
-  and the GitHub org — and is that the intended set?
+- **OQ-6 — resolved (owner, 2026-07-18):** folded into "The owner-confirmed
+  roster shape" above.
+- **OQ-7 — resolved (owner, 2026-07-18):** folded into "The owner-confirmed
+  division of the company" above.
+- **OQ-8 — resolved (owner, 2026-07-18):** the owner has access to
+  everything; Kasper has GitHub, Supabase, and n8n but rarely uses them.
+  Folded into the concentration-risks paragraph above.
 
 ---
 
@@ -274,14 +310,56 @@ SyncView form, Kasper viewer); sales/kickoff/check-in calls as booked; the
 new-client manual provisioning runbook (`NEW_CLIENT_ONBOARDING.md` — ~10 of 17
 per-client setup steps are still manual).
 
-**Habit-only (nothing in the artifacts shows these exist or don't):**
+**The human rhythms** (researched read-only via Slack + Linear on 2026-07-18,
+owner-invited after OQ-9's honest "I'm not sure"; sanitized to roles):
 
-- **OQ-9** — What are the standing human rhythms? Team standups or weekly
-  syncs, a Kasper↔Sidney cadence, a client-review day, a planning day — what
-  actually recurs, and what exists only when someone remembers?
-- **OQ-10** — Who looks at the collected metrics/analytics, on what rhythm,
-  and does anything decided actually flow back from them into content
-  strategy?
+*Live today (subject to the coverage caveat below):*
+
+- A **weekly all-hands team meeting** (Zoom) — anchored Tuesday mornings,
+  often rescheduled within the week; 14+ dated occurrences Feb–Jun 2026 and
+  the team visibly rallies around it.
+- **Kasper's daily 15-minute 1:1 standups** with the owner and one other
+  teammate (stated by Kasper in writing, Jun 2026; repetition not directly
+  observed).
+- The **new-client kickoff ritual** — a templated "new client" intro post in
+  a fresh per-client channel plus an SMM-led kickoff meeting that gates
+  sample production (event-driven; consistent across 2025–26).
+- A **content-runway audit** — Kasper asks every SMM "when do you run out of
+  content?" roughly every 4–6 weeks (now partly tooled by the Filming Plans
+  runway view).
+- **Roughly-weekly batch-planning bursts in Linear** — SMMs create
+  per-client deliverable batches in large single-day bursts, but the day
+  floats across the week: a production rhythm, not a planning ceremony.
+
+*The striking arc:* **the strongest human ceremonies were deliberately
+replaced by tooling in May–Jun 2026.** A daily live content-review session
+(~4 months of near-daily occurrences) was retired for async review in the
+SyncView calendar; the weekly Wednesday "next week request thread" for
+editors (~5 months of consecutive weekly threads) was replaced by the
+SyncView workload system; a daily written stand-up died with a project
+manager's departure (Jan 2026) and was never revived. Linear's
+auto-generated weekly cycles are conveyor belts, not sprints — nobody plans
+into them and no ceremony marks their boundaries. There is **no standing
+team-wide daily standup, no "weekly sync," and no fixed planning or review
+day.**
+
+*Coverage caveat (major):* the sweep also discovered that internal team
+communication **migrated off Slack to Roam** (a virtual-office app), last
+Slack day set as **2026-07-07** — Slack has been near-silent (mostly bots)
+since. Recent Slack silence is therefore *not* evidence a ritual stopped;
+the live rituals above presumably continue on Roam, which sessions cannot
+currently read. DMs and most per-client channels were only sampled, and call
+platforms were not probed.
+
+- **OQ-9 — resolved by research (2026-07-18):** the owner wasn't sure and
+  explicitly invited a read-only sweep; findings above. Net: two live team
+  rituals (the weekly all-hands, Kasper's daily 1:1s), one event-driven one
+  (client kickoff), and a recent deliberate shift from human ceremonies to
+  tooling.
+- **OQ-10 — resolved (owner, 2026-07-18):** the collected metrics are
+  **mostly client-facing value** — nobody internal reads them on a rhythm,
+  and no decision loop currently flows from them back into content strategy.
+  The daily metrics robots feed reporting, not steering.
 
 ---
 
@@ -301,18 +379,22 @@ precisely to shrink the two biggest of these.)
 | **Google Sheets** | The client roster allowlist (`Clients Info`) and all analytics views break; robots that read rosters stop | Still the live source for roster + analytics — migration pending |
 | **Linear** | Production task tracking + editor auto-assignment + workload view stop | Track B (in-app replacement) is built but authority still deliberately sits with Linear |
 | **GitHub (Pages + Actions)** | Both websites unhostable; CI reconcilers/watchdogs/backups stop | Also holds both repos = the vault itself |
-| **Slack** | All internal + client comms channels and every operational alert | ro.am migration decided "Slack now, ro.am later" |
+| **Slack** | Every operational alert (all bot/alert rails post here) and the per-client channel layer | Internal *human* comms already moved to Roam (2026-07-07, session-2 sweep) — but the automations still speak Slack |
+| **Roam** | Internal team communication (meetings, standups, day-to-day) goes dark | Adopted as the virtual office ~Jul 2026; invisible to the repos and unreadable by sessions — a new dependency the artifacts don't govern |
 | **HubSpot (free tier)** | Sales-funnel state machine lost (contact/deal gates for contract→invoice→onboarding) | Nothing else reads HubSpot, but the gates drive onboarding email |
 | **Stripe / eSignatures.com** | Can't collect payment / can't sign agreements — the two close gates | Combined email + webhook gates in lifecycle §4 |
 | **Meta (pixel/dataset)** | Paid acquisition tracking resets | One dataset ID in code; ads memory in `docs/meta-ads/README.md` |
-| **Wistia / Drive / Docs** | Onboarding videos dark / client files + filming plans + backups unreachable | Drive is also the backup destination — a Drive loss couples primary and backup (see Floor 8) |
+| **Wistia / Drive / Docs** | Onboarding videos dark / client files + filming plans + backups unreachable | Drive is also the backup destination — a Drive loss couples primary and backup **for raw footage** (see Floor 8) |
+| **Frame.io** | The edited-clip library and its review/delivery flow stall | Owner-confirmed 2026-07-18; invisible to the repos, so no automation depends on it — the exposure is the asset library itself |
 | **AI vendors (Anthropic, Gemini, Replicate, Whisper, Apify)** | AI thumbnail pipeline, captions, transcription, metrics scraping degrade | Per-pipeline; production continues manually |
 | **Post For Me / TikTok API** | TikTok auto-posting stops | Manual posting fallback |
 | **Namecheap (DNS)** | Both domains unresolvable | Rarely touched; documented in site README |
 
-- **OQ-11** — Which of these carry a paid plan on *your* card vs someone
-  else's, and do any renewals/limits worry you today? (Placeholder — no
-  billing info in the repos, by design.)
+- **OQ-11 — resolved (owner, 2026-07-18):** **Kasper pays for approximately
+  everything.** An incomplete expense sheet exists — the owner's expense
+  sheet (private, in Drive; owner holds the location — never linked from this
+  public doc). Completing the expense picture is **KQ-4** (Kasper may pay for
+  tools the repos can't see).
 
 ---
 
@@ -331,6 +413,7 @@ What the company owns, where it lives, and what would hurt to lose.
 | Client roster + team rosters | Google Sheets (`Clients Info` etc.) | ⚠ doubles as the live allowlist; per-SMM Linear API keys sit in a readable tab (rotation owed — BRIEFING hazard) |
 | Production tasks + history | Linear (mirrored into Track-B tables) | One project per client is the universal join key |
 | Raw footage, brand assets, filming plans | Google Drive/Docs (client folders) | The creative raw material |
+| Edited clips (the deliverables) | Frame.io | The finished-content library (owner-confirmed 2026-07-18) — outside the Google basket, but with no known second copy either |
 | Metrics & research history | Sheets (Metrics, TopVideos, briefs) | Years of per-client performance data |
 | Team HR data (PTO balances/requests) | Supabase locked tables (EF-only) | Tier-1 correctness per quality contract |
 | Comms history | Slack, Gmail | Client agreements-in-conversation, alert history |
@@ -345,18 +428,28 @@ repos.
 
 **Would hurt most to lose (evidence-ranked):** the credentials vault; HubSpot
 mid-funnel state (no other record); Supabase pipeline history; client raw
-footage in Drive (primary *and* backup both live in Google's basket).
+footage in Drive (primary *and* backup both live in Google's basket — the
+edited clips at least sit in a different basket, Frame.io).
 
-- **OQ-12** — Client raw footage and filming docs: does any copy exist outside
-  Google Drive? Would losing a client's Drive folder be an apology or a
-  catastrophe?
-- **OQ-13** — Is there any client-contract obligation about how their data
-  (footage, credentials, metrics) is stored or deleted after they leave — and
-  do we actually do a deletion pass?
+- **OQ-12 — resolved with a correction (owner, 2026-07-18):** raw footage
+  lives **only in Drive**; edited clips live in **Frame.io** (a tool absent
+  from all repo artifacts until this answer — now added to the Floor 1
+  inventory and Floor 7 dependencies). The Drive
+  primary-and-backup-in-one-basket risk **stands for raws**.
+- **OQ-13 — resolved as unverified (owner, 2026-07-18):** **no known**
+  contractual retention/deletion obligations — but this is memory, not a
+  contract read. Marked: *unverified — check the actual agreements someday.*
+  No deletion pass exists for departed clients.
 
 ---
 
 ## Floor 9 — History & the decision registers
+
+**The founding (owner, 2026-07-18):** Kasper founded the company roughly
+**6–7 years ago** (≈2019–2020). The first client is known to the owner — name
+withheld from this public doc (owner holds the specifics). Everything deeper
+(how the first clients arrived, early pivots) concentrates with Kasper →
+**KQ-3**.
 
 **The migration story (how we got here), reconstructed from artifacts:** the
 site moved Framer → Astro/GitHub Pages (cutover to `synchrosocial.com`);
@@ -365,9 +458,12 @@ the ops layer moved Google Sheets → Supabase (calendar + samples, June 2026,
 dual-write → flag → default); interactive writes are moving n8n → Supabase
 Edge Functions (Track A, full roster); Linear is being replaced by in-app
 tables (Track B — built, mirror populated, authority deliberately still
-Linear); Slack → ro.am is decided-but-deferred. The pattern is consistent:
-**rented tools become owned systems, with dual-writes, flags, reconcilers,
-and rollback anchors at every step.**
+Linear); and internal team communication moved Slack → **Roam** with the last
+Slack day set as 2026-07-07 (session-2 sweep; the lifecycle map's "Slack now,
+ro.am later" note predates this — Slack remains the automation/alert rail).
+The pattern is consistent: **rented tools become owned systems, with
+dual-writes, flags, reconcilers, and rollback anchors at every step** — and,
+in 2026, human ceremonies becoming tooling too (Floor 6).
 
 **Where institutional memory is registered** (the atlas does not duplicate
 these):
@@ -388,12 +484,13 @@ truth" became a whole family of findings and monitoring rules; stale docs
 became the CI-enforced truth layer; unattended-work loss became the
 night-shift protocol.
 
-- **OQ-14** — The pre-artifact history: when did Synchro Social start, how did
-  the first clients arrive (referral network? one anchor client?), and what
-  pivots happened before 2026 that current docs can't see?
-- **OQ-15** — Is there a place where *business* decisions (pricing changes,
-  offer changes, hiring) get recorded the way D-numbers record system
-  decisions — or does that history live only in memory and chat threads?
+- **OQ-14 — partially resolved (owner, 2026-07-18):** founding facts folded
+  into "The founding" above; the detailed story is Kasper's → **KQ-3**.
+- **OQ-15 — resolved (owner, 2026-07-18):** **no business-decision register
+  exists** — nothing records pricing/offer/hiring decisions the way
+  D-numbers record system decisions. Kasper may hold some records privately
+  (**KQ-2**). Recorded as a structural gap: system history is registered;
+  business history is oral.
 
 ---
 
@@ -407,16 +504,23 @@ acquisition economics are planned around **CAC, not CPL** with a
 lock-the-numbers step pending (meta-ads README §1 step 3); the n8n plan has a
 watched execution quota; a dozen-plus paid tools appear on Floor 7.
 
-- **OQ-16** — The unit economics in one voice message: roughly what does a
-  client pay per month, what does serving one cost (people + tools), and which
-  offer is actually the most profitable?
-- **OQ-17** — Meta launch "lock the numbers" (gameplan step 3): what target
-  CAC / max cost-per-booked-call did you settle on, or is that still open?
-- **OQ-18** — Monthly tool spend: roughly what does the stack on Floor 7 cost
-  in total, and which line items feel disproportionate?
-- **OQ-19** — Where does *your* week actually go — rough split between sales,
-  client strategy, production oversight, and building the system — and which
-  of those do you most want off your plate?
+- **OQ-16 — resolved at placeholder precision (owner, 2026-07-18):** packages
+  run roughly **low-to-mid four figures monthly** with a minimum commitment of
+  about **three months**; exact figures are rule-enforced in the sales intake
+  flow (lifecycle map §3; `SALES_INTAKE_DESIGN.md` in the `client-analytics`
+  repo) and stay out of this public doc — owner holds the specifics.
+  Cost-to-serve and most-profitable-offer remain unquantified anywhere.
+- **OQ-17 — resolved (owner, 2026-07-18):** **no ads cost target yet** —
+  deliberately so; "lock the numbers" waits until real meta-ads volume exists
+  to price against.
+- **OQ-18 — resolved at placeholder precision (owner, 2026-07-18):** total
+  tool spend is roughly **mid three figures monthly**, tracked incompletely in
+  the owner's private expense sheet (see Floor 7 / OQ-11). Kasper-side tool
+  spend is unmapped → **KQ-4**.
+- **OQ-19 — resolved (owner, 2026-07-18):** the owner's week goes
+  **overwhelmingly to building with AI** — the commit history across both
+  repos is the honest diary of where the time went — plus directly managing
+  two clients he'd like off his plate someday.
 
 ---
 
@@ -448,9 +552,10 @@ this atlas) and `client-analytics` (the ops app + the truth layer).
 intent-to-prompt skill, P2 audit the map itself, P3 better retrieval around
 the vault, P4 the improvement pass.
 
-- **OQ-20** — When you need something from the vault today, how do you
-  actually look for it (ask a session? open GitHub? memory?) — and where does
-  retrieval fail you most? (Feeds pin P3.)
+- **OQ-20 — resolved (owner, 2026-07-18):** retrieval today = *"ask the
+  reviewer session, it greps the repo."* It works but it's slow. Recorded
+  verbatim as the input to pin **P3** (better retrieval architecture around
+  the vault) — the improvement itself stays out of scope for the atlas.
 
 ---
 
@@ -472,7 +577,8 @@ This atlas is a living root. It stays true only if every session honors this:
 3. **How results feed back:** answered owner questions are resolved **in
    place** — replace the OQ with the answer, dated, and renumber nothing
    (retired numbers stay retired so references never dangle). New unknowns
-   join the list with fresh numbers. Sessions never fork this document;
+   join the list with fresh numbers. The same contract governs the
+   Kasper-questions appendix (KQ-n). Sessions never fork this document;
    improvements to *how things are* belong in the linked master docs, with
    this atlas only re-pointed.
 4. **Freshness:** bump the "Last verified" line whenever a floor is verified
@@ -486,28 +592,48 @@ This atlas is a living root. It stays true only if every session honors this:
 
 ## Owner-question index
 
-Answer any of these in one voice message; a session will fold the answer into
-its floor and retire the number.
+**All 20 session-1 questions were answered by the owner on 2026-07-18** and
+resolved in place on their floors (numbers retired, never reused — full
+answers live at the OQ-n markers in each floor). This ledger records the
+outcome of each; open questions now live in the
+[Kasper questions](#kasper-questions) appendix.
 
-| # | Floor | Question (short form) |
+| # | Floor | Question (short form) | Outcome |
+|---|---|---|---|
+| OQ-1 | Company | Who is the *ideal* client? | Resolved |
+| OQ-2 | Company | AI-clone: bet, side offer, or sunsetting? | Resolved — side offer now, bet later |
+| OQ-3 | Client's chair | What do clients complain about? | Gap — owner doesn't know → **KQ-1** |
+| OQ-4 | Client's chair | Typical tenure and leaving reason? | Resolved — owner's read, no measured data |
+| OQ-5 | Client's chair | A "first 30 days" script? | Resolved — none; improvised |
+| OQ-6 | People | The actual team roster? | Resolved |
+| OQ-7 | People | What can only Kasper / only you do? | Resolved |
+| OQ-8 | People | Who else can access the systems? | Resolved |
+| OQ-9 | Rhythms | What standing human rhythms exist? | Owner unsure → researched read-only this session (see Floor 6) |
+| OQ-10 | Rhythms | Who reads the metrics? | Resolved — client-facing; nobody internally |
+| OQ-11 | Dependencies | Which tools on whose card? | Resolved — Kasper pays ~everything; sheet incomplete → **KQ-4** |
+| OQ-12 | Data | Footage outside Google Drive? | Resolved with correction — edited clips are in Frame.io |
+| OQ-13 | Data | Contractual retention obligations? | Resolved as *unverified* — check contracts someday |
+| OQ-14 | History | The pre-2026 story? | Partially resolved — detail → **KQ-3** |
+| OQ-15 | History | A business-decision register? | Resolved — none exists; maybe private → **KQ-2** |
+| OQ-16 | Economics | Unit economics? | Resolved at placeholder precision |
+| OQ-17 | Economics | Target CAC? | Resolved — none yet, deliberately |
+| OQ-18 | Economics | Monthly tool spend? | Resolved at placeholder precision |
+| OQ-19 | Economics | Where does your week go? | Resolved — building with AI; 2 managed clients |
+| OQ-20 | Meta layer | How do you retrieve from the vault? | Resolved — feeds pin P3 |
+
+---
+
+## Kasper questions
+
+Several owner answers were honestly *"I don't know — Kasper would."* These
+are the owner-shaped targets for the next information pass (an interview with
+Kasper, or answers he records directly). Same contract as owner questions:
+each is answerable in one voice message; a session folds the answer into its
+floor and retires the number.
+
+| # | Floor | Question |
 |---|---|---|
-| OQ-1 | Company | Who is the *ideal* client today, and who should be filtered out? |
-| OQ-2 | Company | Status of the AI-clone offer: growth bet, side offer, or sunsetting? |
-| OQ-3 | Client's chair | What do clients complain about / ask for most? |
-| OQ-4 | Client's chair | Typical client tenure and usual leaving reason? |
-| OQ-5 | Client's chair | Is there a "first 30 days" script beyond samples, or per-client improvisation? |
-| OQ-6 | People | The actual team roster (counts, contractor/employee, time zones)? |
-| OQ-7 | People | What can only Kasper do; what can only you do? |
-| OQ-8 | People | Who besides you can access n8n / Supabase / iClosed / GitHub — intended? |
-| OQ-9 | Rhythms | What standing human rhythms exist (standups, syncs, planning days)? |
-| OQ-10 | Rhythms | Who reads the metrics, on what rhythm, and does it change decisions? |
-| OQ-11 | Dependencies | Which tools are on whose card; any renewals/limits that worry you? |
-| OQ-12 | Data | Does client footage exist anywhere outside Google Drive? |
-| OQ-13 | Data | Any contractual data-retention/deletion obligations — and do we do a deletion pass? |
-| OQ-14 | History | The pre-2026 story: founding, first clients, pivots? |
-| OQ-15 | History | Do business decisions get recorded anywhere, like D-numbers do for systems? |
-| OQ-16 | Economics | Unit economics in one message: price ↔ cost-to-serve ↔ most profitable offer? |
-| OQ-17 | Economics | Target CAC / max cost per booked call — settled or open? |
-| OQ-18 | Economics | Rough total monthly tool spend; which line items feel heavy? |
-| OQ-19 | Economics | Where does your week actually go, and what do you most want off your plate? |
-| OQ-20 | Meta layer | How do you retrieve from the vault today, and where does it fail you? (→ P3) |
+| KQ-1 | Client's chair | What do clients actually complain about and ask for most — where does the journey feel bumpy from their side? (← OQ-3) |
+| KQ-2 | History | What were the big business decisions that shaped the company (pricing, offers, hiring, positioning) — and does any private record of them exist? (← OQ-15) |
+| KQ-3 | History | The founding story in detail: how it started ~6–7 years ago, who the first client was and how they arrived, and the early pivots. (← OQ-14) |
+| KQ-4 | Company / Dependencies / Economics | Which tools or subscriptions does Kasper use or pay for that the repos can't see — completing the expense picture the private sheet started? (← OQ-11, OQ-18) |
