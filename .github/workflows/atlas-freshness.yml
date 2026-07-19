@@ -1,0 +1,54 @@
+name: Atlas freshness guard
+
+# The vault audit (client-analytics docs/audits/2026-07-19-vault-audit.md)
+# found the atlas sat outside every freshness mechanism - the same structural
+# blindness that let the lifecycle-map mirror drift silently. This guard makes
+# atlas rot loud: a stale stamp, a dead local link, or a resurrected mirror
+# fails the run (weekly + on any atlas edit).
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docs/ATLAS.md'
+      - '.github/workflows/atlas-freshness.yml'
+  schedule:
+    - cron: '0 9 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check atlas stamp, local links, and mirror stub
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re, sys, os, datetime
+          fails = []
+          atlas = open('docs/ATLAS.md').read()
+          m = re.search(r'\*\*Last verified:\*\*\s*(\d{4}-\d{2}-\d{2})', atlas)
+          if not m:
+              fails.append('no "**Last verified:** YYYY-MM-DD" stamp in docs/ATLAS.md')
+          else:
+              age = (datetime.date.today() - datetime.date.fromisoformat(m.group(1))).days
+              print(f'atlas stamp {m.group(1)} (age {age}d)')
+              if age > 35:
+                  fails.append(f'atlas stamp is {age} days old (limit 35) - re-verify the floors and refresh the stamp')
+          for link in re.findall(r'\]\((?!http)([^)#]+)\)', atlas):
+              p = link.strip()
+              if p and not os.path.exists(p) and not os.path.exists(os.path.join('docs', p)):
+                  fails.append(f'dead local link in atlas: {p}')
+          stub = open('docs/CLIENT_LIFECYCLE_MAP.md').read()
+          if 'canonical copy' not in stub.lower():
+              fails.append('CLIENT_LIFECYCLE_MAP.md no longer looks like the pointer stub - the retired byte-mirror must not come back')
+          if fails:
+              print('ATLAS GUARD FAILURES:')
+              [print(' -', f) for f in fails]
+              sys.exit(1)
+          print('atlas guard: all checks green')
+          PY
