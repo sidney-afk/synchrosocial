@@ -10,14 +10,16 @@
 > whether any of it is the *best* way (the owner's "software craft" angle and
 > the improvement pass) is explicitly deferred — pin P4 in the vision doc.
 >
-> **Last verified:** 2026-07-18 (Enterprise Atlas session 2). Session 1
-> documented from artifacts; in session 2 **the owner answered all 20
-> session-1 owner questions** and the answers are folded into their floors
-> below — sanitized to patterns per the covenant — plus an owner-invited
-> **read-only rhythms research pass** over Slack and Linear. Sources: both
-> repos (`sidney-afk/synchrosocial`, `sidney-afk/client-analytics`), their docs
-> layers, the public site source, the owner's answers, and the read-only
-> sweep. No live-system writes, ever.
+> **Last verified:** 2026-07-19 (Enterprise Atlas session 4). Session 1
+> documented from artifacts; session 2 folded in **the owner's answers to all
+> 20 owner questions** plus an owner-invited read-only rhythms sweep; session 3
+> audited the vault itself (pins P2/P3 — see `client-analytics` →
+> `docs/audits/2026-07-19-vault-audit.md`) and shipped the retrieval router;
+> session 4 folds in the owner's repo answers and two structural decisions
+> (mirror retired, router live). Sources: both repos
+> (`sidney-afk/synchrosocial`, `sidney-afk/client-analytics`), their docs
+> layers, the public site source, and the owner's answers. No live-system
+> writes, ever.
 >
 > **How to use this doc:** read the floor you need, then follow its links.
 > Nothing detailed is duplicated here — if a floor has a master map, this doc
@@ -163,13 +165,28 @@ immediately.
   from the same repo.
 
 **The shared spine** — [`docs/CLIENT_LIFECYCLE_MAP.md`](CLIENT_LIFECYCLE_MAP.md)
-lives in both repos under a **byte-identical mirror contract** (edit both
-together). Note its 2026-07-14 cutover-safety banner: its Track A/B sections
-are historical; current migration truth lives in the `client-analytics`
-System Map and cutover register. **Known drift (verified 2026-07-18, session
-2):** the copies have actually diverged — a 2026-07-17 email-consolidation
-edit landed only in this repo's copy — compounding the already-registered
-staleness (F71). A complete byte-identical re-sync is owed in both repos.
+maps the whole client lifecycle. **The byte-identical mirror is retired
+(owner decision 2026-07-19).** It drifted silently in July because the
+contract was structurally unenforceable — a single-repo session cannot write
+the sibling copy and no machine ever compared them (vault audit VA-2, P1). The
+new rule: the **canonical copy lives in `client-analytics`**; this repo keeps
+a short **pointer stub** at the same path. (The mechanical stub-swap is the
+one remaining follow-through; until it lands, treat the `client-analytics`
+copy as authoritative.) Note the map's own 2026-07-14 cutover-safety banner:
+its Track A/B sections are historical — current migration truth is the
+`client-analytics` System Map and cutover register.
+
+**Other repos under the account** (owner-identified 2026-07-19; discharges the
+vault audit's open question VA-9 / P8). These are **not** vault repos — they
+carry no documented single-source-of-truth and no floor links down into them —
+but they exist under `sidney-afk`, so the map names them so nothing is
+unaccounted for:
+
+- **`synchro-crm`** — Kasper's own CRM experiment.
+- **`project-central`** — a central tracking board for the owner's work,
+  rarely updated.
+- **`letitbe`** — the owner's personal repo.
+- Two further repos (`ai-invite`, `claude`) are archived/dormant.
 
 ---
 
@@ -538,12 +555,14 @@ pass).
 **The architecture:** the owner + a fleet of AI sessions + a documented vault.
 Sessions are workers; **the vault is the memory** (`docs/vision/STEP_BACK_2026-07-18.md`
 doctrine). Two repos carry the vault: this one (the public face + funnels +
-this atlas) and `client-analytics` (the ops app + the truth layer).
+this atlas) and `client-analytics` (the ops app + the truth layer). The
+account holds a few other, non-vault repos (Floor 2).
 
 | Piece | What it is |
 |---|---|
 | Session contexts | `CLAUDE.md` in this repo and `AGENTS.md` in `client-analytics` brief every session before work |
 | The truth layer | Living, freshness-stamped docs with the **don't-re-audit rule** — trust a fresh stamp, verify one claim if stale, never ritually re-audit |
+| Retrieval router | `docs/FIND_ANYTHING.md` (in `client-analytics`) — a one-hop, question-indexed router to any documented fact across both repos, incl. the numbered registers (F-/D-/OQ-/KQ-/VA-numbers). Draft pending owner ratification (vault audit P4) |
 | CI-enforced docs | `test/repo-map-sync.js` and `test/truth-sync.js` fail builds when the map or truth docs drift from reality — docs that cannot silently rot |
 | The quality contract | `docs/QUALITY_TIERS.md` — owner-ratified promises per zone (Tier 0 client links → Tier 3 internal), used by every QA skill for prioritization |
 | House skills (`client-analytics/.claude/skills/`) | `master-test`, `overnight-test`, `human-audit`, `feedback-expansion`, `bug-archaeology`, `site-assurance` (the QA fleet) + `skill-forge` (how skills get made: examples-are-pointers intake + house invariants) + `night-shift` (unattended work: checkpoint every unit, a usage cap is a pause not a failure) |
@@ -560,7 +579,12 @@ the vault, P4 the improvement pass.
 - **OQ-20 — resolved (owner, 2026-07-18):** retrieval today = *"ask the
   reviewer session, it greps the repo."* It works but it's slow. Recorded
   verbatim as the input to pin **P3** (better retrieval architecture around
-  the vault) — the improvement itself stays out of scope for the atlas.
+  the vault). **Update (session 4):** P3 is now *partially discharged* — the
+  vault audit (session 3) shipped `docs/FIND_ANYTHING.md` in `client-analytics`,
+  a one-hop router built to reach any documented fact in ≤2 opens. It is a
+  draft pending owner ratification; the remaining P3 work (entry-point pointers
+  in every doc, a cross-repo freshness guard) is tracked in the vault audit's
+  proposal list.
 
 ---
 
@@ -591,7 +615,18 @@ This atlas is a living root. It stays true only if every session honors this:
    mark that floor inline rather than letting the whole document quietly age.
 5. **Hygiene, always:** no client names, no revenue or cost figures, no
    credentials or tokens, no strategy secrets — placeholders + owner questions
-   instead. This repo is public.
+   instead. Both vault repos are public today. **Open owner decision
+   (2026-07-19):** whether `client-analytics` should stay public with hazard
+   detail relocated to private storage, or be flipped private, is unresolved
+   (vault audit VA-1 / P2) — until it lands, keep operational-hazard specifics
+   out of both repos.
+6. **The lifecycle map is no longer mirrored (owner decision 2026-07-19).**
+   Its canonical copy lives in `client-analytics`; this repo's copy becomes a
+   pointer stub (the mechanical swap is the one pending follow-through — until
+   it lands, the `client-analytics` copy is authoritative). Do **not** re-sync,
+   re-mirror, or copy the full map back here — the byte-mirror contract is
+   retired precisely because it drifted silently (Floor 2; vault audit VA-2).
+   Edit the canonical copy only.
 
 ---
 
