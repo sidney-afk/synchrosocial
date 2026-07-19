@@ -411,9 +411,9 @@ What the company owns, where it lives, and what would hurt to lose.
 |---|---|---|
 | Sales-funnel state (contacts, deals, gates) | HubSpot | The only record of who is mid-funnel |
 | Client onboarding answers | Supabase (3 funnel tables) | Includes brand strategy + goals; RLS-locked |
-| **Client account credentials** | Supabase vault (`client_credentials`, EF-only, audited incl. reveals) | **Most sensitive store in the company.** Known credential-handling findings are tracked by number in the private truth layer's F-register — details deliberately not repeated in this public doc |
+| **Client account credentials** | Supabase vault (`client_credentials`, EF-only, audited incl. reveals) | **Most sensitive store in the company.** Known credential-handling findings are tracked by number in the truth layer's F-register (`client-analytics` repo) — details deliberately not repeated here. Note: that repo is public too (vault audit VA-1) — hazard-detail placement is an open owner decision |
 | Content pipeline state (calendar, samples, reviews, events) | Supabase | The operational memory of every post and approval |
-| Client roster + team rosters | Google Sheets (`Clients Info` etc.) | ⚠ doubles as the live allowlist; subject to known findings tracked in the private truth layer (BRIEFING) |
+| Client roster + team rosters | Google Sheets (`Clients Info` etc.) | ⚠ doubles as the live allowlist; subject to known findings tracked in the truth layer (BRIEFING, `client-analytics` repo) |
 | Production tasks + history | Linear (mirrored into Track-B tables) | One project per client is the universal join key |
 | Raw footage, brand assets, filming plans | Google Drive/Docs (client folders) | The creative raw material |
 | Edited clips (the deliverables) | Frame.io | The finished-content library (owner-confirmed 2026-07-18) — outside the Google basket, but with no known second copy either |
