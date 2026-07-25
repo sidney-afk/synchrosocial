@@ -22,8 +22,8 @@ export const testimonials = [
     role: "Founder & CEO of Ronin Tactics, Retired Green Beret",
     wistia: "oyyyafszq3",
     title:
-      "Synchro Social helped Tu Lam launch The Way of Ronin, sharpen his messaging, and grow his reach across social media.",
+      "Tu Lam credits Synchro Social with helping launch The Way of Ronin, refining his message, and driving significant growth across his social platforms.",
     body:
-      "Tu Lam is the founder and CEO of Ronin Tactics, a retired U.S. Army Special Forces Green Beret, and the author of The Way of Ronin. For his book launch, Synchro Social helped format his media and refine his messaging so it resonated with his audience. Tu says the collaboration delivered significant growth across his social platforms, calls the team's expertise a game changer, and recommends Synchro Social to entrepreneurs looking to elevate a business, brand, or book.",
+      "Tu Lam is the founder and CEO of Ronin Tactics, a retired U.S. Army Special Forces Green Beret, and the author of The Way of Ronin. After more than two decades in U.S. Army Special Operations, he built Ronin Tactics into a tactical gear and training company and became the inspiration for Call of Duty's Ronin character. For his book launch, Synchro Social helped format his media and refine his messaging so it resonated with his audience. Tu describes the resulting social growth as remarkable, calls the team's expertise a game changer, and recommends Synchro Social to entrepreneurs looking to elevate a business, brand, or book.",
   },
 ];
