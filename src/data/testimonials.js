@@ -17,4 +17,13 @@ export const testimonials = [
     body:
       "Sabrina Guler is the founder of Sinclair West, a creative studio for CPG brands and manufacturers. She came to Synchro Social looking for a team that could understand her message and bring it to the world. She credits the team's end-to-end process with learning her strengths, business, and message before turning them into content. Two Reels generated nearly two million views in December, amplifying her growth beyond what she expected. Sabrina describes the team as efficient, invested in her success, and genuinely committed to helping her grow quickly.",
   },
+  {
+    name: "Tu Lam",
+    role: "Founder & CEO of Ronin Tactics, Retired Green Beret",
+    wistia: "oyyyafszq3",
+    title:
+      "Synchro Social helped Tu Lam launch The Way of Ronin, sharpen his messaging, and grow his reach across social media.",
+    body:
+      "Tu Lam is the founder and CEO of Ronin Tactics, a retired U.S. Army Special Forces Green Beret, and the author of The Way of Ronin. For his book launch, Synchro Social helped format his media and refine his messaging so it resonated with his audience. Tu says the collaboration delivered significant growth across his social platforms, calls the team's expertise a game changer, and recommends Synchro Social to entrepreneurs looking to elevate a business, brand, or book.",
+  },
 ];
