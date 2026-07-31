@@ -17,7 +17,11 @@ import { campaignProof } from "../data/campaignProof.js";
 
         return (
           <article class="campaign-proof__card" data-campaign-proof-card>
-            <h3 class="campaign-proof__name">{client.name}</h3>
+            <h3
+              class:list={["campaign-proof__name", { "campaign-proof__name--compact": client.label.length > 24 }]}
+            >
+              {client.label}
+            </h3>
 
             <div class="campaign-proof__media">
               <button
@@ -117,6 +121,10 @@ import { campaignProof } from "../data/campaignProof.js";
     font-weight: 700;
     line-height: 18px;
     letter-spacing: 0;
+  }
+
+  .campaign-proof__name--compact {
+    font-size: 17px;
   }
 
   .campaign-proof__media {
