@@ -4,8 +4,10 @@ import { campaignProof } from "../data/campaignProof.js";
 
 <section class="campaign-proof" aria-labelledby="campaign-proof-title">
   <h2 id="campaign-proof-title" class="campaign-proof__heading">
-    <span>Real campaigns. Real growth.</span>
-    <span>From views → leads → revenue.</span>
+    <span class="campaign-proof__heading-main">Real campaigns. Real growth.</span>
+    <span class="campaign-proof__heading-path">
+      From views <b aria-hidden="true">→</b> leads <b aria-hidden="true">→</b> revenue.
+    </span>
   </h2>
 
   <div class="campaign-proof__grid">
@@ -86,14 +88,35 @@ import { campaignProof } from "../data/campaignProof.js";
 
   .campaign-proof__heading {
     width: calc(100% - 48px);
-    max-width: 1200px;
-    margin: 0 auto 12px;
+    max-width: 900px;
+    margin: 0 auto 24px;
     font-family: "Inter", Arial, sans-serif;
-    font-size: 30px;
-    font-weight: 400;
-    line-height: 39px;
     letter-spacing: 0;
-    text-align: left;
+    text-align: center;
+  }
+
+  .campaign-proof__heading-main,
+  .campaign-proof__heading-path {
+    display: block;
+  }
+
+  .campaign-proof__heading-main {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 40px;
+  }
+
+  .campaign-proof__heading-path {
+    margin-top: 4px;
+    color: #b9b3c3;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+  }
+
+  .campaign-proof__heading-path b {
+    color: #a855f7;
+    font-weight: 700;
   }
 
   .campaign-proof__grid {
@@ -107,7 +130,7 @@ import { campaignProof } from "../data/campaignProof.js";
   .campaign-proof__card {
     display: flex;
     min-width: 0;
-    min-height: 360px;
+    min-height: 0;
     flex-direction: column;
     padding: 27px 29px 24px;
     border: 1px solid #2b2b2b;
@@ -237,15 +260,18 @@ import { campaignProof } from "../data/campaignProof.js";
     .campaign-proof__heading {
       width: 372px;
       max-width: 100%;
-      margin-bottom: 15px;
-      font-family: "Arial Narrow", Arial, sans-serif;
-      font-size: 29px;
-      line-height: 30px;
+      margin-bottom: 20px;
     }
 
-    .campaign-proof__heading span {
-      display: block;
-      white-space: nowrap;
+    .campaign-proof__heading-main {
+      font-size: 28px;
+      line-height: 34px;
+    }
+
+    .campaign-proof__heading-path {
+      margin-top: 2px;
+      font-size: 18px;
+      line-height: 26px;
     }
 
     .campaign-proof__grid {
