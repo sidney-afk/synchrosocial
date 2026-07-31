@@ -1,0 +1,278 @@
+---
+import { campaignProof } from "../data/campaignProof.js";
+---
+
+<section class="campaign-proof" aria-labelledby="campaign-proof-title">
+  <h2 id="campaign-proof-title" class="campaign-proof__heading">
+    <span>Real campaigns. Real growth.</span>
+    <span>From views → leads → revenue.</span>
+  </h2>
+
+  <div class="campaign-proof__grid">
+    {
+      campaignProof.map((client) => {
+        const playerSrc = client.wistia
+          ? `https://fast.wistia.net/embed/iframe/${client.wistia}?seo=false&videoFoam=false&autoPlay=true`
+          : null;
+
+        return (
+          <article class="campaign-proof__card" data-campaign-proof-card>
+            <h3 class="campaign-proof__name">{client.name}</h3>
+
+            <div class="campaign-proof__media">
+              <button
+                type="button"
+                class="campaign-proof__poster"
+                data-player-src={playerSrc || undefined}
+                aria-label={`Play ${client.name} case study`}
+                disabled={!playerSrc}
+              >
+                <img
+                  src={client.poster}
+                  alt={`${client.name} campaign case study`}
+                  loading="lazy"
+                  width="640"
+                  height="360"
+                />
+                <span class="campaign-proof__play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"></path>
+                  </svg>
+                </span>
+              </button>
+            </div>
+
+            <ul class="campaign-proof__results">
+              {client.results.map((result) => <li>{result}</li>)}
+            </ul>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".campaign-proof__poster").forEach((button) => {
+    if (button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
+    button.addEventListener("click", () => {
+      const src = button.dataset.playerSrc;
+      if (!src) return;
+
+      const iframe = document.createElement("iframe");
+      iframe.className = "campaign-proof__iframe";
+      iframe.src = src;
+      iframe.title = button.getAttribute("aria-label") || "Client case study";
+      iframe.loading = "lazy";
+      iframe.allow = "autoplay; fullscreen; picture-in-picture";
+      iframe.setAttribute("allowfullscreen", "");
+      button.replaceWith(iframe);
+    });
+  });
+</script>
+
+<style>
+  .campaign-proof {
+    width: 100%;
+    padding: 54px 0 72px;
+    background: #0c0c0c;
+    color: #fff;
+  }
+
+  .campaign-proof__heading {
+    width: calc(100% - 48px);
+    max-width: 1200px;
+    margin: 0 auto 12px;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 39px;
+    letter-spacing: 0;
+    text-align: left;
+  }
+
+  .campaign-proof__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 290px);
+    gap: 15px;
+    width: 900px;
+    margin: 0 auto;
+  }
+
+  .campaign-proof__card {
+    display: flex;
+    min-width: 0;
+    min-height: 360px;
+    flex-direction: column;
+    padding: 27px 29px 24px;
+    border: 1px solid #2b2b2b;
+    background: #0c0c0c;
+  }
+
+  .campaign-proof__name {
+    margin: 0 0 14px;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 0;
+  }
+
+  .campaign-proof__media {
+    position: relative;
+    width: 230px;
+    aspect-ratio: 16 / 9;
+    flex: 0 0 auto;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .campaign-proof__poster {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .campaign-proof__poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .campaign-proof__play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    width: 72px;
+    height: 72px;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    border: 5px solid rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: background-color 160ms ease, transform 160ms ease;
+  }
+
+  .campaign-proof__play svg {
+    width: 30px;
+    height: 30px;
+    margin-left: 4px;
+  }
+
+  .campaign-proof__poster:hover .campaign-proof__play,
+  .campaign-proof__poster:focus-visible .campaign-proof__play {
+    background: rgba(131, 49, 232, 0.72);
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+
+  .campaign-proof__poster:focus-visible {
+    outline: 2px solid #b794ff;
+    outline-offset: 3px;
+  }
+
+  .campaign-proof__results {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+    letter-spacing: 0;
+  }
+
+  .campaign-proof__results li {
+    position: relative;
+    padding-left: 12px;
+  }
+
+  .campaign-proof__results li::before {
+    position: absolute;
+    left: 0;
+    content: "•";
+  }
+
+  :global(.campaign-proof__iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (min-width: 768px) and (max-width: 959px) {
+    .campaign-proof__grid {
+      grid-template-columns: repeat(2, 290px);
+      width: 595px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .campaign-proof {
+      padding: 24px 0 32px;
+    }
+
+    .campaign-proof__heading {
+      width: 372px;
+      max-width: 100%;
+      margin-bottom: 15px;
+      font-family: "Arial Narrow", Arial, sans-serif;
+      font-size: 29px;
+      line-height: 30px;
+    }
+
+    .campaign-proof__heading span {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .campaign-proof__grid {
+      grid-template-columns: 1fr;
+      gap: 15px;
+      width: min(100%, 390px);
+    }
+
+    .campaign-proof__card {
+      min-height: 0;
+      padding: 29px 27px 30px;
+    }
+
+    .campaign-proof__name {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+    }
+
+    .campaign-proof__media {
+      width: 320px;
+      max-width: 100%;
+      margin-inline: auto;
+    }
+
+    .campaign-proof__results {
+      width: 280px;
+      max-width: calc(100% - 40px);
+      gap: 7px;
+      margin: 20px auto 0;
+      font-size: 17px;
+      line-height: 22px;
+    }
+  }
+</style>
