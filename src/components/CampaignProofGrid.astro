@@ -221,7 +221,7 @@ import { campaignProof } from "../data/campaignProof.js";
     list-style: none;
     font-family: "Inter", Arial, sans-serif;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 400;
     line-height: 20px;
     letter-spacing: 0;
   }
@@ -286,12 +286,15 @@ import { campaignProof } from "../data/campaignProof.js";
     }
 
     .campaign-proof__name {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
+      position: static;
+      width: 320px;
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto 14px;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+      line-height: 22px;
     }
 
     .campaign-proof__media {
