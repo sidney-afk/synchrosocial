@@ -9,13 +9,16 @@ import PlatformIcon from "../components/PlatformIcon.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
 import AgencyAwardRecognition from "../components/AgencyAwardRecognition.astro";
 import CampaignProofGrid from "../components/CampaignProofGrid.astro";
+import ApplyTestimonials from "../components/ApplyTestimonials.astro";
+import ApplyFaq from "../components/ApplyFaq.astro";
+import ApplyLegalFooter from "../components/ApplyLegalFooter.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
 
 /* ===========================================================================
    APPLY PAGE — what happens when someone clicks "Apply Now".
    Matched 1:1 to the reference funnel's measured spec, in Synchro purple:
    100svh hero with bottom purple fade + half-highlight headline + booking,
-   80px-padded case-study band, minimal rights-only footer.
+   campaign proof, customer testimonials, case studies, FAQ, and legal footer.
 
    Booking uses Kasper's iClosed "Social Media Consultation" calendar
    (synchrosocial/social-media-consultation), which redirects to /thank-you. /call uses a
@@ -56,11 +59,11 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </h1>
         <h1 class="font-tight mx-auto w-[calc(100%-24px)] max-w-[400px] text-[clamp(22.45px,calc(7vw-3.8px),26.3px)] font-bold capitalize leading-[1.1] text-white md:hidden">
           <span class="inline-block whitespace-nowrap">
-            Hire The Team Behind{" "}<span class="bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-1">Over</span>
+            Hire The Team Behind
           </span>
           <br />
           <span class="inline-block whitespace-nowrap">
-            <span class="bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-1">1 Billion Views</span>{" "}Generated For
+            <span class="bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-1">Over 1 Billion Views</span>{" "}For
           </span>
           <br />
           <span class="inline-block whitespace-nowrap">Your Favorite Brands</span>
@@ -99,6 +102,8 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
   </section>
 
   <CampaignProofGrid />
+
+  <ApplyTestimonials />
 
   <!-- ===================== CASE STUDIES ===================== -->
   <section class="w-full bg-white pb-14 pt-20 text-black max-lg:pb-12 max-lg:pt-6 max-md:pt-8">
@@ -190,12 +195,6 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
 
   <AudienceSkyrocket ctaHref="#book" />
 
-  <!-- ===================== FOOTER (minimal, rights only) ===================== -->
-  <footer class="w-full px-0 py-8">
-    <div class="mx-auto w-[95%] max-w-[1120px] border-t border-[#262626] pt-8">
-      <p class="text-base leading-[150%] text-white">
-        © {new Date().getFullYear()} Synchro Social LLC. All rights reserved.
-      </p>
-    </div>
-  </footer>
+  <ApplyFaq />
+  <ApplyLegalFooter />
 </Layout>

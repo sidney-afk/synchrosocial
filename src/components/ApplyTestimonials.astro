@@ -1,0 +1,162 @@
+---
+import { testimonials } from "../data/testimonials.js";
+---
+
+<section class="apply-testimonials" aria-labelledby="apply-testimonials-title">
+  <div class="apply-testimonials__inner">
+    <header class="apply-testimonials__header">
+      <h2 id="apply-testimonials-title">Here's What Other Customers Are Saying</h2>
+      <p>We're happy to keep helping our customers achieve their goals</p>
+    </header>
+
+    <div class="apply-testimonials__grid">
+      {
+        testimonials.map((testimonial) => (
+          <article class="apply-testimonial" data-apply-testimonial>
+            <div class="apply-testimonial__video">
+              <iframe
+                src={`https://fast.wistia.net/embed/iframe/${testimonial.wistia}?seo=false&videoFoam=true`}
+                title={`${testimonial.name} testimonial`}
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+            <h3>{testimonial.name}</h3>
+            <p>{testimonial.shortRole ?? testimonial.role}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .apply-testimonials {
+    width: 100%;
+    padding: 64px 0 72px;
+    background: #000;
+    color: #fff;
+  }
+
+  .apply-testimonials__inner {
+    width: min(960px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .apply-testimonials__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+  }
+
+  .apply-testimonials__header h2 {
+    margin: 0;
+    font-family: "Inter Tight", Arial, sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 44px;
+    letter-spacing: 0;
+  }
+
+  .apply-testimonials__header p {
+    margin: 0;
+    color: #aaa;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  .apply-testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+    width: min(780px, 100%);
+    margin: 48px auto 0;
+  }
+
+  .apply-testimonial {
+    min-width: 0;
+    text-align: center;
+  }
+
+  .apply-testimonial__video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #141414;
+  }
+
+  .apply-testimonial__video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .apply-testimonial h3 {
+    margin: 10px 0 0;
+    font-family: "Inter Tight", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0;
+  }
+
+  .apply-testimonial p {
+    min-height: 40px;
+    margin: 3px auto 0;
+    color: #aaa;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  @media (max-width: 700px) {
+    .apply-testimonials {
+      padding: 48px 0 56px;
+    }
+
+    .apply-testimonials__inner {
+      width: calc(100% - 32px);
+    }
+
+    .apply-testimonials__header {
+      gap: 12px;
+    }
+
+    .apply-testimonials__header h2 {
+      max-width: 360px;
+      font-size: 30px;
+      line-height: 32px;
+    }
+
+    .apply-testimonials__header p {
+      max-width: 330px;
+      font-size: 15px;
+      line-height: 22px;
+    }
+
+    .apply-testimonials__grid {
+      grid-template-columns: minmax(0, 306px);
+      justify-content: center;
+      gap: 40px;
+      margin-top: 36px;
+    }
+
+    .apply-testimonial h3 {
+      margin-top: 9px;
+    }
+
+    .apply-testimonial p {
+      min-height: 0;
+    }
+  }
+</style>

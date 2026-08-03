@@ -1,0 +1,173 @@
+---
+const faqs = [
+  {
+    question: "What does Synchro Social do?",
+    answer:
+      "We build and run a content engine for impact-driven coaches and thought leaders, from strategy and messaging through editing, publishing, and performance review.",
+  },
+  {
+    question: "Who is Synchro Social for?",
+    answer:
+      "Our service is designed for established coaches and thought leaders who want consistent, high-quality content and audience growth without managing the entire process themselves.",
+  },
+  {
+    question: "How do I know this will work for me?",
+    answer:
+      "Every strategy is built around the client's message, audience, offer, and existing content. During the consultation, we will assess whether our process is a practical fit for your goals.",
+  },
+  {
+    question: "What kind of results can I expect?",
+    answer:
+      "Our clients have generated meaningful audience growth, views, and qualified leads, but outcomes vary by starting point, niche, offer, consistency, and market conditions.",
+  },
+  {
+    question: "What makes this different from the other options?",
+    answer:
+      "We learn your brand and message before producing content, combine creative direction with audience data, and provide a clear system for communication, execution, and performance tracking.",
+  },
+  {
+    question: "What do I need to do next?",
+    answer:
+      "Complete the application and book a consultation above. Our team will review your goals, answer your questions, and determine whether working together makes sense.",
+  },
+];
+---
+
+<section class="apply-faq" aria-labelledby="apply-faq-title">
+  <div class="apply-faq__inner">
+    <h2 id="apply-faq-title">You've got questions<br />We've got answers</h2>
+
+    <div class="apply-faq__list">
+      {
+        faqs.map((faq) => (
+          <details class="apply-faq__item">
+            <summary>
+              <span class="apply-faq__plus" aria-hidden="true" />
+              <span>{faq.question}</span>
+            </summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .apply-faq {
+    width: 100%;
+    padding: 72px 0 64px;
+    background: #111;
+    color: #fff;
+  }
+
+  .apply-faq__inner {
+    width: min(960px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .apply-faq h2 {
+    max-width: 680px;
+    margin: 0 0 52px auto;
+    font-family: "Inter Tight", Arial, sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .apply-faq__list {
+    border-top: 1px solid #222;
+  }
+
+  .apply-faq__item {
+    border-bottom: 1px solid #222;
+  }
+
+  .apply-faq__item summary {
+    display: flex;
+    min-height: 78px;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    gap: 24px;
+    padding: 20px 0;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 30px;
+  }
+
+  .apply-faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .apply-faq__plus {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    color: #555;
+  }
+
+  .apply-faq__plus::before,
+  .apply-faq__plus::after {
+    position: absolute;
+    top: 7px;
+    left: 0;
+    width: 16px;
+    height: 1px;
+    background: currentColor;
+    content: "";
+    transition: transform 160ms ease;
+  }
+
+  .apply-faq__plus::after {
+    transform: rotate(90deg);
+  }
+
+  .apply-faq__item[open] .apply-faq__plus::after {
+    transform: rotate(0deg);
+  }
+
+  .apply-faq__item p {
+    max-width: 780px;
+    margin: -6px 0 24px 40px;
+    color: #aaa;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 25px;
+  }
+
+  @media (max-width: 700px) {
+    .apply-faq {
+      padding: 56px 0 48px;
+    }
+
+    .apply-faq__inner {
+      width: calc(100% - 32px);
+    }
+
+    .apply-faq h2 {
+      max-width: none;
+      margin: 0 0 36px;
+      font-size: 34px;
+      line-height: 39px;
+    }
+
+    .apply-faq__item summary {
+      min-height: 70px;
+      gap: 18px;
+      padding: 18px 0;
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .apply-faq__item p {
+      margin: -2px 0 22px 34px;
+      font-size: 15px;
+      line-height: 23px;
+    }
+  }
+</style>
