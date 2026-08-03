@@ -1,0 +1,94 @@
+<footer class="apply-legal">
+  <div class="apply-legal__inner">
+    <nav aria-label="Legal and contact links">
+      <a href="/privacypolicy">Privacy</a>
+      <span aria-hidden="true">|</span>
+      <a href="/terms-conditions">Terms of Service</a>
+      <span aria-hidden="true">|</span>
+      <a href="mailto:hello@synchrosocial.com">Contact Us</a>
+    </nav>
+
+    <p>
+      By booking a call, you agree to our Privacy Policy and Terms of Service and consent to receive
+      communications using the information you provide.
+    </p>
+    <p>
+      All testimonials reflect real client experiences but do not represent typical or guaranteed results.
+      Outcomes vary based on starting point, market, offer, consistency, and other factors.
+    </p>
+    <p>SYNCHRO SOCIAL &copy; {new Date().getFullYear()} All Rights Reserved</p>
+  </div>
+</footer>
+
+<style>
+  .apply-legal {
+    width: 100%;
+    padding: 32px 0 30px;
+    border-top: 1px solid #1d1d1d;
+    background: #111;
+    color: #8f8f8f;
+  }
+
+  .apply-legal__inner {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .apply-legal nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .apply-legal a {
+    color: #b794ff;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .apply-legal a:hover,
+  .apply-legal a:focus-visible {
+    color: #fff;
+  }
+
+  .apply-legal p {
+    max-width: 1040px;
+    margin: 0 auto 8px;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .apply-legal p:last-child {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 700px) {
+    .apply-legal {
+      padding: 28px 0 26px;
+    }
+
+    .apply-legal__inner {
+      width: calc(100% - 32px);
+    }
+
+    .apply-legal nav {
+      flex-wrap: wrap;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .apply-legal p {
+      font-size: 12px;
+      line-height: 18px;
+    }
+  }
+</style>

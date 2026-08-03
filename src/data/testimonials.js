@@ -2,6 +2,7 @@ export const testimonials = [
   {
     name: "Alli Schaper",
     role: "CEO & Co-Founder of SuperMush, Forbes 30 Under 30",
+    shortRole: "CEO & Co-Founder of SuperMush",
     wistia: "ut3u94faa0",
     title:
       "Alli Schaper is building SuperMush into a national mushroom wellness brand. Synchro Social helps keep the content process clearer, easier, and more supported.",
@@ -11,6 +12,7 @@ export const testimonials = [
   {
     name: "Sabrina Guler",
     role: "Founder of Sinclair West, CPG Brand Strategist",
+    shortRole: "Founder of Sinclair West",
     wistia: "94hvrs4eat",
     title:
       "After nearly seven years away from Instagram, Sabrina Guler grew from 400 to more than 9,000 followers in roughly four months with Synchro Social.",
@@ -20,7 +22,8 @@ export const testimonials = [
   {
     name: "Tu Lam",
     role: "Founder & CEO of Ronin Tactics, Retired Green Beret",
-    wistia: "oyyyafszq3",
+    shortRole: "Founder & CEO of Ronin Tactics",
+    wistia: "l7nwcdpzgn",
     title:
       "Tu Lam credits Synchro Social with helping launch The Way of Ronin, refining his message, and driving significant growth across his social platforms.",
     body:
