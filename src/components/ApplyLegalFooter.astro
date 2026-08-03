@@ -1,11 +1,17 @@
 <footer class="apply-legal">
   <div class="apply-legal__inner">
     <nav aria-label="Legal and contact links">
-      <a href="/privacypolicy">Privacy</a>
+      <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy</a>
       <span aria-hidden="true">|</span>
-      <a href="/terms-conditions">Terms of Service</a>
+      <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms of Service</a>
       <span aria-hidden="true">|</span>
-      <a href="mailto:hello@synchrosocial.com">Contact Us</a>
+      <button
+        type="button"
+        class="apply-legal__contact"
+        data-copy-contact
+        data-email="hello@synchrosocial.com"
+        aria-live="polite"
+      >Contact Us</button>
     </nav>
 
     <p>
@@ -46,15 +52,27 @@
     line-height: 24px;
   }
 
-  .apply-legal a {
+  .apply-legal a,
+  .apply-legal__contact {
     color: #b794ff;
     text-decoration: none;
     transition: color 160ms ease;
   }
 
   .apply-legal a:hover,
-  .apply-legal a:focus-visible {
+  .apply-legal a:focus-visible,
+  .apply-legal__contact:hover,
+  .apply-legal__contact:focus-visible {
     color: #fff;
+  }
+
+  .apply-legal__contact {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
   }
 
   .apply-legal p {
@@ -92,3 +110,39 @@
     }
   }
 </style>
+
+<script>
+  const contactButton = document.querySelector("[data-copy-contact]");
+
+  const fallbackCopy = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    return copied;
+  };
+
+  contactButton?.addEventListener("click", async () => {
+    const email = contactButton.getAttribute("data-email") ?? "";
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(email);
+      } else if (!fallbackCopy(email)) {
+        throw new Error("Clipboard copy failed");
+      }
+
+      contactButton.textContent = "Email Copied";
+      window.setTimeout(() => {
+        contactButton.textContent = "Contact Us";
+      }, 1800);
+    } catch {
+      contactButton.textContent = email;
+    }
+  });
+</script>
