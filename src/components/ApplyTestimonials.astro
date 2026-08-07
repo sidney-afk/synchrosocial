@@ -1,5 +1,6 @@
 ---
 import { testimonials } from "../data/testimonials.js";
+import ApplyButton from "./ApplyButton.astro";
 ---
 
 <section class="apply-testimonials" aria-labelledby="apply-testimonials-title">
@@ -27,6 +28,11 @@ import { testimonials } from "../data/testimonials.js";
           </article>
         ))
       }
+    </div>
+
+    <div class="apply-testimonials__cta">
+      <ApplyButton href="#book" label="Apply Now" class="w-full" />
+      <p>Get Started In Less Than 60 Seconds &bull; Cancel Anytime</p>
     </div>
   </div>
 </section>
@@ -119,6 +125,26 @@ import { testimonials } from "../data/testimonials.js";
     line-height: 24px;
   }
 
+  /* CTA under the grid — same geometry as the case-studies CTA on /apply
+     (420px column, full-width button, caption underneath), on black. */
+  .apply-testimonials__cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: min(420px, 100%);
+    margin: 56px auto 0;
+    text-align: center;
+  }
+
+  .apply-testimonials__cta p {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 157%;
+  }
+
   @media (max-width: 700px) {
     .apply-testimonials {
       padding: 48px 0 56px;
@@ -161,6 +187,11 @@ import { testimonials } from "../data/testimonials.js";
       min-height: 0;
       font-size: 16px;
       line-height: 23px;
+    }
+
+    .apply-testimonials__cta {
+      gap: 14px;
+      margin-top: 40px;
     }
   }
 </style>
