@@ -26,7 +26,7 @@ export const caseStudies = [
   {
     name: "Danny Morel",
     credit: "@dannymorel",
-    period: "12 Months",
+    period: "2 Years",
     platforms: ["Instagram", "TikTok", "YouTube", "Facebook"],
     stats: [
       { value: "500M+", label: "Total Views Generated" },
