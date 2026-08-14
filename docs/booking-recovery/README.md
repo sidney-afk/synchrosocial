@@ -14,10 +14,14 @@
 **Status 2026-08-14 — LIVE.** Both halves are active in n8n. Capture records
 abandoned bookings; the dispatcher emails them 30 minutes later, capped at 5
 sends per run, after re-checking HubSpot. Switched on by Sidney after an
-adversarial test pass found and fixed three critical send-path defects. Remaining: point iClosed
-at it (§7.1 — the only thing standing between this and real data), then the
-dispatcher, then Twilio. Capture runs on iClosed's **server-side webhook**, not
-on browser events — §4 explains why that distinction decides the whole design.
+adversarial test pass found and fixed three critical send-path defects.
+
+Still open, by choice rather than blockage: no heartbeat monitor, SMS (deferred
+until the email lane has run), the iClosed backfill sweep (dropped), and the
+CAN-SPAM elements (owner decision — see `MESSAGE_TEMPLATES.md` §Owner decisions).
+
+Capture runs on iClosed's **server-side webhook**, not on browser events — §4
+explains why that distinction decides the whole design.
 
 ### As built
 
