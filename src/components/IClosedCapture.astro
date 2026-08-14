@@ -1,58 +1,60 @@
 ---
 /* ===========================================================================
-   IClosedCapture — lead capture + ad attribution for the booking embed.
+   IClosedCapture — ad attribution passthrough for the booking embed.
 
-   WHY THIS EXISTS
-   There is no such thing as an "abandoned booking" event. A lead who types
-   their name and phone into the iClosed form and then closes the tab fires
-   nothing — you cannot observe a closed tab. So abandonment can only ever be
-   inferred by ABSENCE: capture the lead at the earliest moment we see them,
-   then follow up if no booking arrives within a wait window.
+   WHAT THIS DOES, AND WHAT IT DELIBERATELY DOES NOT DO
 
-   That earliest moment is iClosed's `iclosed.potential` / `iclosed.qualified`
-   postMessage, which fires once the form has collected contact info — before
-   a time is picked. This component listens for it, snapshots whatever the
-   payload carries, staples on the ad attribution from the landing URL, and
-   POSTs it to the capture endpoint.
+   It does NOT capture the lead's name/email/phone. It cannot. iClosed's
+   postMessage lifecycle events carry ONE field — `type`. Their own GTM guide
+   shows the canonical listener as `const event = data?.type` with a switch
+   over "iclosed.potential" / ".qualified" / ".disqualified" /
+   ".call_scheduled", and nothing else. There is no name, no email, no phone,
+   not even a contact id. No amount of browser code can recover PII that was
+   never sent.
+     → docs.iclosed.io/en/articles/10420617-google-tag-manager
 
-   RELATIONSHIP TO THE PIXEL BRIDGE
-   Deliberately separate from the Meta bridge inside IClosedEmbed.astro. That
-   bridge is live conversion tracking and is left byte-for-byte untouched; two
-   independent `message` listeners coexist fine. Nothing here can break it.
+   Unfinished-booking capture is therefore SERVER-SIDE, via iClosed's
+   "Contact by status" webhook, which delivers the whole contact record the
+   moment someone reaches Potential/Qualified without booking. See
+   docs/booking-recovery/README.md §4.
 
-   FAIL-SAFE BY DESIGN
-   - No endpoint configured (PUBLIC_SS_CAPTURE_ENDPOINT unset) → the component
-     renders an inert listener that makes zero network calls. Safe to deploy
-     before the backend exists.
-   - Every handler is wrapped; a capture failure never propagates.
-   - Never blocks, never awaits, never touches the booking iframe.
+   What this component IS for: solving the join problem that webhook creates.
 
-   DIAGNOSING THE PAYLOAD
-   iClosed does not publish the shape of these postMessage payloads. Load any
-   booking page with `?ss-debug-iclosed=1` and fill the form partway: every
-   raw event is printed to the console as a collapsed group. That one manual
-   test settles what iClosed actually gives us. See
-   docs/booking-recovery/README.md §Capture.
+   THE JOIN PROBLEM
+   The ad click lands on OUR page carrying utm_* and fbclid. The lead record
+   is created inside iClosed's iframe, on a different origin, which cannot see
+   our query string — cookies and click ids do not cross the iframe boundary.
+   So the server-side webhook knows WHO the lead is but not WHICH AD bought
+   them, and the browser knows the ad but not the lead. Neither half is worth
+   much alone.
+
+   The fix is to hand the attribution to iClosed at embed time: append the
+   parameters to the booking URL before iClosed's widget.js reads it. iClosed
+   stores them on the contact record and hands them back in the webhook, and
+   the two halves arrive already joined. This is the standard remedy for
+   iframe schedulers and mirrors the existing ?test-pixel=true passthrough a
+   few lines above in IClosedEmbed.astro.
+
+   ORDERING MATTERS: this must render BEFORE the widget.js <script> tag, or
+   the widget may read data-url before we have rewritten it.
+
+   DIAGNOSTIC: ?ss-debug-iclosed=1 logs the rewritten URL and echoes every raw
+   postMessage. Use it to confirm the passthrough landed — and, if iClosed
+   ever enriches these payloads, to notice.
 =========================================================================== */
-
-/** Capture endpoint. Empty = disabled (no network calls at all). */
-const CAPTURE_ENDPOINT = import.meta.env.PUBLIC_SS_CAPTURE_ENDPOINT ?? "";
 ---
 
-<script is:inline define:vars={{ endpoint: CAPTURE_ENDPOINT }}>
+<script is:inline>
   (function () {
     if (window.__ssIClosedCapture) return;
     window.__ssIClosedCapture = true;
 
     var ORIGIN = "https://app.iclosed.io";
-
-    /* Acquisition calendars ONLY. The embed component is shared with the
-       post-sale onboarding calendars (kickoff-call, ai-clone-consultation)
-       and the warm event/investor calendars — a signed client booking their
-       kickoff must never be captured as a lead to chase. This is the same
-       trap the Meta bridge already fell into; see CLIENT_LIFECYCLE_MAP.md
-       §15.1, which recommends exactly this gating for the pixel too. */
-    var ACQUISITION_CALENDARS = ["social-media-consultation", "ai-intro-call"];
+    var ATTR_KEY = "ss_attr";
+    var PARAMS = [
+      "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+      "fbclid", "gclid", "ttclid",
+    ];
 
     var DEBUG = false;
     try {
@@ -66,31 +68,26 @@ const CAPTURE_ENDPOINT = import.meta.env.PUBLIC_SS_CAPTURE_ENDPOINT ?? "";
       } catch (e) {}
     }
 
-    /* ---------- attribution: read once, from the landing URL ---------- */
-    /* Captured on first page of the session so it survives / → /apply, which
-       is where the ad click actually lands. This is the missing half of the
-       CRM story: without it a HubSpot contact cannot be traced to a campaign.
-       See docs/meta-ads/README.md §9 item 4. */
-    var ATTR_KEY = "ss_attr";
+    /* ---------- attribution, captured once on the landing page ----------
+       Read on the FIRST page of the session and held in sessionStorage,
+       because the ad click lands on / while the booking happens on /apply.
+       Reading it at the embed would miss every lead who took that hop. */
     function attribution() {
+      var stored = null;
       try {
-        var stored = sessionStorage.getItem(ATTR_KEY);
-        if (stored) return JSON.parse(stored);
+        var raw = sessionStorage.getItem(ATTR_KEY);
+        if (raw) stored = JSON.parse(raw);
       } catch (e) {}
+      if (stored) return stored;
 
       var attr = {};
       try {
         var q = new URLSearchParams(window.location.search);
-        [
-          "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
-          "fbclid", "gclid", "ttclid",
-        ].forEach(function (k) {
+        PARAMS.forEach(function (k) {
           var v = q.get(k);
-          if (v) attr[k] = v.slice(0, 300);
+          if (v) attr[k] = String(v).slice(0, 300);
         });
-        if (document.referrer) attr.referrer = document.referrer.slice(0, 300);
-        attr.landing_page = (window.location.origin + window.location.pathname).slice(0, 300);
-        attr.first_seen_at = new Date().toISOString();
+        if (document.referrer) attr.ss_referrer = document.referrer.slice(0, 300);
       } catch (e) {}
 
       try {
@@ -99,196 +96,64 @@ const CAPTURE_ENDPOINT = import.meta.env.PUBLIC_SS_CAPTURE_ENDPOINT ?? "";
       return attr;
     }
 
-    /* ---------- payload scanning ----------
-       iClosed's payload shape is undocumented and may be nested or may carry
-       nothing at all. Rather than guess at field names, walk the object and
-       pick up anything that looks like a name / email / phone. Whatever we
-       find is a bonus; whatever we miss shows up in the raw echo below. */
-    var FIELD_PATTERNS = [
-      { key: "email", re: /^(e?mail|email_address|emailaddress|invitee_email)$/i },
-      { key: "phone", re: /^(phone|phone_number|phonenumber|mobile|tel|invitee_phone)$/i },
-      { key: "first_name", re: /^(first_?name|firstname|given_?name|fname)$/i },
-      { key: "last_name", re: /^(last_?name|lastname|family_?name|surname|lname)$/i },
-      { key: "full_name", re: /^(name|full_?name|fullname|invitee_name)$/i },
-      { key: "timezone", re: /^(time_?zone|timezone|tz)$/i },
-      { key: "iclosed_lead_id", re: /^(lead_?id|invitee_?id|contact_?id|prospect_?id)$/i },
-      { key: "event_slug", re: /^(event_?slug|slug|event_?type|calendar)$/i },
-    ];
-
-    function scan(obj, out, depth) {
-      if (!obj || typeof obj !== "object" || depth > 5) return out;
-      Object.keys(obj).forEach(function (k) {
-        var v = obj[k];
-        if (v && typeof v === "object") {
-          scan(v, out, depth + 1);
-          return;
-        }
-        if (v === null || v === undefined || v === "") return;
-        if (typeof v !== "string" && typeof v !== "number") return;
-        for (var i = 0; i < FIELD_PATTERNS.length; i++) {
-          if (FIELD_PATTERNS[i].re.test(k) && !out[FIELD_PATTERNS[i].key]) {
-            out[FIELD_PATTERNS[i].key] = String(v).slice(0, 200);
-            break;
-          }
-        }
-      });
-      return out;
-    }
-
-    /* ---------- lead snapshot, accumulated across events ----------
-       Fields can arrive across several events (phone on one, name on the
-       next), so merge rather than replace. */
-    var LEAD_KEY = "ss_lead_snapshot";
-    function mergeLead(found) {
-      var lead = {};
-      try {
-        var stored = sessionStorage.getItem(LEAD_KEY);
-        if (stored) lead = JSON.parse(stored) || {};
-      } catch (e) {}
-      Object.keys(found).forEach(function (k) {
-        if (found[k]) lead[k] = found[k];
-      });
-      try {
-        sessionStorage.setItem(LEAD_KEY, JSON.stringify(lead));
-      } catch (e) {}
-      return lead;
-    }
-
-    /* ---------- transport ---------- */
-    var sentSignatures = {};
-
-    function post(stage, lead, raw) {
-      if (!endpoint) {
-        log("endpoint not configured — would have sent", stage, lead);
+    /* ---------- hand it to iClosed before the widget boots ---------- */
+    function decorate() {
+      var attr = attribution();
+      var keys = Object.keys(attr);
+      if (!keys.length) {
+        log("no attribution on this session — nothing to pass through");
         return;
       }
-      /* One POST per (stage, distinct lead data). Typing into the form can
-         fire `potential` repeatedly — iClosed is known to fire it twice when
-         the form collects both email and phone. */
-      var sig = stage + "|" + JSON.stringify(lead);
-      if (sentSignatures[sig]) {
-        log("duplicate suppressed", stage);
-        return;
-      }
-      sentSignatures[sig] = true;
 
-      var body = {
-        stage: stage,
-        lead: lead,
-        attribution: attribution(),
-        page: {
-          url: window.location.href.slice(0, 500),
-          calendar: currentCalendarSlug(),
-        },
-        client_ts: new Date().toISOString(),
-        /* Raw payload echo — lets the backend log what iClosed really sends
-           so the field patterns above can be tightened from real data
-           instead of guesses. Capped so a huge payload cannot be a problem. */
-        raw: safeRaw(raw),
-      };
-
-      log("POST", stage, body);
-      try {
-        fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-          /* keepalive → the request still completes if the lead closes the
-             tab immediately after, which is exactly the abandonment case. */
-          keepalive: true,
-          mode: "cors",
-          credentials: "omit",
-        }).catch(function () {});
-      } catch (e) {}
-    }
-
-    function safeRaw(raw) {
-      try {
-        var s = JSON.stringify(raw);
-        return s && s.length > 4000 ? s.slice(0, 4000) + "…[truncated]" : s;
-      } catch (e) {
-        return null;
+      var widgets = document.querySelectorAll(".iclosed-widget[data-url]");
+      for (var i = 0; i < widgets.length; i++) {
+        try {
+          var w = widgets[i];
+          var url = new URL(w.getAttribute("data-url"));
+          /* Only ever rewrite an iClosed URL, and never clobber a parameter
+             iClosed or another script has already set. */
+          if (url.origin !== ORIGIN) continue;
+          keys.forEach(function (k) {
+            if (!url.searchParams.has(k)) url.searchParams.set(k, attr[k]);
+          });
+          w.setAttribute("data-url", url.toString());
+          log("decorated widget:", url.toString());
+        } catch (e) {
+          log("decorate failed (suppressed)", e);
+        }
       }
     }
 
-    function currentCalendarSlug() {
-      try {
-        var w = document.querySelector(".iclosed-widget[data-url]");
-        if (!w) return null;
-        var u = new URL(w.getAttribute("data-url"));
-        return u.pathname.split("/").filter(Boolean).pop() || null;
-      } catch (e) {
-        return null;
-      }
+    /* The widget div is rendered just above this script, so it already exists.
+       Re-run on DOMContentLoaded too, in case a page ever renders an embed
+       after this point. Decoration is idempotent. */
+    decorate();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", decorate);
     }
 
-    /* ---------- listener ---------- */
+    /* ---------- diagnostic listener ----------
+       Costs nothing in production (DEBUG off = immediate return) and is the
+       fastest way to verify the passthrough, or to notice if iClosed ever
+       starts including real data in these payloads. */
     window.addEventListener("message", function (e) {
+      if (!DEBUG) return;
       if (e.origin !== ORIGIN) return;
       var type = e.data && e.data.type;
       if (!type || String(type).indexOf("iclosed.") !== 0) return;
-
-      /* Debug still echoes every calendar — that is how we learn the payload
-         shape. Only the capture POST is gated. */
-      /* Fails CLOSED: an undetermined slug captures nothing. Every page that
-         renders this component embeds a calendar with a readable data-url
-         (/apply, /call, /old, /onboarding_step3, /ai_onboarding_step3), so an
-         unknown slug means something changed — and the safe answer to "is
-         this stranger or a paying client?" is to not chase them. */
-      var slug = currentCalendarSlug();
-      var isAcquisition = !!slug && ACQUISITION_CALENDARS.indexOf(slug) !== -1;
-
       try {
-        if (DEBUG) {
-          console.groupCollapsed("[ss-capture] " + type);
-          console.log("raw event.data:", e.data);
-          try {
-            console.log("JSON:", JSON.stringify(e.data, null, 2));
-          } catch (err) {
-            console.log("(not JSON-serialisable)");
-          }
-          console.groupEnd();
-        }
-
-        var found = scan(e.data, {}, 0);
-        var lead = mergeLead(found);
-        log(type, "extracted:", found, "merged:", lead, "calendar:", slug);
-
-        if (!isAcquisition) {
-          log("non-acquisition calendar (" + slug + ") — capture skipped");
-          return;
-        }
-
-        if (type === "iclosed.potential" || type === "iclosed.qualified") {
-          /* Only worth sending if we actually hold a way to reach them. If
-             iClosed's payload turns out to be bare, this correctly sends
-             nothing — and the debug echo tells us to switch capture routes. */
-          if (lead.email || lead.phone) {
-            post("started", lead, e.data);
-          } else {
-            log("no contact info in payload — nothing to capture yet");
-          }
-        }
-
-        if (type === "iclosed.disqualified") {
-          if (lead.email || lead.phone) post("disqualified", lead, e.data);
-        }
-
-        if (type === "iclosed.call_scheduled") {
-          /* Cancels any pending follow-up immediately rather than waiting for
-             the iClosed "Call booked" webhook to race the wait window. The
-             backend treats this as a suppression signal, not as the booking
-             record of truth — that stays the server-side webhook. */
-          post("booked", lead, e.data);
-        }
-      } catch (err) {
-        log("handler error (suppressed)", err);
-      }
+        console.groupCollapsed("[ss-capture] " + type);
+        console.log("raw event.data:", e.data);
+        console.log("keys:", Object.keys(e.data || {}));
+        console.log(
+          Object.keys(e.data || {}).length > 1
+            ? "NOTE: more than `type` present — iClosed may have enriched this. Tell the docs."
+            : "as expected: `type` only, no PII. Capture is server-side."
+        );
+        console.groupEnd();
+      } catch (err) {}
     });
 
-    /* Warm the attribution cache on load so an ad click that lands on / and
-       navigates to /apply still carries its campaign. */
-    attribution();
-    log("ready. endpoint:", endpoint || "(none)", "debug:", DEBUG);
+    log("ready. debug on. attribution:", attribution());
   })();
 </script>

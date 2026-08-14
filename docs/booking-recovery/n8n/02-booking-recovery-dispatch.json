@@ -7,7 +7,7 @@
     "errorWorkflow": "REPLACE_WITH_ERROR_WORKFLOW_ID"
   },
   "connections": {
-    "Every 5 Minutes": { "main": [[{ "node": "Get Pending", "type": "main", "index": 0 }]] },
+    "Every 10 Minutes": { "main": [[{ "node": "Get Pending", "type": "main", "index": 0 }]] },
     "Get Pending": { "main": [[{ "node": "Select Due", "type": "main", "index": 0 }]] },
     "Select Due": { "main": [[{ "node": "Find HubSpot Contact", "type": "main", "index": 0 }]] },
     "Find HubSpot Contact": { "main": [[{ "node": "Still Unbooked?", "type": "main", "index": 0 }]] },
@@ -28,12 +28,13 @@
   },
   "nodes": [
     {
-      "name": "Every 5 Minutes",
+      "name": "Every 10 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [0, 0],
+      "notes": "10 min, not 5 — matches the house polling floor used by Workload Reconcile and Calendar Linear Reconcile, and respects the 2026-07-13 n8n execution-burn cut. Follow-up timing is set by follow_up_due_at, so a coarser poll costs at most 10 minutes of latency on a 30-minute delay.",
       "parameters": {
-        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] }
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 10 }] }
       }
     },
     {

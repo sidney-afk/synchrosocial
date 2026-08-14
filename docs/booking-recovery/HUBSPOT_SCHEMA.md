@@ -22,16 +22,35 @@
 | `3230452433` | **Closed Won** |
 | `3230452434` | **Closed Lost** |
 
-> ⚠️ **Documentation drift found.** `CLIENT_LIFECYCLE_MAP.md` §15.2 warns that
-> `closedlost` is repurposed as "onboarding sent" and that HubSpot reporting
-> will misread it. That has since been partly fixed in the live account: the
-> stage is now *labelled* "Onboard Email", and two genuine terminal stages
-> (`3230452433` Closed Won / `3230452434` Closed Lost) were added. The map does
-> not know about them. **The underlying trap is still live**, though: the
-> internal values `closedwon` and `closedlost` no longer mean what they say, so
-> any HubSpot report, integration, or Meta conversion sync that keys on the
-> stage *value* rather than the label will still be wrong. Anything built here
-> keys on the explicit ids above, never on the words "closedwon"/"closedlost".
+> 🚨 **A live data-integrity bug, not just documentation drift.**
+>
+> `CLIENT_LIFECYCLE_MAP.md` §15.2 warns that `closedlost` is repurposed as
+> "onboarding sent". Since then someone started fixing it — the stage was
+> *relabelled* "Onboard Email" and two correctly-named terminal stages
+> (`3230452433` Closed Won / `3230452434` Closed Lost) were created. **Then the
+> migration stopped.** The new stages are empty and the old values are still
+> the ones in use.
+>
+> That leaves the account in the worst of both states. HubSpot does not treat
+> `closedwon`/`closedlost` as ordinary stages — they are the **won and lost
+> stage types**, and HubSpot keys forecasting, close dates, win-rate and
+> lifecycle transitions off them regardless of the label a user typed. So today:
+>
+> - a deal reaching **Contract Signed** is booked as **won revenue** before a
+>   single invoice is paid, and
+> - a client who reaches **Onboard Email** — i.e. a successful sale entering
+>   onboarding — is counted as **Closed Lost**.
+>
+> Every funnel number out of this portal is wrong in both directions, and any
+> future Meta CAC feedback loop keying on won/lost would push that error
+> straight into ad optimisation.
+>
+> **Not fixed here** — it is outside what was asked and moving live deal stages
+> deserves its own change with Sidney watching. Flagged in `README.md` §10 as a
+> decision. Everything this project builds keys on explicit stage **ids**, never
+> on the words "closedwon"/"closedlost", so it is correct either way.
+>
+> (Also: the "Contract Signed " label has a trailing space.)
 
 ### Custom contact properties that exist
 
@@ -98,56 +117,83 @@ system needs no special handoff — it just stops chasing them.
 
 ---
 
-## 4. Properties to create
+## 4. Properties to create — and the budget that shapes them
 
-15 contact properties, three groups. All single-line text unless noted.
+> 🚨 **The binding constraint: HubSpot free allows 10 custom properties
+> ACCOUNT-WIDE**, shared across contacts, companies, deals and everything else
+> — not 10 per object. Five are already in use on contacts (`is_ai_client`,
+> `deal_id`, `contract_signed`, `first_invoice_paid`, `onboarding_sent`), and
+> there may be custom deal properties consuming more.
+>
+> **Before creating anything, read the real number**: Settings → Properties,
+> which shows an `X/10 custom properties used` counter. That number decides
+> whether the plan below fits as-is.
+>
+> An earlier draft of this doc proposed 15 new properties. That was wrong and
+> impossible. The plan below is **3**.
 
-### Group: Ad Attribution
+### The three
 
-| Name | Type | Notes |
+| Name | Type | Contents |
 | --- | --- | --- |
-| `utm_source` | text | e.g. `facebook` |
-| `utm_medium` | text | e.g. `paid_social` |
-| `utm_campaign` | text | |
-| `utm_content` | text | ad-level; the one that tells you which creative |
-| `fbclid` | text | Meta click id — the join key back to the ad |
-| `landing_page` | text | first page of the session |
-| `attribution_captured_at` | date picker | |
+| `ad_attribution` | multi-line text | JSON: `{"utm_source","utm_medium","utm_campaign","utm_content","fbclid","referrer","captured_at"}` |
+| `booking_recovery` | multi-line text | JSON: `{"state","started_at","email_sent_at","sms_sent_at","calendar","iclosed_contact_id"}` |
+| `sms_consent` | multi-line text | JSON: `{"granted":true,"at":"…","source":"iclosed_form_v2"}` |
 
-Set these on **first touch and never overwrite** — first-touch attribution is
-what tells you which ad bought the lead. Later sessions must not clobber it.
+`booking_recovery.state` is one of `captured`, `email_sent`, `sms_sent`,
+`recovered`, `expired`, `suppressed`. **`recovered` is the field that pays for
+the project** — it marks a lead who booked *after* a follow-up, which is the
+only honest way to attribute revenue to this system.
 
-### Group: Booking Recovery
+### Why JSON blobs rather than proper fields
 
-| Name | Type | Notes |
-| --- | --- | --- |
-| `booking_started_at` | date picker | when they entered contact info |
-| `booking_recovery_status` | dropdown | `pending`, `email_sent`, `sms_sent`, `recovered`, `expired`, `suppressed` |
-| `booking_recovery_email_sent_at` | date picker | |
-| `booking_recovery_sms_sent_at` | date picker | |
-| `booking_calendar` | text | which iClosed calendar they abandoned |
+Because 15 fields do not fit in a 10-property account and never will on this
+tier. Given that, blobs are the better trade rather than a grudging compromise:
 
-`recovered` is the one that pays for the project: it marks a lead who booked
-*after* getting E1 or S1. Counting those against the ad spend is the whole ROI
-argument.
+- **What is lost:** the values are not individually filterable or reportable in
+  the HubSpot UI. On a free account that costs less than it sounds — there are
+  no workflows, no custom reports, and no lists to point at them anyway.
+- **What is kept:** the data is *present* on the contact, so anyone opening the
+  record can see which ad bought this lead and what we have sent them. n8n
+  parses JSON trivially, and n8n is the only automation reading it.
+- **What it buys:** 12 property slots stay free for whatever the business needs
+  next, and adding a field later costs nothing.
 
-### Group: SMS Consent
+If Sidney later upgrades to Starter (1,000 properties per object), split the
+blobs into real fields — the n8n side changes in one node, and the blob can be
+backfilled into the new fields.
 
-| Name | Type | Notes |
-| --- | --- | --- |
-| `sms_consent` | single checkbox | true only via explicit opt-in |
-| `sms_consent_at` | date picker | |
-| `sms_consent_source` | text | e.g. `iclosed_form_v2` — which wording they agreed to |
+### Use standard properties wherever one exists
 
-**These three are the audit trail, and they are not optional.** If a TCPA
-complaint ever lands, the question is "prove this person agreed, and to what
-words" — `sms_consent_source` is the answer. No SMS goes to a contact whose
-`sms_consent` is not true. Details in `TWILIO_RUNBOOK.md`.
+Do not spend a custom slot on anything HubSpot already has:
 
-STOP handling is deliberately **not** a HubSpot property: Twilio maintains the
-authoritative opt-out list and refuses sends to it at the API level. Mirroring
-it into HubSpot would create a second source of truth that can drift and let a
-message through. Read opt-out state from Twilio.
+| Need | Use |
+| --- | --- |
+| phone (E.164) | `phone` — standard |
+| where they are in the funnel | `lifecyclestage` — standard |
+| sales-facing follow-up state | `hs_lead_status` — standard (`NEW` → `ATTEMPTED_TO_CONTACT`) |
+
+`hs_lead_status` doing double duty is deliberate: it is the field a human
+actually looks at in the CRM, and it costs nothing.
+
+### Consent is the one thing that must be provable
+
+`sms_consent` stores the timestamp **and the wording version**
+(`iclosed_form_v2`). If a TCPA complaint lands, the question is not "did they
+tick a box" but "prove this person agreed, and to exactly what words". A bare
+checkbox cannot answer that; the blob can. No SMS is sent to a contact whose
+`sms_consent.granted` is not `true`.
+
+STOP handling is deliberately **not** stored here. Twilio maintains the
+authoritative opt-out list and refuses sends to it at the API level; a mirrored
+copy in HubSpot could drift and let a message through. Read opt-out from Twilio.
+
+### The detailed state lives in n8n, not here
+
+Timestamps, retry state and raw payloads live in the n8n Data Table
+`booking_recovery`, which has no column limit. HubSpot gets only what a human
+reads and what feeds reporting. That separation is what makes 3 properties
+sufficient rather than cramped.
 
 ### Phone format
 

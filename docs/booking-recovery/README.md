@@ -11,8 +11,10 @@
 > Wider context: `../meta-ads/README.md`, `../ECOSYSTEM_MAP.md`, and
 > `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`.
 
-**Status 2026-08-14:** site-side capture is built and pushed; n8n workflows are
-drafted and importable; nothing is live. Three unblocks needed — see §7.
+**Status 2026-08-14:** attribution passthrough is built and pushed; the three
+n8n workflows are drafted and importable; nothing is live. Four unblocks
+needed — see §7. Capture runs on iClosed's **server-side webhook**, not on
+browser events — §4 explains why that distinction decides the whole design.
 
 ---
 
@@ -104,33 +106,31 @@ Every ambiguous case in this system therefore resolves toward **not sending**.
 ```mermaid
 flowchart TD
   AD["Meta ad<br/>Prospecting | Leads | US"] --> LP["/ or /apply<br/>utm_* + fbclid in URL"]
-  LP --> EMBED["iClosed embed<br/>social-media-consultation"]
+  LP -->|"attribution read once,<br/>held across the / to /apply hop"| CAP["IClosedCapture.astro<br/>(built)"]
+  CAP -->|"appends utm_*/fbclid<br/>to the booking URL"| EMBED["iClosed embed<br/>social-media-consultation"]
 
-  EMBED -->|"postMessage<br/>iclosed.potential"| CAP["IClosedCapture.astro<br/>(built)"]
-  LP -.->|"attribution read once<br/>+ held in sessionStorage"| CAP
-
-  CAP -->|"POST /webhook/<br/>booking-recovery-capture"| W1["n8n 01 · Capture"]
+  EMBED -->|"types phone/name"| ICP[("iClosed contact<br/>status = Potential")]
+  ICP -->|"Contact by status webhook<br/>name + phone + email + utm"| W1["n8n 01 · Capture"]
   W1 --> DT[("n8n Data Table<br/>booking_recovery")]
 
-  W2["n8n 02 · Dispatch<br/>every 5 min"] --> DT
-  W2 -->|"gate: still unbooked?"| HS[("HubSpot<br/>contact + attribution")]
+  W2["n8n 02 · Dispatch<br/>every 10 min"] --> DT
+  W2 -->|"THE GATE<br/>still unbooked?"| HS[("HubSpot<br/>contact + attribution")]
   W2 -->|"+30 min"| E1["E1 email<br/>hello@synchrosocial.com"]
-  W2 -->|"+4 h, gated"| S1["S1 SMS<br/>Twilio"]
+  W2 -->|"+4 h, consent-gated"| S1["S1 SMS<br/>Twilio"]
 
-  EMBED -->|"booking completed"| IC["iClosed<br/>Call booked webhook"]
+  EMBED -->|"picks a time"| IC["iClosed<br/>Call booked webhook"]
   IC --> ROUTER["n8n · Sales — Call Booked<br/>(LIVE, existing)"]
   ROUTER --> HS
   ROUTER -.->|"one new node<br/>needs go-ahead"| W3["n8n 03 · Booked SMS"]
   W3 --> S2["S2 confirmation SMS"]
   W3 -->|suppress| DT
-  CAP -->|"booked signal<br/>(fast suppress)"| W1
 
   classDef built fill:#dcfce7,stroke:#16a34a,color:#000;
   classDef draft fill:#fef9c3,stroke:#ca8a04,color:#000;
   classDef live fill:#e0e7ff,stroke:#4f46e5,color:#000;
   class CAP built;
   class W1,W2,W3,DT,E1,S1,S2 draft;
-  class ROUTER,HS,IC live;
+  class ROUTER,HS,IC,ICP live;
 ```
 
 Green = built and pushed. Yellow = drafted, not yet created in n8n.
@@ -138,79 +138,126 @@ Blue = already live, untouched.
 
 Three independent suppression signals, deliberately redundant, because §2:
 
-1. **Browser** — `iclosed.call_scheduled` POSTs a `booked` signal instantly.
-2. **Server** — the iClosed *Call booked* webhook closes the row (workflow 03).
-3. **Gate** — the dispatcher re-checks HubSpot in the seconds before any send,
-   and a contact carrying a `deal_id` is never messaged.
+1. **At capture** — a contact arriving with a call already attached
+   (`latestCall`) is filed suppressed and never armed.
+2. **On booking** — the iClosed *Call booked* webhook closes the row
+   (workflow 03).
+3. **The gate** — the dispatcher re-checks HubSpot in the seconds before any
+   send; a contact carrying a `deal_id` is never messaged, and a CRM error
+   leaves the lead pending rather than sending unverified.
 
-Signal 3 alone is sufficient. 1 and 2 exist so the common case never even
-reaches the gate.
+Signal 3 alone is sufficient. 1 and 2 exist so the common case never reaches it.
+This matters because iClosed's status webhook has **no delay of its own** —
+someone who types a phone number and books forty seconds later still fires an
+"abandoned" event, so the wait window and the gate are what make the difference
+between a recovery system and an embarrassment.
 
 ---
 
 ## 4. Capture — how we get the lead's details
 
-The load-bearing question of the project. Four routes, ranked:
+The load-bearing question of the project, and the one that changed mid-session.
 
-### Route A — browser postMessage (BUILT, pending payload proof)
+### ❌ Browser postMessage — ruled out, definitively
 
-`IClosedCapture.astro` listens for iClosed's `iclosed.potential` /
-`iclosed.qualified` postMessage and reads any name/email/phone the payload
-carries. **iClosed does not publish these payload shapes**, so the component
-scans the object for anything that looks like contact info rather than guessing
-field names, and echoes the raw payload to the backend so the patterns can be
-tightened from real data.
+The obvious idea is to read the lead's details out of the `iclosed.potential`
+postMessage the booking iframe sends to our page. **This cannot work.** The
+payload carries exactly one field. iClosed's own Google Tag Manager guide gives
+the canonical listener:
 
-**This route is unproven until someone runs the diagnostic** (§5). If the
-payload turns out to be a bare notification with no PII, Route A captures
-nothing and we fall to B or D. The code is written so that outcome is visible
-immediately rather than silent.
+```js
+window.addEventListener("message", ({ data }) => {
+  const event = data?.type;
+  switch (event) {
+    case "iclosed.potential":   /* … */ break;
+    case "iclosed.qualified":   /* … */ break;
+    case "iclosed.disqualified":/* … */ break;
+    case "iclosed.call_scheduled": /* … */ break;
+  }
+});
+```
 
-### Route B — iClosed server-side (most reliable if it exists)
+`data.type`, and nothing else — no name, no email, no phone, not even a contact
+id, although the iframe holds all of them internally. No browser-side code can
+recover PII that was never sent. *(Verified against
+[docs.iclosed.io](https://docs.iclosed.io/en/articles/10420617-google-tag-manager);
+an earlier version of this project built a payload scanner on the assumption
+the payload might be richer. It was replaced.)*
 
-iClosed demonstrably holds the email and phone server-side — it hashes them
-into the CAPI `Potential` events now arriving in Meta (§1). So the data exists;
-the question is only whether iClosed will hand it over, via an
-incomplete-booking webhook, a leads list/export, or an API.
+### ✅ Route B — iClosed's server-side webhook (chosen)
 
-### Route C — form-first (guaranteed, changes the funnel)
+iClosed creates a **real contact record the moment someone types a phone
+number**, stamps it `Potential`, and will push that whole record to a webhook.
+The abandoned booking is a first-class object in iClosed; we simply never asked
+for it.
 
-Put our own name/email/phone step in front of the iClosed embed and prefill the
-calendar. Capture becomes 100% reliable because we own the form. Costs a step
-of friction on a funnel that currently converts 33 starters from 139 landing
-page views, so it is a deliberate trade, not a default.
+Confirmed webhook events (`developer.iclosed.io/docs/webhooks/introduction`):
 
-### Route D — no capture, retarget only
+| Event | Use |
+| --- | --- |
+| **Contact by status** | ← the abandonment trigger |
+| New contact created | safety net |
+| Contact updated | — |
+| Call booked / cancelled / rescheduled | already wired to n8n today |
+| Call outcome added | — |
 
-Fall back to Meta custom audiences off `iclosed_potential`. No email, no SMS,
-no CRM record. This is the floor, and it is roughly what exists today.
+This account already delivers iClosed webhooks into n8n (`Call booked`,
+`Call cancelled`), so the transport is proven. Independent corroboration that
+iClosed holds this data server-side: its CAPI `Potential` events arrive in Meta
+with hashed user data (§1) — it cannot hash an email it does not have.
 
-**Recommendation: ship A, prove it with the diagnostic, and hold C in reserve.**
-A is already built and costs the funnel nothing.
+Four things this route demands, all handled in workflow `01`:
+
+1. **No delay of its own.** "Contact by status" fires the instant the status
+   changes, so someone who types a phone and books 40 seconds later still
+   triggers it. The wait window and the pre-send gate supply the delay.
+2. **No signature.** iClosed lists HMAC-SHA256 as roadmap, not shipped, so the
+   endpoint would otherwise be an open PII write. Authenticated with a shared
+   secret.
+3. **Guaranteed duplicates.** `Potential` fires twice when the form takes both
+   phone and email, and retries redeliver. Upsert on the iClosed contact id.
+4. **Unverified payload shape.** The event list is documented; a field-level
+   schema is not. The normalizer reads several plausible shapes and stores the
+   raw body, so the first real delivery settles it without a second guess.
+
+### 🔗 The join — why there is still browser code
+
+The webhook says *who*. It cannot say *which ad*, because the ad click lands on
+our page and the contact is created inside an iframe on another origin — click
+ids and cookies do not cross that boundary. Attribution and identity end up in
+different halves of the system.
+
+`IClosedCapture.astro` closes the gap by handing the attribution to iClosed at
+embed time: it reads `utm_*`/`fbclid` on the landing page, holds them in
+`sessionStorage` across the `/` → `/apply` hop, and appends them to the booking
+URL before iClosed's `widget.js` boots. iClosed stores them on the contact and
+returns them in the webhook — so the two halves arrive already joined. Same
+mechanism as the existing `?test-pixel=true` passthrough.
+
+### Route C — form-first (held in reserve)
+
+Our own name/phone step in front of the embed. Capture becomes ours end to end
+and consent becomes trivially collectable on our page rather than in someone
+else's iframe. Costs a step of friction. **Worth reaching for if either the
+webhook payload disappoints or iClosed cannot host the SMS consent checkbox**
+(`TWILIO_RUNBOOK.md` §4) — those are the two things that would make owning the
+form worth the conversion cost.
 
 ---
 
-## 5. The diagnostic — resolving Route A in five minutes
+## 5. The diagnostic
 
-Deployed with the capture component and safe on production (it only writes to
-the browser console):
+`?ss-debug-iclosed=1` is still shipped, with a narrower job now that capture is
+server-side. Open
+**`https://synchrosocial.com/apply?ss-debug-iclosed=1`** with DevTools:
 
-1. Open **`https://synchrosocial.com/apply?ss-debug-iclosed=1`**
-2. Open DevTools → Console
-3. Enter a phone and name in the booking form and click Continue — **do not
-   pick a time**
-4. Screenshot the `[ss-capture]` groups
+- confirms the attribution passthrough actually decorated the booking URL —
+  the one thing that must work for ad attribution to survive the iframe;
+- echoes each postMessage and states whether anything beyond `type` appeared,
+  so if iClosed ever enriches these payloads we find out rather than assume.
 
-Every raw iClosed postMessage is printed. What the groups show decides it:
-
-| Console shows | Meaning | Do |
-| --- | --- | --- |
-| payload with name/email/phone | Route A works | set the endpoint, go live |
-| `extracted: {}` on every event | payload is bare | switch to Route B or C |
-| no `[ss-capture]` lines at all | deploy or origin problem | check the branch is on `main` |
-
-This must run on the deployed site — the capture code is on the branch, not yet
-merged, so it has to reach `main` first (§7).
+The far more important test is the **first real webhook delivery**, which is
+what pins the payload field names.
 
 ---
 
@@ -218,28 +265,40 @@ merged, so it has to reach `main` first (§7).
 
 | Thing | Where | State |
 | --- | --- | --- |
-| Lead capture + attribution | `src/components/IClosedCapture.astro` | built, builds clean, pushed |
-| Wiring into the embed | `src/components/IClosedEmbed.astro` | 2-line additive change |
+| Attribution passthrough + diagnostic | `src/components/IClosedCapture.astro` | built, builds clean, pushed |
+| Wiring into the embed | `src/components/IClosedEmbed.astro` | additive; renders before `widget.js` |
 | Message copy + date logic | `MESSAGE_TEMPLATES.md` | done |
 | Date logic test | `n8n/test-date-logic.js` | 16 assertions, all pass |
 | CRM model + properties | `HUBSPOT_SCHEMA.md` | done, verified live |
-| n8n capture intake | `n8n/01-…json` | importable draft |
+| n8n iClosed webhook intake | `n8n/01-…json` | importable draft |
 | n8n dispatcher | `n8n/02-…json` | importable draft |
 | n8n booked-SMS | `n8n/03-…json` | importable draft |
 | Twilio setup + compliance | `TWILIO_RUNBOOK.md` | done |
 
 Design choices worth remembering:
 
-- Capture is a **separate component** from the Meta bridge. The bridge is live
-  conversion tracking; it was left byte-identical so this cannot regress it.
-- Capture is **gated to the acquisition calendars**. The embed is shared with
-  the post-sale kickoff calendars, so without the gate a signed client booking
-  their kickoff would be chased as a lead — the same trap the pixel bridge fell
-  into (`CLIENT_LIFECYCLE_MAP.md` §15.1, still open for the pixel).
-- Capture is **inert until configured**. No `PUBLIC_SS_CAPTURE_ENDPOINT`, no
-  network calls. Safe to merge before the backend exists.
-- Attribution is read **on the landing page**, not at booking, because the ad
+- The browser component is **separate** from the Meta pixel bridge. That bridge
+  is live conversion tracking; it was left byte-identical so none of this can
+  regress it.
+- It renders **before `widget.js`**, because it has to rewrite `data-url`
+  before iClosed reads it.
+- It makes **no network calls at all**. The pivot to a server-side webhook
+  removed the browser→n8n POST, and with it the CORS surface, the client-side
+  PII handling, and the build-time endpoint variable.
+- Attribution is read **on the landing page**, not at the embed, because the ad
   click lands on `/` and the booking happens on `/apply`.
+- The n8n side is **gated and idempotent**: upsert on the iClosed contact id,
+  because `Potential` fires twice per lead and webhooks retry.
+
+**Course correction during the session.** The first version of the browser
+component scanned the postMessage payload for name/email/phone and POSTed it to
+a capture endpoint. It was written defensively because iClosed does not publish
+the payload shape — and the shape turned out to be a single `type` field, so
+that design could never have captured anything. It was replaced with the
+server-side webhook route (§4) once the docs were read properly. Two useful
+consequences: the architecture is simpler than the original, and the calendar
+gating that version needed is now redundant, because iClosed's webhook is
+registered per calendar rather than per page.
 
 ---
 
@@ -248,12 +307,13 @@ Design choices worth remembering:
 | # | Blocker | Who | Unblocks |
 | --- | --- | --- | --- |
 | 1 | **n8n MCP connector is disabled in this chat** (`enabledInChat: false`) | Sidney | all three workflows. Without it no session can create or edit them; the JSON in `n8n/` has to be imported by hand instead. |
-| 2 | **HubSpot MCP is read-only** — every write reports `REQUIRES_REAUTHORIZATION` | Sidney | the 15 properties in `HUBSPOT_SCHEMA.md` §4. Reconnect the connector with CRM write scope. |
-| 3 | **No Twilio account** | Sidney | S1 and S2. A2P 10DLC registration is on the critical path — see `TWILIO_RUNBOOK.md`. |
+| 2 | **The iClosed "Contact by status" webhook is not configured** | Sidney | the entire capture route. iClosed → Settings → Developer → Webhooks, pointed at `/webhook/iclosed-lead-abandoned` with the shared secret. Also confirm the plan tier exposes it — iClosed's own docs contradict each other on which tier gets webhooks and API keys, so **look in the dashboard rather than reading the pricing page**. |
+| 3 | **HubSpot MCP is read-only** — every write reports `REQUIRES_REAUTHORIZATION` | Sidney | the 3 properties in `HUBSPOT_SCHEMA.md` §4. Reconnect the connector with CRM write scope. Note it can create *records* but not *property definitions* even after reauth — those need the HubSpot UI or a private app token. |
+| 4 | **No Twilio account** | Sidney | S1 and S2. A2P 10DLC registration is on the critical path — see `TWILIO_RUNBOOK.md`. |
 
-Note that **1 and 2 do not block each other, and neither blocks the email**.
-E1 needs only n8n. SMS needs Twilio. CRM attribution needs HubSpot write. They
-can proceed in parallel.
+None of these block each other. E1 needs 1 + 2. Attribution needs 3. SMS needs
+4. **The email path is the shortest and delivers most of the value** — it needs
+no new vendor, no compliance change, and no upgrade.
 
 ---
 
@@ -261,25 +321,28 @@ can proceed in parallel.
 
 **Now — no new accounts, no compliance dependency**
 
-1. `[SIDNEY]` Merge the branch to `main` so capture deploys (inert; no behaviour change).
-2. `[SIDNEY]` Run the §5 diagnostic and send the console screenshot. **Everything downstream depends on this answer.**
-3. `[SIDNEY]` Enable the n8n connector, and reconnect HubSpot with write scope.
-4. `[CLAUDE]` Create the `booking_recovery` Data Table and import workflows 01 + 02, email-only.
-5. `[CLAUDE]` Create the 15 HubSpot properties.
-6. `[SIDNEY]` Set `PUBLIC_SS_CAPTURE_ENDPOINT` and redeploy → capture goes live.
-7. `[BOTH]` Watch one day of capture with sending still off. This converts the ~33/week estimate into an exact count and proves the gate before a single message goes out.
-8. `[SIDNEY]` Go-ahead to switch E1 on.
+1. `[SIDNEY]` Enable the n8n connector in this chat; reconnect HubSpot with write scope.
+2. `[SIDNEY]` Check iClosed → Settings → Developer. Confirm **Webhooks** and **API Keys** are present on the current plan, and say which triggers the UI offers.
+3. `[CLAUDE]` Create the `booking_recovery` Data Table; import workflow 01 with a shared secret.
+4. `[SIDNEY]` Point iClosed's **Contact by status** webhook at it, for the `social-media-consultation` calendar.
+5. `[BOTH]` **Capture only, sending off.** Watch one real delivery to pin the payload field names, then a day of traffic. This replaces the ~33/week estimate with an exact count and proves the suppression path before any message exists.
+6. `[CLAUDE]` Import workflow 02, `SMS_ENABLED=false`; create the 3 HubSpot properties.
+7. `[BOTH]` Run the gate test (`TWILIO_RUNBOOK.md` §7 step 4) — a lead who booked must produce **no** send.
+8. `[SIDNEY]` Merge the branch to `main` so attribution passthrough deploys (inert otherwise; no behaviour change).
+9. `[SIDNEY]` Go-ahead to switch E1 on.
 
-**In parallel — Twilio, because registration is slow**
+**In parallel — Twilio, because registration is slow and runs on someone else's clock**
 
-9. `[SIDNEY]` Create the Twilio account, submit A2P 10DLC brand + campaign.
-10. `[SIDNEY]` Add SMS consent language to the iClosed form (§9 risk 2).
-11. `[CLAUDE]` Import workflow 03; flip `SMS_ENABLED` once 9 and 10 are both done.
-12. `[SIDNEY]` One-node go-ahead on the live booking router to call workflow 03.
+10. `[SIDNEY]` Check first whether **iClosed has native SMS reminders**. If it does, S2 ships on iClosed's already-registered sender with no Twilio work at all — most of the SMS value for none of the effort.
+11. `[SIDNEY]` Otherwise: create the Twilio account, submit A2P 10DLC brand + campaign. **The EIN must be at least 15 days old.**
+12. `[SIDNEY]` Add SMS consent language to the iClosed form — and confirm iClosed even supports a custom consent checkbox. If it does not, that is the trigger for Route C (§4).
+13. `[CLAUDE]` Import workflow 03; flip `SMS_ENABLED` only once 11 and 12 are both done.
+14. `[SIDNEY]` One-node go-ahead on the live booking router to call workflow 03.
+15. `[SIDNEY]` Decide where inbound texts land — S2 says "please text me", so someone has to be reading.
 
 **Then**
 
-13. Attribution flows to HubSpot → CAC reporting → close `meta-ads/README.md` §9.3–9.4.
+16. Attribution flows through to HubSpot → CAC reporting → closes `meta-ads/README.md` §9.3–9.4.
 
 ---
 
@@ -299,9 +362,15 @@ can proceed in parallel.
    SMS consent language.** E1 (email) and S2 (transactional confirmation) are
    not blocked by this. `SMS_ENABLED` ships `false` for exactly this reason.
 
-3. **Route A may capture nothing.** iClosed's payload is undocumented and may
-   be bare. Cheap to find out (§5), and B/C are real fallbacks — but this is the
-   single largest unknown in the plan.
+3. **The webhook payload shape is unverified.** iClosed documents the event
+   list but not a field schema. Workflow 01 reads several plausible shapes and
+   stores the raw body, so the first delivery settles it — but until one
+   arrives, the field names are inference. Step 5 of §8 exists for this.
+
+3b. **The webhook endpoint is unauthenticated by the provider.** iClosed has no
+   HMAC signing (roadmap, not shipped), so a shared secret is the only thing
+   between the open internet and a PII write. It must be long and random, and
+   it must never appear in a committed file.
 
 4. **Single Gmail credential.** E1 adds load to the one "Hello email"
    credential every client email already depends on; a password change silently
@@ -339,25 +408,46 @@ Short answers change the build; none block starting.
    guarantees capture at the cost of one step of friction.
 5. **Reply handling** — S2 invites "please text me". Who watches that number,
    and should inbound texts land in Slack?
-6. **`closedwon`/`closedlost` still lie** (`HUBSPOT_SCHEMA.md` §1). Worth fixing
-   properly while we are in the CRM, or leave it?
+6. **HubSpot is booking your wins as losses.** `closedwon`/`closedlost` are
+   HubSpot's *won/lost stage types*, so today a signed contract counts as won
+   revenue before any invoice is paid, and a client entering onboarding counts
+   as **Closed Lost**. Correctly-named stages already exist and are empty — the
+   migration was started and abandoned. Fix it now, or leave it? Nothing here
+   depends on the answer (we key on stage ids), but every funnel number you
+   read does. Details in `HUBSPOT_SCHEMA.md` §1.
+
+7. **Should a confirmed abandoner get a deal?** Current design says no — a
+   contact only, so "deals in the pipeline" keeps meaning "calls booked". The
+   alternative is a deal at a new *Booking Abandoned* stage, which makes
+   abandonment visible in the pipeline at the cost of filling your one free-tier
+   pipeline with records you cannot bulk-clean (no workflows on free). Which do
+   you want to look at every morning?
 
 ---
 
 ## 11. Session log
 
 - **2026-08-14 — project kickoff.** Audited the live stack: confirmed the five
-  custom HubSpot properties exist, read the real deal pipeline (found it has
-  drifted from `CLIENT_LIFECYCLE_MAP.md` — two genuine terminal stages now
-  exist), confirmed HubSpot MCP is read-only and the n8n connector is disabled.
-  Pulled the live Meta numbers and sized the opportunity at ~25 lost leads and
-  ~$474 of spend per week. Confirmed the ad account now has a payment method and
-  that iClosed server-side CAPI is live in production — both open items in
-  `meta-ads/README.md`. Built the capture component + attribution, gated to
-  acquisition calendars, inert until configured. Wrote the copy deck and found
-  both source templates had date bugs; built and tested the date logic (16
-  assertions). Drafted three importable n8n workflows in house style. Nothing
-  live; three unblocks outstanding (§7).
+  custom HubSpot properties exist, read the real deal pipeline (found the
+  won/lost data-integrity bug in §10.6), confirmed HubSpot MCP is read-only and
+  the n8n connector is disabled. Pulled the live Meta numbers and sized the
+  opportunity at ~25 lost leads and ~$474 of spend per week. Confirmed the ad
+  account now has a payment method and that iClosed server-side CAPI is live in
+  production — both open items in `meta-ads/README.md`. Wrote the copy deck;
+  both source templates had date bugs, so the date logic was built and tested
+  (16 assertions). Drafted three importable n8n workflows in house style.
+
+  **Mid-session correction.** Capture was first built browser-side, scanning
+  iClosed's postMessage for contact details. Reading iClosed's GTM
+  documentation showed the payload is `{type}` and nothing else, so that route
+  can never work. Rebuilt around iClosed's server-side **Contact by status**
+  webhook, which delivers the whole contact record; the browser component was
+  reduced to attribution passthrough, which is the piece the webhook genuinely
+  cannot supply. Also corrected a second wrong assumption: HubSpot free allows
+  10 custom properties **account-wide**, not per object, so a 15-property plan
+  became 3 JSON-blob properties.
+
+  Nothing live; four unblocks outstanding (§7).
 
 ---
 

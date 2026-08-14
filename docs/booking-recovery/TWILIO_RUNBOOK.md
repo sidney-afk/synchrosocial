@@ -26,6 +26,20 @@ sales follow-up.
 
 ---
 
+## 0.5 [SIDNEY] Check this before doing any of it
+
+**Does iClosed already send SMS appointment reminders?** If it does, S2 — the
+booked-call confirmation, which is most of the value and none of the legal risk
+— ships on iClosed's already-registered sender with zero Twilio work, zero
+registration wait, and zero compliance exposure. Check iClosed → notifications /
+reminders, and its Sendblue integration.
+
+Only S1 genuinely needs a number we control, because only S1 is us initiating
+contact with someone who did not complete a booking. **Do not spend two weeks on
+carrier registration before confirming you need it.**
+
+---
+
 ## 1. [SIDNEY] Account and number
 
 1. Create the account at `twilio.com` on the **Synchro Social business
@@ -63,6 +77,11 @@ exactly. `synchrosocial.com` is already Meta-domain-verified, which helps.
 **b. Brand** — submitted to The Campaign Registry off the Customer Profile.
 Usually returns quickly. A rejection here is nearly always an EIN or legal-name
 mismatch with public records.
+
+> ⏳ **EIN age gate.** The Campaign Registry requires the EIN to be a minimum
+> age (reported as ~15 days) at registration. If the Synchro Social entity or
+> its EIN is newly issued there is no workaround — you wait. Worth checking on
+> day one rather than discovering it at submission.
 
 **c. Campaign** — the part that describes *what you will send*, and the part
 that gets scrutinised. Register a **single campaign** covering both messages.
@@ -128,6 +147,14 @@ about marketing, and nothing about automated systems. It does not support S1.
 per-message, routinely brought as class actions, and the burden of proving
 consent sits with the sender. A recovered lead is not worth that.
 
+**And it cannot be fixed retroactively.** Consent must exist *before* the
+message. Every lead already sitting in HubSpot or iClosed gave the old wording,
+so **the existing back catalogue is not textable for S1 at all** — not after a
+policy update, not after a privacy-policy edit. S1 can only ever address leads
+who arrive after the new consent checkbox is live. Plan the value of S1 on
+future volume only; anyone hoping to blast the existing list should hear this
+now rather than later.
+
 **Consequence, and it is already built in:** `SMS_ENABLED` in workflow 02 ships
 `false`. E1 (email) and S2 (transactional) are unaffected and can go live
 without any of this. Only S1 waits.
@@ -139,6 +166,20 @@ work is cheap relative to the downside.*
 ---
 
 ## 4. [SIDNEY] The consent language to add to the iClosed form
+
+> ⚠️ **First confirm iClosed can host this at all.** The form is served inside
+> `app.iclosed.io`, not by us, and it is unverified whether iClosed supports a
+> custom, separately-tickable consent field. Two consequences if it cannot:
+> the consent cannot be collected where it needs to be, **and** carrier vetting
+> may be unable to see it — TCR reviewers need a publicly reachable URL showing
+> the consent language, and language rendered only inside a third-party iframe
+> may not be rendered or credited, which is a common rejection cause.
+>
+> If iClosed cannot host it, that is the trigger for **Route C**
+> (`README.md` §4): collect name/phone and consent on our own `/apply` page
+> before revealing the widget. More friction, but we own the consent record and
+> reviewers can see it. Decide this before submitting the campaign, not after a
+> rejection.
 
 Add a **separate, unchecked** checkbox — not bundled into the existing terms
 line, and not pre-ticked — in iClosed → the Social Media Consultation calendar
@@ -181,6 +222,24 @@ the consent line points at it.
 | One S1 per lead, ever | keyed on E.164 phone, not session |
 | Never text someone who booked | the gate — see `README.md` §3 |
 | Phone stored E.164 or dropped | workflow 01 normalises; unparseable numbers are dropped, not stored malformed |
+| Inbound replies reach a human | **not yet built** — see below |
+
+### Replies are an obligation, not a nicety
+
+S2 explicitly says *"please text me"*, and S1 invites an answer. That creates
+two duties:
+
+1. **Someone must read the number** during business hours. A number that
+   invites replies and answers none is worse than not texting.
+2. **Free-text opt-outs must be honoured.** Twilio's keyword filter catches
+   STOP / UNSUBSCRIBE / CANCEL. It does **not** catch "stop texting me",
+   "please remove me", or "not interested" — and those are legally effective
+   revocations that must be actioned promptly.
+
+Minimum viable handling: point the Twilio number's inbound webhook at n8n and
+relay every message to Slack, the same way the existing error alerts DM Sidney.
+Anything that reads like a revocation gets added to the opt-out list by hand
+until it is automated. **Do this before S1 goes live**, not after.
 
 ---
 
@@ -227,6 +286,9 @@ In order, none skippable:
 
 ## 8. Checklist
 
+- [ ] **Checked whether iClosed sends SMS reminders natively** (§0.5) — may remove the need for most of this
+- [ ] EIN confirmed old enough for TCR (§2b)
+- [ ] Confirmed iClosed can host a separate consent checkbox (§4) — or decided on Route C
 - [ ] Twilio account on the business identity, upgraded, payment added
 - [ ] Local SMS number purchased
 - [ ] Customer Profile submitted and approved
@@ -235,6 +297,7 @@ In order, none skippable:
 - [ ] Campaign submitted with real sample messages and the real opt-in description
 - [ ] Campaign approved, number attached to it
 - [ ] Advanced Opt-Out enabled
+- [ ] Inbound replies routed to Slack, and someone owns watching them (§5)
 - [ ] `Twilio SMS` credential created in n8n
 - [ ] Number set in workflows 02 and 03; Error Workflow set on both
 - [ ] Privacy policy mentions SMS
