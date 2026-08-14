@@ -11,10 +11,34 @@
 > Wider context: `../meta-ads/README.md`, `../ECOSYSTEM_MAP.md`, and
 > `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`.
 
-**Status 2026-08-14:** attribution passthrough is built and pushed; the three
-n8n workflows are drafted and importable; nothing is live. Four unblocks
-needed — see §7. Capture runs on iClosed's **server-side webhook**, not on
-browser events — §4 explains why that distinction decides the whole design.
+**Status 2026-08-14 (updated):** the capture half is **BUILT, TESTED AND LIVE in
+n8n**. It records abandoned bookings and sends nothing. Remaining: point iClosed
+at it (§7.1 — the only thing standing between this and real data), then the
+dispatcher, then Twilio. Capture runs on iClosed's **server-side webhook**, not
+on browser events — §4 explains why that distinction decides the whole design.
+
+### As built
+
+| Thing | Identifier |
+| --- | --- |
+| n8n Data Table | `booking_recovery` · `xEhLpKwNv8uTaeAK` |
+| n8n workflow | *Sales — Booking Recovery Capture (iClosed)* · `31DnMJLU3YM89py1` · **published** |
+| Webhook path | `POST /webhook/iclosed-lead-abandoned?secret=…` |
+
+Proven by three test executions against the live Data Table
+(`382793`, `382821`, `382822`):
+
+- a phone-only Potential lead is stored with the phone normalised to E.164, the
+  name title-cased, and the ad campaign attached — `follow_up_due_at` exactly
+  30 minutes out;
+- **a repeat delivery of the same lead routes to `touch`, not `arm`** — the
+  original clock and the first-touch attribution both survive, which is the
+  behaviour that stops one person being emailed three times;
+- a lead arriving with a call attached lands `suppressed / booked` with the
+  clock cleared.
+
+Nothing in this workflow can send a message. It has no Gmail node, no Twilio
+node, and no HubSpot node.
 
 ---
 
@@ -334,10 +358,11 @@ registered per calendar rather than per page.
 
 | # | Blocker | Who | Unblocks |
 | --- | --- | --- | --- |
-| 1 | **n8n MCP connector is disabled in this chat** (`enabledInChat: false`) | Sidney | all three workflows. Without it no session can create or edit them; the JSON in `n8n/` has to be imported by hand instead. |
-| 2 | **The iClosed "Contact by status" webhook is not configured** | Sidney | the entire capture route. iClosed → Settings → Developer → Webhooks, pointed at `/webhook/iclosed-lead-abandoned` with the shared secret. Also confirm the plan tier exposes it — iClosed's own docs contradict each other on which tier gets webhooks and API keys, so **look in the dashboard rather than reading the pricing page**. |
-| 3 | **HubSpot MCP is read-only** — every write reports `REQUIRES_REAUTHORIZATION` | Sidney | the 3 properties in `HUBSPOT_SCHEMA.md` §4. Reconnect the connector with CRM write scope. Note it can create *records* but not *property definitions* even after reauth — those need the HubSpot UI or a private app token. |
-| 4 | **No Twilio account** | Sidney | S1 and S2. A2P 10DLC registration is on the critical path — see `TWILIO_RUNBOOK.md`. |
+| ~~0~~ | ~~n8n MCP connector disabled~~ | — | **CLEARED 2026-08-14.** Data Table and capture workflow built, tested and published. |
+| **1** | **The iClosed "Contact by status" webhook is not pointed at us** | Sidney | **everything.** The workflow is live and waiting; until iClosed is told to call it, zero leads are captured. iClosed → Settings → Developer → Webhooks → **Create Webhook**, event **Contact by status**, URL `https://synchrosocial.app.n8n.cloud/webhook/iclosed-lead-abandoned?secret=<the secret in the Authenticate + Normalize node>`. Add **New contact created** at the same URL as a safety net. *(Plan-tier question resolved: the dashboard shows both Webhooks and API Keys, and two webhooks already run.)* |
+| 2 | **HubSpot connector is still read-only** — writes report `REQUIRES_REAUTHORIZATION` | Sidney | the 3 properties in `HUBSPOT_SCHEMA.md` §4, and the dispatcher's CRM gate. The permission change did not take: it needs a full **disconnect and reconnect** of the HubSpot connector, not a toggle. Note it can create *records* but never *property definitions* — those need the HubSpot UI or a private app token. |
+| 3 | **No iClosed API key** | Sidney | workflow 04, the sweep that backfills every abandoned lead already sitting in the account. Settings → Developer → API Keys (shown once). |
+| 4 | **No Twilio account** | Sidney | S1 and S2 only. Neither the email nor the capture depends on it. |
 
 None of these block each other. E1 needs 1 + 2. Attribution needs 3. SMS needs
 4. **The email path is the shortest and delivers most of the value** — it needs
