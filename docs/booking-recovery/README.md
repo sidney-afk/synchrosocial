@@ -40,6 +40,27 @@ Proven by three test executions against the live Data Table
 Nothing in this workflow can send a message. It has no Gmail node, no Twilio
 node, and no HubSpot node.
 
+**Auth, and a bug caught by smoke-testing the live URL.** A bad secret
+originally *threw*, and n8n answers a thrown workflow with **HTTP 200 and an
+empty body**. Nothing was written — the throw happened before any Data Table
+node — so it was safe. But it meant a webhook whose URL got truncated on paste
+would sit in iClosed reporting success forever while capturing nothing. That is
+the same silent-failure shape that took sales email down for two days in July
+(`CLIENT_LIFECYCLE_MAP.md` §15.16), so it was fixed rather than documented:
+unauthorized now returns a real **401** via an `Authorized?` branch. Verified
+against the production URL — a correct secret returns `200 {"ok":true}`, and
+both a wrong secret and a deliberately truncated `?se` return
+`401 {"ok":false,"error":"unauthorized"}`.
+
+The workflow's Error Workflow is set to *SyncView — Error Alerts → DM Sidney*
+(`itqDXSl2ybsRSAiQ`), per house convention.
+
+**Six webhooks, one per status.** iClosed refuses two webhooks with the same
+URL and allows only one status each, so each carries a distinct `&src=` tag.
+The workflow ignores unknown query params, and now records the tag — which
+means the real Potential → Qualified → Booked drop-off gets measured per stage
+instead of inferred from Meta event counts.
+
 ---
 
 ## 1. Why this is worth doing — the live numbers
