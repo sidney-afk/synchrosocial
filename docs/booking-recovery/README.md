@@ -11,8 +11,10 @@
 > Wider context: `../meta-ads/README.md`, `../ECOSYSTEM_MAP.md`, and
 > `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`.
 
-**Status 2026-08-14 (updated):** the capture half is **BUILT, TESTED AND LIVE in
-n8n**. It records abandoned bookings and sends nothing. Remaining: point iClosed
+**Status 2026-08-14 — LIVE.** Both halves are active in n8n. Capture records
+abandoned bookings; the dispatcher emails them 30 minutes later, capped at 5
+sends per run, after re-checking HubSpot. Switched on by Sidney after an
+adversarial test pass found and fixed three critical send-path defects. Remaining: point iClosed
 at it (§7.1 — the only thing standing between this and real data), then the
 dispatcher, then Twilio. Capture runs on iClosed's **server-side webhook**, not
 on browser events — §4 explains why that distinction decides the whole design.
