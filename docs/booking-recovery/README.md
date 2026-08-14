@@ -552,3 +552,31 @@ Short answers change the build; none block starting.
 *Update this doc when a §7 blocker clears, a route in §4 is proven or ruled
 out, or the copy changes. Keep §1 honest — re-read the numbers before quoting
 them.*
+
+---
+
+## 12. Monitoring — the heartbeat
+
+**`Sales — Booking Recovery Heartbeat`** (`a2sJJ3oZMefASPl2`, ACTIVE) DMs Sidney
+via *SyncView Bot* every day at 09:00 America/New_York with the last 24 hours:
+captured, emailed, still waiting, a breakdown by outcome, and how many were
+phone-only.
+
+It exists because of the failure mode this project keeps running into. If
+capture silently breaks — iClosed renames a field, a webhook gets disabled, the
+shared secret stops matching — the symptom is **zero abandoned leads**, which is
+indistinguishable from a quiet week. Nothing else in the stack would notice, and
+the same shape has bitten twice before (the July Gmail revocation, silent for
+two days; the June model-retirement incident that motivated the error workflow).
+
+So it fails loud in both directions:
+
+- a day with **zero captures** produces a 🚨 message with the three things to
+  check, rather than a calm-looking `0`;
+- if the digest **stops arriving at all**, that is itself the alarm.
+
+Verified live 2026-08-14 — Slack accepted the DM (`ok: true`).
+
+The phone-only count is deliberately in the message. That number is the entire
+business case for Twilio, and it is better watched accumulating daily than
+argued about once.
