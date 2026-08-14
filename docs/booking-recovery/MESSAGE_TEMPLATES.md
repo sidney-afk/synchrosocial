@@ -254,3 +254,29 @@ Detail and citations live in `TWILIO_RUNBOOK.md`; the short version:
 
 *Update this file whenever the copy changes. The n8n workflows render from
 these templates — if they drift, the doc is the source of truth.*
+
+---
+
+## Owner decisions — 2026-08-14
+
+**No unsubscribe line, and no postal address in the footer.** Raised with Sidney
+as a CAN-SPAM consideration (both are mandatory elements for commercial email;
+liability is per message). He considered it and decided against both. E1 sends
+exactly as he wrote it.
+
+Recorded here so it reads as a deliberate choice rather than an oversight, and
+so it can be revisited cheaply if volume grows or a complaint ever arrives —
+adding either is a one-line change to the Gmail node.
+
+Two things partially offset it in practice:
+- Every message carries a real `Reply-To: kasper@synchrosocial.com`, so a
+  recipient asking to be left alone reaches a human immediately.
+- That request is honoured durably: the `do_not_contact` column on
+  `booking_recovery` suppresses a lead permanently across every channel,
+  checked before anything else in the dispatcher. Kasper sets it when someone
+  asks.
+
+**Send cap: 5 per run**, and rows armed before `ACTIVATED_AFTER` are never
+chased. Together these mean switching the sender on cannot blast a backlog, and
+any defect that survived testing is bounded at 5 messages per 10 minutes rather
+than unbounded.
