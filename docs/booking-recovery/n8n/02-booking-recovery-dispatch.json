@@ -1,0 +1,232 @@
+{
+  "_snapshot": "PROPOSED — not yet created in n8n. The engine of the booking-recovery system. Runs every 5 minutes, reads pending rows from the Data Table `booking_recovery`, and decides who is due for E1 (email, ~30 min after abandonment) or S1 (SMS, ~4 h after abandonment). Re-checks HubSpot immediately before every send so a lead who booked in the meantime is never chased — that re-check is the single most important node in this workflow. Renders the merge fields from docs/booking-recovery/MESSAGE_TEMPLATES.md, including the business-day date logic. BEFORE IMPORT: create the Data Table, replace REPLACE_WITH_DATA_TABLE_ID, set the Error Workflow, and confirm the Gmail credential is 'Hello email' (hello@synchrosocial.com). SMS_ENABLED in 'Select Due' is false until Twilio A2P 10DLC is approved AND the iClosed form carries SMS consent language — see TWILIO_RUNBOOK.md. With it false this workflow sends email only, which is a perfectly good standalone system.",
+  "name": "Sales — Booking Recovery Dispatch",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "REPLACE_WITH_ERROR_WORKFLOW_ID"
+  },
+  "connections": {
+    "Every 5 Minutes": { "main": [[{ "node": "Get Pending", "type": "main", "index": 0 }]] },
+    "Get Pending": { "main": [[{ "node": "Select Due", "type": "main", "index": 0 }]] },
+    "Select Due": { "main": [[{ "node": "Find HubSpot Contact", "type": "main", "index": 0 }]] },
+    "Find HubSpot Contact": { "main": [[{ "node": "Still Unbooked?", "type": "main", "index": 0 }]] },
+    "Still Unbooked?": {
+      "main": [
+        [{ "node": "Route Channel", "type": "main", "index": 0 }],
+        [{ "node": "Mark Suppressed", "type": "main", "index": 0 }]
+      ]
+    },
+    "Route Channel": {
+      "main": [
+        [{ "node": "Send Recovery Email", "type": "main", "index": 0 }],
+        [{ "node": "Send Recovery SMS", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Recovery Email": { "main": [[{ "node": "Mark Email Sent", "type": "main", "index": 0 }]] },
+    "Send Recovery SMS": { "main": [[{ "node": "Mark SMS Sent", "type": "main", "index": 0 }]] }
+  },
+  "nodes": [
+    {
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": { "interval": [{ "field": "minutes", "minutesInterval": 5 }] }
+      }
+    },
+    {
+      "name": "Get Pending",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [224, 0],
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "status", "condition": "eq", "keyValue": "pending" }] },
+        "options": {}
+      }
+    },
+    {
+      "name": "Select Due",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [448, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Decides who is due for which message, and renders every merge field.\n// Emits ONE item per message to send. Emits nothing when nothing is due,\n// which is the normal case on most of the 288 runs a day.\n\n// ---- switches -------------------------------------------------------------\n// Keep SMS_ENABLED false until BOTH are true:\n//   1. Twilio A2P 10DLC campaign approved, and\n//   2. the iClosed form's consent line covers marketing SMS.\n// See TWILIO_RUNBOOK.md. Email works fine on its own until then.\nconst SMS_ENABLED = false;\nconst SMS_DELAY_HOURS = 4;          // after the email, not after abandonment\nconst MAX_AGE_HOURS = 72;           // past this a lead is cold; stop chasing\nconst QUIET_START = 21;             // no sends at/after 21:00 recipient-local\nconst QUIET_END = 8;                // no sends before 08:00 recipient-local\nconst DEFAULT_TZ = 'America/New_York';\n\nconst now = new Date();\nconst out = [];\n\n// ---- date helpers ---------------------------------------------------------\n// Next two business days, rendered per MESSAGE_TEMPLATES.md §Date logic.\nfunction dayOptions(from, tz) {\n  const nameOf = (d) => d.toLocaleDateString('en-US', { weekday: 'long', timeZone: tz });\n  const dowOf = (d) => d.toLocaleDateString('en-US', { weekday: 'short', timeZone: tz });\n  const opts = [];\n  for (let i = 1; i <= 7 && opts.length < 2; i++) {\n    const d = new Date(from.getTime() + i * 86400000);\n    const dow = dowOf(d);\n    if (dow === 'Sat' || dow === 'Sun') continue;\n    // \"tomorrow\" only when it is literally the next calendar day.\n    opts.push(i === 1 ? 'tomorrow' : nameOf(d));\n  }\n  while (opts.length < 2) opts.push('later this week');\n  return opts;\n}\n\nfunction localHour(d, tz) {\n  const h = d.toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: tz });\n  return parseInt(h, 10);\n}\n\nfunction validTz(tz) {\n  if (!tz) return DEFAULT_TZ;\n  try { new Date().toLocaleString('en-US', { timeZone: tz }); return tz; }\n  catch (e) { return DEFAULT_TZ; }\n}\n\n// ---- selection ------------------------------------------------------------\nfor (const item of $input.all()) {\n  const r = item.json;\n  if (String(r.status || '') !== 'pending') continue;\n\n  const createdAt = new Date(r.created_at);\n  if (isNaN(createdAt)) continue;\n  const ageHours = (now - createdAt) / 3600000;\n\n  // Too old to be worth a message, and too old to keep scanning every 5 min.\n  if (ageHours > MAX_AGE_HOURS) {\n    out.push({ json: { ...r, action: 'expire' } });\n    continue;\n  }\n\n  const tz = validTz(r.timezone);\n  const hour = localHour(now, tz);\n  const inQuietHours = hour >= QUIET_START || hour < QUIET_END;\n\n  const emailSent = !!String(r.email_sent_at || '').trim();\n  const smsSent = !!String(r.sms_sent_at || '').trim();\n  const dueAt = new Date(r.follow_up_due_at);\n  const emailDue = !emailSent && !isNaN(dueAt) && now >= dueAt && !!r.email;\n\n  const smsDueAt = emailSent\n    ? new Date(new Date(r.email_sent_at).getTime() + SMS_DELAY_HOURS * 3600000)\n    : null;\n  const smsDue = SMS_ENABLED && emailSent && !smsSent && !!r.phone\n    && smsDueAt && !isNaN(smsDueAt) && now >= smsDueAt;\n\n  if (!emailDue && !smsDue) continue;\n\n  // Quiet hours defer rather than skip — the row stays pending and the next\n  // run picks it up. Email is exempt: an inbox is not a buzzing phone.\n  if (smsDue && !emailDue && inQuietHours) continue;\n\n  const [d1, d2] = dayOptions(now, tz);\n  const greetingName = r.first_name ? String(r.first_name) : '';\n\n  out.push({ json: {\n    ...r,\n    action: emailDue ? 'email' : 'sms',\n    first_name: greetingName,\n    // Subject and salutation degrade gracefully when the name is unusable.\n    subject: greetingName\n      ? greetingName + ', still want that social media strategy call?'\n      : 'Still want that social media strategy call?',\n    salutation: greetingName ? 'Hi ' + greetingName + ',' : 'Hi,',\n    sms_salutation: greetingName\n      ? 'Hi ' + greetingName + \", it's Kasper from Synchro Social.\"\n      : \"Hi, it's Kasper from Synchro Social.\",\n    day_option_1: d1,\n    day_option_2: d2,\n    booking_url: 'https://synchrosocial.com/apply'\n  } });\n}\n\nreturn out;"
+      }
+    },
+    {
+      "name": "Find HubSpot Contact",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [672, 0],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "authentication": "appToken",
+        "resource": "contact",
+        "operation": "search",
+        "returnAll": false,
+        "limit": 1,
+        "filterGroupsUi": {
+          "filterGroupsValues": [
+            {
+              "filtersUi": {
+                "filterValues": [
+                  { "propertyName": "email", "operator": "EQ", "value": "={{ $json.email }}" }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "properties": ["email", "deal_id", "hs_lead_status", "lifecyclestage"]
+        }
+      }
+    },
+    {
+      "name": "Still Unbooked?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [896, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// THE GATE. Nothing else in this system matters as much as this node:\n// messaging \"you didn't book\" to someone who DID book is the one failure\n// that costs a sale rather than just missing one.\n//\n// A contact carrying a deal_id means the booking router already created a\n// deal for them, i.e. they reached at least 'Call Scheduled'. Chasing them\n// is wrong. Same for anyone already a customer.\n//\n// Output 0 = safe to send. Output 1 = suppress.\nconst send = [];\nconst suppress = [];\n\nfor (const item of $input.all()) {\n  const r = item.json;\n\n  if (r.action === 'expire') {\n    suppress.push({ json: { ...r, suppressed_reason: 'expired' } });\n    continue;\n  }\n\n  // The HubSpot node is set to continue on error and always output data, so\n  // a CRM hiccup surfaces here as a missing contact rather than a thrown\n  // execution. Fail SAFE: no confirmation that they are unbooked means we\n  // do not send. A missed recovery email is cheap; a wrong one is not.\n  if (r.error || r.__hubspotError) {\n    continue; // leave pending, retry on the next 5-minute run\n  }\n\n  const dealId = String(r.deal_id || '').trim();\n  const lifecycle = String(r.lifecyclestage || '').trim().toLowerCase();\n\n  if (dealId) {\n    suppress.push({ json: { ...r, suppressed_reason: 'already_booked' } });\n    continue;\n  }\n  if (lifecycle === 'customer' || lifecycle === 'opportunity') {\n    suppress.push({ json: { ...r, suppressed_reason: 'existing_' + lifecycle } });\n    continue;\n  }\n\n  send.push({ json: r });\n}\n\nreturn [send, suppress];"
+      }
+    },
+    {
+      "name": "Route Channel",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [1120, -128],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "email",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "name": "Send Recovery Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1344, -256],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.salutation }}\n\nThis is Kasper from Synchro Social. I saw that you filled our form and was interested in booking a call with us, but didn't end up booking a time.\n\nLet me know if you have any availability {{ $json.day_option_1 }} or {{ $json.day_option_2 }} and I'd be happy to schedule a social media strategy call with you.\n\nWith gratitude,\nKasper",
+        "options": {
+          "senderName": "Synchro Social",
+          "replyTo": "kasper@synchrosocial.com"
+        }
+      }
+    },
+    {
+      "name": "Send Recovery SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [1344, 0],
+      "parameters": {
+        "resource": "sms",
+        "operation": "send",
+        "from": "REPLACE_WITH_TWILIO_NUMBER_E164",
+        "to": "={{ $json.phone }}",
+        "message": "={{ $json.sms_salutation }} Saw you started booking a social media strategy call but didn't lock in a time.\n\nWant me to hold a spot for you {{ $json.day_option_1 }} or {{ $json.day_option_2 }}?\n\n{{ $json.booking_url }}\n\nReply STOP to opt out.",
+        "options": {}
+      }
+    },
+    {
+      "name": "Mark Email Sent",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1568, -256],
+      "parameters": {
+        "resource": "row",
+        "operation": "update",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "lead_key", "condition": "eq", "keyValue": "={{ $('Select Due').item.json.lead_key }}" }] },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email_sent_at": "={{ new Date().toISOString() }}",
+            "updated_at": "={{ new Date().toISOString() }}"
+          },
+          "schema": [
+            { "id": "email_sent_at", "displayName": "email_sent_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "updated_at", "displayName": "updated_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mark SMS Sent",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1568, 0],
+      "parameters": {
+        "resource": "row",
+        "operation": "update",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "lead_key", "condition": "eq", "keyValue": "={{ $('Select Due').item.json.lead_key }}" }] },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sms_sent_at": "={{ new Date().toISOString() }}",
+            "status": "completed",
+            "updated_at": "={{ new Date().toISOString() }}"
+          },
+          "schema": [
+            { "id": "sms_sent_at", "displayName": "sms_sent_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "status", "displayName": "status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "updated_at", "displayName": "updated_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mark Suppressed",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1120, 192],
+      "parameters": {
+        "resource": "row",
+        "operation": "update",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "lead_key", "condition": "eq", "keyValue": "={{ $json.lead_key }}" }] },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "suppressed",
+            "suppressed_reason": "={{ $json.suppressed_reason }}",
+            "updated_at": "={{ new Date().toISOString() }}"
+          },
+          "schema": [
+            { "id": "status", "displayName": "status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "suppressed_reason", "displayName": "suppressed_reason", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "updated_at", "displayName": "updated_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        }
+      }
+    }
+  ]
+}

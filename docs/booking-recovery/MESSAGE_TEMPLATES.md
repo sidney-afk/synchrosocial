@@ -175,11 +175,27 @@ booked 12:45pm their time is the fastest way to lose the call.
 | later the same day | `today at 3:45pm` | `later today` |
 | the next calendar day | `tomorrow at 3:45pm` | `tomorrow` |
 | 2–6 days out | `Thursday at 3:45pm` | `Thursday` |
-| 7+ days out | `Thu Aug 27 at 3:45pm` | `then` |
+| 7+ days out | `Thu, Aug 27 at 3:45pm` | `then` |
 
 Time format: lowercase `am`/`pm`, no leading zero, drop `:00` on the hour
 (`3pm`, not `3:00 PM`). If the lead's timezone is missing, fall back to
 `America/New_York` and append the label: `tomorrow at 3:45pm ET`.
+
+"Days out" means **calendar days in the recipient's timezone**, not elapsed
+hours. A call 15 hours away can still be tomorrow: booked Friday 6pm for
+Saturday 9am is `tomorrow`, and an hours-÷-24 bucket would wrongly say `today`.
+
+### Verification
+
+Both helpers are exercised by `n8n/test-date-logic.js`, which holds the code
+copied verbatim out of the n8n code nodes and asserts every row of the two
+tables above, plus the timezone and across-midnight traps:
+
+```
+node docs/booking-recovery/n8n/test-date-logic.js
+```
+
+Run it after editing either code node. It exits non-zero on any mismatch.
 
 ---
 
