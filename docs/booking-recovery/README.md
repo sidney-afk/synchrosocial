@@ -21,9 +21,7 @@ if capture goes quiet.
 
 Still open, by choice rather than blockage: SMS (deferred until the email lane
 has run), the iClosed backfill sweep (dropped), the CAN-SPAM elements (owner
-decision — see `MESSAGE_TEMPLATES.md` §Owner decisions), and **the HubSpot
-write** — attribution currently lands in the n8n Data Table only, not on the
-contact record (§13).
+decision — see `MESSAGE_TEMPLATES.md` §Owner decisions).
 
 Capture runs on iClosed's **server-side webhook**, not on browser events — §4
 explains why that distinction decides the whole design.
@@ -595,26 +593,35 @@ see it?* Honest answer, in order of what exists:
 
 | Place | Status |
 | --- | --- |
-| iClosed contact record (`tracking` block) | ✅ iClosed already stores it; `_fbc` is arriving today |
-| n8n Data Table `booking_recovery` — `utm_source/medium/campaign/content`, `fbclid`, `referrer` | ✅ populated on every captured lead |
-| **HubSpot contact — `ad_attribution`** | ❌ **nothing writes it** |
+| iClosed contact record (`tracking` block) | ✅ iClosed stores it; `_fbc` arriving today |
+| n8n Data Table `booking_recovery` | ✅ populated on every captured lead |
+| **HubSpot contact — `ad_attribution` + `booking_recovery`** | ✅ **built 2026-08-14** |
 
-**That last row is the gap.** The property exists, and the capture workflow holds
-the data, but no node writes it — the capture workflow has no HubSpot node at
-all. So today the answer to "which ad produced this lead" lives in an n8n table
-that nobody opens, rather than on the contact record where it would be read.
+**Built and proven.** Every captured abandoned lead that has an email is now
+upserted as a HubSpot contact carrying both blobs. Verified end to end through
+the live webhook — contact `535830573811` was created with the campaign name,
+`utm_content` (which ad variant), the Meta click id, the referrer, and the full
+qualification set.
 
-This is also the unfinished half of the third thing Sidney originally asked for:
-*"whatever goes through our Meta ads → iClosed needs to go to HubSpot too, create
-the contact, set the stage."* Abandoned leads are currently captured but are
-**not** created as HubSpot contacts. Only people who actually book get a contact,
-via the existing booking router.
+That closes the third original request: ad-sourced leads now reach HubSpot, not
+only the people who booked.
 
-The fix is one HubSpot node on the capture workflow: upsert the contact with
-`lifecyclestage=lead`, `hs_lead_status=NEW`, phone in E.164, and the
-`ad_attribution` / `booking_recovery` JSON blobs from `HUBSPOT_SCHEMA.md` §4 —
-and deliberately **no deal**, so "deals in the pipeline" keeps meaning "calls
-booked". The connector now has record-write scope, so this is buildable.
+**What it deliberately does NOT write:**
+
+- **No `lifecyclestage`.** An existing customer refilling the form must not be
+  downgraded to a lead. HubSpot sets `lead` itself on creation, which is correct
+  for genuinely new contacts and leaves existing ones alone.
+- **No lead status.** Same reasoning — never overwrite sales-owned fields.
+- **No deal.** The pipeline's first stage is *Call Scheduled*, and these people
+  explicitly did not schedule. Minting deals here would corrupt the one number
+  this funnel is judged on. Deals stay the booking router's job.
+
+It also **fails soft** (`onError: continueRegularOutput`): capture is the
+critical path, and a HubSpot outage must never cost us the lead record.
+
+**Phone-only leads are skipped**, by necessity — HubSpot keys contacts on email,
+so there is nothing to upsert against. They stay in the Data Table until a later
+webhook supplies an email, at which point the refresh path syncs them.
 
 Sequencing note: merging the site branch is what starts `utm_*` flowing at all.
 Without it, only `_fbc` (the Meta click id) is captured — enough to match a click
