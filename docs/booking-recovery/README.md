@@ -64,6 +64,20 @@ properly rather than quickly.
 > a day of going live**, which is reason enough to ship it even before the
 > messaging is switched on.
 
+> ⚠️ **The email-only system will not reach all ~25.** The `/apply` form asks
+> for **phone first**, then first and last name, then Continue. Someone who
+> types a phone number and leaves has no email on record — and email is the
+> only channel available until Twilio clears. **How much of the ~25 is
+> phone-only is currently unknown**, and it is the single biggest unknown in
+> the value estimate: if most abandoners never reach the email field, E1 alone
+> addresses a minority of them and SMS stops being a nice-to-have.
+>
+> The capture-only observation period (§8 step 5) answers this exactly, before
+> any message is sent and before any money goes to Twilio. Do not skip it, and
+> do not quote the full ~25 as the email-recoverable number until it has run.
+> The dispatcher already handles both shapes: leads with an email get E1 then
+> S1; phone-only leads get S1 as their first touch.
+
 **Bonus finding:** iClosed's server-side events (`Potential`, `Qualified`,
 `invitee_meeting_scheduled`) are arriving in production, not just test mode.
 `meta-ads/README.md` §9.1 lists final embedded-flow CAPI proof as an open item —
@@ -234,6 +248,19 @@ URL before iClosed's `widget.js` boots. iClosed stores them on the contact and
 returns them in the webhook — so the two halves arrive already joined. Same
 mechanism as the existing `?test-pixel=true` passthrough.
 
+### 🚫 The one postMessage that *does* carry PII — and why we decline it
+
+For the record, so nobody rediscovers it and thinks it is the answer: on the
+**disqualification redirect** path iClosed posts
+`{type:"openInParentTab", url:"…?iclosedEmail=&iclosedPhone=&iclosedName="}`
+to the parent window. That genuinely carries contact details.
+
+Do not build on it. It fires only for leads iClosed **disqualified** — the one
+cohort that must never be chased, because they were filtered out on purpose. It
+is also inert today (the calendar's disqualification redirect URL is empty), so
+using it would mean switching on a redirect purely to harvest data from people
+we have just told we cannot help them. Wrong on both counts.
+
 ### Route C — form-first (held in reserve)
 
 Our own name/phone step in front of the embed. Capture becomes ours end to end
@@ -273,6 +300,7 @@ what pins the payload field names.
 | n8n iClosed webhook intake | `n8n/01-…json` | importable draft |
 | n8n dispatcher | `n8n/02-…json` | importable draft |
 | n8n booked-SMS | `n8n/03-…json` | importable draft |
+| n8n reconciliation sweep + backfill | `n8n/04-…json` | importable draft; needs an iClosed API key |
 | Twilio setup + compliance | `TWILIO_RUNBOOK.md` | done |
 
 Design choices worth remembering:
@@ -416,7 +444,25 @@ Short answers change the build; none block starting.
    depends on the answer (we key on stage ids), but every funnel number you
    read does. Details in `HUBSPOT_SCHEMA.md` §1.
 
-7. **Should a confirmed abandoner get a deal?** Current design says no — a
+7. **The back catalogue.** Workflow 04 backfills every abandoned lead already
+   sitting in iClosed — a pool nobody has counted. It files them as
+   `backfilled`, not `pending`, so **nothing is sent** until you say so.
+   Once you have seen the number: leave it as a dataset, or promote some slice
+   of it (last 30 days? last 7?) into the recovery flow? Emailing months of
+   cold leads in one batch is a deliverability risk as well as a taste
+   question, so this should be a deliberate choice, not a switch that flips
+   itself.
+
+8. **Cancelled calls are excluded — deliberately, and maybe wrongly.** A lead
+   who booked and then cancelled keeps their `deal_id`, so the gate suppresses
+   them forever. And because cancellations never move the deal off
+   `appointmentscheduled` (`CLIENT_LIFECYCLE_MAP.md` §15.13), they sit in the
+   pipeline looking like live bookings. They are arguably your *best*
+   re-engagement cohort — they wanted a call. Want a separate flow for them?
+   It is a different message and a different system, so it is not folded in
+   here.
+
+9. **Should a confirmed abandoner get a deal?** Current design says no — a
    contact only, so "deals in the pipeline" keeps meaning "calls booked". The
    alternative is a deal at a new *Booking Abandoned* stage, which makes
    abandonment visible in the pipeline at the cost of filling your one free-tier
