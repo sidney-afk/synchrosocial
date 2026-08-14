@@ -9,6 +9,12 @@
 //
 //   <IClosedEmbed linkPrefix="synchrosocial/social-media-consultation" />
 //   <IClosedEmbed url="https://app.iclosed.io/e/synchrosocial/social-media-consultation" />
+// Lead capture + ad attribution ride alongside the pixel bridge below, in a
+// separate component with its own listener, so this file's live conversion
+// tracking stays untouched. See IClosedCapture.astro for why abandonment can
+// only be inferred, never observed.
+import IClosedCapture from "./IClosedCapture.astro";
+
 interface Props {
   url?: string | null;
   linkPrefix?: string | null;
@@ -118,6 +124,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
           });
         }
       </script>
+      <IClosedCapture />
     </div>
   ) : (
     <div class={`overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 ${className}`}>
