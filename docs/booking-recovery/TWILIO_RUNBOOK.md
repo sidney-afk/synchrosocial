@@ -113,6 +113,123 @@ plan tier is Startup, or if Sendblue/Linq turn out not to be workable.
 
 ---
 
+## 1. THE ACTUAL CHECKLIST — do these in order
+
+Verified against current Twilio/TCR pricing 2026-08-14. Confirm figures in the
+console as you go; TCR reprices periodically.
+
+### Before you start — have these to hand
+
+- **EIN** and the **exact legal business name** as filed with the IRS
+- Registered **business address**
+- **Business website** — `synchrosocial.com`, already Meta-domain-verified
+- A **credit card**
+- An authorised representative's name, email, phone
+
+> ⏳ **Check the EIN age first.** TCR requires it to be roughly 15+ days old.
+> Newly issued means you wait, and there is no way around it. Find this out on
+> day one rather than at submission.
+
+### Step 1 — Twilio account
+
+`twilio.com` → sign up **as the business**, not as an individual. Upgrade off
+trial and add the card. Trial accounts can only text pre-verified numbers.
+
+### Step 2 — Buy one number
+
+Phone Numbers → Buy a number → **Local**, SMS-capable, in the area code Synchro
+Social is associated with. **One number for both messages** so a lead who gets a
+recovery text and later a confirmation sees a single thread. ~$1.15/mo.
+
+### Step 3 — Consent checkbox on the iClosed form ⚠️ BEFORE Step 6
+
+This must be live **before** the campaign is submitted, because vetting checks
+the opt-in you describe actually exists on the stated website. Describing a
+checkbox that is not there risks rejection, and it is the exact document that
+would be produced against you in a TCPA complaint.
+
+Try **iClosed → Settings → Objects & Fields** (visible on the Business plan) to
+add a custom field to the Social Media Consultation form. Separate, unchecked,
+not bundled into the existing terms line:
+
+> ☐ Text me about my call. I agree to receive automated text messages from
+> Synchro Social at the number provided, including messages about scheduling my
+> call. Consent is not a condition of purchase. Message and data rates may
+> apply. Reply STOP to opt out, HELP for help.
+
+If iClosed cannot host a separate tickable field, that is the trigger for
+Route C — our own name/phone/consent step on `/apply` in front of the widget.
+
+### Step 4 — Customer Profile
+
+Console → **Trust Hub → Customer Profiles** → Business Profile. Legal name and
+EIN must match IRS records **exactly** — a mismatch here is the most common
+rejection. Returns same-day to ~72h, and does not block Step 5.
+
+### Step 5 — Brand
+
+Trust Hub → **A2P Brand**, created off the Customer Profile.
+Choose **Standard Brand** (you have an EIN; sole-proprietor is for individuals).
+
+Fees: ~$4.50 brand registration, plus a $12.50 Authentication+ verification fee,
+plus secondary vetting for standard brands (~$40). Usually returns in 1–3
+business days.
+
+### Step 6 — Campaign
+
+Messaging → **A2P Campaign**. Type: **Low Volume Standard** — correct for this
+volume, and allows up to 2,000 segments/day to T-Mobile, orders of magnitude
+more than ~35 messages a week.
+
+Copy these in verbatim — vetting reads them:
+
+| Field | Value |
+| --- | --- |
+| Use case | **Low Volume Mixed** |
+| Description | Appointment follow-up and confirmation for prospects who request a social media strategy call through our website booking form. |
+| Sample message 1 | *the exact S1 text from `MESSAGE_TEMPLATES.md`* |
+| Sample message 2 | *the exact S2 text from `MESSAGE_TEMPLATES.md`* |
+| Opt-in method | Web form |
+| Opt-in description | Prospects book a call at https://synchrosocial.com/apply. The booking form includes a separate, unchecked checkbox reading "Text me about my call. I agree to receive automated text messages from Synchro Social at the number provided…". Consent is not required to book. |
+| Opt-out | Reply STOP to unsubscribe. Handled automatically by Twilio Advanced Opt-Out. |
+| Help | Reply HELP for help. |
+
+$15 one-time vetting, then $1.50–$10/mo. **Vetting is the wait — up to 5
+business days for standard cases, 1–4 weeks in practice.** Every rejection
+restarts the clock, which is why Steps 3–5 must be right first.
+
+### Step 7 — Enable Advanced Opt-Out
+
+Messaging → Services → your service → **Opt-Out Management**. Turn it on so
+Twilio refuses sends to anyone who replied STOP, at the API level.
+
+### Step 8 — Hand over two values
+
+From Console → Account Info:
+
+- **Account SID**
+- **Auth Token**
+- and the **phone number** in E.164 (`+1XXXXXXXXXX`)
+
+Give me those three and I do the rest — credential into n8n, the S2 confirmation
+workflow, S1 wired into the dispatcher behind the consent flag, and inbound
+replies routed to Slack.
+
+### What it costs, all in
+
+| | |
+| --- | --- |
+| One-time | ~$4.50 brand + ~$12.50 auth + ~$40 vetting + $15 campaign ≈ **$72** |
+| Monthly | ~$1.15 number + $1.50–$10 campaign ≈ **$3–11/mo** |
+| Per message | ~$0.008 + $0.003–0.005 carrier surcharge, per segment |
+
+At ~35 messages a week that is a few dollars a month. **The cost is the waiting,
+not the money.**
+
+---
+
+## 2. Reference — the original step-by-step
+
 ## 1. [SIDNEY] Account and number
 
 1. Create the account at `twilio.com` on the **Synchro Social business
