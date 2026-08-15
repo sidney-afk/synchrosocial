@@ -1,0 +1,159 @@
+---
+/* ===========================================================================
+   IClosedCapture — ad attribution passthrough for the booking embed.
+
+   WHAT THIS DOES, AND WHAT IT DELIBERATELY DOES NOT DO
+
+   It does NOT capture the lead's name/email/phone. It cannot. iClosed's
+   postMessage lifecycle events carry ONE field — `type`. Their own GTM guide
+   shows the canonical listener as `const event = data?.type` with a switch
+   over "iclosed.potential" / ".qualified" / ".disqualified" /
+   ".call_scheduled", and nothing else. There is no name, no email, no phone,
+   not even a contact id. No amount of browser code can recover PII that was
+   never sent.
+     → docs.iclosed.io/en/articles/10420617-google-tag-manager
+
+   Unfinished-booking capture is therefore SERVER-SIDE, via iClosed's
+   "Contact by status" webhook, which delivers the whole contact record the
+   moment someone reaches Potential/Qualified without booking. See
+   docs/booking-recovery/README.md §4.
+
+   What this component IS for: solving the join problem that webhook creates.
+
+   THE JOIN PROBLEM
+   The ad click lands on OUR page carrying utm_* and fbclid. The lead record
+   is created inside iClosed's iframe, on a different origin, which cannot see
+   our query string — cookies and click ids do not cross the iframe boundary.
+   So the server-side webhook knows WHO the lead is but not WHICH AD bought
+   them, and the browser knows the ad but not the lead. Neither half is worth
+   much alone.
+
+   The fix is to hand the attribution to iClosed at embed time: append the
+   parameters to the booking URL before iClosed's widget.js reads it. iClosed
+   stores them on the contact record and hands them back in the webhook, and
+   the two halves arrive already joined. This is the standard remedy for
+   iframe schedulers and mirrors the existing ?test-pixel=true passthrough a
+   few lines above in IClosedEmbed.astro.
+
+   ORDERING MATTERS: this must render BEFORE the widget.js <script> tag, or
+   the widget may read data-url before we have rewritten it.
+
+   DIAGNOSTIC: ?ss-debug-iclosed=1 logs the rewritten URL and echoes every raw
+   postMessage. Use it to confirm the passthrough landed — and, if iClosed
+   ever enriches these payloads, to notice.
+=========================================================================== */
+---
+
+<script is:inline>
+  (function () {
+    if (window.__ssIClosedCapture) return;
+    window.__ssIClosedCapture = true;
+
+    var ORIGIN = "https://app.iclosed.io";
+    var ATTR_KEY = "ss_attr";
+    var PARAMS = [
+      "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+      "fbclid", "gclid", "ttclid",
+    ];
+
+    var DEBUG = false;
+    try {
+      DEBUG = new URLSearchParams(window.location.search).get("ss-debug-iclosed") === "1";
+    } catch (e) {}
+
+    function log() {
+      if (!DEBUG) return;
+      try {
+        console.log.apply(console, ["[ss-capture]"].concat([].slice.call(arguments)));
+      } catch (e) {}
+    }
+
+    /* ---------- attribution, captured once on the landing page ----------
+       Read on the FIRST page of the session and held in sessionStorage,
+       because the ad click lands on / while the booking happens on /apply.
+       Reading it at the embed would miss every lead who took that hop. */
+    function attribution() {
+      var stored = null;
+      try {
+        var raw = sessionStorage.getItem(ATTR_KEY);
+        if (raw) stored = JSON.parse(raw);
+      } catch (e) {}
+      if (stored) return stored;
+
+      var attr = {};
+      try {
+        var q = new URLSearchParams(window.location.search);
+        PARAMS.forEach(function (k) {
+          var v = q.get(k);
+          if (v) attr[k] = String(v).slice(0, 300);
+        });
+        if (document.referrer) attr.ss_referrer = document.referrer.slice(0, 300);
+      } catch (e) {}
+
+      try {
+        sessionStorage.setItem(ATTR_KEY, JSON.stringify(attr));
+      } catch (e) {}
+      return attr;
+    }
+
+    /* ---------- hand it to iClosed before the widget boots ---------- */
+    function decorate() {
+      var attr = attribution();
+      var keys = Object.keys(attr);
+      if (!keys.length) {
+        log("no attribution on this session — nothing to pass through");
+        return;
+      }
+
+      var widgets = document.querySelectorAll(".iclosed-widget[data-url]");
+      for (var i = 0; i < widgets.length; i++) {
+        try {
+          var w = widgets[i];
+          var url = new URL(w.getAttribute("data-url"));
+          /* Only ever rewrite an iClosed URL, and never clobber a parameter
+             iClosed or another script has already set. */
+          if (url.origin !== ORIGIN) continue;
+          keys.forEach(function (k) {
+            if (!url.searchParams.has(k)) url.searchParams.set(k, attr[k]);
+          });
+          w.setAttribute("data-url", url.toString());
+          log("decorated widget:", url.toString());
+        } catch (e) {
+          log("decorate failed (suppressed)", e);
+        }
+      }
+    }
+
+    /* The widget div is rendered just above this script, so it already exists.
+       Re-run on DOMContentLoaded too, in case a page ever renders an embed
+       after this point. Decoration is idempotent. */
+    decorate();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", decorate);
+    }
+
+    /* ---------- diagnostic listener ----------
+       Costs nothing in production (DEBUG off = immediate return) and is the
+       fastest way to verify the passthrough, or to notice if iClosed ever
+       starts including real data in these payloads. */
+    window.addEventListener("message", function (e) {
+      if (!DEBUG) return;
+      if (e.origin !== ORIGIN) return;
+      var type = e.data && e.data.type;
+      if (!type || String(type).indexOf("iclosed.") !== 0) return;
+      try {
+        console.groupCollapsed("[ss-capture] " + type);
+        console.log("raw event.data:", e.data);
+        console.log("keys:", Object.keys(e.data || {}));
+        console.log(
+          Object.keys(e.data || {}).length > 1
+            ? "NOTE: more than `type` present — iClosed may have enriched this. Tell the docs."
+            : "as expected: `type` only, no PII. Capture is server-side."
+        );
+        console.groupEnd();
+      } catch (err) {}
+    });
+
+    log("ready. debug on. attribution:", attribution());
+  })();
+</script>

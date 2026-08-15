@@ -9,6 +9,13 @@
 //
 //   <IClosedEmbed linkPrefix="synchrosocial/social-media-consultation" />
 //   <IClosedEmbed url="https://app.iclosed.io/e/synchrosocial/social-media-consultation" />
+// Ad attribution passthrough. Renders just before widget.js so it can append
+// utm_*/fbclid to data-url before iClosed reads it — that is how campaign data
+// survives the iframe hop and comes back joined to the lead in iClosed's
+// server-side webhook. Separate component with its own listener, so the pixel
+// bridge below stays untouched. See IClosedCapture.astro.
+import IClosedCapture from "./IClosedCapture.astro";
+
 interface Props {
   url?: string | null;
   linkPrefix?: string | null;
@@ -74,6 +81,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
           } catch (err) {}
         })();
       </script>
+      <IClosedCapture />
       <script
         is:inline
         type="text/javascript"

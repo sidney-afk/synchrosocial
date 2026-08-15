@@ -174,6 +174,10 @@ Rules:
 | 2026-07-08 | No AEM/web-event config work | Research: prioritization eliminated, AEM tab removed (2026) |
 | 2026-07-08 | Domain verification completed by meta tag | Not required for event processing, but it is now done and verified. |
 | 2026-07-08 | No cookie-consent banner for now | US-targeted traffic; revisit if targeting EU (GDPR) |
+| 2026-08-14 | Ad attribution is passed **into the iClosed booking URL**, not POSTed from the browser | The iframe is on another origin, so click ids and cookies do not cross it. Appending `utm_*`/`fbclid` to the booking URL makes iClosed store them on the contact and hand them back in its webhook — attribution and identity arrive already joined. Implemented in `IClosedCapture.astro`. |
+| 2026-08-14 | Unfinished-booking capture uses iClosed's **"Contact by status" webhook**, never browser postMessage | iClosed's postMessage payload carries only `{type}` — no name, email, phone or id (verified against their GTM guide). Browser capture is impossible; the server-side contact record is complete. |
+| 2026-08-14 | HubSpot stays a **record store**, all logic in n8n | Free tier has no workflow automation, and only 10 custom properties account-wide. Matches the existing pattern for the whole sales stack. |
+| 2026-08-14 | Anything reading deal stage keys on **stage ids**, never on `closedwon`/`closedlost` | Those values are relabelled and no longer mean what they say — see `booking-recovery/HUBSPOT_SCHEMA.md` §1. A CAC feedback loop keying on won/lost would push that error into ad optimisation. |
 
 ## 7. What remains (the checklist)
 
@@ -188,7 +192,8 @@ Launch readiness:
   deduplication.
 - [x] n8n booking router published for `social-media-consultation`.
 - [x] New-lead and returning-contact booking automation tested end to end.
-- [ ] Confirm ad account payment method before paid spend.
+- [x] Ad account payment method confirmed (`has_payment_method: true`,
+  read from the API 2026-08-14). **Campaign is live and spending** — see §11.
 
 Server-side / CAPI:
 - [x] iClosed Meta Pixel integration connected to dataset `4309835332571875`.
@@ -202,8 +207,13 @@ Server-side / CAPI:
   `/?test-pixel=true` to test the full site path.
 - [ ] Regenerate the CAPI token before production use; the setup token was
   exposed in screenshots.
-- [ ] Run a final embedded-flow test at `/apply?test-pixel=true` and confirm
-  the same iClosed server events appear from the real website embed.
+- [x] **iClosed CAPI confirmed in PRODUCTION, not just test mode** (2026-08-14).
+  The dataset shows `Potential`, `Qualified`, `Disqualified` and
+  `invitee_meeting_scheduled` arriving from real traffic across Aug 9–14. This
+  supersedes the "run a final embedded-flow test" item — production traffic
+  proved it. It also establishes that iClosed holds lead email/phone
+  server-side (it hashes them into those events), which is the basis of the
+  booking-recovery capture route.
 
 CRM feedback loop:
 - [ ] Push qualified, bad-fit, closed-won, and deal-value outcomes back to Meta.
@@ -298,10 +308,20 @@ Current open items:
 2. **CAPI token exposed:** regenerate before production use.
 3. **CRM feedback loop not implemented:** HubSpot stage/value outcomes are not
    yet pushed back to Meta. This is the key remaining Step 2 item for "CAC,
-   not CPL."
+   not CPL." ⚠️ When it is built, key it on deal-stage **ids** — `closedwon`
+   and `closedlost` have been relabelled and no longer mean won and lost
+   (`../booking-recovery/HUBSPOT_SCHEMA.md` §1). Optimising ads against that
+   would be worse than not optimising at all.
 4. **HubSpot source/quality tagging incomplete:** contacts/deals are created,
    but the current n8n normal booking handler does not yet persist ad campaign,
    source, quality, bad-fit, or closed-won value fields for reporting.
+   *In progress 2026-08-14* — `IClosedCapture.astro` now carries `utm_*`/
+   `fbclid` into the booking URL so iClosed returns them with the contact; the
+   HubSpot write is specified in `../booking-recovery/HUBSPOT_SCHEMA.md` §4 and
+   blocked only on write scope for the connector.
+6. **~76% of booking-form starters are never contacted again** (§11). The
+   biggest single loss in the funnel, and larger than any optimisation
+   available inside Ads Manager. Tracked in `../booking-recovery/`.
 5. **Resolved:** n8n router slug gap. Published workflow version
    `9e70e07e-6e49-4b0f-a040-1be7e1f0f97d` routes
    `social-media-consultation` to the normal funnel handler.
@@ -325,7 +345,41 @@ Historical items from PR #27 handoff:
    when the form collects email AND phone) — fine for audiences, don't use it
    as a KPI.
 
+## 11. Live campaign state (2026-08-14)
+
+First read of real spend. Campaign **Prospecting | Leads | US | Aug 2026**
+(`120243068755680573`), `OUTCOME_LEADS`, $150/day, ACTIVE since Aug 7.
+
+| 7 days | |
+| --- | --- |
+| Spend | $625.95 |
+| Impressions / clicks | 5,761 / 180 |
+| Landing page views | 139 |
+| Leads (attributed) | 7 @ $89.42 |
+| Qualified Application (custom conv. `2110443739684279`) | 5 @ $125.19 |
+
+Dataset-level events tell the more useful story: ~33 distinct people entered
+contact info in the booking form, and 8 booked. **~25 people a week hand over
+name and phone and are never contacted again** — about $474/week of spend.
+That is what the booking-recovery project exists to fix; full derivation and
+its one soft assumption in `../booking-recovery/README.md` §1.
+
+Note for reporting: `Potential` fires **twice** per lead when the form takes
+both phone and email (§9.5), so halve it before quoting it as people.
+
 ## 10. Session log
+
+- **2026-08-14 (booking recovery + attribution)** — Read the live campaign and
+  dataset for the first time since launch (§11). Closed two open items: the ad
+  account has a payment method, and iClosed CAPI is confirmed in production
+  rather than only in test mode. Started the booking-recovery project
+  (`../booking-recovery/`) to follow up abandoned bookings and to finally carry
+  ad attribution into the CRM — the missing half of §9 item 4 and the
+  precondition for CAC reporting. Established that iClosed's postMessage
+  payload carries only `type`, so the capture route is iClosed's server-side
+  "Contact by status" webhook; attribution is passed into the booking URL so it
+  rejoins the lead server-side. Shipped the passthrough component; drafted the
+  n8n workflows. Nothing live yet.
 
 - **2026-07-08 (CAPI audit + embedded test-mode pass-through)** - Ran a direct
   CAPI smoke test against dataset `4309835332571875`; Meta accepted it

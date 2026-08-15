@@ -1,0 +1,110 @@
+{
+  "_snapshot": "PROPOSED — not yet created in n8n. Hourly reconciliation sweep over iClosed's contacts API. Two jobs: (1) catch abandoned leads whose webhook delivery was dropped — webhooks are forward-only and best-effort, and iClosed does not sign or guarantee them; (2) BACKFILL every abandoned lead already sitting in the iClosed account, which the webhook can never reach because it only fires going forward. Nobody has counted that pool yet. IMPORTANT: rows land as status='backfilled', NOT 'pending', so the dispatcher ignores them. Emailing a whole back catalogue of cold leads the moment this switches on is a decision for Sidney, not a side effect of a reconciler — see README.md §10. Promote them deliberately with a one-off status update once he has seen the count. BEFORE IMPORT: an iClosed API key is required (Settings -> Developer -> API Keys, shown once) as an n8n Header Auth credential sending `Authorization: Bearer iclosed_<key>`. The base URL and query parameters below are taken from iClosed's API docs and are UNVERIFIED against this account — run it manually once and read the output before scheduling it.",
+  "name": "Sales — Booking Recovery Sweep (iClosed)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "connections": {
+    "Every Hour": { "main": [[{ "node": "Fetch iClosed Contacts", "type": "main", "index": 0 }]] },
+    "Fetch iClosed Contacts": { "main": [[{ "node": "Select Abandoned", "type": "main", "index": 0 }]] },
+    "Select Abandoned": { "main": [[{ "node": "Upsert Backfill Row", "type": "main", "index": 0 }]] }
+  },
+  "nodes": [
+    {
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": { "rule": { "interval": [{ "field": "hours", "hoursInterval": 1 }] } }
+    },
+    {
+      "name": "Fetch iClosed Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [224, 0],
+      "onError": "stopWorkflow",
+      "notes": "Needs a Header Auth credential sending `Authorization: Bearer iclosed_<key>`. Never hardcode the key in this node — several existing workflows have API keys pasted into code nodes (CLIENT_LIFECYCLE_MAP.md §15.6) and that pile should not grow.",
+      "parameters": {
+        "method": "GET",
+        "url": "https://public.api.iclosed.io/v1/contacts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "statuses", "value": "POTENTIAL,QUALIFIED" },
+            { "name": "limit", "value": "100" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": false } } }
+      }
+    },
+    {
+      "name": "Select Abandoned",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [448, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Normalises iClosed contacts into booking_recovery rows.\n//\n// Emits status='backfilled', deliberately NOT 'pending'. The dispatcher only\n// reads 'pending', so nothing here can send. That is the point: this sweep\n// may surface a large pool of old abandoned leads, and quietly emailing all\n// of them the moment a reconciler is switched on would be a cold blast sent\n// by accident. Count them first, then promote on purpose.\n\nconst MAX_AGE_DAYS = 90;   // older than this is not worth a row\n\nconst body = $input.first().json;\nconst list = Array.isArray(body) ? body\n  : (body.data || body.contacts || body.results || body.items || []);\nif (!Array.isArray(list)) throw new Error('unexpected API shape: ' + JSON.stringify(body).slice(0, 300));\n\nconst cap = (v, n) => String(v == null ? '' : v).trim().slice(0, n);\nconst pick = (...vals) => { for (const v of vals) { const s = cap(v, 300); if (s) return s; } return ''; };\nconst now = new Date();\nconst out = [];\n\nfor (const c of list) {\n  // latestCall is iClosed's never-booked discriminator.\n  const latestCall = c.latestCall || c.latest_call || null;\n  if (latestCall && typeof latestCall === 'object' && Object.keys(latestCall).length) continue;\n\n  const status = pick(c.status, c.contactStatus).toLowerCase();\n  if (status && status !== 'potential' && status !== 'qualified') continue;\n\n  const joined = new Date(pick(c.joinedTime, c.joined_time, c.createdAt, c.created_at));\n  if (!isNaN(joined) && (now - joined) / 86400000 > MAX_AGE_DAYS) continue;\n\n  let email = pick(c.email, c.emailAddress).toLowerCase();\n  if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) email = '';\n\n  let phone = '';\n  const rawPhone = pick(c.phoneNumber, c.phone, c.mobile).replace(/[^0-9+]/g, '');\n  if (rawPhone) {\n    const d = rawPhone.replace(/\\+/g, '');\n    if (rawPhone.startsWith('+')) phone = '+' + d;\n    else if (d.length === 10) phone = '+1' + d;\n    else if (d.length === 11 && d.startsWith('1')) phone = '+' + d;\n  }\n  if (phone && !/^\\+[1-9][0-9]{7,14}$/.test(phone)) phone = '';\n  if (!email && !phone) continue;\n\n  let first = pick(c.firstName, c.first_name);\n  const full = pick(c.name, c.fullName);\n  if (!first && full) first = full.split(/\\s+/)[0] || '';\n  if (!(first.length >= 2 && !/[0-9@]/.test(first))) first = '';\n  if (first && (first === first.toLowerCase() || first === first.toUpperCase())) {\n    first = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();\n  }\n\n  const t = c.tracking || c.utm || {};\n  const nowIso = now.toISOString();\n\n  out.push({ json: {\n    lead_key: pick(c.id, c.previewId, c.contactId) || email || phone,\n    iclosed_contact_id: pick(c.id, c.previewId, c.contactId),\n    email,\n    phone,\n    first_name: first,\n    last_name: pick(c.lastName, c.last_name),\n    timezone: pick(c.timeZone, c.timezone),\n    iclosed_status: status,\n    utm_source: cap(t.utm_source || t.utmSource, 120),\n    utm_medium: cap(t.utm_medium || t.utmMedium, 120),\n    utm_campaign: cap(t.utm_campaign || t.utmCampaign, 200),\n    utm_content: cap(t.utm_content || t.utmContent, 200),\n    fbclid: cap(t.fbclid, 300),\n    status: 'backfilled',\n    suppressed_reason: 'awaiting_review',\n    follow_up_due_at: '',\n    created_at: !isNaN(joined) ? joined.toISOString() : nowIso,\n    updated_at: nowIso\n  } });\n}\n\nreturn out;"
+      }
+    },
+    {
+      "name": "Upsert Backfill Row",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [672, 0],
+      "notes": "Upsert on lead_key. Idempotent: re-running the sweep cannot duplicate a lead, and cannot revive one the dispatcher already handled — only rows that do not exist are created, and existing rows keep their own status.",
+      "parameters": {
+        "resource": "row",
+        "operation": "upsert",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "lead_key", "condition": "eq", "keyValue": "={{ $json.lead_key }}" }] },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lead_key": "={{ $json.lead_key }}",
+            "iclosed_contact_id": "={{ $json.iclosed_contact_id }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "first_name": "={{ $json.first_name }}",
+            "last_name": "={{ $json.last_name }}",
+            "timezone": "={{ $json.timezone }}",
+            "iclosed_status": "={{ $json.iclosed_status }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_campaign": "={{ $json.utm_campaign }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "fbclid": "={{ $json.fbclid }}",
+            "status": "={{ $json.status }}",
+            "suppressed_reason": "={{ $json.suppressed_reason }}",
+            "created_at": "={{ $json.created_at }}",
+            "updated_at": "={{ $json.updated_at }}"
+          },
+          "schema": [
+            { "id": "lead_key", "displayName": "lead_key", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "iclosed_contact_id", "displayName": "iclosed_contact_id", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "email", "displayName": "email", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "phone", "displayName": "phone", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "first_name", "displayName": "first_name", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "last_name", "displayName": "last_name", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "timezone", "displayName": "timezone", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "iclosed_status", "displayName": "iclosed_status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "utm_source", "displayName": "utm_source", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "utm_medium", "displayName": "utm_medium", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "utm_campaign", "displayName": "utm_campaign", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "utm_content", "displayName": "utm_content", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "fbclid", "displayName": "fbclid", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "status", "displayName": "status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "suppressed_reason", "displayName": "suppressed_reason", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "created_at", "displayName": "created_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "updated_at", "displayName": "updated_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        }
+      }
+    }
+  ]
+}
