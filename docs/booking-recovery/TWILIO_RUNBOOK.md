@@ -26,7 +26,50 @@ sales follow-up.
 
 ---
 
-## 0.5 🚨 READ THIS FIRST — Twilio may be the wrong path entirely
+## 0.4 Can the iClosed API just send the SMS? — NO, tested
+
+Probed with a real API key on the Business plan, 2026-08-14. The data endpoints
+work; **there is no messaging endpoint of any kind**:
+
+| Endpoint | Result |
+| --- | --- |
+| `GET /v1/contacts` | ✅ 200 |
+| `GET /v1/events` | ✅ 200 |
+| `GET /v1/users` | ✅ 200 |
+| `/v1/messages`, `/v1/conversations`, `/v1/sms`, `/v1/inbox`, `/v1/messaging`, `/v1/threads`, `/v1/contacts/:id/messages` | ❌ all 404 |
+| `/v1/workflows`, `/v1/automations` | ❌ 404 |
+
+The iClosed API reads data. It does not send messages and cannot trigger their
+Workflows. So the API key is useful for the reconciliation sweep and nothing
+else here — SMS needs a real sending provider either way.
+
+---
+
+## 0.45 DECISION 2026-08-14 — Twilio, not iClosed
+
+Sidney is on the **Business plan**, so iClosed Workflows and all channels are
+available in principle. But his Integrations page shows **no Sendblue and no
+Linq connected**, and §0.4 proves the API cannot send.
+
+Going with **Twilio + n8n** anyway, and the reason is not registration cost:
+
+**The suppression logic already exists and is proven in n8n.** The HubSpot
+re-check that fails closed, phone-digit matching, arm-once dedupe, the
+`do_not_contact` flag, the send cap, the stale-row guard — all built, all tested
+against the live system. Routing SMS through iClosed Workflows would mean
+rebuilding every one of those guards a second time, in a tool that cannot be
+version-controlled, cannot be unit-tested, and cannot be reviewed in a diff. Two
+copies of "never text someone who booked" is how one of them silently rots.
+
+The trade accepted: A2P registration is a 1–3 week wait, and inbound replies need
+building (§5) rather than arriving free in the Unified Inbox.
+
+Revisit if registration is rejected twice, or if Sendblue/Linq later appears as a
+connected integration AND the reply-handling gap proves painful.
+
+---
+
+## 0.5 Why iClosed looked attractive — kept for the record
 
 **iClosed sends SMS natively, and can automate it.** Confirmed in their docs
 (*Unified Inbox Overview*, `docs.iclosed.io/en/articles/14483009`):
