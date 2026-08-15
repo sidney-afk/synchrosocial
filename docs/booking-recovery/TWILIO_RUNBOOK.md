@@ -26,17 +26,47 @@ sales follow-up.
 
 ---
 
-## 0.5 [SIDNEY] Check this before doing any of it
+## 0.5 🚨 READ THIS FIRST — Twilio may be the wrong path entirely
 
-**Does iClosed already send SMS appointment reminders?** If it does, S2 — the
-booked-call confirmation, which is most of the value and none of the legal risk
-— ships on iClosed's already-registered sender with zero Twilio work, zero
-registration wait, and zero compliance exposure. Check iClosed → notifications /
-reminders, and its Sendblue integration.
+**iClosed sends SMS natively, and can automate it.** Confirmed in their docs
+(*Unified Inbox Overview*, `docs.iclosed.io/en/articles/14483009`):
 
-Only S1 genuinely needs a number we control, because only S1 is us initiating
-contact with someone who did not complete a booking. **Do not spend two weeks on
-carrier registration before confirming you need it.**
+- SMS is a first-class channel in the Unified Inbox, alongside WhatsApp, Gmail
+  and social DMs, **threaded per lead**.
+- It is delivered **via Sendblue or Linq** — an account-level integration an
+  admin connects once. iClosed does not own the pipe, but it owns the plumbing.
+- **Workflows can send it automatically**: *"you can choose exactly which channel
+  the automated message should use"*, triggered by contact creation, status
+  changes, or booking events — the exact events this project already runs on.
+- **Requires the Growth or Business plan.** Startup is Gmail/Outlook email only.
+
+If Sidney is on Growth or Business, that path beats Twilio on nearly every axis:
+
+| | iClosed + Sendblue/Linq | Twilio + n8n |
+| --- | --- | --- |
+| Carrier registration (A2P 10DLC) | handled by the provider | Sidney's problem, 1–3 weeks |
+| Trigger | native, same status events we use | n8n, already built |
+| Replies | land in the inbox Kasper already works in | nowhere — needs building |
+| New vendor accounts | one (Sendblue/Linq) | one (Twilio) + brand + campaign |
+| Time to first send | days | weeks |
+
+The reply-handling row matters more than it looks. S2 explicitly says *"please
+text me"*, and with Twilio there is currently nowhere for that reply to land.
+iClosed's Unified Inbox solves that for free.
+
+**Three things to check before spending anything** (one minute in iClosed):
+
+1. Settings → Billing — which plan? (Growth/Business = this path is open)
+2. Main nav — is there a **Workflows** section?
+3. Settings → Integrations — is **Sendblue** or **Linq** listed?
+
+**What does NOT change either way:** the consent problem. TCPA attaches to the
+message, not the pipe. S1 still needs express written consent (§3–4), and STOP
+handling is enforced mechanically by carriers whichever provider sends it. The
+form's consent language is still the gate on S1.
+
+The rest of this runbook is the Twilio path. Keep it — it is the fallback if the
+plan tier is Startup, or if Sendblue/Linq turn out not to be workable.
 
 ---
 
