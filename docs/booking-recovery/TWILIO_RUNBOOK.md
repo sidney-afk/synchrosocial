@@ -118,17 +118,26 @@ plan tier is Startup, or if Sendblue/Linq turn out not to be workable.
 Verified against current Twilio/TCR pricing 2026-08-14. Confirm figures in the
 console as you go; TCR reprices periodically.
 
-### Before you start — have these to hand
+### The entity — confirmed 2026-08-14
 
-- **EIN** and the **exact legal business name** as filed with the IRS
-- Registered **business address**
-- **Business website** — `synchrosocial.com`, already Meta-domain-verified
-- A **credit card**
-- An authorised representative's name, email, phone
+| | |
+| --- | --- |
+| Legal business name | **Synchro Social LLC** — type it exactly, including "LLC" |
+| EIN | on file with Sidney (deliberately not committed to this repo) |
+| Entity type | **LLC / Private Company** — NOT sole proprietor |
+| Brand type | **Standard Brand** |
+| Website | `synchrosocial.com`, already Meta-domain-verified |
 
-> ⏳ **Check the EIN age first.** TCR requires it to be roughly 15+ days old.
-> Newly issued means you wait, and there is no way around it. Find this out on
-> day one rather than at submission.
+An LLC holding its own EIN registers as a Standard Brand. The sole-proprietor
+path is for individuals without one, and taking it here would cap throughput and
+misstate the entity.
+
+Also have ready: registered business address, a credit card, and an authorised
+representative's name, email and phone.
+
+> ⏳ **Check the EIN age first.** TCR requires roughly 15+ days. Newly issued
+> means you wait, with no workaround. Find that out on day one, not at
+> submission.
 
 ### Step 1 — Twilio account
 
