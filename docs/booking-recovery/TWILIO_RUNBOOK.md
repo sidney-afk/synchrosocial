@@ -166,6 +166,40 @@ Profile**. So the real order is:
 
 Everything is downstream of the KYC profile. That is the critical path.
 
+### ⚠️ The Primary Customer Profile CANNOT be filed over the API
+
+Attempted, and Twilio refuses by design:
+
+```
+400  This operation is restricted via API for Primary Customer Profiles.
+     Use Twilio Console instead.
+```
+
+It is a legal attestation, so it must be completed by a human in the console at
+<https://console.twilio.com/us1/account/trust-hub/customer-profiles>. Everything
+*downstream* of it (number purchase, brand, campaign, sender assignment) is
+API-drivable — this one step is not. Field values to paste are in §1.4 below.
+
+### Entity facts — confirmed from the Florida SunBiz filing, 2026-08-17
+
+| | |
+| --- | --- |
+| Legal name | SYNCHRO SOCIAL LLC |
+| Document number | L25000345790 |
+| Date filed | 2025-07-28 — over a year old, so the TCR EIN-age gate is clear |
+| Status | ACTIVE |
+| Principal + mailing address | 555 NE 34TH ST, APT 2210, Miami, FL 33137 |
+| Registered agent | Northwest Registered Agent LLC, 7901 4th St N Ste 300, St. Petersburg, FL 33702 |
+| Authorized person | HYTOENEN, KASPER — title AMBR (authorized member) |
+
+> **Name spelling.** SunBiz records the surname as **HYTOENEN** (the `oe`
+> transliteration of Finnish `ö`); Sidney supplies **Hytonen**. Filing as
+> Hytonen per Sidney. If the profile is ever rejected on a name mismatch, try
+> the SunBiz spelling before changing anything else.
+
+The Twilio `Address` resource for the principal address is already created:
+`ADa4a2b1e3…` — reusable, no need to re-enter it later.
+
 ### Decisions — 2026-08-17
 
 | | |
@@ -228,6 +262,55 @@ Everything else is already known and needs no input:
 Field names above are the literal Trust Hub policy fields, read from
 `GET /v1/Policies/RN6433641899984f951173ef1738c3bdd0` (Primary Customer
 Profile of type Business) — not guessed.
+
+---
+
+## 1.4 Primary Customer Profile — exact values to paste into the console
+
+Console → **Trust Hub → Customer Profiles → Business Profile**
+(<https://console.twilio.com/us1/account/trust-hub/customer-profiles>).
+
+**Business information**
+
+| Field | Value |
+| --- | --- |
+| Legal business name | `Synchro Social LLC` |
+| Business type | Limited Liability Corporation |
+| Business registration ID type | EIN |
+| Business registration number | `39-3608143` |
+| Business identity | Direct customer |
+| Business industry | Professional Services |
+| Website URL | `https://synchrosocial.com` |
+| Regions of operation | USA and Canada |
+
+**Business address** — must match the SunBiz principal address exactly
+
+```
+555 NE 34TH ST
+APT 2210
+Miami, FL 33137
+United States
+```
+
+**Authorized representative**
+
+| Field | Value |
+| --- | --- |
+| First name | `Kasper` |
+| Last name | `Hytonen` |
+| Email | `kasper@synchrosocial.com` |
+| Phone | `+1 737 354 0698` |
+| Business title | `Owner` |
+| Job position | Other |
+
+`Job position` is a fixed dropdown (Director / GM / VP / CEO / CFO / General
+Counsel / Other). **Other** is the honest mapping for an LLC authorized member —
+do not inflate it to CEO to look more official; a mismatch against the filing is
+what gets profiles rejected.
+
+Twilio emails the authorized representative to confirm, so Kasper needs to watch
+`kasper@synchrosocial.com` and click through. **The profile does not enter review
+until he does.**
 
 ---
 
