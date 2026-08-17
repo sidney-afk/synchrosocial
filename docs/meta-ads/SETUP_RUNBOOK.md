@@ -86,13 +86,15 @@ emails, and nurture start. The old router-gap warning below is historical.
 - [ ] **B1. Deploy** — merge the `claude/meta-ads-infrastructure-w47kkb` PR to
   `main`; GitHub Actions deploys to synchrosocial.com automatically (~2 min).
 - [ ] **B2. Test Events** — Events Manager → dataset → **Test events** tab →
-  enter `https://synchrosocial.com` → browse the site. Expected:
-  `PageView` everywhere; `ViewContent` on `/apply` and `/call`; iClosed's
-  native `Potential` / `Qualified` events (fired server+browser by iClosed's
-  own Meta integration, not this site's code — see README §4) as you fill
-  the booking form; `Schedule` + `Lead` at booking and again (deduplicated)
-  on `/thank-you`. Also test on your phone (real-world traffic is mostly
-  mobile).
+  enter `https://synchrosocial.com` → browse the site. Expected from a normal
+  browse: `PageView` everywhere; `ViewContent` on `/apply` and `/call`;
+  `Schedule` + `Lead` at booking and again (deduplicated) on `/thank-you`.
+  iClosed's native `Potential`/`Qualified` server events are fired by
+  iClosed's own Meta integration (not this site's code — see README §4), but
+  only show up reliably in Test Events when the embed carries
+  `test-pixel=true` (see §C) — visit `/apply?test-pixel=true` or
+  `/?test-pixel=true` rather than expecting them from a plain browse. Also
+  test on your phone (real-world traffic is mostly mobile).
 - [ ] **B3. Meta Pixel Helper** — install the Chrome extension "Meta Pixel
   Helper", visit the live site, confirm the pixel fires green with ID
   4309835332571875.
@@ -154,14 +156,19 @@ exposed in screenshots.
   performance goal = maximize conversions → select the dataset + conversion
   event **`Schedule`** (the booked call; `Lead` is an identical twin if the
   UI or volume favors it — never optimize/report on both). If booking volume
-  is too thin for learning, temporarily optimize on `ViewContent` or on
-  iClosed's native `Potential`/`Qualified` events (fired server+browser by
-  iClosed's own Meta integration, deduped by event_id) and move down-funnel
-  once volume allows. The site's own `iclosed_qualified` custom event that
-  used to serve as this fallback was removed 2026-08-17 — it duplicated
-  iClosed's native `Qualified` event and nothing in Meta depended on it
-  (verified: no custom conversion, no audience). Use the native capitalized
-  events instead.
+  is too thin for learning, temporarily optimize on `ViewContent`, or on
+  iClosed's native `Qualified` event via the existing **"Qualified
+  Application"** custom conversion (`2110443739684279`, already wraps
+  `event == Qualified`) — move down-funnel once volume allows. Note: raw
+  events like `Potential`/`Qualified` are custom events, not Meta standard
+  events, so Ads Manager won't let you select them directly as an
+  optimization goal — each needs its own custom conversion wrapper first
+  (see `RESEARCH.md`'s Conversions API section). If `Potential` is ever
+  needed as an even-earlier fallback, create an equivalent custom conversion
+  wrapping it before selecting it. The site's own `iclosed_qualified` custom
+  event that used to serve as this fallback was removed 2026-08-17 — it
+  duplicated iClosed's native `Qualified` event and nothing in Meta depended
+  on it (verified: no custom conversion, no audience).
 - [ ] **D2.** UTM template on every ad (so HubSpot + analytics can attribute):
   `utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}`
 - [ ] **D3.** Confirm the ad's landing page is the main funnel (`/` or `/apply`),
