@@ -145,6 +145,35 @@ Carrier surcharges (~$0.003/segment) are billed on top and are not in the
 pricing API. At S1 ≈ 2 segments and S2 ≈ 3, a recovery text costs ~2.3¢ and a
 confirmation ~3.5¢.
 
+### PROGRESS — 2026-08-17, after profile approval
+
+Primary compliance profile came back **`twilio-approved`**, which unblocked
+everything the API can drive:
+
+| Step | State | Identifier |
+| --- | --- | --- |
+| Primary compliance profile | ✅ twilio-approved | `BU824c5b17…` |
+| Local number, 786 Miami | ✅ purchased | **+1 (786) 550-2816** — `PN430149bc…` |
+| Attached to Messaging Service | ✅ | `MG40c681a6…` |
+| A2P Messaging trust product | ⏳ in-review, evaluated **compliant** | `BU34092cf1…` |
+| A2P Brand | ⛔ not yet — needs the trust product approved first | — |
+| A2P Campaign | ⛔ downstream of the brand | — |
+
+Trust product built on policy `RNb0d4771c2c98518d916a3d4cd70a8f8b`
+(*A2P Messaging: Local - Business*) with `company_type=private`, the approved
+customer profile assigned as its supporting profile. It evaluated compliant on
+the first pass, so no field corrections were needed.
+
+**Secondary vetting: skipping it.** A Standard Brand can be registered with
+`SkipAutomaticSecVet=true`, avoiding roughly $40. Vetting buys throughput, and
+throughput is irrelevant at ~8 confirmations a week — the Low Volume Standard
+campaign does not require it. It also would not fit: brand (~$4.44) + campaign
+($15) + vetting ($40) exceeds the $50 balance, whereas without vetting the whole
+registration lands around $20. Vetting can be added later if a campaign is ever
+rejected for wanting it.
+
+---
+
 ### ⚠️ ORDER CORRECTION — the Customer Profile comes BEFORE the number
 
 §1 Step 2 said "buy a number" before Step 4 "Customer Profile". **That order is
