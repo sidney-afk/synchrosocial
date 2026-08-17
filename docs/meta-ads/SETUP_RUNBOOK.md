@@ -87,10 +87,12 @@ emails, and nurture start. The old router-gap warning below is historical.
   `main`; GitHub Actions deploys to synchrosocial.com automatically (~2 min).
 - [ ] **B2. Test Events** — Events Manager → dataset → **Test events** tab →
   enter `https://synchrosocial.com` → browse the site. Expected:
-  `PageView` everywhere; `ViewContent` on `/apply` and `/call`;
-  `iclosed_potential` / `iclosed_qualified` as you fill the booking form;
-  `Schedule` + `Lead` at booking and again (deduplicated) on `/thank-you`.
-  Also test on your phone (real-world traffic is mostly mobile).
+  `PageView` everywhere; `ViewContent` on `/apply` and `/call`; iClosed's
+  native `Potential` / `Qualified` events (fired server+browser by iClosed's
+  own Meta integration, not this site's code — see README §4) as you fill
+  the booking form; `Schedule` + `Lead` at booking and again (deduplicated)
+  on `/thank-you`. Also test on your phone (real-world traffic is mostly
+  mobile).
 - [ ] **B3. Meta Pixel Helper** — install the Chrome extension "Meta Pixel
   Helper", visit the live site, confirm the pixel fires green with ID
   4309835332571875.
@@ -152,8 +154,14 @@ exposed in screenshots.
   performance goal = maximize conversions → select the dataset + conversion
   event **`Schedule`** (the booked call; `Lead` is an identical twin if the
   UI or volume favors it — never optimize/report on both). If booking volume
-  is too thin for learning, temporarily optimize on `ViewContent` or the
-  `iclosed_qualified` custom event and move down-funnel once volume allows.
+  is too thin for learning, temporarily optimize on `ViewContent` or on
+  iClosed's native `Potential`/`Qualified` events (fired server+browser by
+  iClosed's own Meta integration, deduped by event_id) and move down-funnel
+  once volume allows. The site's own `iclosed_qualified` custom event that
+  used to serve as this fallback was removed 2026-08-17 — it duplicated
+  iClosed's native `Qualified` event and nothing in Meta depended on it
+  (verified: no custom conversion, no audience). Use the native capitalized
+  events instead.
 - [ ] **D2.** UTM template on every ad (so HubSpot + analytics can attribute):
   `utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}&utm_content={{ad.name}}`
 - [ ] **D3.** Confirm the ad's landing page is the main funnel (`/` or `/apply`),
