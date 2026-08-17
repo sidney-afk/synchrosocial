@@ -126,7 +126,7 @@ Key facts from the site audit (July 8, 2026):
 | --- | --- | --- |
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
 | `ViewContent` (content_name `apply` / `call`) | `/apply`, `/call` | `metaEvent` prop on `Layout` |
-| `iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified` (custom) | any page with an iClosed embed | postMessage bridge in `IClosedEmbed.astro` — mid-funnel signals for retargeting + fallback optimization if booking volume is too thin |
+| ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
 | **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; `/thank-you` re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
 
 Rules:
@@ -178,6 +178,7 @@ Rules:
 | 2026-08-14 | Unfinished-booking capture uses iClosed's **"Contact by status" webhook**, never browser postMessage | iClosed's postMessage payload carries only `{type}` — no name, email, phone or id (verified against their GTM guide). Browser capture is impossible; the server-side contact record is complete. |
 | 2026-08-14 | HubSpot stays a **record store**, all logic in n8n | Free tier has no workflow automation, and only 10 custom properties account-wide. Matches the existing pattern for the whole sales stack. |
 | 2026-08-14 | Anything reading deal stage keys on **stage ids**, never on `closedwon`/`closedlost` | Those values are relabelled and no longer mean what they say — see `booking-recovery/HUBSPOT_SCHEMA.md` §1. A CAC feedback loop keying on won/lost would push that error into ad optimisation. |
+| 2026-08-17 | Removed the `iclosed_potential`/`iclosed_qualified`/`iclosed_disqualified` custom `trackCustom` calls from `IClosedEmbed.astro`'s postMessage bridge | They duplicated iClosed's own native Meta integration (`Potential`/`Qualified`/`Disqualified`, browser+server, deduped by `event_id`). Verified via Meta Ads Manager (`ads_get_customconversions`, `ads_get_ad_account_custom_audiences`) before removing: the account's one live custom conversion ("Qualified Application", `2110443739684279`) is built on the native `Qualified` event, not `iclosed_qualified`; zero custom audiences exist on the account. `Schedule`/`Lead` (the real booked-call conversion) and the `/thank-you` dedup handoff were left untouched. |
 
 ## 7. What remains (the checklist)
 
@@ -341,9 +342,11 @@ Historical items from PR #27 handoff:
    booking (would enable browser-side advanced matching + richer dedup).
 3. HubSpot free tier Meta integration limits — unresearched (see RESEARCH.md).
 4. Events Manager Diagnostics warning — read it once events flow.
-5. The `iclosed_potential` custom event can fire twice per lead (iClosed quirk
-   when the form collects email AND phone) — fine for audiences, don't use it
-   as a KPI.
+5. **Historical, superseded by §6:** `iclosed_potential` (removed 2026-08-17)
+   used to fire twice per lead when the booking form collected email AND
+   phone (iClosed quirk). The same double-fire quirk applies to iClosed's
+   native `Potential` event — see §11's reporting note — halve it before
+   quoting as people, regardless of which stream you're reading.
 
 ## 11. Live campaign state (2026-08-14)
 
@@ -368,6 +371,27 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-17 (tracking cleanup — removed redundant iClosed bridge events)**
+  — Sidney flagged that `synchrosocial.com/apply` fires custom
+  `iclosed_potential`/`iclosed_qualified`/`iclosed_disqualified` events
+  alongside iClosed's own native Meta Pixel integration, which already fires
+  `Potential`/`Qualified`/`Disqualified` natively (browser+server, deduped by
+  `event_id`). Read the bridge in `IClosedEmbed.astro` and found it does two
+  separable things: the three custom events above (redundant), and the
+  `Schedule`+`Lead` fire on `iclosed.call_scheduled` (the actual booked-call
+  conversion — not redundant, left untouched). Verified in Meta Ads Manager
+  *before* touching anything: the account's one custom conversion ("Qualified
+  Application", `2110443739684279`) is built on the native `Qualified` event,
+  not `iclosed_qualified`; zero custom audiences exist on the account. No
+  Google Tag Manager involved — confirmed inline in the Astro component and
+  matched against the live production HTML. Removed the three redundant
+  `trackCustom` calls; updated `SETUP_RUNBOOK.md` §B2/§D1 and this doc's §4
+  and §9 to stop referencing the removed events and point any future
+  mid-funnel fallback need at the native capitalized events instead. Note:
+  Sidney is separately re-enabling iClosed's native `Potential` trigger and
+  switching the campaign's optimization event to it — unrelated to this
+  change; native capitalized events were not touched.
 
 - **2026-08-14 (booking recovery + attribution)** — Read the live campaign and
   dataset for the first time since launch (§11). Closed two open items: the ad
