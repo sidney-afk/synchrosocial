@@ -145,17 +145,89 @@ Carrier surcharges (~$0.003/segment) are billed on top and are not in the
 pricing API. At S1 ≈ 2 segments and S2 ≈ 3, a recovery text costs ~2.3¢ and a
 confirmation ~3.5¢.
 
+### ⚠️ ORDER CORRECTION — the Customer Profile comes BEFORE the number
+
+§1 Step 2 said "buy a number" before Step 4 "Customer Profile". **That order is
+wrong and was proven wrong by trying it.** Purchasing `+17867448162` returned:
+
+```
+20003  Primary compliance profile is not approved.
+       Please complete the KYC process in Trust Hub.
+```
+
+Twilio now gates number purchase behind an **approved Primary Customer
+Profile**. So the real order is:
+
+1. Primary Customer Profile (Trust Hub KYC) → approved
+2. Buy the number
+3. Attach it to the Messaging Service
+4. A2P Brand
+5. A2P Campaign
+
+Everything is downstream of the KYC profile. That is the critical path.
+
+### Decisions — 2026-08-17
+
+| | |
+| --- | --- |
+| Area code | **786 (Miami)** — 305, 954 and 407 had no SMS inventory at time of check |
+| Authorized representative | **Kasper** |
+| Consent checkbox on the iClosed form | **Sidney declined** — see §3.1 |
+
+### §3.1 No consent checkbox — what it changes
+
+Sidney decided against adding an SMS consent checkbox to the iClosed form. The
+consequence is not primarily legal, it is mechanical: the A2P campaign
+registration has a required "how do subscribers opt in" field that carriers
+verify against the live site. With no consent mechanism the campaign can only
+be registered as **transactional**, and sending marketing traffic on a
+transactional campaign gets the campaign revoked and the number blocked.
+
+Therefore:
+
+- **S2 (booked-call confirmation) — proceeds.** Transactional, no consent
+  artefact required, register the campaign as this and nothing else.
+- **S1 (unfinished-booking SMS) — cannot be automated on this account.**
+  `SMS_ENABLED` stays `false` permanently unless the decision is revisited.
+- **E1 (unfinished-booking email) — unaffected**, already live and sending.
+- **The phone-only cohort** (number captured, no email) is covered by
+  **Slack-assist** instead: n8n posts the lead and the drafted message into
+  Slack, Kasper sends it from his own iPhone. A human manually sending a text
+  is not automated messaging, so it sits outside the A2P/consent regime
+  entirely — and it is a genuine iMessage blue bubble from his real number,
+  which is what Kasper wanted. Not yet built; awaiting go-ahead.
+
 ### Still blocked on Sidney — the Customer Profile needs facts not in this repo
 
-1. **Registered business address** of Synchro Social LLC (street, city, state,
-   ZIP, country) — must match IRS/public records.
-2. **Authorized representative** — first name, last name, email, phone,
-   job position, business title.
-3. **Area code** for the number.
+The state is **Florida**. SunBiz could not be read from this environment —
+it sits behind a Cloudflare challenge that does not clear from a datacenter
+IP, and the public mirrors (OpenGovUS, Bizapedia) have no filing for this
+entity. So the two remaining facts have to come from Sidney:
 
-Everything downstream of the Customer Profile can be driven over the API with
-the key above. These three cannot be inferred, and inventing them is the
-most common cause of brand rejection.
+1. **Registered business address** of Synchro Social LLC — street, city, state,
+   ZIP, country, exactly as filed. Read it off the SunBiz detail page
+   (`search.sunbiz.org` → Search by Entity Name → "Synchro Social").
+   Grab the **Date Filed** on the same page too: TCR requires the EIN to be
+   roughly 15+ days old, and a recently formed entity simply waits.
+2. **Kasper's details** — full legal first and last name, email, phone,
+   job position and business title.
+
+Everything else is already known and needs no input:
+
+| Field | Value |
+| --- | --- |
+| `business_name` | Synchro Social LLC |
+| `business_type` | Limited Liability Corporation |
+| `business_registration_identifier` | EIN |
+| `business_registration_number` | 39-3608143 |
+| `business_identity` | direct_customer |
+| `business_industry` | Professional services / marketing |
+| `website_url` | https://synchrosocial.com |
+| `business_regions_of_operation` | USA and Canada |
+
+Field names above are the literal Trust Hub policy fields, read from
+`GET /v1/Policies/RN6433641899984f951173ef1738c3bdd0` (Primary Customer
+Profile of type Business) — not guessed.
 
 ---
 
