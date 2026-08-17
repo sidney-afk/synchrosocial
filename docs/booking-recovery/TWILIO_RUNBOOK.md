@@ -200,6 +200,35 @@ API-drivable — this one step is not. Field values to paste are in §1.4 below.
 The Twilio `Address` resource for the principal address is already created:
 `ADa4a2b1e3…` — reusable, no need to re-enter it later.
 
+### SUBMITTED — primary profile in review, 2026-08-17
+
+| | |
+| --- | --- |
+| Profile SID | `BU824c5b1719a715b74b3dd32fb50c52fd` |
+| Status | **pending-review** since 2026-08-17T15:50Z |
+| Business info record | `IT04928898…` — all eight fields as specified, no drift |
+| Authorized rep record | `IT3b73a026…` |
+| Address record | `RD3cb98996…` |
+
+Three values were entered differently from §1.4, found by reading the submitted
+records back rather than trusting the form:
+
+| Field | Specified | Submitted | Resolution |
+| --- | --- | --- | --- |
+| `last_name` | Hytonen | **Hytoneen** | ❌ typo — correct to **Hytoenen** (the SunBiz spelling) |
+| `email` | kasper@ | **house@synchrosocial.com** | ✅ kept — Sidney confirms that mailbox is monitored |
+| `job_position` | Other | **Director** | ✅ kept — a legitimate option for an LLC authorized member, and not worth churning a profile that is already in review |
+
+`Hytoneen` matches neither the supplied spelling nor the Florida filing, so it is
+a straight typo and is the one worth fixing. Owner chose to align it with SunBiz
+(`HYTOENEN, KASPER`) on the reasoning that a reviewer checking public records
+sees that document.
+
+**The authorized-representative record cannot be edited with an API key** — the
+same console-only restriction that blocks creating the profile. The fix is
+Console → Trust Hub → Profiles → Primary profile → edit the authorized
+representative.
+
 ### Decisions — 2026-08-17
 
 | | |
