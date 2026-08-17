@@ -215,7 +215,7 @@ records back rather than trusting the form:
 
 | Field | Specified | Submitted | Resolution |
 | --- | --- | --- | --- |
-| `last_name` | Hytonen | **Hytoneen** | ❌ typo — correct to **Hytoenen** (the SunBiz spelling) |
+| `last_name` | Hytonen | **Hytoneen** | ⚠️ typo — **shipped uncorrected**, see below |
 | `email` | kasper@ | **house@synchrosocial.com** | ✅ kept — Sidney confirms that mailbox is monitored |
 | `job_position` | Other | **Director** | ✅ kept — a legitimate option for an LLC authorized member, and not worth churning a profile that is already in review |
 
@@ -224,10 +224,21 @@ a straight typo and is the one worth fixing. Owner chose to align it with SunBiz
 (`HYTOENEN, KASPER`) on the reasoning that a reviewer checking public records
 sees that document.
 
-**The authorized-representative record cannot be edited with an API key** — the
-same console-only restriction that blocks creating the profile. The fix is
-Console → Trust Hub → Profiles → Primary profile → edit the authorized
-representative.
+**The surname typo shipped, deliberately.** The authorized-representative record
+cannot be edited with an API key (the same console-only restriction that blocks
+creating the profile), and once a profile reaches `pending-review` the console
+renders it **read-only with no edit control at all** — verified on the live
+Details page. The only route to a correction is withdrawing and resubmitting.
+
+Judged not worth it: review verifies **legal name, EIN and address** against
+government records, and all three are exact. The authorized representative is
+checked for being a reachable real person, which `Kasper Hytoneen` /
+`house@synchrosocial.com` / `+17373540698` satisfies. Withdrawing would forfeit
+queue position to reduce an already-small risk.
+
+If the profile is rejected on a name mismatch, resubmit with the SunBiz spelling
+**Hytoenen** — that is the owner's ratified choice, already decided, so no
+further decision is needed at that point.
 
 ### Decisions — 2026-08-17
 
