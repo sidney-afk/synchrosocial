@@ -113,6 +113,52 @@ plan tier is Startup, or if Sendblue/Linq turn out not to be workable.
 
 ---
 
+## 0.6 AS-BUILT — live account state (2026-08-17)
+
+Kasper chose **Twilio green** over the iMessage providers and the Slack-assist
+option, so both S1 and S2 go over this account.
+
+| | |
+| --- | --- |
+| Account SID | `AC…ada` — in the n8n credential store, deliberately not committed |
+| Account type | **Full** — upgraded off trial, card on file |
+| Balance | $50.00 as of 2026-08-17 |
+| Messaging Service | `MG40c681a61360ab99880b907d617775dc` — "Synchro Social Sales" |
+| Phone number | **not purchased yet** |
+| Customer Profile | **not created** |
+| A2P Brand / Campaign | **not created** |
+
+Auth is via an **API Key** (`SK4fc6640…`), not the account Auth Token — better
+practice, since it can be revoked without rotating the whole account.
+**Rotate it once setup is done**: it was pasted into a chat transcript.
+Console → Account → API keys & tokens → delete and reissue.
+
+### Prices verified live against the Twilio pricing API, 2026-08-17
+
+| | |
+| --- | --- |
+| US local number | **$1.15/mo** |
+| US toll-free number | $2.15/mo |
+| Outbound SMS to US, all carriers | **$0.0083 per segment** |
+
+Carrier surcharges (~$0.003/segment) are billed on top and are not in the
+pricing API. At S1 ≈ 2 segments and S2 ≈ 3, a recovery text costs ~2.3¢ and a
+confirmation ~3.5¢.
+
+### Still blocked on Sidney — the Customer Profile needs facts not in this repo
+
+1. **Registered business address** of Synchro Social LLC (street, city, state,
+   ZIP, country) — must match IRS/public records.
+2. **Authorized representative** — first name, last name, email, phone,
+   job position, business title.
+3. **Area code** for the number.
+
+Everything downstream of the Customer Profile can be driven over the API with
+the key above. These three cannot be inferred, and inventing them is the
+most common cause of brand rejection.
+
+---
+
 ## 1. THE ACTUAL CHECKLIST — do these in order
 
 Verified against current Twilio/TCR pricing 2026-08-14. Confirm figures in the
