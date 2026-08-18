@@ -124,9 +124,11 @@ option, so both S1 and S2 go over this account.
 | Account type | **Full** — upgraded off trial, card on file |
 | Balance | $50.00 as of 2026-08-17 |
 | Messaging Service | `MG40c681a61360ab99880b907d617775dc` — "Synchro Social Sales" |
-| Phone number | **not purchased yet** |
-| Customer Profile | **not created** |
-| A2P Brand / Campaign | **not created** |
+
+> The remaining rows of this table (number, customer profile, brand, campaign)
+> were all "not created" when it was first written. They have since moved —
+> **see §PROGRESS below for current state**, which is authoritative.
+
 
 Auth is via an **API Key** (`SK4fc6640…`), not the account Auth Token — better
 practice, since it can be revoked without rotating the whole account.
@@ -156,8 +158,16 @@ everything the API can drive:
 | Local number, 786 Miami | ✅ purchased | **+1 (786) 550-2816** — `PN430149bc…` |
 | Attached to Messaging Service | ✅ | `MG40c681a6…` |
 | A2P Messaging trust product | ⏳ in-review, evaluated **compliant** | `BU34092cf1…` |
-| A2P Brand | ⛔ not yet — needs the trust product approved first | — |
+| A2P Brand | ⏳ PENDING at TCR (`BV8T4QY`) | `BN50170e79…` |
 | A2P Campaign | ⛔ downstream of the brand | — |
+
+> **Corrected 2026-08-18: the brand does NOT require an approved trust
+> product.** This file previously asserted the two were serial. They are not —
+> the brand was filed and accepted with the A2P trust product still
+> `in-review`, 22 hours after submission. The original claim was an assumption
+> that was never tested, because the first attempt was blocked locally rather
+> than by Twilio. Filing the brand in parallel with trust-product review is the
+> correct play and saves days of dead waiting.
 
 Trust product built on policy `RNb0d4771c2c98518d916a3d4cd70a8f8b`
 (*A2P Messaging: Local - Business*) with `company_type=private`, the approved
