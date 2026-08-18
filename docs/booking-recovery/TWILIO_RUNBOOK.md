@@ -158,8 +158,24 @@ everything the API can drive:
 | Local number, 786 Miami | ✅ purchased | **+1 (786) 550-2816** — `PN430149bc…` |
 | Attached to Messaging Service | ✅ | `MG40c681a6…` |
 | A2P Messaging trust product | ⏳ in-review, evaluated **compliant** | `BU34092cf1…` |
-| A2P Brand | ⏳ PENDING at TCR (`BV8T4QY`) | `BN50170e79…` |
-| A2P Campaign | ⛔ downstream of the brand | — |
+| A2P Brand | ✅ **APPROVED**, identity VERIFIED | `BN50170e79…` / TCR `BV8T4QY` |
+| A2P Campaign | ⏳ IN_PROGRESS, use case LOW_VOLUME | `QE2c6890da…` |
+
+The brand resolved **APPROVED / VERIFIED in under two minutes** — the EIN,
+legal name and address matched cleanly, and the misspelled representative
+surname (`Hytoneen`) did not matter, confirming the judgement not to withdraw
+the profile over it.
+
+**Campaign use case: `LOW_VOLUME` (Low Volume Mixed).** Cheapest tier, correct
+for ~8 messages a week, and it leaves headroom if the consent checkbox is ever
+added and S1 becomes sendable — `ACCOUNT_NOTIFICATION` would have matched the
+current traffic just as well but would need re-registering at that point.
+
+The registered message flow describes **only** the transactional confirmation:
+the recipient books an appointment at `/apply`, supplies their number as part of
+booking, and receives one SMS confirming the appointment they chose. That
+description is truthful against what the system actually sends, which is the
+thing carrier vetting checks. Both message samples are the real S2 copy.
 
 > **Corrected 2026-08-18: the brand does NOT require an approved trust
 > product.** This file previously asserted the two were serial. They are not —
