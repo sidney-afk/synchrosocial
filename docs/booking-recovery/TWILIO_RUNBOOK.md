@@ -198,6 +198,49 @@ HTML, not just the source.
 **Resubmission:** the failed `Usa2p` resource must be deleted and recreated —
 a `FAILED` campaign is not re-reviewable in place.
 
+### Second rejection, and the actual root cause — 2026-08-18
+
+The legal pages went live at 14:54 (verified in the rendered HTML, both HTTP
+200, both linked from the homepage footer, no robots.txt). The campaign was
+refiled at 14:57 and **failed again in 44 seconds with the identical error
+pair**, and `campaign_id` was `null` — it never reached TCR.
+
+Two hypotheses, and the first one was wrong:
+
+1. ~~A cached verdict replayed from the pre-fix crawl.~~ Plausible from the
+   timing, but not supported by anything.
+2. ✅ **The errors name missing request fields, not a non-compliant website.**
+   Twilio's own documentation for 30908 lists the first root cause as
+   *"Missing `PrivacyPolicyUrl` field in the registration request"*. The error
+   payload says `fields: ['PRIVACY_POLICY_URL']` — it was naming the field
+   literally the whole time.
+
+**The site fix was necessary but not sufficient.** Both had to be true: the
+pages compliant *and* their URLs carried in the registration.
+
+Refiled 15:00:54 with `PrivacyPolicyUrl` / `TermsAndConditionsUrl` and both
+URLs written into `MessageFlow`. Caveat: those two parameters **read back as
+`null`**, so the `Usa2p` endpoint may not persist them and the Console may be
+the only place they can be set.
+
+Signal that this attempt is different: the previous two failed in 44 s and 90 s
+with two populated errors; this one has been `IN_PROGRESS` for over 15 minutes
+with `errors: []`. It cleared the automated pre-check that was instantly
+bouncing the others.
+
+### Cost reality — retries are free
+
+| | |
+| --- | --- |
+| Balance at start | $50.00 |
+| Balance after number + brand + 3 campaign filings | **$44.35** |
+
+Spend is ~$5.65: the number ($1.15) plus brand registration (~$4.44).
+**The failed campaign submissions were not charged.** Earlier warnings in this
+file that each retry "burns another $15" were overcautious — the campaign fee
+evidently attaches on approval, not on submission. Do not let fear of the fee
+discourage a corrected resubmission.
+
 The brand resolved **APPROVED / VERIFIED in under two minutes** — the EIN,
 legal name and address matched cleanly, and the misspelled representative
 surname (`Hytoneen`) did not matter, confirming the judgement not to withdraw
