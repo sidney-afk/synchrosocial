@@ -159,7 +159,44 @@ everything the API can drive:
 | Attached to Messaging Service | ✅ | `MG40c681a6…` |
 | A2P Messaging trust product | ⏳ in-review, evaluated **compliant** | `BU34092cf1…` |
 | A2P Brand | ✅ **APPROVED**, identity VERIFIED | `BN50170e79…` / TCR `BV8T4QY` |
-| A2P Campaign | ⏳ IN_PROGRESS, use case LOW_VOLUME | `QE2c6890da…` |
+| A2P Campaign | ❌ **FAILED** vetting — see below | `QE2c6890da…` / `CMdcc8ee63…` |
+
+### Campaign rejected 2026-08-18 — errors 30908 + 30882
+
+| Error | Field | Meaning |
+| --- | --- | --- |
+| 30908 | `PRIVACY_POLICY_URL` | privacy policy not verifiable as compliant |
+| 30882 | `TERMS_AND_CONDITIONS_URL` | terms do not meet A2P review requirements |
+
+**Root cause — a website content gap, not a filing mistake.** Both
+`synchrosocial.com/privacypolicy` and `/terms-conditions` existed but neither
+mentioned SMS anywhere. Carrier vetting opens the brand's website and looks for
+an SMS program disclosure and specific sharing language; finding none, it fails
+the campaign. Worse, privacy §4 listed "marketing partners" among data
+recipients with no carve-out, which is exactly the *conflicting information*
+error 30908 calls out.
+
+**Fixed in commit `37a3cfa`.** Privacy policy gains §5 *SMS and Text Messaging*
+carrying the required sentence verbatim —
+
+> No mobile information will be shared with third parties or affiliates for
+> marketing or promotional purposes. … All other use case categories exclude
+> text messaging originator opt-in data and consent; this information will not
+> be shared with any third parties.
+
+— plus an explicit exclusion line inside §4 so the two sections cannot be read
+as contradicting. Terms gains an *SMS and Text Messaging Program* section with
+program description, frequency, cost, STOP/START/HELP, carrier liability
+disclaimer, and a link to the privacy policy. Verified present in the built
+HTML, not just the source.
+
+> ⚠️ **The fix only counts once it is LIVE.** Vetting reads the public site, so
+> the branch must be merged to `main` and deployed *before* resubmitting. A
+> resubmission against the old live pages fails identically and burns another
+> $15.
+
+**Resubmission:** the failed `Usa2p` resource must be deleted and recreated —
+a `FAILED` campaign is not re-reviewable in place.
 
 The brand resolved **APPROVED / VERIFIED in under two minutes** — the EIN,
 legal name and address matched cleanly, and the misspelled representative
