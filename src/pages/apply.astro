@@ -4,6 +4,7 @@ import SiteNav from "../components/SiteNav.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
@@ -75,9 +76,17 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
         </div>
       </div>
 
-      <!-- Desktop offset matches the reference's 16px copy-to-CTA gap; the
-           mobile margin preserves its separate CTA-to-booking spacing. -->
-      <div class="flex w-full max-w-[457px] flex-col md:-mt-8 max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
+      <!-- VSL — sits between the eyebrow copy and the CTA in the hero's flex
+           column, so the shared gap-12/max-md:gap-3 rhythm gives it identical
+           spacing above (to the copy) and below (to the CTA) for free. -->
+      <div class="w-full max-w-[900px] max-md:w-[calc(100%-32px)]">
+        <VideoEmbed provider="wistia" id="2ru7e46uba" title="How It Works" tone="brand" />
+      </div>
+
+      <!-- The mobile margin preserves its separate CTA-to-booking spacing;
+           desktop relies on the flex column's own gap-12 so the eyebrow-to-
+           video and video-to-CTA spacing stay identical. -->
+      <div class="flex w-full max-w-[457px] flex-col max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="apply-page-hero-cta w-full" />
       </div>
 
