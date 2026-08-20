@@ -228,6 +228,66 @@ with two populated errors; this one has been `IN_PROGRESS` for over 15 minutes
 with `errors: []`. It cleared the automated pre-check that was instantly
 bouncing the others.
 
+### THE REAL BLOCKER — the campaign cannot be filed via the API at all
+
+Four submissions failed across 2026-08-18 → 2026-08-20. The cause is structural,
+not editorial:
+
+| Attempt | Message flow said | Result |
+| --- | --- | --- |
+| 1 | no policy URLs, no checkbox | 30908 + 30882 |
+| 2 | URLs inline, after legal pages went live | 30908 + 30882 |
+| 3 | `PrivacyPolicyUrl` / `TermsAndConditionsUrl` params passed | **30924** only |
+| 4 | consent checkbox quoted verbatim | 30908 + 30882 again |
+
+**`POST /v1/Services/{MG}/Compliance/Usa2p` silently ignores
+`PrivacyPolicyUrl` and `TermsAndConditionsUrl`.** They were passed and read back
+as `null`. The brand registration resource has no equivalent fields either
+(confirmed by dumping every field on `BN50170e79…`). The rejection payload names
+`fields: ['PRIVACY_POLICY_URL']` and `fields: ['TERMS_AND_CONDITIONS_URL']` — it
+is naming request fields that this endpoint cannot populate.
+
+**Therefore the campaign must be created in the Console**, which exposes those
+inputs. No amount of message-flow rewriting fixes it. That the `null` read-back
+was noticed at attempt 3 and not acted on cost two further submissions.
+
+### The consent checkbox already existed — and was missed for days
+
+Read off the live form at `synchrosocial.com/apply` with a headless browser:
+
+> ☐ By entering your information, you consent to your data being saved in
+> accordance with our Terms & Privacy Policy **and to receive text messages.**
+
+Unchecked by default, `required: false`, on **step 1** directly under the phone
+field. This file previously recorded "Sidney declined the SMS consent checkbox"
+and built the whole S1-is-impossible conclusion on it. **That was wrong** — the
+owner declined *adding* one; one was already live. It was never verified against
+the form.
+
+Two live consequences:
+
+1. The wording carries only 1 of the 4 required elements (message type). It
+   lacks frequency, the rates disclosure, and STOP — which is what error 30924
+   was pointing at. Fix by editing the existing line, not by adding a control.
+2. **The tick is not recorded anywhere.** `sms_consent` is empty on all 47
+   contacts. So consent is being *collected* and immediately discarded. That,
+   not the form wording, is the real blocker on S1 — and it is a capture-workflow
+   fix, not a policy decision.
+
+### Cost — corrected
+
+| | |
+| --- | --- |
+| Start | $50.00 |
+| After number + brand + campaign attempts | **$29.35** |
+
+Spend is $20.65: number $1.15, brand ~$4.44, **and a $15 campaign fee that did
+land**. An earlier revision of this file claimed failed submissions are not
+charged — that was read from a balance taken before the charge posted, and it is
+wrong. Assume a campaign submission can cost $15 and get it right first time.
+
+### Superseded — the old cost note
+
 ### Cost reality — retries are free
 
 | | |
