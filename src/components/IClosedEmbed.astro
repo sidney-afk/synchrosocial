@@ -9,6 +9,13 @@
 //
 //   <IClosedEmbed linkPrefix="synchrosocial/social-media-consultation" />
 //   <IClosedEmbed url="https://app.iclosed.io/e/synchrosocial/social-media-consultation" />
+// Ad attribution passthrough. Renders just before widget.js so it can append
+// utm_*/fbclid to data-url before iClosed reads it — that is how campaign data
+// survives the iframe hop and comes back joined to the lead in iClosed's
+// server-side webhook. Separate component with its own listener, so the pixel
+// bridge below stays untouched. See IClosedCapture.astro.
+import IClosedCapture from "./IClosedCapture.astro";
+
 interface Props {
   url?: string | null;
   linkPrefix?: string | null;
@@ -74,6 +81,7 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
           } catch (err) {}
         })();
       </script>
+      <IClosedCapture />
       <script
         is:inline
         type="text/javascript"
@@ -84,21 +92,26 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
         /* iClosed → Meta Pixel bridge.
            The booking iframe posts lifecycle events to this page (documented
            in iClosed's GTM guide): iclosed.potential / .qualified /
-           .disqualified / .call_scheduled. Firing the pixel here catches the
-           booking the moment it happens — including calendars that use
-           iClosed-internal confirmation and never redirect (e.g. /call).
-           The event ID is stored so /thank-you can re-fire the same booking
-           with the SAME ID and Meta deduplicates (event name + ID, 48h).
-           See docs/meta-ads/README.md for the full event map. */
+           .disqualified / .call_scheduled. Only .call_scheduled is handled
+           here. The other three used to fire matching lowercase custom pixel
+           events (iclosed_potential/_qualified/_disqualified) but that was
+           removed 2026-08-17: it duplicated iClosed's own native Meta
+           integration, which already fires the capitalized
+           Potential/Qualified/Disqualified events browser+server, deduped by
+           event_id. Verified via Meta Ads Manager first — no custom
+           conversion or audience depended on the lowercase names. Firing the
+           pixel here on call_scheduled catches the booking the moment it
+           happens — including calendars that use iClosed-internal
+           confirmation and never redirect (e.g. /call). The event ID is
+           stored so /thank-you can re-fire the same booking with the SAME ID
+           and Meta deduplicates (event name + ID, 48h). See
+           docs/meta-ads/README.md for the full event map. */
         if (!window.__iclosedMetaBridge) {
           window.__iclosedMetaBridge = true;
           window.addEventListener("message", function (e) {
             if (e.origin !== "https://app.iclosed.io") return;
             var t = e.data && e.data.type;
             if (!t || typeof window.fbq !== "function") return;
-            if (t === "iclosed.potential") fbq("trackCustom", "iclosed_potential");
-            if (t === "iclosed.qualified") fbq("trackCustom", "iclosed_qualified");
-            if (t === "iclosed.disqualified") fbq("trackCustom", "iclosed_disqualified");
             if (t === "iclosed.call_scheduled") {
               var eid =
                 window.crypto && crypto.randomUUID

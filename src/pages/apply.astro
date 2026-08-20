@@ -4,6 +4,7 @@ import SiteNav from "../components/SiteNav.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
@@ -49,36 +50,45 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
     <div class="relative z-[3] mx-auto flex w-full flex-col items-center gap-12 max-md:gap-3">
       <div class="flex w-full flex-col items-center gap-4 text-center">
         <p class="font-script text-2xl font-normal leading-5 text-[#b794ff] max-md:mx-auto max-md:w-[calc(100%-32px)] max-md:max-w-[385px] max-md:whitespace-nowrap max-md:text-[17px] max-md:leading-5">
-          Impact-Driven Coaches &amp; Thought Leaders
+          Coaches, Experts &amp; Thought Leaders
         </p>
         <h1 class="hidden font-tight text-[clamp(2.7rem,1.31rem+2.241vw,4rem)] font-bold capitalize leading-[1.2] text-white md:block">
-          Hire The Team Behind{" "}
-          <span class="inline-block whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4 max-md:px-1">Over 1 Billion Views</span>
-          <br />
-          For Your Favorite Brands
-        </h1>
-        <h1 class="font-tight mx-auto w-[calc(100%-24px)] max-w-[400px] text-[clamp(28px,calc(8vw-2px),32px)] font-bold capitalize leading-[1.1] text-white md:hidden">
           <span class="inline-block whitespace-nowrap">
-            Hire The Team Behind
+            Grow &amp; Monetize Your <span class="inline-block whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-4">Impact-Driven</span>
           </span>
           <br />
+          <span class="inline-block whitespace-nowrap">Personal Brand On Social Media</span>
+        </h1>
+        <h1 class="font-tight mx-auto w-[calc(100%-24px)] max-w-[400px] text-[clamp(26px,calc(8vw-2px),32px)] font-bold capitalize leading-[1.1] text-white md:hidden">
           <span class="inline-block whitespace-nowrap">
-            <span class="bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-1">Over 1 Billion Views</span>{" "}For
+            Grow &amp; Monetize Your
           </span>
           <br />
-          <span class="inline-block whitespace-nowrap">Your Favorite Brands</span>
+          <span class="inline-block whitespace-nowrap bg-[linear-gradient(0deg,var(--g-purple),var(--g-purple)_50%,transparent_50%)] px-1">Impact-Driven Personal</span>
+          <br />
+          <span class="inline-block whitespace-nowrap">Brand On Social Media</span>
         </h1>
-        <div class="max-w-[686px] max-md:mx-auto max-md:w-[calc(100%-36px)] max-md:max-w-[358px]">
+        <div class="max-w-[900px] max-md:mx-auto max-md:w-[calc(100%-36px)] max-md:max-w-[358px]">
           <p class="text-xl leading-[157%] max-md:text-[13px] max-md:leading-[1.35]">
-            We'll install the content engine that grew our clients over 8 million
-            followers and will make you the go-to authority in your niche in 90 days.
+            Use the same system that generated our clients over 1.2 billion views and 8 million followers,
+            and become the go-to authority in your niche.
           </p>
         </div>
       </div>
 
-      <!-- Desktop offset matches the reference's 16px copy-to-CTA gap; the
-           mobile margin preserves its separate CTA-to-booking spacing. -->
-      <div class="flex w-full max-w-[457px] flex-col md:-mt-8 max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
+      <!-- VSL — sits between the eyebrow copy and the CTA in the hero's flex
+           column. Desktop relies on the shared gap-12 rhythm for identical
+           spacing above/below; mobile adds the same mt-5/mb-5 the CTA uses
+           for its own booking gap, so all three mobile gaps (copy-to-video,
+           video-to-CTA, CTA-to-booking) match at 32px. -->
+      <div class="w-full max-w-[900px] max-md:mt-5 max-md:mb-5 max-md:w-[calc(100%-32px)]">
+        <VideoEmbed provider="wistia" id="n9pdmpfj9x" title="How It Works" tone="brand" />
+      </div>
+
+      <!-- The mobile margin preserves its separate CTA-to-booking spacing;
+           desktop relies on the flex column's own gap-12 so the eyebrow-to-
+           video and video-to-CTA spacing stay identical. -->
+      <div class="flex w-full max-w-[457px] flex-col max-md:mb-5 max-md:w-[calc(100%-32px)] max-md:max-w-none">
         <ApplyButton href="#book" label="Apply Below" arrowDir="down" class="apply-page-hero-cta w-full" />
       </div>
 
@@ -95,6 +105,22 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
             resize={false}
           />
         </div>
+
+        <!-- A2P 10DLC consent disclosure. Carriers require the four elements below
+             (message type, frequency, rates, opt-out) to appear adjacent to the
+             control where the phone number is given. The booking widget is a
+             third-party iframe whose own checkbox links to iClosed's policies, not
+             ours, so this line carries our disclosure and links to our policies as
+             close to the phone field as we can place it. Do not remove without
+             checking docs/booking-recovery/TWILIO_RUNBOOK.md. -->
+        <p class="mx-auto mt-5 max-w-[680px] text-center text-[12px] leading-[1.55] text-white/45 max-md:w-[calc(100%-32px)]">
+          By booking a call you agree to receive text messages from Synchro Social about your
+          call. Message frequency varies, typically one message per booking. Message and data
+          rates may apply. Reply STOP to opt out, HELP for help. See our
+          <a href="/privacypolicy" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 transition-colors hover:text-white/75">Privacy Policy</a>
+          and
+          <a href="/terms-conditions" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 transition-colors hover:text-white/75">Terms</a>.
+        </p>
       </div>
 
       <AgencyAwardRecognition />

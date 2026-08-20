@@ -1,0 +1,95 @@
+{
+  "_snapshot": "PROPOSED — not yet created in n8n. Sends S2, the booked-call confirmation SMS, and closes out any pending recovery follow-up for the same person. Built as a SUB-WORKFLOW (Execute Workflow trigger) rather than its own iClosed webhook, because iClosed points one URL at the 'Call booked' event and that URL already belongs to 'Sales — Call Booked (iClosed)'. Wiring it up therefore needs a ONE-NODE change to that live router — an Execute Workflow node on the normal-funnel branch — which per CLAUDE.md requires Sidney's explicit go-ahead before anyone touches it. Expected input: { first_name, phone, email, call_start_iso, timezone }. BEFORE IMPORT: replace the Data Table id, the Twilio number, and the Error Workflow id.",
+  "name": "Sales — Booked Confirmation SMS",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "REPLACE_WITH_ERROR_WORKFLOW_ID"
+  },
+  "connections": {
+    "Called By Booking Router": { "main": [[{ "node": "Render Call Time", "type": "main", "index": 0 }]] },
+    "Render Call Time": { "main": [[{ "node": "Close Recovery Row", "type": "main", "index": 0 }]] },
+    "Close Recovery Row": { "main": [[{ "node": "Sendable?", "type": "main", "index": 0 }]] },
+    "Sendable?": { "main": [[{ "node": "Send Confirmation SMS", "type": "main", "index": 0 }], []] }
+  },
+  "nodes": [
+    {
+      "name": "Called By Booking Router",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 0],
+      "parameters": {}
+    },
+    {
+      "name": "Render Call Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [224, 0],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// Renders {{call_when}} / {{call_when_short}} per MESSAGE_TEMPLATES.md.\n//\n// The call time is rendered in the LEAD'S timezone, not Kasper's. Telling\n// someone in Los Angeles their call is at 3:45pm when they booked 12:45pm\n// their time is the fastest way to lose the call. iClosed knows the invitee\n// timezone; pass it through from the router.\nconst DEFAULT_TZ = 'America/New_York';\nconst out = [];\n\nfunction validTz(tz) {\n  if (!tz) return null;\n  try { new Date().toLocaleString('en-US', { timeZone: tz }); return tz; }\n  catch (e) { return null; }\n}\n\n// 3:45pm / 3pm — lowercase, no leading zero, drop :00 on the hour.\nfunction timeLabel(d, tz) {\n  const s = d.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz });\n  return s.replace(/\\s/g, '').replace(':00', '').toLowerCase();\n}\n\n// Calendar-day difference in the target timezone, not a 24h-bucket count:\n// a call 20 hours away can still be \"today\" or already \"tomorrow\".\nfunction dayKey(d, tz) {\n  return d.toLocaleDateString('en-CA', { timeZone: tz });\n}\nfunction daysBetween(a, b, tz) {\n  return Math.round((Date.parse(dayKey(b, tz) + 'T00:00:00Z') - Date.parse(dayKey(a, tz) + 'T00:00:00Z')) / 86400000);\n}\n\nfor (const item of $input.all()) {\n  const j = item.json || {};\n  const first = String(j.first_name || '').trim();\n\n  let phone = String(j.phone || '').replace(/[^0-9+]/g, '');\n  if (phone && !phone.startsWith('+')) {\n    const d = phone.replace(/\\+/g, '');\n    if (d.length === 10) phone = '+1' + d;\n    else if (d.length === 11 && d.startsWith('1')) phone = '+' + d;\n    else phone = '';\n  }\n  if (phone && !/^\\+[1-9][0-9]{7,14}$/.test(phone)) phone = '';\n\n  const start = new Date(j.call_start_iso);\n  const tzGiven = validTz(j.timezone);\n  const tz = tzGiven || DEFAULT_TZ;\n  // If we had to guess the timezone, say so rather than state a wrong time.\n  const suffix = tzGiven ? '' : ' ET';\n\n  let callWhen = '';\n  let callWhenShort = 'then';\n  if (!isNaN(start)) {\n    const t = timeLabel(start, tz) + suffix;\n    const delta = daysBetween(new Date(), start, tz);\n    if (delta <= 0) { callWhen = 'today at ' + t; callWhenShort = 'later today'; }\n    else if (delta === 1) { callWhen = 'tomorrow at ' + t; callWhenShort = 'tomorrow'; }\n    else if (delta <= 6) {\n      const wd = start.toLocaleDateString('en-US', { weekday: 'long', timeZone: tz });\n      callWhen = wd + ' at ' + t; callWhenShort = wd;\n    } else {\n      const dl = start.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: tz });\n      callWhen = dl + ' at ' + t; callWhenShort = 'then';\n    }\n  }\n\n  const nameOk = first.length >= 2 && !/[0-9@]/.test(first);\n  const salutation = nameOk\n    ? 'Hi ' + first + \", it's Kasper from Synchro Social\"\n    : \"Hi, it's Kasper from Synchro Social\";\n\n  out.push({ json: {\n    lead_key: String(j.email || '').trim().toLowerCase() || phone,\n    phone,\n    salutation,\n    call_when: callWhen,\n    call_when_short: callWhenShort,\n    // No phone, or an unparseable time, means no message. A confirmation that\n    // says \"your call is at \" is worse than no confirmation.\n    sendable: !!phone && !!callWhen\n  } });\n}\n\nreturn out;"
+      }
+    },
+    {
+      "name": "Close Recovery Row",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [448, 0],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "resource": "row",
+        "operation": "update",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "REPLACE_WITH_DATA_TABLE_ID", "cachedResultName": "booking_recovery" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "lead_key", "condition": "eq", "keyValue": "={{ $json.lead_key }}" }] },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "suppressed",
+            "suppressed_reason": "booked",
+            "updated_at": "={{ new Date().toISOString() }}"
+          },
+          "schema": [
+            { "id": "status", "displayName": "status", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "suppressed_reason", "displayName": "suppressed_reason", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "updated_at", "displayName": "updated_at", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Sendable?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [672, 0],
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
+          "conditions": [
+            {
+              "leftValue": "={{ $('Render Call Time').item.json.sendable }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "name": "Send Confirmation SMS",
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [896, -96],
+      "parameters": {
+        "resource": "sms",
+        "operation": "send",
+        "from": "REPLACE_WITH_TWILIO_NUMBER_E164",
+        "to": "={{ $('Render Call Time').item.json.phone }}",
+        "message": "={{ $('Render Call Time').item.json.salutation }} & just saw that you booked a call for {{ $('Render Call Time').item.json.call_when }}.\n\nI'm excited to chat with you, if there's anything you'd like to share about your brand/work beforehand, please text me but otherwise I'll talk to you {{ $('Render Call Time').item.json.call_when_short }}!\n\nPS. If you're interested in learning more about us before the call, the thank you page has some Q&A videos when you scroll down: https://synchrosocial.com/thank-you",
+        "options": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,731 @@
+{
+  "_snapshot": "AS BUILT + REAL-PAYLOAD CORRECTED 2026-08-14 — live in n8n as 'Sales — Booking Recovery Capture (iClosed)' (31DnMJLU3YM89py1), published, writing to Data Table booking_recovery (xEhLpKwNv8uTaeAK). This file is a reference copy; the live version is authoritative and its field mappings are now CONFIRMED against real deliveries (executions 382967/382968), not inferred from docs. Four things the real payload disproved: (1) iClosed can emit TWO contact records for ONE human on a single form fill — a new one plus an existing one matched by phone — so lead_key is phone-first, not iClosed-contact-id, or that person gets emailed twice; (2) the calendar slug lives at event.linkPrefix ('synchrosocial/<slug>'), not eventSlug, and capture is now GATED to acquisition calendars so a client booking their onboarding kickoff is never chased; (3) the Meta click id arrives as tracking._fbc ('fb.1.<ts>.<fbclid>'), never as fbclid, and the referrer as body.Referrer_Url_Embed; (4) questionsAndAnswers carries the whole qualification form — revenue, timeline, decision-maker — which is the most valuable thing in the payload and is now stored. Also: primary email can be blank while the value just typed lands in secondary_email. Verified by replays 382974 (new lead armed, phone key, fbclid extracted), 382975 (second iClosed record for the same human routed to touch and enriched row 5 rather than creating a duplicate) and 382976 (kickoff-call suppressed as other_calendar).",
+  "name": "Sales — Booking Recovery Capture (iClosed)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "REPLACE_WITH_ERROR_WORKFLOW_ID"
+  },
+  "connections": {
+    "Receive iClosed Webhook": {
+      "main": [
+        [
+          {
+            "node": "Authenticate + Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Authenticate + Normalize": {
+      "main": [
+        [
+          {
+            "node": "Abandoned?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Abandoned?": {
+      "main": [
+        [
+          {
+            "node": "Existing Row?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Suppress Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Existing Row?": {
+      "main": [
+        [
+          {
+            "node": "Arm or Touch?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Arm or Touch?": {
+      "main": [
+        [
+          {
+            "node": "Arm Follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Refresh Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Arm Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Respond JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh Details": {
+      "main": [
+        [
+          {
+            "node": "Respond JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Suppress Follow-up": {
+      "main": [
+        [
+          {
+            "node": "Respond JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "name": "Receive iClosed Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "iclosed-lead-abandoned",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "name": "Authenticate + Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// iClosed 'Contact by status' / 'New contact created' receiver.\n//\n// AUTH: iClosed does not sign webhooks — HMAC-SHA256 is on their roadmap, not\n// shipped. Without a signature this URL is an unauthenticated PII write to\n// anyone who learns it, so a shared secret is required. Same posture as the\n// existing booking webhooks.\nconst SHARED_SECRET = 'REPLACE_WITH_SHARED_SECRET';\nconst FOLLOW_UP_DELAY_MIN = 30;\n\nconst inp = $input.first().json;\nconst q = inp.query || {};\nconst headers = inp.headers || {};\nconst provided = String(q.secret || headers['x-webhook-secret'] || '');\nif (provided !== SHARED_SECRET) throw new Error('unauthorized');\n\nlet body = inp.body;\nif (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = null; } }\nif (!body || typeof body !== 'object') throw new Error('invalid body');\n\n// The exact field names are UNVERIFIED. iClosed documents the event list but\n// not a payload schema we could confirm remotely, so read defensively across\n// the plausible shapes and keep the raw body — the first real delivery tells\n// us which branch is right, and `raw` is how we find out without guessing\n// twice.\nconst c = body.contact || body.data || body;\nconst cap = (v, n) => String(v == null ? '' : v).trim().slice(0, n);\nconst pick = (...vals) => { for (const v of vals) { const s = cap(v, 300); if (s) return s; } return ''; };\n\nconst contactId = pick(c.id, c.contactId, c.contact_id, c.previewId, body.previewId);\n\nlet email = pick(c.email, c.emailAddress, c.email_address).toLowerCase();\nif (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) email = '';\n\n// Phone -> E.164, NANP assumed when no country code. Unparseable is dropped\n// rather than stored in a shape Twilio would reject at send time.\nlet phone = '';\nconst rawPhone = pick(c.phone, c.phoneNumber, c.phone_number, c.mobile).replace(/[^0-9+]/g, '');\nif (rawPhone) {\n  const d = rawPhone.replace(/\\+/g, '');\n  if (rawPhone.startsWith('+')) phone = '+' + d;\n  else if (d.length === 10) phone = '+1' + d;\n  else if (d.length === 11 && d.startsWith('1')) phone = '+' + d;\n}\nif (phone && !/^\\+[1-9][0-9]{7,14}$/.test(phone)) phone = '';\n\nlet first = pick(c.firstName, c.first_name, c.givenName);\nlet last = pick(c.lastName, c.last_name, c.familyName);\nconst full = pick(c.name, c.fullName, c.full_name);\nif (!first && full) { const p = full.split(/\\s+/); first = p.shift() || ''; if (!last) last = p.join(' '); }\n\n// Junk-name guard: never render \"Hi 1,\" or \"Hi a@b.com,\".\nif (!(first.length >= 2 && !/[0-9@]/.test(first))) first = '';\nif (first && (first === first.toLowerCase() || first === first.toUpperCase())) {\n  first = first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();\n}\n\nconst status = pick(c.status, body.status, c.contactStatus).toLowerCase();\n\n// A contact with a call attached has booked. iClosed documents latestCall as\n// null until one exists.\nconst latestCall = c.latestCall || c.latest_call || body.latestCall || null;\nconst hasCall = !!(latestCall && typeof latestCall === 'object' && Object.keys(latestCall).length);\n\n// UTMs: these are here because IClosedCapture.astro appends them to the\n// booking URL, so iClosed stores them on the contact and hands them back.\n// That is the whole join between \"which ad\" and \"which lead\".\nconst utm = c.tracking || c.utm || c.utmParams || c.attribution || c || {};\n\nconst isAbandoned = !hasCall && (status === 'potential' || status === 'qualified' || status === '');\nconst reason = hasCall ? 'booked' : (status === 'disqualified' ? 'disqualified' : '');\n\nif (!email && !phone) throw new Error('no reachable contact info');\n\nconst now = new Date();\nconst dueAt = new Date(now.getTime() + FOLLOW_UP_DELAY_MIN * 60000);\n\n// Key on iClosed's contact id when present so repeat visits are one lead.\n// iClosed fires Potential twice when the form takes both phone and email, and\n// retries can redeliver — the upsert downstream makes both harmless.\nconst leadKey = contactId || email || phone;\n\nreturn [{ json: {\n  lead_key: leadKey,\n  iclosed_contact_id: contactId,\n  email,\n  phone,\n  first_name: first,\n  last_name: last,\n  timezone: pick(c.timezone, c.timeZone, c.tz),\n  calendar: pick(c.eventSlug, c.event_slug, c.calendar, body.eventSlug),\n  iclosed_status: status,\n  utm_source: cap(utm.utm_source || utm.utmSource, 120),\n  utm_medium: cap(utm.utm_medium || utm.utmMedium, 120),\n  utm_campaign: cap(utm.utm_campaign || utm.utmCampaign, 200),\n  utm_content: cap(utm.utm_content || utm.utmContent, 200),\n  fbclid: cap(utm.fbclid, 300),\n  referrer: cap(utm.ss_referrer || c.referrer, 300),\n  is_abandoned: isAbandoned,\n  status: isAbandoned ? 'pending' : 'suppressed',\n  suppressed_reason: isAbandoned ? '' : (reason || 'not_abandoned'),\n  follow_up_due_at: isAbandoned ? dueAt.toISOString() : '',\n  email_sent_at: '',\n  sms_sent_at: '',\n  raw: JSON.stringify(body).slice(0, 4000),\n  created_at: now.toISOString(),\n  updated_at: now.toISOString()\n} }];"
+      }
+    },
+    {
+      "name": "Abandoned?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.is_abandoned }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "name": "Arm Follow-up",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -128
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "REPLACE_WITH_DATA_TABLE_ID",
+          "cachedResultName": "booking_recovery"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "lead_key",
+              "condition": "eq",
+              "keyValue": "={{ $json.lead_key }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lead_key": "={{ $json.lead_key }}",
+            "iclosed_contact_id": "={{ $json.iclosed_contact_id }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "first_name": "={{ $json.first_name }}",
+            "last_name": "={{ $json.last_name }}",
+            "timezone": "={{ $json.timezone }}",
+            "calendar": "={{ $json.calendar }}",
+            "iclosed_status": "={{ $json.iclosed_status }}",
+            "utm_source": "={{ $json.utm_source }}",
+            "utm_medium": "={{ $json.utm_medium }}",
+            "utm_campaign": "={{ $json.utm_campaign }}",
+            "utm_content": "={{ $json.utm_content }}",
+            "fbclid": "={{ $json.fbclid }}",
+            "referrer": "={{ $json.referrer }}",
+            "status": "={{ $json.status }}",
+            "suppressed_reason": "={{ $json.suppressed_reason }}",
+            "follow_up_due_at": "={{ $json.follow_up_due_at }}",
+            "raw": "={{ $json.raw }}",
+            "created_at": "={{ $json.created_at }}",
+            "updated_at": "={{ $json.updated_at }}"
+          },
+          "schema": [
+            {
+              "id": "lead_key",
+              "displayName": "lead_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "iclosed_contact_id",
+              "displayName": "iclosed_contact_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timezone",
+              "displayName": "timezone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "calendar",
+              "displayName": "calendar",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "iclosed_status",
+              "displayName": "iclosed_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_campaign",
+              "displayName": "utm_campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fbclid",
+              "displayName": "fbclid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "referrer",
+              "displayName": "referrer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suppressed_reason",
+              "displayName": "suppressed_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up_due_at",
+              "displayName": "follow_up_due_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email_sent_at",
+              "displayName": "email_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sms_sent_at",
+              "displayName": "sms_sent_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "raw",
+              "displayName": "raw",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Suppress Follow-up",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        128
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "REPLACE_WITH_DATA_TABLE_ID",
+          "cachedResultName": "booking_recovery"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "lead_key",
+              "condition": "eq",
+              "keyValue": "={{ $json.lead_key }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "lead_key": "={{ $json.lead_key }}",
+            "iclosed_contact_id": "={{ $json.iclosed_contact_id }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "first_name": "={{ $json.first_name }}",
+            "status": "suppressed",
+            "suppressed_reason": "={{ $json.suppressed_reason }}",
+            "follow_up_due_at": "",
+            "updated_at": "={{ $json.updated_at }}"
+          },
+          "schema": [
+            {
+              "id": "lead_key",
+              "displayName": "lead_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "iclosed_contact_id",
+              "displayName": "iclosed_contact_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "suppressed_reason",
+              "displayName": "suppressed_reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "follow_up_due_at",
+              "displayName": "follow_up_due_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Respond JSON",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        896,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"ok\": true } }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Cache-Control",
+                "value": "no-store"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Existing Row?",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -256
+      ],
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "notes": "Has this lead been seen before? Decides arm-vs-touch. Without it, iClosed's duplicate Potential events and repeat abandonments would each reset the row to pending and re-send E1.",
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "REPLACE_WITH_DATA_TABLE_ID",
+          "cachedResultName": "booking_recovery"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "lead_key",
+              "condition": "eq",
+              "keyValue": "={{ $json.lead_key }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Arm or Touch?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -256
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "// A lead is armed ONCE. After that, repeat abandonment events only refresh\n// their details — they never reset the clock and never re-send.\n//\n// This matters more than it looks: iClosed fires Potential twice per lead when\n// the form takes both phone and email, retries redeliver the same event, and a\n// real person can come back and abandon again next week. Arming on every\n// delivery would send E1 several times to the same person, which reads as\n// broken software rather than a helpful nudge.\n//\n// Output 0 = arm (genuinely new). Output 1 = touch only (already known).\nconst fresh = $('Authenticate + Normalize').first().json;\nconst existing = $input.all().map(i => i.json).filter(j => j && j.lead_key);\n\nif (!existing.length) return [[fresh], []];\n\nconst row = existing[0];\nconst alreadySent = !!String(row.email_sent_at || '').trim()\n                 || !!String(row.sms_sent_at || '').trim();\nconst alreadyClosed = String(row.status || '') === 'suppressed'\n                   || String(row.status || '') === 'completed';\n\nif (alreadySent || alreadyClosed) {\n  return [[], [{ json: { ...fresh, status: row.status, suppressed_reason: row.suppressed_reason || '' } }]];\n}\n\n// Known but still pending: leave follow_up_due_at exactly as it was so the\n// original wait window keeps running.\nreturn [[], [{ json: { ...fresh, status: 'pending', follow_up_due_at: row.follow_up_due_at } }]];"
+      }
+    },
+    {
+      "name": "Refresh Details",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        -384
+      ],
+      "notes": "Repeat sighting: update contact details and attribution, but never status or follow_up_due_at.",
+      "parameters": {
+        "resource": "row",
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "REPLACE_WITH_DATA_TABLE_ID",
+          "cachedResultName": "booking_recovery"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "lead_key",
+              "condition": "eq",
+              "keyValue": "={{ $json.lead_key }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "first_name": "={{ $json.first_name }}",
+            "last_name": "={{ $json.last_name }}",
+            "timezone": "={{ $json.timezone }}",
+            "updated_at": "={{ $json.updated_at }}"
+          },
+          "schema": [
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "first_name",
+              "displayName": "first_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_name",
+              "displayName": "last_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timezone",
+              "displayName": "timezone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
