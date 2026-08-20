@@ -198,6 +198,109 @@ HTML, not just the source.
 **Resubmission:** the failed `Usa2p` resource must be deleted and recreated —
 a `FAILED` campaign is not re-reviewable in place.
 
+### Second rejection, and the actual root cause — 2026-08-18
+
+The legal pages went live at 14:54 (verified in the rendered HTML, both HTTP
+200, both linked from the homepage footer, no robots.txt). The campaign was
+refiled at 14:57 and **failed again in 44 seconds with the identical error
+pair**, and `campaign_id` was `null` — it never reached TCR.
+
+Two hypotheses, and the first one was wrong:
+
+1. ~~A cached verdict replayed from the pre-fix crawl.~~ Plausible from the
+   timing, but not supported by anything.
+2. ✅ **The errors name missing request fields, not a non-compliant website.**
+   Twilio's own documentation for 30908 lists the first root cause as
+   *"Missing `PrivacyPolicyUrl` field in the registration request"*. The error
+   payload says `fields: ['PRIVACY_POLICY_URL']` — it was naming the field
+   literally the whole time.
+
+**The site fix was necessary but not sufficient.** Both had to be true: the
+pages compliant *and* their URLs carried in the registration.
+
+Refiled 15:00:54 with `PrivacyPolicyUrl` / `TermsAndConditionsUrl` and both
+URLs written into `MessageFlow`. Caveat: those two parameters **read back as
+`null`**, so the `Usa2p` endpoint may not persist them and the Console may be
+the only place they can be set.
+
+Signal that this attempt is different: the previous two failed in 44 s and 90 s
+with two populated errors; this one has been `IN_PROGRESS` for over 15 minutes
+with `errors: []`. It cleared the automated pre-check that was instantly
+bouncing the others.
+
+### THE REAL BLOCKER — the campaign cannot be filed via the API at all
+
+Four submissions failed across 2026-08-18 → 2026-08-20. The cause is structural,
+not editorial:
+
+| Attempt | Message flow said | Result |
+| --- | --- | --- |
+| 1 | no policy URLs, no checkbox | 30908 + 30882 |
+| 2 | URLs inline, after legal pages went live | 30908 + 30882 |
+| 3 | `PrivacyPolicyUrl` / `TermsAndConditionsUrl` params passed | **30924** only |
+| 4 | consent checkbox quoted verbatim | 30908 + 30882 again |
+
+**`POST /v1/Services/{MG}/Compliance/Usa2p` silently ignores
+`PrivacyPolicyUrl` and `TermsAndConditionsUrl`.** They were passed and read back
+as `null`. The brand registration resource has no equivalent fields either
+(confirmed by dumping every field on `BN50170e79…`). The rejection payload names
+`fields: ['PRIVACY_POLICY_URL']` and `fields: ['TERMS_AND_CONDITIONS_URL']` — it
+is naming request fields that this endpoint cannot populate.
+
+**Therefore the campaign must be created in the Console**, which exposes those
+inputs. No amount of message-flow rewriting fixes it. That the `null` read-back
+was noticed at attempt 3 and not acted on cost two further submissions.
+
+### The consent checkbox already existed — and was missed for days
+
+Read off the live form at `synchrosocial.com/apply` with a headless browser:
+
+> ☐ By entering your information, you consent to your data being saved in
+> accordance with our Terms & Privacy Policy **and to receive text messages.**
+
+Unchecked by default, `required: false`, on **step 1** directly under the phone
+field. This file previously recorded "Sidney declined the SMS consent checkbox"
+and built the whole S1-is-impossible conclusion on it. **That was wrong** — the
+owner declined *adding* one; one was already live. It was never verified against
+the form.
+
+Two live consequences:
+
+1. The wording carries only 1 of the 4 required elements (message type). It
+   lacks frequency, the rates disclosure, and STOP — which is what error 30924
+   was pointing at. Fix by editing the existing line, not by adding a control.
+2. **The tick is not recorded anywhere.** `sms_consent` is empty on all 47
+   contacts. So consent is being *collected* and immediately discarded. That,
+   not the form wording, is the real blocker on S1 — and it is a capture-workflow
+   fix, not a policy decision.
+
+### Cost — corrected
+
+| | |
+| --- | --- |
+| Start | $50.00 |
+| After number + brand + campaign attempts | **$29.35** |
+
+Spend is $20.65: number $1.15, brand ~$4.44, **and a $15 campaign fee that did
+land**. An earlier revision of this file claimed failed submissions are not
+charged — that was read from a balance taken before the charge posted, and it is
+wrong. Assume a campaign submission can cost $15 and get it right first time.
+
+### Superseded — the old cost note
+
+### Cost reality — retries are free
+
+| | |
+| --- | --- |
+| Balance at start | $50.00 |
+| Balance after number + brand + 3 campaign filings | **$44.35** |
+
+Spend is ~$5.65: the number ($1.15) plus brand registration (~$4.44).
+**The failed campaign submissions were not charged.** Earlier warnings in this
+file that each retry "burns another $15" were overcautious — the campaign fee
+evidently attaches on approval, not on submission. Do not let fear of the fee
+discourage a corrected resubmission.
+
 The brand resolved **APPROVED / VERIFIED in under two minutes** — the EIN,
 legal name and address matched cleanly, and the misspelled representative
 surname (`Hytoneen`) did not matter, confirming the judgement not to withdraw
