@@ -143,8 +143,12 @@ exposed in screenshots.
      hashed email/phone, IP, user agent, fbp/fbc. Note plan limits: 1 pixel
      on Startup plan, 5 on Business/Enterprise.
   4. In Events Manager, confirm the custom events arrive (names like
-     `invitee_meeting_scheduled`), then create a **custom conversion**
-     wrapping the "Call booked" event so it's usable as an optimization goal.
+     `invitee_meeting_scheduled`). ✅ **Done — but wrapping `Qualified`, not
+     "Call booked".** The live custom conversion is **"Qualified Application"**
+     (`2110443739684279`). `Qualified` means booked *and* not disqualified, so
+     it excludes prospects who cannot afford the offer; optimizing on
+     "Call booked" would buy bookings that get disqualified on the call. Do not
+     "correct" this back — see README §6 decisions and §9 item 6.
      ⚠️ These custom events do NOT dedupe against our site's Schedule/Lead
      (different names, by design) — optimization must point at ONE stream.
 - [ ] **C3.** Check whether the post-booking redirect to `/thank-you` can
@@ -155,9 +159,13 @@ exposed in screenshots.
 ## D. Campaign-side wiring (in Ads Manager, before launch)
 
 - [ ] **D1.** Create campaign → Leads objective → conversion location Website →
-  performance goal = maximize conversions → select the dataset + conversion
-  event **`Schedule`** (the booked call; `Lead` is an identical twin if the
-  UI or volume favors it — never optimize/report on both). If booking volume
+  performance goal = maximize conversions → select the dataset + the custom
+  conversion **"Qualified Application"** (`2110443739684279`), which is the
+  owner-decided optimization goal (booked *and* not disqualified).
+  ⚠️ *Superseded 2026-08-20:* this step previously said optimize on `Schedule`
+  (the raw booked call). `Schedule`/`Lead` are still the right things to
+  **report** volume on, but not to optimize against — and never optimize or
+  report on both `Schedule` and `Lead`, they are identical twins. If booking volume
   is too thin for learning, temporarily optimize on `ViewContent`, or on
   iClosed's native `Qualified` event via the existing **"Qualified
   Application"** custom conversion (`2110443739684279`, already wraps
