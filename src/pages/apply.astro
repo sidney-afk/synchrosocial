@@ -77,9 +77,11 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
       </div>
 
       <!-- VSL — sits between the eyebrow copy and the CTA in the hero's flex
-           column, so the shared gap-12/max-md:gap-3 rhythm gives it identical
-           spacing above (to the copy) and below (to the CTA) for free. -->
-      <div class="w-full max-w-[900px] max-md:w-[calc(100%-32px)]">
+           column. Desktop relies on the shared gap-12 rhythm for identical
+           spacing above/below; mobile adds the same mt-5/mb-5 the CTA uses
+           for its own booking gap, so all three mobile gaps (copy-to-video,
+           video-to-CTA, CTA-to-booking) match at 32px. -->
+      <div class="w-full max-w-[900px] max-md:mt-5 max-md:mb-5 max-md:w-[calc(100%-32px)]">
         <VideoEmbed provider="wistia" id="2ru7e46uba" title="How It Works" tone="brand" />
       </div>
 
