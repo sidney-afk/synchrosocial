@@ -240,16 +240,27 @@ not editorial:
 | 3 | `PrivacyPolicyUrl` / `TermsAndConditionsUrl` params passed | **30924** only |
 | 4 | consent checkbox quoted verbatim | 30908 + 30882 again |
 
-**`POST /v1/Services/{MG}/Compliance/Usa2p` silently ignores
-`PrivacyPolicyUrl` and `TermsAndConditionsUrl`.** They were passed and read back
-as `null`. The brand registration resource has no equivalent fields either
-(confirmed by dumping every field on `BN50170e79…`). The rejection payload names
-`fields: ['PRIVACY_POLICY_URL']` and `fields: ['TERMS_AND_CONDITIONS_URL']` — it
-is naming request fields that this endpoint cannot populate.
+> ⚠️ **The paragraph that used to sit here was wrong and is retracted.** It
+> claimed the endpoint silently ignores `PrivacyPolicyUrl` /
+> `TermsAndConditionsUrl` and that the campaign therefore had to be filed in the
+> Console. Both claims are false.
 
-**Therefore the campaign must be created in the Console**, which exposes those
-inputs. No amount of message-flow rewriting fixes it. That the `null` read-back
-was noticed at attempt 3 and not acted on cost two further submissions.
+**`POST /v1/Services/{MG}/Compliance/Usa2p` DOES accept `PrivacyPolicyUrl` and
+`TermsAndConditionsUrl`.** Twilio documents them as required from 2026-06-30,
+with dedicated errors 30933/30934 when absent. They simply are not echoed in the
+GET response, which is what produced the misreading.
+
+The evidence was already in the attempt table above and was misread:
+
+| Attempt | URL params sent | Result |
+| --- | --- | --- |
+| 3 | ✅ | 30908 + 30882 **cleared**, only 30924 left |
+| 4 | ❌ (dropped while editing the consent wording) | 30908 + 30882 **returned** |
+
+The params were working. Attempt 4 removed them, the URL errors came back, and
+that was attributed to the API rather than to the request. The lesson is narrow
+and worth keeping: **when a change makes a symptom reappear, diff your own
+request before blaming the platform.**
 
 ### The consent checkbox already existed — and was missed for days
 
