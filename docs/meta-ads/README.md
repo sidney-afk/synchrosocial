@@ -188,6 +188,8 @@ Rules:
 | 2026-08-14 | Recovery email sends with **no unsubscribe link** | Owner decision. It is a 1:1 transactional follow-up to someone who started booking, not a marketing broadcast. Revisit if volume grows or if targeting EU. |
 | 2026-08-19 | Renewals must be gated out of the CRM/onboarding path | A Stripe renewal for an existing client crashed the Invoice Paid workflow on a null `deal_id` and risked sending an onboarding email to a live client. Gate keys on `billing_reason === 'subscription_cycle'`. **This does not port to Commas** — see §9. |
 | 2026-08-20 | Migrate the payment processor **Stripe → Commas** (commas.com / FanBasis API) | Owner decision, already taking payments. Blocks the Phase 3 CRM feedback loop until a Commas receiver exists. |
+| 2026-08-20 | Optimize on **`Qualified`**, not `Call booked` | `Qualified` = booked *and* passed the disqualification bar (which screens out prospects who cannot afford the offer). Buying `Call booked` would buy bookings that get disqualified on the call. Custom conversion `2110443739684279`. |
+| 2026-08-20 | Keep **both** Stripe and Commas selectable per deal, rather than cutting over | Kasper picks the processor on the Sales Intake tab alongside the billing type. A hard cutover would strand in-flight Stripe subscriptions and remove a fallback while Commas is unproven. |
 
 ## 7. What remains (the checklist)
 
@@ -248,10 +250,11 @@ CRM feedback loop:
   iClosed → Integrations → Meta Pixel (runbook C2)
   *(Connected 2026-07-08; **proven in production 2026-08-20** — SERVER rows
   every day 2026-08-13 → 08-20.)*
-- [~] Create a custom conversion wrapping iClosed's `Call booked` custom event
-  (so it can be compared against / swapped in as the optimization goal)
-  *(One exists — "Qualified Application" `2110443739684279` — but it wraps
-  **`Qualified`**, not `Call booked`. Decision needed: §9 item 6.)*
+- [x] ~~Create a custom conversion wrapping iClosed's `Call booked` custom
+  event~~ — **superseded 2026-08-20.** "Qualified Application"
+  (`2110443739684279`) wraps **`Qualified`** instead, on purpose: it means
+  booked *and not disqualified*, which is the outcome worth buying. See §9
+  item 6.
 - [x] Enable Automatic Advanced Matching in dataset Settings
   *(§8: already ON.)*
 
@@ -332,14 +335,17 @@ Current open items:
 5. **Resolved:** n8n router slug gap. Published workflow version
    `9e70e07e-6e49-4b0f-a040-1be7e1f0f97d` routes
    `social-media-consultation` to the normal funnel handler.
-6. **Custom conversion wraps the wrong event.** "Qualified Application"
-   (`2110443739684279`, created 2026-08-03, `custom_event_type: OTHER`,
-   default value `0`) fires on `Qualified` AND URL containing `iclosed.io`
-   or `synchrosocial.com`. The Phase 2 checklist asked for one wrapping
-   iClosed's **`Call booked`**. Decide which is the optimization goal — a
-   `Qualified` conversion optimizes for form quality, a `Call booked` one for
-   booked calls. It is in no event map (§4) and was in no decisions row until
-   2026-08-20.
+6. ✅ **Custom conversion — resolved 2026-08-20, deliberate.** "Qualified
+   Application" (`2110443739684279`, created 2026-08-03,
+   `custom_event_type: OTHER`, default value `0`) fires on `Qualified` AND
+   URL containing `iclosed.io` or `synchrosocial.com`. The Phase 2 checklist
+   asked for one wrapping iClosed's `Call booked`; **`Qualified` is the
+   correct goal and should not be "fixed" to `Call booked`.** In this funnel
+   `Qualified` means *booked a call **and** was not disqualified* — the
+   disqualification bar screens out prospects who cannot afford the offer
+   (e.g. under ~$1.5k). Optimizing on `Call booked` would buy bookings from
+   people who get disqualified on the call; optimizing on `Qualified` buys
+   bookings from people who can actually become clients. Owner's decision.
 7. **Stripe → Commas blocks the Phase 3 CRM feedback loop.** Payments are
    moving to Commas (commas.com / FanBasis API, base
    `https://www.fanbasis.com/public-api/`). As of 2026-08-20 **no n8n
