@@ -105,10 +105,12 @@ emails, and nurture start. The old router-gap warning below is historical.
     Test Events;
   - the n8n "Sales — Call Booked" workflow ran (n8n → Executions);
   - a HubSpot contact + deal got created.
-  ⚠️ KNOWN GAP (2026-07-08): the n8n router only matches slugs
-  `ai-intro-call` / `vsl-funnel`; `/apply` now books `social-media-consultation`,
-  which the router IGNORES (no contact, no deal, no confirmation email,
-  no nurture). Fix the filter before this test — see README §open items.
+  ✅ RESOLVED (fixed 2026-07-08, re-verified live 2026-08-20): the router
+  previously matched only `ai-intro-call` / `vsl-funnel` while `/apply` books
+  `social-media-consultation`, so main-funnel bookings were IGNORED — no
+  contact, no deal, no confirmation email, no nurture. The published
+  `Is Normal Funnel Event?` condition now matches `social-media-consultation`.
+  No action needed; kept for history.
 
 ## C. iClosed checks (iClosed dashboard, app.iclosed.io)
 
