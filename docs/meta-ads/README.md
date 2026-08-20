@@ -120,6 +120,15 @@ Key facts from the site audit (July 8, 2026):
 - `/thank-you` can in principle be visited directly (bookmark/typed URL), so
   tiny overcount risk on the booked-call event; accepted.
 
+**Leads who abandon the booking form** (added 2026-08-14) are captured
+server-side off iClosed's "Contact by status" webhook and emailed a recovery
+follow-up — see `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md` §2b. This is
+the main second-chance path for paid traffic that does not convert on the
+first visit, and it is where `utm_*` / `fbclid` attribution is currently
+captured (as a JSON blob on the HubSpot contact — §6 decisions).
+
+---
+
 ## 4. The event map (FINAL — implemented)
 
 | Event | Where it fires | How |
@@ -174,11 +183,18 @@ Rules:
 | 2026-07-08 | No AEM/web-event config work | Research: prioritization eliminated, AEM tab removed (2026) |
 | 2026-07-08 | Domain verification completed by meta tag | Not required for event processing, but it is now done and verified. |
 | 2026-07-08 | No cookie-consent banner for now | US-targeted traffic; revisit if targeting EU (GDPR) |
+| 2026-08-14 | Capture abandoned bookings **server-side**, off iClosed's "Contact by status" webhook (`/webhook/iclosed-lead-abandoned`) | iClosed's browser `postMessage` carries only `{type}` — there is no lead identity in it, so the browser cannot detect an abandon. This is a second iClosed webhook lane alongside `iclosed-call-booked`. |
+| 2026-08-14 | Store paid-source attribution as **JSON blobs** in two HubSpot custom properties (`ad_attribution`, `booking_recovery`) rather than one property per field | HubSpot's free tier caps custom properties at 10 account-wide. Blobs keep `utm_*`, `fbclid`, referrer, calendar and timestamps without burning the budget — at the cost of not being filterable in HubSpot reporting. |
+| 2026-08-14 | Recovery email sends with **no unsubscribe link** | Owner decision. It is a 1:1 transactional follow-up to someone who started booking, not a marketing broadcast. Revisit if volume grows or if targeting EU. |
 | 2026-08-14 | Ad attribution is passed **into the iClosed booking URL**, not POSTed from the browser | The iframe is on another origin, so click ids and cookies do not cross it. Appending `utm_*`/`fbclid` to the booking URL makes iClosed store them on the contact and hand them back in its webhook — attribution and identity arrive already joined. Implemented in `IClosedCapture.astro`. |
 | 2026-08-14 | Unfinished-booking capture uses iClosed's **"Contact by status" webhook**, never browser postMessage | iClosed's postMessage payload carries only `{type}` — no name, email, phone or id (verified against their GTM guide). Browser capture is impossible; the server-side contact record is complete. |
 | 2026-08-14 | HubSpot stays a **record store**, all logic in n8n | Free tier has no workflow automation, and only 10 custom properties account-wide. Matches the existing pattern for the whole sales stack. |
 | 2026-08-14 | Anything reading deal stage keys on **stage ids**, never on `closedwon`/`closedlost` | Those values are relabelled and no longer mean what they say — see `booking-recovery/HUBSPOT_SCHEMA.md` §1. A CAC feedback loop keying on won/lost would push that error into ad optimisation. |
 | 2026-08-17 | Removed the `iclosed_potential`/`iclosed_qualified`/`iclosed_disqualified` custom `trackCustom` calls from `IClosedEmbed.astro`'s postMessage bridge | They duplicated iClosed's own native Meta integration (`Potential`/`Qualified`/`Disqualified`, browser+server, deduped by `event_id`). Verified via Meta Ads Manager (`ads_get_customconversions`, `ads_get_ad_account_custom_audiences`) before removing: the account's one live custom conversion ("Qualified Application", `2110443739684279`) is built on the native `Qualified` event, not `iclosed_qualified`; zero custom audiences exist on the account. `Schedule`/`Lead` (the real booked-call conversion) and the `/thank-you` dedup handoff were left untouched. |
+| 2026-08-19 | Renewals must be gated out of the CRM/onboarding path | A Stripe renewal for an existing client crashed the Invoice Paid workflow on a null `deal_id` and risked sending an onboarding email to a live client. Gate keys on `billing_reason === 'subscription_cycle'`. **This does not port to Commas** — see §9. |
+| 2026-08-20 | Migrate the payment processor **Stripe → Commas** (commas.com / FanBasis API) | Owner decision, already taking payments. Blocks the Phase 3 CRM feedback loop until a Commas receiver exists. |
+| 2026-08-20 | Optimize on **`Qualified`**, not `Call booked` | `Qualified` = booked *and* passed the disqualification bar (which screens out prospects who cannot afford the offer). Buying `Call booked` would buy bookings that get disqualified on the call. Custom conversion `2110443739684279`. |
+| 2026-08-20 | Keep **both** Stripe and Commas selectable per deal, rather than cutting over | Kasper picks the processor on the Sales Intake tab alongside the billing type. A hard cutover would strand in-flight Stripe subscriptions and remove a fallback while Commas is unproven. |
 
 ## 7. What remains (the checklist)
 
@@ -215,6 +231,9 @@ Server-side / CAPI:
   proved it. It also establishes that iClosed holds lead email/phone
   server-side (it hashes them into those events), which is the basis of the
   booking-recovery capture route.
+  *(Re-confirmed 2026-08-20: `ads_get_dataset_stats` on `4309835332571875`
+  broken down by `event_source` returns SERVER rows every day 2026-08-13 →
+  08-20, so this holds a week later too.)*
 
 CRM feedback loop:
 - [ ] Push qualified, bad-fit, closed-won, and deal-value outcomes back to Meta.
@@ -224,20 +243,30 @@ CRM feedback loop:
 ### Historical checklist from PR #27 handoff
 
 ### Launch blockers
-- [ ] **Merge this branch to `main`** → auto-deploys the pixel to production
-- [ ] Ad account + payment method confirmed, dataset linked to ad account (runbook A)
-- [ ] Verify events with Test Events + a real test booking (runbook B)
-- [ ] ⚠️ **Fix the n8n booking router** (see §8 #1) — main-funnel bookings
-  currently create NO HubSpot contact/deal/emails. Needs Sidney's go-ahead
-  (touches live sales automation).
+- [x] **Merge this branch to `main`** → auto-deploys the pixel to production
+  *(PR #27 merged 2026-07-08)*
+- [~] Ad account + payment method confirmed, dataset linked to ad account (runbook A)
+  *(dataset↔ad-account link confirmed §8; **payment method still unconfirmed** —
+  event traffic is not proof of spend, ask Sidney)*
+- [x] Verify events with Test Events + a real test booking (runbook B)
+  *(2026-07-08)*
+- [x] ⚠️ **Fix the n8n booking router** (see §8 #1) — main-funnel bookings
+  currently create NO HubSpot contact/deal/emails.
+  *(Done 2026-07-08, re-verified live 2026-08-20.)*
 
 ### Phase 2 — server-side (fast follow, ~10 min manual)
-- [ ] Connect iClosed's native Meta CAPI: Events Manager → dataset Settings →
+- [x] Connect iClosed's native Meta CAPI: Events Manager → dataset Settings →
   Generate access token ("Set up manually") → paste dataset ID + token in
   iClosed → Integrations → Meta Pixel (runbook C2)
-- [ ] Create a custom conversion wrapping iClosed's `Call booked` custom event
-  (so it can be compared against / swapped in as the optimization goal)
-- [ ] Enable Automatic Advanced Matching in dataset Settings
+  *(Connected 2026-07-08; **proven in production 2026-08-20** — SERVER rows
+  every day 2026-08-13 → 08-20.)*
+- [x] ~~Create a custom conversion wrapping iClosed's `Call booked` custom
+  event~~ — **superseded 2026-08-20.** "Qualified Application"
+  (`2110443739684279`) wraps **`Qualified`** instead, on purpose: it means
+  booked *and not disqualified*, which is the outcome worth buying. See §9
+  item 6.
+- [x] Enable Automatic Advanced Matching in dataset Settings
+  *(§8: already ON.)*
 
 ### Phase 3 — CRM feedback loop (CAC, not CPL)
 - [ ] Extend n8n "Sales — Contract Signed" (deal → closedwon) to send a CAPI
@@ -326,6 +355,35 @@ Current open items:
 5. **Resolved:** n8n router slug gap. Published workflow version
    `9e70e07e-6e49-4b0f-a040-1be7e1f0f97d` routes
    `social-media-consultation` to the normal funnel handler.
+6. ✅ **Custom conversion — resolved 2026-08-20, deliberate.** "Qualified
+   Application" (`2110443739684279`, created 2026-08-03,
+   `custom_event_type: OTHER`, default value `0`) fires on `Qualified` AND
+   URL containing `iclosed.io` or `synchrosocial.com`. The Phase 2 checklist
+   asked for one wrapping iClosed's `Call booked`; **`Qualified` is the
+   correct goal and should not be "fixed" to `Call booked`.** In this funnel
+   `Qualified` means *booked a call **and** was not disqualified* — the
+   disqualification bar screens out prospects who cannot afford the offer
+   (e.g. under ~$1.5k). Optimizing on `Call booked` would buy bookings from
+   people who get disqualified on the call; optimizing on `Qualified` buys
+   bookings from people who can actually become clients. Owner's decision.
+7. **Stripe → Commas blocks the Phase 3 CRM feedback loop.** Payments are
+   moving to Commas (commas.com / FanBasis API, base
+   `https://www.fanbasis.com/public-api/`). As of 2026-08-20 **no n8n
+   workflow references Commas and no webhook subscription exists on the
+   Commas account**, so a Commas payment notifies nothing — which is why two
+   clients had to be advanced by hand on 2026-08-19. Two traps for whoever
+   builds the receiver: (a) the renewal gate keys on Stripe's
+   `billing_reason`, a field Commas never sends — Commas signals renewals as
+   their own event type `subscription.renewed`, so branch on `body.type`;
+   (b) **Commas delivers at-most-once — a failed delivery is logged and
+   never retried**, so a missed webhook is missed permanently.
+8. **Paid-source tagging is half-built.** `Sales — Booking Recovery Capture`
+   writes `ad_attribution` (`utm_source/medium/campaign/content`, `fbclid`,
+   referrer, calendar, `captured_at`) and `booking_recovery` onto the HubSpot
+   contact — but only for leads who **abandoned**. Leads who actually book
+   still get no campaign/source fields, so checklist item "Add/confirm
+   HubSpot properties for paid source, campaign, lead quality, CAC" is
+   partially, not fully, addressed.
 
 Historical items from PR #27 handoff:
 
@@ -336,8 +394,11 @@ Historical items from PR #27 handoff:
    (re-pointed ~Jul 7), which falls into "Ignore Other Event Types" → no
    HubSpot contact, no deal, no confirmation email, no nurture. Fix: change
    the "Is Normal Funnel Event?" condition `vsl-funnel` →
-   `social-media-consultation` (or match both). One string. NOT yet applied —
-   awaiting Sidney's OK since it activates live customer emails.
+   `social-media-consultation` (or match both). One string.
+   ✅ **RESOLVED 2026-07-08, re-verified live 2026-08-20** — the published
+   `Is Normal Funnel Event?` condition matches `social-media-consultation`.
+   This entry is kept for history only; see current item 5. *(The same stale
+   warning also sits in `SETUP_RUNBOOK.md` around L110.)*
 2. iClosed redirect query params on `/thank-you` — unknown; check with a test
    booking (would enable browser-side advanced matching + richer dedup).
 3. HubSpot free tier Meta integration limits — unresearched (see RESEARCH.md).
@@ -371,6 +432,27 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-20 (six-week catch-up audit)** - The doc had not been touched
+  since 2026-07-09; this entry closes that gap. Verified against live Meta
+  and n8n rather than memory. **iClosed CAPI is now confirmed in
+  production**: `ads_get_dataset_stats` on `4309835332571875` broken down by
+  `event_source` returns SERVER rows *every day* from 2026-08-13 to
+  2026-08-20, alongside browser events — which retires both the "CAPI remains
+  unconfirmed" line below and §8's "no activity for 27 days". Found an
+  undocumented custom conversion **"Qualified Application"**
+  (`2110443739684279`, created 2026-08-03, last fired 2026-08-19) wrapping
+  the `Qualified` event — note the Phase 2 checklist asked for one wrapping
+  **`Call booked`**, so the optimization goal needs a decision. Documented
+  the **abandoned-booking recovery lane** (built 2026-08-14) as the main
+  follow-up path for paid traffic that does not convert on the first visit —
+  it also writes an `ad_attribution` JSON blob (`utm_*`, `fbclid`, referrer,
+  calendar) onto the HubSpot contact, which is a partial answer to the
+  paid-source tagging item. Confirmed the router-slug warning in §9 is stale
+  (live `Is Normal Funnel Event?` matches `social-media-consultation`).
+  Recorded the Stripe → Commas processor migration as a blocker for the
+  Phase 3 CRM feedback loop. Ticked the launch-blocker and Phase 2 items that
+  live checks show are already done.
 
 - **2026-08-17 (tracking cleanup — removed redundant iClosed bridge events)**
   — Sidney flagged that `synchrosocial.com/apply` fires custom
@@ -427,6 +509,8 @@ both phone and email (§9.5), so halve it before quoting it as people.
   `invitee_meeting_scheduled`; however Meta still reported these as Browser
   events, so iClosed CAPI remains unconfirmed. Setup token was exposed in
   screenshots; regenerate before production CAPI use.
+  *(Superseded 2026-08-20: iClosed CAPI is confirmed — SERVER-sourced events
+  every day 2026-08-13 → 08-20. The token regeneration item still stands.)*
 
 - **2026-07-08 (later)** — Walked Events Manager with Sidney: captured full
   account IDs, confirmed AAM already on / ad account linked / domain
