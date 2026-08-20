@@ -94,6 +94,22 @@ const ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime";
             resize={false}
           />
         </div>
+
+        <!-- A2P 10DLC consent disclosure. Carriers require the four elements below
+             (message type, frequency, rates, opt-out) to appear adjacent to the
+             control where the phone number is given. The booking widget is a
+             third-party iframe whose own checkbox links to iClosed's policies, not
+             ours, so this line carries our disclosure and links to our policies as
+             close to the phone field as we can place it. Do not remove without
+             checking docs/booking-recovery/TWILIO_RUNBOOK.md. -->
+        <p class="mx-auto mt-5 max-w-[680px] text-center text-[12px] leading-[1.55] text-white/45 max-md:w-[calc(100%-32px)]">
+          By booking a call you agree to receive text messages from Synchro Social about your
+          call. Message frequency varies, typically one message per booking. Message and data
+          rates may apply. Reply STOP to opt out, HELP for help. See our
+          <a href="/privacypolicy" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 transition-colors hover:text-white/75">Privacy Policy</a>
+          and
+          <a href="/terms-conditions" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 transition-colors hover:text-white/75">Terms</a>.
+        </p>
       </div>
 
       <AgencyAwardRecognition />
