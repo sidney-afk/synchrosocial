@@ -1,6 +1,12 @@
 ---
 import { testimonials } from "../data/testimonials.js";
 import ApplyButton from "./ApplyButton.astro";
+
+interface Props {
+  ctaLabel?: string;
+}
+
+const { ctaLabel = "Apply Now" } = Astro.props;
 ---
 
 <section class="apply-testimonials" aria-labelledby="apply-testimonials-title">
@@ -31,7 +37,7 @@ import ApplyButton from "./ApplyButton.astro";
     </div>
 
     <div class="apply-testimonials__cta">
-      <ApplyButton href="#book" label="Apply Now" class="w-full" />
+      <ApplyButton href="#book" label={ctaLabel} class="w-full" />
       <p>Get Started In Less Than 60 Seconds &bull; Cancel Anytime</p>
     </div>
   </div>
