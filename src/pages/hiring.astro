@@ -1,0 +1,88 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
+import VideoEmbed from "../components/VideoEmbed.astro";
+import ApplyButton from "../components/ApplyButton.astro";
+
+// This is deliberately a dedicated iClosed event. Do not point hiring traffic
+// at the production sales calendars used by /apply. The matching event and its
+// questions must be created in the iClosed dashboard before this route ships.
+const applicationUrl = "https://app.iclosed.io/e/synchrosocial/client-success-content-manager-application";
+
+const hiringVideoId = "tixqyu3r8l";
+---
+
+<Layout
+  title="Client Success & Content Manager — Synchro Social"
+  description="Join Synchro Social as a Client Success & Content Manager. Help keep the content process clear, organized, and moving with intention."
+  bodyClass="v2"
+  metaEvent={{ name: "ViewContent", params: { content_name: "hiring_client_success_content_manager" } }}
+>
+  <SiteNav minimal />
+
+  <main>
+    <section class="relative isolate overflow-hidden bg-black px-4 py-16 sm:px-6 sm:py-20 lg:py-24">
+      <div
+        class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(75%_52%_at_50%_100%,rgba(131,49,232,0.95)_0%,rgba(53,17,112,0.54)_42%,rgba(0,0,0,0)_78%)]"
+        aria-hidden="true"
+      ></div>
+
+      <div class="mx-auto flex w-full max-w-[940px] flex-col items-center text-center">
+        <p class="font-script text-2xl font-normal leading-5 text-[#b794ff] max-md:text-[20px]">
+          Join The Synchro Social Team
+        </p>
+
+        <h1 class="font-tight mt-5 max-w-[860px] text-[clamp(2.75rem,7vw,5.25rem)] font-bold capitalize leading-[0.98] text-white">
+          Client Success &amp;<br class="hidden sm:block" /> Content Manager
+        </h1>
+
+        <p class="mt-6 max-w-[720px] text-lg leading-[1.58] text-[#d6d2df] sm:text-xl">
+          We’re looking for someone who sees the moving pieces, brings order to the details, and helps every client feel supported from first message to final post.
+        </p>
+
+        <div class="mt-11 w-full max-w-[900px]">
+          <VideoEmbed
+            provider="wistia"
+            id={hiringVideoId}
+            title="Client Success and Content Manager role at Synchro Social"
+            tone="brand"
+          />
+        </div>
+
+        <div class="mt-10 flex w-full max-w-[457px] flex-col items-center gap-4">
+          <ApplyButton href={applicationUrl} label="Apply For The Role" class="w-full" />
+          <p class="text-sm leading-6 text-white/60">
+            A focused application. Real work. No fluff.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white px-4 py-16 text-black sm:px-6 sm:py-20">
+      <div class="mx-auto max-w-[780px] text-center">
+        <p class="font-script text-2xl font-normal leading-5 text-[#7726d6] max-md:text-[20px]">
+          The Right Kind Of Detail
+        </p>
+        <h2 class="font-tight mt-4 text-[clamp(2.15rem,5vw,3.6rem)] font-bold capitalize leading-[1.03] text-black">
+          Clear Communication. Better Systems. Stronger Client Experience.
+        </h2>
+        <p class="mx-auto mt-6 max-w-[680px] text-lg leading-[1.6] text-[#4f4860]">
+          This role sits at the center of the work: keeping content organized, communication thoughtful, and the next important detail from getting lost. If that sounds like how you work, we want to hear from you.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-black px-4 py-8 sm:px-6">
+    <div class="mx-auto flex w-full max-w-[1040px] flex-col items-center justify-between gap-5 text-center text-sm text-white/55 sm:flex-row sm:text-left">
+      <a href="/" aria-label="Synchro Social">
+        <img src="/images/logo-updated.png" alt="Synchro Social" class="h-auto w-[164px]" />
+      </a>
+      <div class="flex items-center gap-5">
+        <a href="/privacypolicy" class="transition hover:text-white">Privacy Policy</a>
+        <a href="/terms-conditions" class="transition hover:text-white">Terms</a>
+        <a href="mailto:hello@synchrosocial.com" class="transition hover:text-white">Contact</a>
+      </div>
+    </div>
+  </footer>
+</Layout>
