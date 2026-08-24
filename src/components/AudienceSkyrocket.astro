@@ -1,9 +1,10 @@
 ---
 interface Props {
   ctaHref?: string;
+  ctaLabel?: string;
 }
 
-const { ctaHref = "/apply" } = Astro.props;
+const { ctaHref = "/apply", ctaLabel = "Apply Now" } = Astro.props;
 
 const imageBase = "/images/audience-skyrocket/";
 
@@ -200,7 +201,7 @@ const proofColumns = [
 
     <div class="audience-skyrocket__cta">
       <a class="audience-skyrocket__cta-button" href={ctaHref}>
-        <span>Apply Now</span>
+        <span>{ctaLabel}</span>
         <span class="audience-skyrocket__cta-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M5 12h13" />
