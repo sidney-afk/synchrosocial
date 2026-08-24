@@ -626,3 +626,55 @@ webhook supplies an email, at which point the refresh path syncs them.
 Sequencing note: merging the site branch is what starts `utm_*` flowing at all.
 Without it, only `_fbc` (the Meta click id) is captured — enough to match a click
 in Meta, but not human-readable campaign names.
+
+---
+
+## 14. Dispatcher write-back and Kasper's Telegram alerts (2026-08-24)
+
+Two related fixes to `Sales — Booking Recovery Dispatch` (`nQ4vnZ8bmG3E3Lor`),
+landed together because the second exists to close a hole the first exposed.
+
+### 14.1 The HubSpot mirror was write-once and went stale
+
+Capture stamps `booking_recovery` on the HubSpot contact **once**, at capture
+time, and nothing ever refreshed it. So a contact record said
+`state: captured, email_sent_at: ""` forever — even hours after the dispatcher
+had actually sent the recovery email.
+
+This was not cosmetic. It was read as proof the sender was broken (it wasn't —
+execution `391397` on 2026-08-16 shows a real send to Han Pat, Gmail message id
+`1a00cc52995b3c69`), and it came close to producing a duplicate, confusing
+outreach to a lead who had already heard from Kasper.
+
+**Fix:** a new **`Mirror To HubSpot`** node, upserting the contact right after
+`Send Recovery Email`, refreshing `booking_recovery` to
+`state: emailed, email_sent_at: <real timestamp>`. `onError: continueRegularOutput`
+— it's bookkeeping placed after the email is already gone, so a HubSpot hiccup
+must never fail the run or swallow the Slack DM downstream of it.
+
+### 14.2 Kasper gets a Telegram alert too — but only where he can act
+
+`Sales — Call Booked (iClosed)` already Telegrams Kasper (credential
+`Telegram — Booking Alerts`, chat `136443465`) the moment someone **completes**
+a booking. Nothing told him about the ones who **didn't**. Two new nodes close
+that, branched on the same `suppressed_reason` classification `Safety Gate`
+already computes — no new logic, just two new listeners on existing outputs:
+
+| Branch | Trigger | What Kasper gets | Why |
+| --- | --- | --- | --- |
+| **No email on file** | `Awaiting SMS?` (parallel to `Mark Suppressed`, fires only when `suppressed_reason = awaiting_sms`) | Name, phone, calendar, source, qualification, iClosed link — told to **text them himself now**, since email can't reach them and SMS isn't live | These are the phone-only abandoners parked with nothing else happening to them at all until Twilio is registered |
+| **Has email, recovery email already sent** | parallel to `DM Sidney (Sent)`, off `Mirror To HubSpot` | Name, email, phone, qualification, iClosed link — told the automated email **already went out, no need to duplicate it**, but free to call/text personally | Keeps Kasper informed without risking a double-touch |
+
+Every other `suppressed_reason` (`already_booked`, `existing_customer`,
+`expired`, `stale_prelaunch`, `do_not_contact`) stays silent — none of those
+need a human to do anything.
+
+**Fires once per lead, by construction.** Both branches only trigger the run in
+which a row's `status` flips away from `pending` (to `completed` or
+`suppressed`), and `Get Pending` only ever reads `status = pending`. The same
+lead cannot reach either branch twice.
+
+**Not yet proven against a real send** — as of this write-up no eligible row
+had come due since publishing. Both new nodes and the write-back share the same
+untested-in-production caveat; verify against the next real abandonment before
+treating either as settled.
