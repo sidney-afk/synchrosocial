@@ -134,9 +134,11 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | Event | Where it fires | How |
 | --- | --- | --- |
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
-| `ViewContent` (content_name `apply` / `call`) | `/apply`, `/call` | `metaEvent` prop on `Layout` |
+| `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
 | **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; `/thank-you` re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
+| `QuizStarted` (custom) | `/quiz`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
+| `QuizCompleted` (custom, param `quiz_result`) | `/quiz`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
 Rules:
 - **Schedule and Lead mark the same moment.** Pick ONE as the campaign's
@@ -146,6 +148,11 @@ Rules:
 - iClosed's server-side CAPI events (once connected, see §6) are a SEPARATE
   stream with different (custom) names — they never dedupe against ours.
   Optimization points at one stream deliberately.
+- **The quiz funnel (`/quiz`) never fires `Schedule`/`Lead` on its own** —
+  those only fire if a quiz-taker goes on to actually book through the
+  shared `<IClosedEmbed>` on the result screen, same bridge as `/apply`.
+  Quiz engagement is tracked separately (`QuizStarted`/`QuizCompleted`) so it
+  can't be mistaken for a booked call in reporting.
 
 ## 5. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`, [PR #27](https://github.com/sidney-afk/synchrosocial/pull/27))
 
@@ -432,6 +439,23 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-24 (Growth Bottleneck Quiz funnel — landing page + tracking)** —
+  Built `/quiz`, a new free lead-magnet funnel (8-question quiz, scored
+  into one of 4 growth-bottleneck results, name+email asked in-quiz before
+  the questions per the brief). Full audit + build plan lives in a
+  Sidney-approved artifact; decisions ratified 2026-08-24: Apply page
+  (`campaignProof.js`, `caseStudies.js` fallback for two clients) is
+  canonical for proof numbers; result CTA reuses the existing `/apply`
+  iClosed calendar and `Schedule`/`Lead` bridge unchanged; headline A/B test
+  uses `?hl=<variant>` URLs, not client-side random assignment. Added
+  `QuizStarted`/`QuizCompleted` to the event map above — deliberately not a
+  reuse of `Schedule`/`Lead`. Backend capture (Supabase `quiz_responses` +
+  `quiz-capture` Edge Function) lives in the `client-analytics` repo; see
+  that repo's migrations/`supabase/functions/quiz-capture` for the write
+  path. n8n nurture workflow and the HubSpot `lead_source` property are a
+  separate, explicitly-gated follow-up (production automation — not done in
+  this pass).
 
 - **2026-08-20 (six-week catch-up audit)** - The doc had not been touched
   since 2026-07-09; this entry closes that gap. Verified against live Meta
