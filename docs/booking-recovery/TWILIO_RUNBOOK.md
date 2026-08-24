@@ -297,6 +297,42 @@ land**. An earlier revision of this file claimed failed submissions are not
 charged — that was read from a balance taken before the charge posted, and it is
 wrong. Assume a campaign submission can cost $15 and get it right first time.
 
+### Toll-free — filed in parallel, 2026-08-24
+
+After a full business day with zero response on the support ticket (filed
+Friday, still silent Monday afternoon) and three consecutive 30896 rejections
+with no further diagnostic detail from Twilio, filed a **toll-free**
+verification as a second, independent path — Sidney's call, not a unilateral
+decision. Toll-free uses its own review pipeline (not TCR/10DLC), so it isn't
+subject to whatever specifically keeps tripping 30896 there.
+
+| | |
+| --- | --- |
+| Number | **+1 (888) 272-5649** — `PNd232dd64665df8dcdd2b76b43e6c3f40` |
+| Verification | `HHba4182014c92d83017892685ecdf7f15` — **PENDING_REVIEW** |
+| Use case | `CUSTOMER_CARE`, `ACCOUNT_NOTIFICATIONS` — S2 confirmation only, same as the blocked 10DLC campaign |
+| Opt-in proof | same page — `https://synchrosocial.com/sms-opt-in` |
+| Filed | 2026-08-24T20:12:52Z |
+
+**Two API quirks hit while filing, both now known:**
+
+1. **A Primary Customer Profile cannot be passed to `Tollfree/Verifications`.**
+   `Cannot supply Primary Customer Profiles (PCP), must be ISV Starters or
+   Secondary (SCP)`. Omitting `CustomerProfileSid` let Twilio auto-create one —
+   but it auto-linked to the *existing* primary profile anyway
+   (`resource_links.customer_profile` points at `BU824c5b17…`), which is why
+   the surname typo `Hytoneen` reappears here despite submitting the corrected
+   `Hytoenen` — same read-only-once-submitted behavior as the original profile.
+   Not fixable from here; same judgment as before applies — not worth chasing.
+2. **`CustomerProfileSid` and the business address/contact fields are
+   mutually exclusive** in this endpoint — passing both throws `400`, since
+   the profile is presumed to already carry them.
+
+**Does not touch or risk the existing 10DLC registration.** Independent
+number, independent review. If toll-free clears first, S2 ships on it and the
+10DLC ticket stays open in the background; if 10DLC clears first, the
+toll-free number is simply unused.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
