@@ -1,0 +1,350 @@
+---
+// The interactive quiz: name+email → 8 questions → scored result. Vanilla
+// JS state machine (no framework installed, none needed — same technique
+// TestimonialCarousel.astro uses for its tabbed panels: toggle `hidden`,
+// re-init guarded by dataset.ready, re-bound on astro:page-load).
+//
+// Answers post to the Supabase quiz-capture Edge Function (public, rate
+// limited, fails closed — see client-analytics migrations/*-quiz-*.sql).
+// Capture failure never blocks showing the result: the score is computed
+// client-side regardless of whether the network call succeeds.
+import IClosedEmbed from "./IClosedEmbed.astro";
+import { quizQuestions, quizResults, scorePriority } from "../data/growthQuizQuestions.js";
+
+const resultEntries = scorePriority.map((key) => [key, quizResults[key]]);
+---
+
+<section id="quiz-start" class="w-full scroll-mt-20 bg-black py-16 max-md:py-10" data-growth-quiz>
+  <div class="mx-auto w-[95%] max-w-[640px]">
+    <div class="overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5">
+      <!-- Progress -->
+      <div class="quiz-progress-wrap border-b border-black/5 px-8 pt-6 max-md:px-5" data-quiz-progress-wrap hidden>
+        <div class="mb-2 flex items-center justify-between">
+          <span class="font-tight text-xs font-semibold uppercase tracking-[0.14em] text-[#7a2bdc]" data-quiz-progress-label>
+            Question 1 of {quizQuestions.length}
+          </span>
+        </div>
+        <div class="h-1.5 w-full overflow-hidden rounded-full bg-black/10">
+          <div class="h-full rounded-full bg-[var(--g-purple)] transition-[width] duration-300" data-quiz-progress style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="px-8 py-9 max-md:px-5 max-md:py-7">
+        <!-- Contact step -->
+        <div data-quiz-panel="contact">
+          <h2 class="font-tight text-2xl font-bold leading-tight text-black max-md:text-xl">
+            Where should we send your result?
+          </h2>
+          <p class="mt-2 text-base leading-[157%] text-[#555]">
+            Takes 3 minutes. Eight quick questions, then your growth diagnosis.
+          </p>
+          <form class="mt-6 flex flex-col gap-4" data-quiz-contact-form>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-semibold text-black" for="quiz-name">Name</label>
+              <input
+                id="quiz-name"
+                name="name"
+                type="text"
+                autocomplete="name"
+                required
+                class="h-12 rounded-lg border border-black/15 px-4 text-base text-black outline-none transition focus:border-[var(--g-purple)]"
+              />
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-semibold text-black" for="quiz-email">Email</label>
+              <input
+                id="quiz-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                class="h-12 rounded-lg border border-black/15 px-4 text-base text-black outline-none transition focus:border-[var(--g-purple)]"
+              />
+            </div>
+            <p class="hidden text-sm font-medium text-red-600" data-quiz-contact-error>
+              Enter your name and a valid email to continue.
+            </p>
+            <button
+              type="submit"
+              class="btn-g mt-2 flex h-12 items-center justify-center rounded-xl text-base font-semibold text-white"
+            >
+              Start the Quiz
+            </button>
+          </form>
+        </div>
+
+        <!-- Question steps -->
+        {
+          quizQuestions.map((q, index) => (
+            <div data-quiz-panel={q.id} data-question-index={index} hidden>
+              <h2 class="font-tight text-2xl font-bold leading-tight text-black max-md:text-xl">{q.text}</h2>
+              {q.helper && <p class="mt-2 text-sm leading-[150%] text-[#777]">{q.helper}</p>}
+              <div class="mt-6 flex flex-col gap-2.5" role="radiogroup" aria-label={q.text}>
+                {q.options.map((label, i) => (
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked="false"
+                    data-quiz-option={i + 1}
+                    class="quiz-option flex w-full items-center rounded-xl border border-black/12 px-4 py-3.5 text-left text-base leading-snug text-black transition hover:border-[var(--g-purple)] hover:bg-[#f6f1ff]"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {index > 0 && (
+                <button
+                  type="button"
+                  class="mt-5 text-sm font-semibold text-[#7a2bdc]"
+                  data-quiz-back
+                >
+                  ← Back
+                </button>
+              )}
+            </div>
+          ))
+        }
+
+        <!-- Result -->
+        <div data-quiz-panel="result" hidden>
+          {
+            resultEntries.map(([key, result]) => (
+              <div data-result={key} hidden>
+                <p class="font-script text-2xl capitalize leading-[157%] text-[var(--g-purple)]">Your Result</p>
+                <h2 class="font-tight mt-1 text-3xl font-bold leading-tight text-black max-md:text-2xl">
+                  {result.title}
+                </h2>
+                <p class="mt-4 text-base leading-[157%] text-[#333]">{result.body}</p>
+
+                <div class="mt-6 flex flex-col gap-1">
+                  <p class="text-sm font-bold uppercase tracking-[0.06em] text-black">Why this caps your growth</p>
+                  <p class="text-base leading-[157%] text-[#333]">{result.why}</p>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-1 rounded-xl bg-[#f6f1ff] p-5">
+                  <p class="text-sm font-bold uppercase tracking-[0.06em] text-[#3d128f]">Your next action</p>
+                  <p class="text-base leading-[157%] text-[#331a5e]">{result.action}</p>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-1">
+                  <p class="text-sm font-bold uppercase tracking-[0.06em] text-black">The bigger picture</p>
+                  <p class="text-base leading-[157%] text-[#333]">{result.bridge}</p>
+                </div>
+              </div>
+            ))
+          }
+
+          <!-- Shared booking CTA — one calendar for every result, same as
+               /apply (decision log, 2026-08-24). -->
+          <div class="mt-9 border-t border-black/10 pt-8" id="quiz-book">
+            <p class="font-tight text-xl font-bold text-black">See how we build it</p>
+            <p class="mt-1 text-base leading-[157%] text-[#555]">
+              Book a free growth audit and we'll show you exactly how to fix this.
+            </p>
+            <div class="mt-5">
+              <IClosedEmbed
+                linkPrefix="synchrosocial/social-media-consultation"
+                title="Social Media Consultation"
+                height="500px"
+                card={false}
+                resize={false}
+              />
+            </div>
+            <p class="mt-5 text-center text-[12px] leading-[1.55] text-black/45">
+              By booking a call you agree to receive text messages from Synchro Social about your
+              call. Message frequency varies, typically one message per booking. Message and data
+              rates may apply. Reply STOP to opt out, HELP for help. See our
+              <a href="/privacypolicy" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Privacy Policy</a>
+              and
+              <a href="/terms-conditions" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">Terms</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quiz-option[aria-checked="true"] {
+    border-color: var(--g-purple);
+    background: #f6f1ff;
+    box-shadow: 0 0 0 1px var(--g-purple);
+  }
+</style>
+
+<script>
+  const QUIZ_CAPTURE_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/quiz-capture";
+  const ATTR_KEY = "ss_attr";
+  const ATTR_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid", "gclid", "ttclid"];
+
+  function fireQuizEvent(name: string, params: Record<string, string> = {}) {
+    if (typeof (window as any).fbq !== "function") return;
+    const eventID =
+      window.crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+    (window as any).fbq("trackCustom", name, params, { eventID });
+  }
+
+  function readAttribution(): Record<string, string> {
+    try {
+      const raw = sessionStorage.getItem(ATTR_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function headlineVariant(): string {
+    try {
+      return new URLSearchParams(window.location.search).get("hl") || "control";
+    } catch (e) {
+      return "control";
+    }
+  }
+
+  function initGrowthQuiz() {
+    document.querySelectorAll<HTMLElement>("[data-growth-quiz]").forEach((root) => {
+      if (root.dataset.ready === "true") return;
+      root.dataset.ready = "true";
+
+      const panels = [...root.querySelectorAll<HTMLElement>("[data-quiz-panel]")];
+      const contactPanel = root.querySelector<HTMLElement>('[data-quiz-panel="contact"]');
+      const questionPanels = panels.filter((p) => p.dataset.questionIndex !== undefined);
+      const resultPanel = root.querySelector<HTMLElement>('[data-quiz-panel="result"]');
+      const progressWrap = root.querySelector<HTMLElement>("[data-quiz-progress-wrap]");
+      const progressBar = root.querySelector<HTMLElement>("[data-quiz-progress]");
+      const progressLabel = root.querySelector<HTMLElement>("[data-quiz-progress-label]");
+
+      const order = ["contact", ...questionPanels.map((p) => p.dataset.quizPanel as string), "result"];
+      const answers: Record<string, number> = {};
+      let contactInfo = { name: "", email: "" };
+
+      function show(id: string) {
+        panels.forEach((p) => {
+          p.hidden = p.dataset.quizPanel !== id;
+        });
+        const qIndex = questionPanels.findIndex((p) => p.dataset.quizPanel === id);
+        if (progressWrap) progressWrap.hidden = qIndex < 0;
+        if (qIndex >= 0 && progressBar && progressLabel) {
+          progressBar.style.width = Math.round(((qIndex + 1) / questionPanels.length) * 100) + "%";
+          progressLabel.textContent = `Question ${qIndex + 1} of ${questionPanels.length}`;
+        }
+        root.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function goNext(fromId: string) {
+        const idx = order.indexOf(fromId);
+        if (idx >= 0 && idx < order.length - 1) show(order[idx + 1]);
+      }
+      function goBack(fromId: string) {
+        const idx = order.indexOf(fromId);
+        if (idx > 0) show(order[idx - 1]);
+      }
+
+      // Contact step
+      if (contactPanel) {
+        const form = contactPanel.querySelector<HTMLFormElement>("[data-quiz-contact-form]");
+        const errorEl = contactPanel.querySelector<HTMLElement>("[data-quiz-contact-error]");
+        form?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = (form.querySelector('[name="name"]') as HTMLInputElement).value.trim();
+          const email = (form.querySelector('[name="email"]') as HTMLInputElement).value.trim();
+          const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          if (!name || !emailOk) {
+            if (errorEl) errorEl.hidden = false;
+            return;
+          }
+          if (errorEl) errorEl.hidden = true;
+          contactInfo = { name, email };
+          fireQuizEvent("QuizStarted");
+          goNext("contact");
+        });
+      }
+
+      // Question steps
+      questionPanels.forEach((panel) => {
+        const qid = panel.dataset.quizPanel as string;
+        const options = [...panel.querySelectorAll<HTMLButtonElement>("[data-quiz-option]")];
+        options.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            options.forEach((b) => b.setAttribute("aria-checked", "false"));
+            btn.setAttribute("aria-checked", "true");
+            answers[qid] = Number(btn.dataset.quizOption);
+            window.setTimeout(() => {
+              const idx = order.indexOf(qid);
+              if (idx === order.length - 2) {
+                finish();
+              } else {
+                goNext(qid);
+              }
+            }, 180);
+          });
+        });
+        panel.querySelector("[data-quiz-back]")?.addEventListener("click", () => goBack(qid));
+      });
+
+      function finish() {
+        const scores = {
+          reach: (answers.q1 || 0) + (answers.q2 || 0),
+          positioning: (answers.q3 || 0) + (answers.q4 || 0),
+          profile: (answers.q5 || 0) + (answers.q6 || 0),
+          consistency: (answers.q7 || 0) + (answers.q8 || 0),
+        };
+        // Tiebreak priority: reach > positioning > profile > consistency.
+        const priority = ["reach", "positioning", "profile", "consistency"] as const;
+        let winner: string = priority[0];
+        priority.forEach((cat) => {
+          if (scores[cat] < scores[winner as keyof typeof scores]) winner = cat;
+        });
+
+        resultPanel?.querySelectorAll<HTMLElement>("[data-result]").forEach((block) => {
+          block.hidden = block.dataset.result !== winner;
+        });
+
+        show("result");
+        fireQuizEvent("QuizCompleted", { quiz_result: winner });
+        submitQuizResponse(winner, scores);
+      }
+
+      function submitQuizResponse(category: string, scores: Record<string, number>) {
+        const payload: Record<string, unknown> = {
+          response_id: "q_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 8),
+          quiz_slug: "growth-bottleneck",
+          contact_name: contactInfo.name,
+          contact_email: contactInfo.email,
+          answers,
+          result_category: category,
+          result_scores: scores,
+          headline_variant: headlineVariant(),
+        };
+        const attr = readAttribution();
+        ATTR_PARAMS.forEach((k) => {
+          if (attr[k]) payload[k] = attr[k];
+        });
+        if (attr.ss_referrer) payload.referrer = attr.ss_referrer;
+
+        const post = () =>
+          fetch(QUIZ_CAPTURE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+        // Best-effort, one retry. Never blocks the result: the diagnosis is
+        // computed client-side and already showing by the time this runs.
+        post()
+          .catch(() => post())
+          .catch((err) => {
+            try {
+              console.warn("[quiz] capture failed", err);
+            } catch (e) {}
+          });
+      }
+    });
+  }
+
+  initGrowthQuiz();
+  document.addEventListener("astro:page-load", initGrowthQuiz);
+</script>

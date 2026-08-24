@@ -1,0 +1,178 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
+import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
+import ApplyButton from "../components/ApplyButton.astro";
+import ApplyHeroProofBar from "../components/ApplyHeroProofBar.astro";
+import ApplyLegalFooter from "../components/ApplyLegalFooter.astro";
+import GrowthBottleneckQuiz from "../components/GrowthBottleneckQuiz.astro";
+import { quizProofGrid, quizFeatured, quizProofStrip } from "../data/growthQuizProof.js";
+
+/* ===========================================================================
+   GROWTH BOTTLENECK QUIZ — free lead-magnet funnel.
+   Source: "Growth Bottleneck Quiz Funnel — V2" (Google Doc). Single CTA
+   phrase everywhere: "Find My Growth Bottleneck". Headline A/B test via
+   ?hl=<variant> — see the inline script below; only "control" is wired
+   until real challenger copy exists (decision log, 2026-08-24).
+
+   Booking uses the same iClosed calendar as /apply
+   (synchrosocial/social-media-consultation) — see GrowthBottleneckQuiz.astro.
+=========================================================================== */
+
+const ctaLabel = "Find My Growth Bottleneck";
+const steps = [
+  { n: 1, title: "Answer 8 questions", body: "Tell us how you currently create and distribute content." },
+  { n: 2, title: "Get your growth diagnosis", body: "Find the specific bottleneck preventing more people from discovering and following you." },
+  { n: 3, title: "Get your next action", body: "Receive the one area to fix first to increase follower growth." },
+];
+---
+
+<Layout
+  title="Growth Bottleneck Quiz — Synchro Social"
+  description="Take the 3-minute quiz to uncover the specific bottleneck limiting your reach and follower growth, then get the one action to fix first."
+  bodyClass="v2"
+  metaEvent={{ name: "ViewContent", params: { content_name: "quiz" } }}
+>
+  <SiteNav />
+  <IClosedLiftWidget />
+
+  <!-- ===================== HERO ===================== -->
+  <section class="relative overflow-hidden pb-20 pt-24 max-lg:pt-16 max-md:pb-12 max-md:pt-12">
+    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+    <div class="relative z-[3] mx-auto flex w-[95%] max-w-[860px] flex-col items-center gap-7 text-center max-md:gap-5">
+      <p class="font-tight text-sm font-semibold uppercase leading-none tracking-[0.2em] text-[#d8c4ff] max-md:text-[11px] max-md:tracking-[0.16em]">
+        For Coaches and Experts
+      </p>
+
+      <h1
+        id="quiz-headline"
+        data-quiz-headline="control"
+        class="font-tight text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] font-bold leading-[1.1] text-white"
+      >
+        Posting Consistently But Not Growing? Find Out Why in 3 Minutes
+      </h1>
+
+      <p class="max-w-[620px] text-xl leading-[157%] text-[#d9d0ea] max-md:text-base">
+        Take the 3-minute quiz to uncover the specific bottleneck limiting your reach and follower
+        growth, then get the one action to fix first.
+      </p>
+
+      <div class="mt-1 flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-16px)]">
+        <ApplyButton href="#quiz-start" label={ctaLabel} arrowDir="down" class="w-full" />
+      </div>
+
+      <div class="mt-4 w-full">
+        <ApplyHeroProofBar />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUALIFICATION LINE ===================== -->
+  <section class="w-full bg-black pb-14 max-md:pb-8">
+    <p class="mx-auto w-[90%] max-w-[720px] text-center text-lg leading-[157%] text-[#c4c4c4] max-md:text-base">
+      Built for coaches, experts, and personal brands who publish content but aren't converting
+      views into followers.
+    </p>
+  </section>
+
+  <!-- ===================== PROOF ===================== -->
+  <section class="w-full bg-brand-tint py-20 max-md:py-12">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-12 max-md:gap-8">
+      <div class="flex w-full max-w-[686px] flex-col items-center gap-4 text-center max-md:gap-2">
+        <p class="font-script text-2xl capitalize leading-[157%] text-[var(--g-purple)]">Proof</p>
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:text-[28px]">
+          Real growth for real experts
+        </h2>
+      </div>
+
+      <div class="grid w-full grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+        {
+          quizProofGrid.map((client) => (
+            <div class="flex flex-col gap-2 rounded-xl border border-[#262626] bg-[#141414] p-6 shadow-soft-dark">
+              <p class="font-tight text-base font-bold text-white">{client.name}</p>
+              <ul class="flex flex-col gap-1">
+                {client.results.map((r) => (
+                  <li class="text-sm leading-[150%] text-[#c4c4c4]">{r}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <!-- Featured proof callout — pulled out of the strip, own visual treatment. -->
+      <div class="w-full max-w-[820px] rounded-2xl bg-brand-gradient p-8 text-center shadow-soft-band max-md:p-6">
+        <p class="font-tight text-2xl font-bold leading-snug text-white max-md:text-xl">
+          {quizFeatured.headline}
+        </p>
+      </div>
+
+      <p class="max-w-[760px] text-center text-base leading-[157%] text-[#555]">
+        {quizProofStrip}
+      </p>
+
+      <div class="mt-2 flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
+        <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <section class="w-full bg-black py-20 max-md:py-12">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-14 max-md:gap-8">
+      <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+        How it works
+      </h2>
+
+      <div class="grid w-full grid-cols-3 gap-8 max-md:grid-cols-1 max-md:gap-8">
+        {
+          steps.map((s) => (
+            <div class="flex flex-col items-center gap-4 text-center">
+              <span class="step-pill step-pill--dark">
+                <span class="step-dot">{s.n}</span>
+                STEP {s.n}
+              </span>
+              <p class="font-tight text-xl font-bold text-white">{s.title}</p>
+              <p class="text-base leading-[157%] text-[#c4c4c4]">{s.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
+        <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ ===================== -->
+  <GrowthBottleneckQuiz />
+
+  <ApplyLegalFooter />
+</Layout>
+
+<script>
+  /* Headline A/B — separate ad sets point at /quiz?hl=<variant>-style URLs
+     (decision log, 2026-08-24). Only "control" exists until real challenger
+     copy is supplied; add entries here as they're written. The default
+     markup already renders control, so a missing/unknown ?hl value is a
+     no-op — nothing to swap. */
+  const HEADLINE_VARIANTS: Record<string, string> = {
+    // b: "Challenger headline goes here",
+  };
+
+  (function () {
+    let variant = "control";
+    try {
+      variant = new URLSearchParams(window.location.search).get("hl") || "control";
+    } catch (e) {}
+    const copy = HEADLINE_VARIANTS[variant];
+    if (!copy) return;
+    const el = document.getElementById("quiz-headline");
+    if (el) {
+      el.textContent = copy;
+      el.setAttribute("data-quiz-headline", variant);
+    }
+  })();
+</script>
