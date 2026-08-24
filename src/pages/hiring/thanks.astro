@@ -1,0 +1,40 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SiteNav from "../../components/SiteNav.astro";
+---
+
+<Layout
+  title="Application Received — Synchro Social"
+  description="Your application for the Client Success & Content Manager role has been received."
+  bodyClass="v2"
+>
+  <SiteNav minimal />
+
+  <main class="min-h-[calc(100vh-80px)] bg-black px-4 py-16 sm:px-6 sm:py-24">
+    <section class="mx-auto flex w-full max-w-[820px] flex-col items-center text-center">
+      <p class="font-script text-2xl font-normal leading-5 text-[#b794ff] max-md:text-[20px]">
+        Application Received
+      </p>
+
+      <h1 class="font-tight mt-5 max-w-[720px] text-[clamp(2.75rem,7vw,5.25rem)] font-bold leading-[0.98] text-white">
+        Thanks for applying.
+      </h1>
+
+      <p class="mt-7 max-w-[640px] text-lg leading-[1.58] text-[#d6d2df] sm:text-xl">
+        We have received your application for the Client Success &amp; Content Manager role.
+        We will review it carefully, and if there is a fit, we will be in touch about the next step.
+      </p>
+
+      <p class="mt-5 max-w-[560px] text-base leading-7 text-white/60 sm:text-lg">
+        Thank you for taking the time to show us how you work.
+      </p>
+
+      <a
+        href="/"
+        class="mt-11 inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 px-7 text-sm font-bold uppercase tracking-[0.08em] text-white transition hover:border-white hover:bg-white hover:text-black"
+      >
+        Back To Synchro Social
+      </a>
+    </section>
+  </main>
+</Layout>
