@@ -35,7 +35,7 @@
    iframe schedulers and mirrors the existing ?test-pixel=true passthrough a
    few lines above in IClosedEmbed.astro.
 
-   ORDERING MATTERS: this must render BEFORE the widget.js <script> tag, or
+   ORDERING MATTERS: this must render BEFORE the widget.js script tag, or
    the widget may read data-url before we have rewritten it.
 
    DIAGNOSTIC: ?ss-debug-iclosed=1 logs the rewritten URL and echoes every raw
