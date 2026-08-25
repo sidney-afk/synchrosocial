@@ -85,11 +85,12 @@ const steps = [
 
   <!-- ===================== QUALIFICATION LINE ===================== -->
   <!-- Single line between hero and proof, per the spec doc. Symmetric
-     vertical padding (was bottom-only, hugging the hero above it) and the
-     same #0c0c0c the proof section below uses, so the two flow as one
-     continuous dark canvas instead of meeting at a color seam. -->
-  <section class="w-full bg-[#0c0c0c] py-14 max-md:py-8">
-    <p class="mx-auto w-[90%] max-w-[720px] text-center text-lg leading-[157%] text-[#c4c4c4] max-md:text-base">
+     vertical padding, tightened from the first pass (was reading as a big
+     empty gap once this section shared the proof section's exact
+     background), and set as a bold display statement rather than muted
+     body copy so it reads as a deliberate line, not filler. -->
+  <section class="w-full bg-[#0c0c0c] py-10 max-md:py-6">
+    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
       Built for coaches, experts, and personal brands who publish content but aren't converting
       views into followers.
     </p>
@@ -118,8 +119,17 @@ const steps = [
     <div class="mx-auto mt-12 flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:mt-8 max-md:gap-6">
       <!-- Featured proof callout — pulled out of the strip, own visual
          treatment, per the spec doc. -->
-      <div class="w-full max-w-[820px] rounded-2xl bg-brand-gradient p-8 text-center shadow-soft-band max-md:p-6">
-        <p class="font-tight text-2xl font-bold leading-snug text-white max-md:text-xl">
+      <div class="relative w-full max-w-[820px] overflow-hidden rounded-2xl bg-brand-gradient p-10 text-center shadow-soft-band max-md:p-7">
+        <span
+          class="font-tight pointer-events-none absolute -top-6 left-6 text-[130px] leading-none text-white/10 max-md:-top-3 max-md:left-3 max-md:text-[90px]"
+          aria-hidden="true"
+        >
+          &rdquo;
+        </span>
+        <p class="font-tight relative text-xs font-bold uppercase leading-none tracking-[0.2em] text-white/70">
+          Featured Result
+        </p>
+        <p class="font-tight relative mt-4 text-2xl font-bold leading-snug text-white max-md:text-xl">
           Alexi Panos added 30K followers in 2 months — with zero filming required.
         </p>
       </div>
