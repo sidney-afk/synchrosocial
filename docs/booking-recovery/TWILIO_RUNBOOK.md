@@ -397,10 +397,79 @@ data-saving clause. Draft:
 > documentation, including screenshots of both, is hosted at
 > https://synchrosocial.com/sms-opt-in.
 
-This has not been tried. Needs a live Twilio API session (Account SID/Auth
-Token) to check current campaign/toll-free status and, if useful, resubmit —
-this file was written without one on hand; see Sidney for credentials before
-acting further.
+> **Correction, same day, after actually pulling the live campaign resource:**
+> the paragraph above was written before checking ground truth, and it's
+> wrong on the facts — the ACTUAL submitted `message_flow` (pulled straight
+> from the Twilio API, not reconstructed from memory) already describes
+> *both* consent surfaces verbatim, in detail, with WHO/WHERE/HOW, frequency,
+> rates, opt-out, brand name, policy links, and the `/sms-opt-in` proof page.
+> It is not incomplete. So "the description doesn't mention both surfaces"
+> was never the actual problem — restating that verbatim to Twilio again
+> would change nothing. Recording this so nobody (including a future me)
+> re-tries the same non-fix a second time.
+
+**Real diagnosis, now with the live resource in hand (campaign `FAILED`,
+`error 30896`, `fields: ["MESSAGE_FLOW"]`, checked 2026-08-25):**
+
+The submitted flow is honest about a structural fact that may itself be the
+actual blocker: the checkbox is *optional, unchecked by default, and not
+required to book* — so most people who complete a booking and later receive
+the confirmation text never checked it. The only thing that reaches 100% of
+recipients is the second surface, a static disclosure with no checkbox
+attached to it at all — consent by virtue of proceeding to book, not an
+affirmative click. Read against cause 6 ("consent is shared rather than
+collected specifically for this campaign"), a vetting reviewer plausibly
+reads that structure as: the phone number is collected for booking (the
+primary purpose), and SMS consent is inferred from that same act rather than
+being its own dedicated, affirmative gesture — which is a description
+problem, not a site problem, because the underlying facts don't change
+either way.
+
+**Untried fix — reframe which fact is the operative one**, without touching
+anything on the page (the checkbox is iClosed's, not ours to edit): stop
+presenting the optional checkbox as the primary consent claim, and instead
+argue the mandatory phone-number field plus the adjacent, unavoidable,
+SMS-specific disclosure *is* the dedicated opt-in — every person who
+supplies a number to book has already seen SMS-specific language (not
+bundled with any other consent) immediately next to that field, and
+submitting the form with that number is the affirmative act. The optional
+checkbox becomes a secondary, redundant confirmation mentioned second, not
+the headline. Draft:
+
+> Every recipient of this campaign supplied their mobile number to book a
+> call at https://synchrosocial.com/apply, a required field on step 1. A
+> dedicated, standalone disclosure sits immediately adjacent to that field
+> and is shown to 100% of visitors regardless of any other choice they make:
+> "By booking a call you agree to receive text messages from Synchro Social
+> about your call. Message frequency varies, typically one message per
+> booking. Message and data rates may apply. Reply STOP to opt out, HELP for
+> help." This disclosure is specific to this SMS program only — it is not
+> combined with consent to any other data use. Submitting the booking form
+> with a phone number, after this disclosure, is the act that enrolls the
+> recipient. Separately, the same step also offers an optional, unchecked
+> checkbox restating the same text-message consent alongside a data-storage
+> acknowledgment; it is not required and is not the mechanism this campaign
+> relies on. WHAT SUBSCRIBERS RECEIVE: a single SMS confirming the
+> appointment date and time they selected. No marketing or promotional
+> messages are sent. FREQUENCY: typically one per appointment booked. RATES:
+> message and data rates may apply. OPT-OUT: reply STOP; HELP for help.
+> BRAND: every message names Synchro Social in the first sentence. PRIVACY:
+> https://synchrosocial.com/privacypolicy TERMS:
+> https://synchrosocial.com/terms-conditions Opt-in proof with screenshots:
+> https://synchrosocial.com/sms-opt-in.
+
+**Not fired.** Resubmitting costs a real $15 vetting fee on a fifth attempt
+with no guarantee this framing is actually the fix rather than another
+guess — Sidney's call whether to spend it now, or reply to Evana's ticket
+first (free) making this same argument and asking Twilio to point at what's
+still wrong before paying for another automated pass. Toll-free
+(`HHba4182014c92d83017892685ecdf7f15`) is still `IN_REVIEW`, unaffected
+either way.
+
+Checked live 2026-08-25 using a fresh Twilio **API Key** (`SK…`, not the
+Account Auth Token — Sidney provided this one, no rotation involved) after
+the prior session's credentials fell out of context at a compaction
+boundary.
 
 ### Superseded — the old cost note
 
