@@ -501,6 +501,45 @@ still `IN_PROGRESS` (`date_updated` unchanged since submit), toll-free still
 `IN_REVIEW`. Nothing to report — rescheduled the next check rather than
 interrupting Sidney over a non-event.
 
+### Fifth attempt result — REJECTED, same error, same field — 2026-08-25
+
+Twilio's rejection email arrived (forwarded by Sidney) before the scheduled
+check-in did. Pulled the resource directly to confirm against the email
+rather than trusting it at face value: `campaign_status: FAILED`, identical
+`error_code: 30896`, identical `fields: ["MESSAGE_FLOW"]`, zero additional
+detail beyond attempt 4.
+
+**The reframing did not work, and the pattern is now worth naming plainly:**
+two consecutive attempts with substantively different `message_flow` copy —
+one leading with the checkbox, one leading with the mandatory-field-plus-
+disclosure argument — both bounced on the identical error with the identical
+field and no incremental diagnostic detail either time. That is evidence
+against "the wording is the problem" as a hypothesis, not for it. Continuing
+to rewrite the same paragraph a sixth time on a guess is not a good use of
+another $15; nothing here suggests a wording change is what clears this.
+
+**What this most likely means:** the reviewer (automated or human) can see
+the actual consent mechanism on the live page — an optional, unchecked,
+bundled checkbox — and is judging *that* insufficient, not the write-up of
+it. If true, no `message_flow` phrasing fixes it, because the underlying
+fact doesn't change. The only things that would are (a) a dedicated,
+required, SMS-only checkbox on the booking flow, which means editing
+iClosed's embedded widget — previously established as not ours to edit — or
+building a gate on our own page in front of it, or (b) getting a human at
+Twilio to say specifically what "adequately shows consent" actually requires
+here, since the automated boilerplate never has.
+
+**Recommendation, not yet acted on:** stop guessing at `message_flow`
+wording. Reply to Evana's open ticket with the concrete history — five
+rejections, two of them with materially different opt-in write-ups, same
+error, same field, no specifics returned — and ask directly what element of
+the described flow fails review, quoting the actual live consent language
+verbatim so there's no ambiguity to re-litigate. In parallel, toll-free
+(`HHba4182014c92d83017892685ecdf7f15`, still `IN_REVIEW`) is the live path
+that doesn't route through this specific carrier gate — it stays the
+near-term way to ship S2 if it clears first, independent of whatever this
+turns out to require.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
