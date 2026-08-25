@@ -540,6 +540,10 @@ that doesn't route through this specific carrier gate — it stays the
 near-term way to ship S2 if it clears first, independent of whatever this
 turns out to require.
 
+**Check-in, 2026-08-25T17:56Z:** toll-free still `IN_REVIEW`, no change
+(`date_updated` unchanged since filing). Not re-touching the 10DLC campaign
+on my own per the recommendation above — that decision is Sidney's.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
