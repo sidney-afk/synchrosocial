@@ -471,6 +471,31 @@ Account Auth Token — Sidney provided this one, no rotation involved) after
 the prior session's credentials fell out of context at a compaction
 boundary.
 
+### Fifth attempt — resubmitted 2026-08-25, decision was Sidney's
+
+Sidney: "we need to resubmit whichever was rejected last time." Confirmed a
+`FAILED` Usa2p resource cannot be edited or re-reviewed in place — a `POST`
+of a new one on the same Messaging Service returned `409 (20409, "There is
+already a Campaign associated with this Messaging Service")` before it was
+deleted. Deleted the failed resource (`DELETE .../Compliance/Usa2p/{sid}` →
+`204`), then re-created it with everything identical **except** `MessageFlow`,
+which now uses the reframed text above (mandatory field + adjacent
+disclosure as the primary claim, optional checkbox demoted to secondary).
+
+| | |
+| --- | --- |
+| Resource | same `sid` reused: `QE2c6890da8086d771620e9b13fadeba0b` |
+| Status right after submit | `IN_PROGRESS`, `errors: []` |
+| Filed | 2026-08-25T14:50:52Z |
+
+`errors: []` immediately after submit is the same signal that distinguished
+the one attempt (2026-08-18, 15:00:54) that got past the instant automated
+pre-check and actually reached TCR — the two that failed outright bounced in
+44–90 seconds with populated errors. Not a result yet, just confirmation this
+one didn't get auto-rejected on the spot. Real vetting can take hours; check
+back rather than assuming either outcome. This is a fifth $15 vetting
+attempt — cost already committed, can't be undone by checking status early.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
