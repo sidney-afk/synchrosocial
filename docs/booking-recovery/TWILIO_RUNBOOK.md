@@ -556,6 +556,8 @@ can reach, presumably landed in house@synchrosocial.com instead.
 now ~24h since filing with zero movement. Still within normal review time,
 not yet unusual enough to flag on its own.
 
+**Check-in, 2026-08-25T22:26Z:** toll-free still `IN_REVIEW`, no change.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
