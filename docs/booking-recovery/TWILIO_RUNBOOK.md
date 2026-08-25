@@ -552,6 +552,10 @@ reads as the support case being closed out, not the compliance decision.
 Haven't seen the actual email — it isn't in the Gmail account this session
 can reach, presumably landed in house@synchrosocial.com instead.
 
+**Check-in, 2026-08-25T20:56Z:** toll-free still `IN_REVIEW`, no change —
+now ~24h since filing with zero movement. Still within normal review time,
+not yet unusual enough to flag on its own.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
