@@ -40,17 +40,32 @@ const steps = [
   <section class="relative overflow-hidden pb-20 pt-24 max-lg:pt-16 max-md:pb-12 max-md:pt-12">
     <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
-    <div class="relative z-[3] mx-auto flex w-[95%] max-w-[860px] flex-col items-center gap-7 text-center max-md:gap-5">
+    <div class="relative z-[3] mx-auto flex w-[95%] max-w-[1100px] flex-col items-center gap-7 text-center max-md:gap-5">
       <p class="font-tight text-sm font-semibold uppercase leading-none tracking-[0.2em] text-[#d8c4ff] max-md:text-[11px] max-md:tracking-[0.16em]">
         For Coaches and Experts
       </p>
 
+      <!-- Two explicit line-broken headlines (same technique as apply.astro's
+           hero h1s) rather than relying on natural reflow: desktop locked to
+           2 lines, mobile locked to 3 — both centered by the shared column
+           below, not by their own width. -->
       <h1
-        id="quiz-headline"
         data-quiz-headline="control"
-        class="font-tight text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] font-bold leading-[1.1] text-white"
+        class="hidden font-tight text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] font-bold leading-[1.1] text-white md:block"
       >
-        Posting Consistently But Not Growing? Find Out Why in 3 Minutes
+        <span class="inline-block whitespace-nowrap">Posting Consistently But Not Growing?</span>
+        <br />
+        <span class="inline-block whitespace-nowrap">Find Out Why in 3 Minutes</span>
+      </h1>
+      <h1
+        data-quiz-headline="control"
+        class="font-tight text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] font-bold leading-[1.1] text-white md:hidden"
+      >
+        <span class="inline-block whitespace-nowrap">Posting Consistently</span>
+        <br />
+        <span class="inline-block whitespace-nowrap">But Not Growing? Find</span>
+        <br />
+        <span class="inline-block whitespace-nowrap">Out Why in 3 Minutes</span>
       </h1>
 
       <p class="max-w-[620px] text-xl leading-[157%] text-[#d9d0ea] max-md:text-base">
@@ -68,11 +83,58 @@ const steps = [
     </div>
   </section>
 
+  <!-- ===================== QUALIFICATION LINE ===================== -->
+  <!-- Single line between hero and proof, per the spec doc. -->
+  <section class="w-full bg-black pb-14 max-md:pb-8">
+    <p class="mx-auto w-[90%] max-w-[720px] text-center text-lg leading-[157%] text-[#c4c4c4] max-md:text-base">
+      Built for coaches, experts, and personal brands who publish content but aren't converting
+      views into followers.
+    </p>
+  </section>
+
   <!-- ===================== PROOF ===================== -->
-  <!-- Reused verbatim from /apply and /thank-you — same component, same data,
-     same approved visual treatment (decision log, 2026-08-24: don't invent a
-     bespoke proof grid when this one already exists and is approved). -->
-  <CampaignProofGrid />
+  <!-- Grid/card markup and video-player behavior reused verbatim from the
+     shared CampaignProofGrid component (/apply, /thank-you) — only the
+     heading and the client subset/order are page-specific, per the spec
+     doc's "Real growth for real experts" 2x3 grid (Garrain Jones and Morgan
+     Burch swapped for Dr. Sonia and Daniel Raphael: no case-study video
+     exists for the former two). -->
+  <CampaignProofGrid
+    heading="Real growth for real experts"
+    showSubheading={false}
+    entries={[
+      "Baya Voce",
+      "Edward Mannix",
+      "Jessica Winterstern",
+      "Lucas Salame",
+      "Dr. Sonia Chopra",
+      "Daniel Raphael",
+    ]}
+  />
+
+  <section class="w-full bg-black pb-16 max-md:pb-10">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:gap-6">
+      <!-- Featured proof callout — pulled out of the strip, own visual
+         treatment, per the spec doc. -->
+      <div class="w-full max-w-[820px] rounded-2xl bg-brand-gradient p-8 text-center shadow-soft-band max-md:p-6">
+        <p class="font-tight text-2xl font-bold leading-snug text-white max-md:text-xl">
+          Alexi Panos added 30K followers in 2 months — with zero filming required.
+        </p>
+      </div>
+
+      <!-- Proof strip. The doc's second name (Daniel Raphael) is already the
+         grid's 6th card above, so this uses Danny Morel instead to avoid
+         featuring the same client twice (decision log, 2026-08-25). -->
+      <p class="max-w-[760px] text-center text-base leading-[157%] text-[#c4c4c4]">
+        Other results: Luke MacNaughton added 10K followers in one month. Danny Morel grew to
+        3.5M+ followers with 500M+ views generated.
+      </p>
+
+      <div class="mt-2 flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
+        <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
+      </div>
+    </div>
+  </section>
 
   <!-- ===================== HOW IT WORKS ===================== -->
   <section class="w-full bg-black pb-10 pt-12 max-md:pb-6 max-md:pt-8">
@@ -113,7 +175,11 @@ const steps = [
      (decision log, 2026-08-24). Only "control" exists until real challenger
      copy is supplied; add entries here as they're written. The default
      markup already renders control, so a missing/unknown ?hl value is a
-     no-op — nothing to swap. */
+     no-op — nothing to swap. There are two <h1> elements (desktop/mobile
+     line-break variants, see the hero markup) sharing this data attribute;
+     a plain-text challenger replaces both and loses their manual line
+     breaks — a challenger that needs its own multi-line layout should set
+     innerHTML per breakpoint instead of adding a plain string here. */
   const HEADLINE_VARIANTS: Record<string, string> = {
     // b: "Challenger headline goes here",
   };
@@ -125,10 +191,9 @@ const steps = [
     } catch (e) {}
     const copy = HEADLINE_VARIANTS[variant];
     if (!copy) return;
-    const el = document.getElementById("quiz-headline");
-    if (el) {
+    document.querySelectorAll<HTMLElement>("[data-quiz-headline]").forEach((el) => {
       el.textContent = copy;
       el.setAttribute("data-quiz-headline", variant);
-    }
+    });
   })();
 </script>

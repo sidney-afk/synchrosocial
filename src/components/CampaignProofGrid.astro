@@ -1,18 +1,40 @@
 ---
 import { campaignProof } from "../data/campaignProof.js";
+
+interface Props {
+  /** Client `name` values (from campaignProof.js), in render order. Omit to
+   * render the full default roster — the existing /apply and /thank-you
+   * behavior, unchanged. */
+  entries?: string[];
+  heading?: string;
+  /** Set false to omit the "From views → leads → revenue." line. */
+  showSubheading?: boolean;
+}
+
+const {
+  entries,
+  heading = "Real campaigns. Real growth.",
+  showSubheading = true,
+} = Astro.props;
+
+const clients = entries
+  ? entries.map((name) => campaignProof.find((c) => c.name === name)).filter(Boolean)
+  : campaignProof;
 ---
 
 <section class="campaign-proof" aria-labelledby="campaign-proof-title">
   <h2 id="campaign-proof-title" class="campaign-proof__heading">
-    <span class="campaign-proof__heading-main">Real campaigns. Real growth.</span>
-    <span class="campaign-proof__heading-path">
-      From views <b aria-hidden="true">→</b> leads <b aria-hidden="true">→</b> revenue.
-    </span>
+    <span class="campaign-proof__heading-main">{heading}</span>
+    {showSubheading && (
+      <span class="campaign-proof__heading-path">
+        From views <b aria-hidden="true">→</b> leads <b aria-hidden="true">→</b> revenue.
+      </span>
+    )}
   </h2>
 
   <div class="campaign-proof__grid">
     {
-      campaignProof.map((client) => {
+      clients.map((client) => {
         const playerSrc = client.wistia
           ? `https://fast.wistia.net/embed/iframe/${client.wistia}?seo=false&videoFoam=false&autoPlay=true`
           : null;
