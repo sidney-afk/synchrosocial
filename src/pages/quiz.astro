@@ -84,8 +84,11 @@ const steps = [
   </section>
 
   <!-- ===================== QUALIFICATION LINE ===================== -->
-  <!-- Single line between hero and proof, per the spec doc. -->
-  <section class="w-full bg-black pb-14 max-md:pb-8">
+  <!-- Single line between hero and proof, per the spec doc. Symmetric
+     vertical padding (was bottom-only, hugging the hero above it) and the
+     same #0c0c0c the proof section below uses, so the two flow as one
+     continuous dark canvas instead of meeting at a color seam. -->
+  <section class="w-full bg-[#0c0c0c] py-14 max-md:py-8">
     <p class="mx-auto w-[90%] max-w-[720px] text-center text-lg leading-[157%] text-[#c4c4c4] max-md:text-base">
       Built for coaches, experts, and personal brands who publish content but aren't converting
       views into followers.
@@ -93,12 +96,13 @@ const steps = [
   </section>
 
   <!-- ===================== PROOF ===================== -->
-  <!-- Grid/card markup and video-player behavior reused verbatim from the
-     shared CampaignProofGrid component (/apply, /thank-you) — only the
-     heading and the client subset/order are page-specific, per the spec
-     doc's "Real growth for real experts" 2x3 grid (Garrain Jones and Morgan
-     Burch swapped for Dr. Sonia and Daniel Raphael: no case-study video
-     exists for the former two). -->
+  <!-- One section, per the spec doc: heading + 2x3 grid + featured callout +
+     strip + CTA all together. Grid/card markup and video-player behavior
+     reused verbatim from the shared CampaignProofGrid component (/apply,
+     /thank-you) — heading, client subset/order, and the slotted content
+     below are page-specific. Garrain Jones and Morgan Burch (the doc's
+     original two) are swapped for Dr. Sonia and Daniel Raphael since
+     neither has a case-study video. -->
   <CampaignProofGrid
     heading="Real growth for real experts"
     showSubheading={false}
@@ -110,10 +114,8 @@ const steps = [
       "Dr. Sonia Chopra",
       "Daniel Raphael",
     ]}
-  />
-
-  <section class="w-full bg-black pb-16 max-md:pb-10">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:gap-6">
+  >
+    <div class="mx-auto mt-12 flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:mt-8 max-md:gap-6">
       <!-- Featured proof callout — pulled out of the strip, own visual
          treatment, per the spec doc. -->
       <div class="w-full max-w-[820px] rounded-2xl bg-brand-gradient p-8 text-center shadow-soft-band max-md:p-6">
@@ -134,7 +136,7 @@ const steps = [
         <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
       </div>
     </div>
-  </section>
+  </CampaignProofGrid>
 
   <!-- ===================== HOW IT WORKS ===================== -->
   <section class="w-full bg-black pb-10 pt-12 max-md:pb-6 max-md:pt-8">
