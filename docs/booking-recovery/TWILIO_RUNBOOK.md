@@ -496,6 +496,11 @@ one didn't get auto-rejected on the spot. Real vetting can take hours; check
 back rather than assuming either outcome. This is a fifth $15 vetting
 attempt — cost already committed, can't be undone by checking status early.
 
+**Check-in, 2026-08-25T16:23Z (~1.5h after submit):** no change. Campaign
+still `IN_PROGRESS` (`date_updated` unchanged since submit), toll-free still
+`IN_REVIEW`. Nothing to report — rescheduled the next check rather than
+interrupting Sidney over a non-event.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
