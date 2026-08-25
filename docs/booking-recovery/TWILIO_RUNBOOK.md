@@ -544,6 +544,14 @@ turns out to require.
 (`date_updated` unchanged since filing). Not re-touching the 10DLC campaign
 on my own per the recommendation above — that decision is Sidney's.
 
+**Check-in, 2026-08-25T19:26Z:** toll-free still `IN_REVIEW`, no change.
+Sidney separately reported Twilio support ("Evana") marked the *support
+ticket* resolved — confirmed live this does not correspond to any change on
+either the campaign (`FAILED`) or toll-free (`IN_REVIEW`) resource, so it
+reads as the support case being closed out, not the compliance decision.
+Haven't seen the actual email — it isn't in the Gmail account this session
+can reach, presumably landed in house@synchrosocial.com instead.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
