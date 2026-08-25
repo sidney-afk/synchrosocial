@@ -84,12 +84,13 @@ const steps = [
   </section>
 
   <!-- ===================== QUALIFICATION LINE ===================== -->
-  <!-- Single line between hero and proof, per the spec doc. Symmetric
-     vertical padding, tightened from the first pass (was reading as a big
-     empty gap once this section shared the proof section's exact
-     background), and set as a bold display statement rather than muted
-     body copy so it reads as a deliberate line, not filler. -->
-  <section class="w-full bg-[#0c0c0c] py-10 max-md:py-6">
+  <!-- Single line between hero and proof, per the spec doc. Its own
+     section, deliberately a different shade (black) than the proof section
+     right after it (#0c0c0c) — matching them made the gap between two
+     blocks of text read as an accidental void instead of an intentional
+     section break; a real color change reads as "this is a new section"
+     regardless of gap size. -->
+  <section class="w-full bg-black py-12 max-md:py-8">
     <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
       Built for coaches, experts, and personal brands who publish content but aren't converting
       views into followers.
