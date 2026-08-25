@@ -333,6 +333,75 @@ number, independent review. If toll-free clears first, S2 ships on it and the
 10DLC ticket stays open in the background; if 10DLC clears first, the
 toll-free number is simply unused.
 
+### Support ticket reply, and a new 30896 hypothesis — 2026-08-25
+
+Twilio support ("Evana," Onboarding & Compliance) replied to the open ticket
+with generic boilerplate — a "first-time success" walkthrough video, the A2P
+onboarding FAQ, and the general campaign-rejection article — no
+campaign-specific diagnosis. Read all three; the video and FAQ added nothing
+beyond what this file already covers. The rejection article's own listing
+for **30896** did surface something not yet tried:
+
+> Cause 6: *"Opt-in description suggests consent is shared rather than
+> collected specifically for this campaign."*
+
+The live checkbox (`/apply`, step 1, under the phone field — Twilio's own
+opt-in copy, not ours to edit) reads:
+
+> ☐ By entering your information, you consent to your data being saved in
+> accordance with our Terms & Privacy Policy **and to receive text messages.**
+
+That is one checkbox covering two different things — "save my data per your
+Terms/Privacy" and "text me" — in a single tick. Every message_flow attempt
+so far has quoted this checkbox as *the* opt-in. Read the way a reviewer
+reads it, "and to receive text messages" is a rider on a general
+data-processing consent, not a dedicated, standalone SMS opt-in — which is
+exactly what cause 6 describes. This was never targeted directly; the three
+prior attempts rewrote wording generality (attempt 4) and added hosted
+screenshots (the `/sms-opt-in` page), neither of which changes what the
+checkbox itself says or how it's described.
+
+Two related causes from the same article, checked against current state:
+
+- **Cause 4** (privacy policy missing the non-sharing/frequency/rates
+  disclosure) — already satisfied; §5 of `/privacypolicy` has all three
+  elements. Not the blocker.
+- **Cause 1 / error 30917** (message_flow must name and fully describe
+  *every* opt-in method in use) — since PR #95, the page actually has **two**
+  separate consent surfaces: the bundled checkbox above, and a standalone,
+  always-visible disclosure directly under the booking widget ("By booking a
+  call you agree to receive text messages from Synchro Social..."). If a
+  submitted message_flow only described the checkbox and not the second
+  surface (or vice versa), that's a second, independent way to trip 30896/30917
+  — the description wouldn't match everything actually live on the page.
+
+**Not yet resubmitted against this.** The fix is a message_flow rewrite, not
+a site change (the checkbox itself is iClosed's, not editable by us): describe
+*both* consent surfaces explicitly, and frame them as collecting consent
+specifically for this SMS program rather than folding it into the general
+data-saving clause. Draft:
+
+> Prospects request a strategy call at https://synchrosocial.com/apply. On
+> step 1 of the booking form, directly under the phone number field, an
+> unchecked, optional checkbox reads: "By entering your information, you
+> consent to your data being saved in accordance with our Terms & Privacy
+> Policy and to receive text messages." Separately, and shown to every
+> visitor regardless of that checkbox, the text directly beneath the booking
+> widget states: "By booking a call you agree to receive text messages from
+> Synchro Social about your call. Message frequency varies, typically one
+> message per booking. Message and data rates may apply. Reply STOP to opt
+> out, HELP for help." Together these two disclosures — the optional
+> checkbox and the standalone notice — are what collects the recipient's
+> consent to be texted specifically about the call they booked; neither
+> consent nor the messaging program is bundled with any other data use. Full
+> documentation, including screenshots of both, is hosted at
+> https://synchrosocial.com/sms-opt-in.
+
+This has not been tried. Needs a live Twilio API session (Account SID/Auth
+Token) to check current campaign/toll-free status and, if useful, resubmit —
+this file was written without one on hand; see Sidney for credentials before
+acting further.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
