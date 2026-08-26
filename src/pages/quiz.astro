@@ -216,18 +216,12 @@ const quizFaqs = [
 </Layout>
 
 <style>
-  /* Mostly transparent (showing the page's black background through), then
-     eases into purple toward the bottom - "80% black, then purple at the
-     end" per owner feedback 2026-08-26, softened right after (the 80/20
-     split ramped too steeply and read as a hard edge) by starting the ramp
-     earlier so the transition itself is more gradual. */
+  /* A slow, subtle wash from black into purple across the FULL hero height
+     (no flat black zone + late ramp — that read as a hard edge twice over,
+     per owner feedback 2026-08-26) capped well below full opacity so even
+     at the very bottom it's a soft tint, not a solid block of color. */
   .quiz-hero-fade {
-    background-image: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0) 60%,
-      var(--g-purple-deep) 100%
-    );
+    background-image: linear-gradient(180deg, rgba(95, 31, 174, 0) 0%, rgba(95, 31, 174, 0.35) 100%);
   }
 
   /* Animated glow + hover treatment on the hero CTA only — see chat summary
