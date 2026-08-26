@@ -121,25 +121,23 @@ const quizFaqs = [
     </div>
   </section>
 
-  <!-- ===================== QUALIFICATION LINE ===================== -->
-  <!-- Single line, per the spec doc — right after the hero, before proof,
-     per owner request 2026-08-26 (an earlier pass had moved this after How
-     It Works; moved back). -->
-  <section class="w-full bg-[#0c0c0c] py-12 max-md:py-8">
-    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
-      Built for coaches, experts, and personal brands who publish content but aren't converting
-      views into followers.
-    </p>
-  </section>
-
   <!-- ===================== SOCIAL PROOF ===================== -->
   <!-- Reused from /apply (before/after comparison grid + proof tiles), with
      the "purple" theme swapping /apply's navy/blue palette for black +
-     brand purple, and hideCta so the featured-result callout, proof strip,
-     and single CTA below (passed as slot children) render inside the SAME
-     section/background instead of a separate one — no color seam, one CTA,
-     per owner request 2026-08-26. -->
+     brand purple. Per owner feedback 2026-08-26 the qualification line and
+     the featured-result/proof-strip/CTA should all read as ONE box, not
+     just one section — so both are now passed as slot content that renders
+     INSIDE the same bordered panel as the before/after comparison, not
+     just inside the same outer section. hideCta drops this component's own
+     built-in CTA since the slotted content supplies the one CTA instead. -->
   <AudienceSkyrocket title="How We Grow Our Clients" theme="purple" hideCta>
+    <Fragment slot="before-title">
+      <p class="font-tight mx-auto mb-10 w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:mb-8 max-md:text-xl">
+        Built for coaches, experts, and personal brands who publish content but aren't converting
+        views into followers.
+      </p>
+    </Fragment>
+
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 pt-8 max-md:gap-6 max-md:pt-6">
       <!-- Featured proof callout — pulled out of the strip, own visual
          treatment, per the spec doc. -->

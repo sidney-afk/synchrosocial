@@ -14,8 +14,9 @@ interface Props {
   theme?: "blue" | "purple";
   /** Suppresses this component's own built-in CTA block — used on /quiz,
    * which instead passes page-specific content (a featured-result callout +
-   * one CTA) via the default slot so it's all one visual section instead of
-   * a boxed CTA followed by a separate section. */
+   * one CTA) via the default slot, rendered INSIDE the same bordered panel
+   * as the before/after comparison — one shared box/background, no seam,
+   * one CTA — instead of a boxed CTA followed by a separate section. */
   hideCta?: boolean;
 }
 
@@ -153,6 +154,8 @@ const proofColumns = [
 
 <section class={sectionClass} aria-labelledby="audience-skyrocket-title">
   <div class="audience-skyrocket__panel">
+    <slot name="before-title" />
+
     <h2 id="audience-skyrocket-title" class="audience-skyrocket__title">
       {title ?? (<>Watch Your<br />Audience <em>Skyrocket</em> <span aria-hidden="true">&#128640;</span></>)}
     </h2>
@@ -250,9 +253,9 @@ const proofColumns = [
         </div>
       )
     }
-  </div>
 
-  <slot />
+    <slot />
+  </div>
 </section>
 
 <style>
