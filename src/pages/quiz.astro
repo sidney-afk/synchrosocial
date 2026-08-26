@@ -124,6 +124,38 @@ const quizFaqs = [
     </div>
   </section>
 
+  <!-- ===================== HOW IT WORKS ===================== -->
+  <!-- Moved to right after the hero, before social proof, per owner request
+     2026-08-26. Distinct background (#0c0c0c, same tone used elsewhere on
+     this page for "read as its own section") so it doesn't blend into the
+     pure-black hero above or the proof panel below. -->
+  <section class="w-full bg-[#0c0c0c] pb-10 pt-12 max-md:pb-6 max-md:pt-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-14 max-md:gap-8">
+      <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
+        How it works
+      </h2>
+
+      <div class="grid w-full grid-cols-3 gap-8 max-md:grid-cols-1 max-md:gap-8">
+        {
+          steps.map((s) => (
+            <div class="flex flex-col items-center gap-4 text-center">
+              <span class="step-pill step-pill--dark">
+                <span class="step-dot">{s.n}</span>
+                STEP {s.n}
+              </span>
+              <p class="font-tight text-xl font-bold text-white">{s.title}</p>
+              <p class="text-base leading-[157%] text-[#c4c4c4]">{s.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
+        <ApplyButton href={quizHref} label={ctaLabel} arrowDir="down" class="w-full" target="_blank" rel="noopener noreferrer" />
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== SOCIAL PROOF ===================== -->
   <!-- Reused from /apply (before/after comparison grid + proof tiles), with
      the "purple" theme swapping /apply's navy/blue palette for black +
@@ -172,38 +204,6 @@ const quizFaqs = [
       </div>
     </div>
   </AudienceSkyrocket>
-
-  <!-- ===================== HOW IT WORKS ===================== -->
-  <!-- Distinct background (#0c0c0c, same tone used elsewhere in this page
-     for "read as its own section") - it was pure black immediately after
-     the pure-black proof panel above it, so the two read as one long
-     section instead of two, per owner feedback 2026-08-26. -->
-  <section class="w-full bg-[#0c0c0c] pb-10 pt-12 max-md:pb-6 max-md:pt-8">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-14 max-md:gap-8">
-      <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
-        How it works
-      </h2>
-
-      <div class="grid w-full grid-cols-3 gap-8 max-md:grid-cols-1 max-md:gap-8">
-        {
-          steps.map((s) => (
-            <div class="flex flex-col items-center gap-4 text-center">
-              <span class="step-pill step-pill--dark">
-                <span class="step-dot">{s.n}</span>
-                STEP {s.n}
-              </span>
-              <p class="font-tight text-xl font-bold text-white">{s.title}</p>
-              <p class="text-base leading-[157%] text-[#c4c4c4]">{s.body}</p>
-            </div>
-          ))
-        }
-      </div>
-
-      <div class="flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
-        <ApplyButton href={quizHref} label={ctaLabel} arrowDir="down" class="w-full" target="_blank" rel="noopener noreferrer" />
-      </div>
-    </div>
-  </section>
 
   <!-- ===================== FAQ ===================== -->
   <ApplyFaq heading="Got Questions?<br />We've Got Answers" items={quizFaqs} />
