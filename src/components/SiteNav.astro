@@ -8,8 +8,10 @@ import ApplyButton from "./ApplyButton.astro";
 
 interface Props {
   minimal?: boolean;
+  /** Keep the focused page's brand mark present without making it a homepage link. */
+  logoClickable?: boolean;
 }
-const { minimal = false } = Astro.props;
+const { minimal = false, logoClickable = true } = Astro.props;
 
 const links = [
   { label: "Home", href: "/" },
@@ -17,23 +19,26 @@ const links = [
   { label: "Case Studies", href: "/#testimonials" },
   { label: "FAQ", href: "/#faq" },
 ];
+
+const logoClass = `site-logo-link ${minimal ? "site-logo-minimal justify-center" : "site-logo-full mr-auto max-md:mr-0 max-md:w-auto max-md:max-w-none"} inline-flex w-full max-w-[280px] items-center gap-2 text-white`;
+const logoImageClass = `h-auto w-[190px] shrink-0 ${minimal ? "max-md:w-[172px]" : "max-md:w-[128px]"}`;
 ---
 
 <header class="sticky top-0 z-[100] border-b border-[#f5f5f51f] bg-black">
   <nav
     class={`relative mx-auto flex w-[95%] max-w-[1040px] items-center py-3 ${minimal ? "justify-center max-md:py-[14.55px]" : "justify-between max-md:py-1"}`}
   >
-    <a
-      href="/"
-      class={`site-logo-link ${minimal ? "site-logo-minimal justify-center" : "site-logo-full mr-auto max-md:mr-0 max-md:w-auto max-md:max-w-none"} inline-flex w-full max-w-[280px] items-center gap-2 text-white`}
-      aria-label="Synchro Social"
-    >
-      <img
-        src="/images/logo-updated.png"
-        alt="Synchro Social"
-        class={`h-auto w-[190px] shrink-0 ${minimal ? "max-md:w-[172px]" : "max-md:w-[128px]"}`}
-      />
-    </a>
+    {
+      logoClickable ? (
+        <a href="/" class={logoClass} aria-label="Synchro Social">
+          <img src="/images/logo-updated.png" alt="Synchro Social" class={logoImageClass} />
+        </a>
+      ) : (
+        <div class={logoClass}>
+          <img src="/images/logo-updated.png" alt="Synchro Social" class={logoImageClass} />
+        </div>
+      )
+    }
 
     {
       !minimal && (

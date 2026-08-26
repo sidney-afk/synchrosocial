@@ -236,6 +236,76 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   transform: translateY(-2px) scale(1.02);
 }
 
+/* The hiring CTA is intentionally impossible to miss without changing the
+   shared button treatment used across the rest of the site. */
+.hiring-apply-cta {
+  animation: hiring-apply-cta-glow 2.6s ease-in-out infinite;
+  transition:
+    background 220ms ease,
+    box-shadow 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.hiring-apply-cta > span[aria-hidden="true"],
+.hiring-apply-cta > span[aria-hidden="true"] svg {
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    stroke 220ms ease;
+}
+
+.hiring-apply-cta:hover,
+.hiring-apply-cta:focus-visible {
+  animation: none;
+  background: #fff;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px var(--g-purple),
+    0 18px 44px rgba(183, 148, 255, 0.72);
+  color: var(--g-purple);
+  transform: translateY(-4px) scale(1.035);
+}
+
+.hiring-apply-cta:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 5px;
+}
+
+.hiring-apply-cta:hover > span[aria-hidden="true"],
+.hiring-apply-cta:focus-visible > span[aria-hidden="true"] {
+  background: var(--g-purple);
+}
+
+.hiring-apply-cta:hover > span[aria-hidden="true"] svg,
+.hiring-apply-cta:focus-visible > span[aria-hidden="true"] svg {
+  stroke: #fff;
+}
+
+@keyframes hiring-apply-cta-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 1px 0.75px rgba(255, 255, 255, 0.24) inset,
+      0 0 0 1px var(--g-purple-ring),
+      0 0 16px rgba(131, 49, 232, 0.38);
+  }
+
+  50% {
+    box-shadow:
+      0 1px 0.75px rgba(255, 255, 255, 0.34) inset,
+      0 0 0 1px #c7a4ff,
+      0 0 26px 7px rgba(131, 49, 232, 0.58),
+      0 0 54px 12px rgba(183, 148, 255, 0.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hiring-apply-cta {
+    animation: none;
+  }
+}
+
 /* The Apply-page scroll CTA mirrors Growthtopia's flat treatment rather than
    the elevated site-wide button skin. */
 .apply-page-hero-cta,
