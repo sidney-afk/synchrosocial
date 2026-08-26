@@ -580,7 +580,26 @@ review.
 ~47h since filing, nine consecutive checks with zero movement. Proactively
 messaged Sidney per the plan above rather than staying quiet again.
 
-### Superseded — the old cost note
+### Toll-free APPROVED — 2026-08-26T19:04:06Z
+
+Checked on demand (Sidney: "check it again") ahead of the next scheduled
+poll. `status: TWILIO_APPROVED`. Cleared roughly 47 hours after filing, no
+rejection reason ever populated — it just took the queue this long.
+
+| | |
+| --- | --- |
+| Number | **+1 (888) 272-5649** — `PNd232dd64665df8dcdd2b76b43e6c3f40` |
+| Verification | `HHba4182014c92d83017892685ecdf7f15` — **TWILIO_APPROVED** |
+| 10DLC campaign, for contrast | `QE2c6890da8086d771620e9b13fadeba0b` — still `FAILED` (30896), unchanged |
+
+**This is now the live path for S2** (booked-call confirmation SMS) — it's
+an approved, sendable number, independent of the still-blocked 10DLC
+registration. **Not yet wired into anything.** Nothing in n8n has been
+pointed at this number; the messaging service (`MG40c681a6…`) the number is
+attached to is the same one referenced elsewhere in this file, so whichever
+workflow sends S2 needs to confirm it's sending through that messaging
+service (not a specific from-number) for this to take effect — not verified
+yet, and n8n access was unavailable in this session to check directly.
 
 ### Cost reality — retries are free
 
