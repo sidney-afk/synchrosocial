@@ -227,15 +227,15 @@ const quizFaqs = [
     );
   }
 
-  /* Marker-style highlight for "3 Minutes" in the hero headline, per owner
-     request 2026-08-26. No existing highlight treatment actually exists on
-     /apply's own headline to copy verbatim (checked), so this uses the same
-     brand-purple gradient as the CTA button for a consistent accent. */
+  /* Flat solid-color highlighter block behind "3 Minutes" in the hero
+     headline, per owner-supplied reference (a competitor headline with a
+     solid blue rectangle, sharp corners, tight padding, behind part of the
+     line) — swapped to brand purple and re-done from the earlier rounded
+     gradient-chip attempt, which wasn't the look they meant. */
   .quiz-highlight {
     display: inline-block;
-    padding: 0 0.16em;
-    border-radius: 0.2em;
-    background: linear-gradient(90deg, var(--g-purple), var(--g-purple-deep));
+    padding: 0 0.08em;
+    background: var(--g-purple);
   }
 
   /* Animated glow + hover treatment on the hero CTA only — see chat summary
