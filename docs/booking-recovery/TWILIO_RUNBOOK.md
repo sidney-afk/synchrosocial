@@ -576,6 +576,10 @@ here at the next check, it's worth a proactive nudge to him regardless,
 since silence this long starts to look indistinguishable from a stuck
 review.
 
+**Check-in, 2026-08-26T18:00Z:** toll-free still `IN_REVIEW`, no change —
+~47h since filing, nine consecutive checks with zero movement. Proactively
+messaged Sidney per the plan above rather than staying quiet again.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
