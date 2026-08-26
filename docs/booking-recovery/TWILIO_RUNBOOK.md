@@ -561,6 +561,10 @@ not yet unusual enough to flag on its own.
 **Check-in, 2026-08-26T00:02Z:** toll-free still `IN_REVIEW`, no change —
 ~28h since filing.
 
+**Check-in, 2026-08-26T03:00Z:** toll-free still `IN_REVIEW`, no change —
+~31h since filing. Spacing checks out further overnight since nothing has
+moved in six consecutive checks.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
