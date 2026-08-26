@@ -2,7 +2,6 @@
 import Layout from "../layouts/Layout.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import ApplyButton from "../components/ApplyButton.astro";
-import ApplyHeroProofBar from "../components/ApplyHeroProofBar.astro";
 import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
 import ApplyFaq from "../components/ApplyFaq.astro";
 import ApplyLegalFooter from "../components/ApplyLegalFooter.astro";
@@ -15,10 +14,11 @@ import ApplyLegalFooter from "../components/ApplyLegalFooter.astro";
 
    Rebuilt 2026-08-26 per owner feedback: the quiz itself now lives on its
    own page (/quiz/take, opens in a new tab) — this page is pure marketing,
-   no header, single CTA "Book A Consultation Call" everywhere.
+   no header, single CTA everywhere (copy reverted 2026-08-26 to "Find My
+   Growth Bottleneck", its original pre-restructure text).
 =========================================================================== */
 
-const ctaLabel = "Book A Consultation Call";
+const ctaLabel = "Find My Growth Bottleneck";
 const quizHref = "/quiz/take";
 const steps = [
   { n: 1, title: "Answer 8 questions", body: "Tell us how you currently create and distribute content." },
@@ -93,7 +93,7 @@ const quizFaqs = [
       >
         <span class="inline-block whitespace-nowrap">Posting Consistently But Not Growing?</span>
         <br />
-        <span class="inline-block whitespace-nowrap">Find Out Why in 3 Minutes</span>
+        <span class="inline-block whitespace-nowrap">Find Out Why in <span class="quiz-highlight">3 Minutes</span></span>
       </h1>
       <h1
         data-quiz-headline="control"
@@ -103,7 +103,7 @@ const quizFaqs = [
         <br />
         <span class="inline-block whitespace-nowrap">But Not Growing? Find</span>
         <br />
-        <span class="inline-block whitespace-nowrap">Out Why in 3 Minutes</span>
+        <span class="inline-block whitespace-nowrap">Out Why in <span class="quiz-highlight">3 Minutes</span></span>
       </h1>
 
       <p class="max-w-[620px] text-xl leading-[157%] text-[#d9d0ea] max-md:text-base md:max-w-[900px]">
@@ -120,10 +120,6 @@ const quizFaqs = [
           target="_blank"
           rel="noopener noreferrer"
         />
-      </div>
-
-      <div class="mt-4 w-full">
-        <ApplyHeroProofBar />
       </div>
     </div>
   </section>
@@ -229,6 +225,17 @@ const quizFaqs = [
       rgba(95, 31, 174, 0.35) 78%,
       rgba(131, 49, 232, 0.4) 100%
     );
+  }
+
+  /* Marker-style highlight for "3 Minutes" in the hero headline, per owner
+     request 2026-08-26. No existing highlight treatment actually exists on
+     /apply's own headline to copy verbatim (checked), so this uses the same
+     brand-purple gradient as the CTA button for a consistent accent. */
+  .quiz-highlight {
+    display: inline-block;
+    padding: 0 0.16em;
+    border-radius: 0.2em;
+    background: linear-gradient(90deg, var(--g-purple), var(--g-purple-deep));
   }
 
   /* Animated glow + hover treatment on the hero CTA only — see chat summary
