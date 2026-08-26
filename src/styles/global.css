@@ -306,24 +306,6 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   }
 }
 
-/* The Apply-page scroll CTA mirrors Growthtopia's flat treatment rather than
-   the elevated site-wide button skin. */
-.apply-page-hero-cta,
-.apply-page-hero-cta:hover {
-  background: var(--g-purple);
-  box-shadow: none;
-  transform: none;
-}
-
-.apply-page-hero-cta > span[aria-hidden="true"] {
-  border-radius: 0;
-  background: transparent;
-}
-
-.apply-page-hero-cta > span[aria-hidden="true"] svg {
-  color: #fff;
-}
-
 /* Hero backdrop: transparent fading down into solid brand purple. Spans the
    hero heading AND the client-cards block beneath it (one shared canvas). */
 .bg-hero-fade {
@@ -521,9 +503,7 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   /* The label is centered independently of the absolutely-positioned arrow
      chip (matched-reference geometry, see ApplyButton.astro), so a long
      label on a narrow mobile button can run underneath the chip. Shrink
-     both so they clear each other; .apply-page-hero-cta's own rule below
-     wins over this on the hero CTA specifically (same specificity, declared
-     later). */
+     both so they clear each other. */
   .btn-g > span:first-child {
     font-size: 16px;
     line-height: 19.2px;
@@ -538,33 +518,6 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
   .btn-g > span[aria-hidden="true"] svg {
     height: 22px;
     width: 22px;
-  }
-
-  .apply-page-hero-cta {
-    height: 51px;
-    padding: 0 36px;
-    border-radius: 12px;
-    background: var(--g-purple);
-    box-shadow: none;
-  }
-
-  .apply-page-hero-cta > span:first-child {
-    font-size: 16px;
-    line-height: 19.2px;
-  }
-
-  .apply-page-hero-cta > span[aria-hidden="true"] {
-    right: 8px;
-    height: 32px;
-    width: 20px;
-    border-radius: 0;
-    background: transparent;
-  }
-
-  .apply-page-hero-cta > span[aria-hidden="true"] svg {
-    height: 32px;
-    width: 20px;
-    color: #fff;
   }
 
   .apply-page-hero-backdrop {
