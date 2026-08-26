@@ -136,23 +136,33 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
-| **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; `/thank-you` re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
-| `QuizStarted` (custom) | `/quiz`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
-| `QuizCompleted` (custom, param `quiz_result`) | `/quiz`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
+| **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
+| `QuizStarted` (custom) | `/quiz/take`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
+| `QuizCompleted` (custom, param `quiz_result`) | `/quiz/take`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
 Rules:
 - **Schedule and Lead mark the same moment.** Pick ONE as the campaign's
   optimization event in Ads Manager (gameplan says booked-call → `Schedule`);
   never report them summed.
-- Direct visits to `/thank-you` overcount slightly — accepted, tiny.
+- Direct visits to `/thank-you` (or `/quiz/thank-you`) overcount slightly —
+  accepted, tiny.
 - iClosed's server-side CAPI events (once connected, see §6) are a SEPARATE
   stream with different (custom) names — they never dedupe against ours.
   Optimization points at one stream deliberately.
-- **The quiz funnel (`/quiz`) never fires `Schedule`/`Lead` on its own** —
-  those only fire if a quiz-taker goes on to actually book through the
-  shared `<IClosedEmbed>` on the result screen, same bridge as `/apply`.
-  Quiz engagement is tracked separately (`QuizStarted`/`QuizCompleted`) so it
+- **The quiz funnel never fires `Schedule`/`Lead` on its own** — those only
+  fire if a quiz-taker goes on to actually book through the shared
+  `<IClosedEmbed>` on the result screen, same bridge as `/apply`. Quiz
+  engagement is tracked separately (`QuizStarted`/`QuizCompleted`) so it
   can't be mistaken for a booked call in reporting.
+- **`/quiz` is the marketing landing page; `/quiz/take` is the quiz itself**
+  (split 2026-08-26, opens in a new tab from every CTA on `/quiz` so ad
+  attribution isn't lost mid-funnel — the new tab's own `IClosedCapture`
+  self-populates `sessionStorage` from the forwarded querystring, no
+  cross-tab dependency). `ViewContent(quiz)` fires once, on `/quiz`, via
+  `metaEvent`. `/quiz/take` deliberately has NO `metaEvent`/`ViewContent` of
+  its own — firing it there too would double-count the same visit's
+  top-of-funnel touchpoint. `QuizStarted`/`QuizCompleted` live on
+  `/quiz/take` since that's where the quiz UI actually is now.
 
 ## 5. What is DONE in this repo (branch `claude/meta-ads-infrastructure-w47kkb`, [PR #27](https://github.com/sidney-afk/synchrosocial/pull/27))
 
@@ -439,6 +449,34 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-26 (Quiz funnel restructure — landing/take/thank-you split)** —
+  Split `/quiz` into three pages per owner request: `/quiz` is now a pure
+  marketing landing page (header removed, proof section swapped to the
+  `/apply`-style before/after comparison via `AudienceSkyrocket`, "How It
+  Works" moved after proof, FAQ added), `/quiz/take` is the quiz UI itself
+  (opens in a new tab from every `/quiz` CTA), and `/quiz/thank-you` is a
+  new quiz-specific post-booking page (clone of `/thank-you`'s structure,
+  quiz-purple hero). All CTA copy unified to "Book A Consultation Call"
+  with the down-chevron arrow style everywhere, including a new
+  `ctaArrowDir` prop on `AudienceSkyrocket` (defaults to the original
+  right-arrow so `/apply` is unaffected). Updated the event map above to
+  reflect `QuizStarted`/`QuizCompleted` now firing on `/quiz/take`, and
+  `/quiz/take` deliberately not re-firing `ViewContent`. Ad attribution for
+  the new-tab quiz page: `/quiz`'s CTA links forward the current
+  querystring onto the `/quiz/take` URL so the existing
+  `IClosedCapture.astro` self-recovery logic (already reads `utm_*`/
+  `fbclid`/etc. from `window.location.search` when `sessionStorage.ss_attr`
+  is empty) populates attribution on the new tab with no cross-tab
+  dependency — verified end-to-end. Also rewrote quiz questions Q1 and Q5
+  (previously instructed people to check real analytics) as pure
+  self-assessment, since sending someone away from the tab mid-quiz is a
+  drop-off risk. **Caveat: `/quiz/thank-you` is not yet the real
+  post-booking redirect** — the quiz still books through the same shared
+  `synchrosocial/social-media-consultation` iClosed calendar as `/apply`,
+  and the post-booking redirect is configured per-calendar in the iClosed
+  dashboard (not in this repo). Reaching `/quiz/thank-you` for real bookings
+  requires Sidney to point a calendar at it in the iClosed dashboard.
 
 - **2026-08-24 (Growth Bottleneck Quiz funnel — landing page + tracking)** —
   Built `/quiz`, a new free lead-magnet funnel (8-question quiz, scored

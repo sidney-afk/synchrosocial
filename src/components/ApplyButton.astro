@@ -11,6 +11,9 @@ interface Props {
   /** "down" renders a double-chevron (e.g. "Apply Below" scroll buttons). */
   arrowDir?: "right" | "down";
   class?: string;
+  /** Opens the link in a new tab. Pass rel to go with it (e.g. "noopener noreferrer"). */
+  target?: string;
+  rel?: string;
 }
 const {
   href = "/apply",
@@ -19,6 +22,8 @@ const {
   arrow = true,
   arrowDir = "right",
   class: className = "",
+  target,
+  rel,
 } = Astro.props;
 
 const pad = size === "lg" ? "px-9 py-5" : "px-7 py-3";
@@ -27,6 +32,8 @@ const text = size === "lg" ? "text-xl leading-none" : "text-base leading-[150%]"
 
 <a
   href={href}
+  target={target}
+  rel={rel}
   class={`btn-g relative flex items-center justify-center gap-2 overflow-hidden rounded-xl font-semibold capitalize text-white ${pad} ${className}`}
 >
   <span class={`${text} whitespace-nowrap`}>{label}</span>

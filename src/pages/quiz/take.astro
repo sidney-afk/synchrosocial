@@ -1,0 +1,35 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import IClosedLiftWidget from "../../components/IClosedLiftWidget.astro";
+import GrowthBottleneckQuiz from "../../components/GrowthBottleneckQuiz.astro";
+
+/* ===========================================================================
+   QUIZ — the actual quiz-taking experience. Split out of /quiz (2026-08-26)
+   so the landing page stays a pure marketing page and the quiz itself opens
+   as its own focused, no-header flow in a new tab.
+
+   No metaEvent here deliberately: /quiz already fires ViewContent(quiz) as
+   the funnel's top-of-funnel touchpoint. Firing it again here would
+   double-count the same visit. QuizStarted/QuizCompleted (fired from
+   GrowthBottleneckQuiz.astro's own script once someone actually engages)
+   are the meaningful signal for this page.
+
+   Ad attribution: this page is opened via target="_blank" from /quiz, so it
+   gets its own sessionStorage, not the opener's. /quiz's CTA links forward
+   the current querystring onto this page's URL specifically so the existing
+   IClosedCapture.astro passthrough (already rendered inside
+   GrowthBottleneckQuiz's booking embed) self-populates ss_attr from ITS OWN
+   URL — no cross-tab dependency needed.
+=========================================================================== */
+---
+
+<Layout
+  title="Growth Bottleneck Quiz — Synchro Social"
+  description="Answer 8 quick questions to find the specific bottleneck limiting your reach and follower growth."
+  bodyClass="v2"
+>
+  <IClosedLiftWidget />
+  <main class="w-full bg-black">
+    <GrowthBottleneckQuiz />
+  </main>
+</Layout>

@@ -1,5 +1,14 @@
 ---
-const faqs = [
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+interface Props {
+  heading?: string;
+  items?: FaqItem[];
+}
+
+const defaultFaqs: FaqItem[] = [
   {
     question: "What does Synchro Social do?",
     answer:
@@ -31,11 +40,14 @@ const faqs = [
       "Complete the application and book a consultation above. Our team will review your goals, answer your questions, and determine whether working together makes sense.",
   },
 ];
+
+const { heading = "You've got questions<br />We've got answers", items } = Astro.props;
+const faqs = items ?? defaultFaqs;
 ---
 
 <section class="apply-faq" aria-labelledby="apply-faq-title">
   <div class="apply-faq__inner">
-    <h2 id="apply-faq-title">You've got questions<br />We've got answers</h2>
+    <h2 id="apply-faq-title" set:html={heading} />
 
     <div class="apply-faq__list">
       {

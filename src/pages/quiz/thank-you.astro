@@ -1,0 +1,390 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import IClosedLiftWidget from "../../components/IClosedLiftWidget.astro";
+import VideoEmbed from "../../components/VideoEmbed.astro";
+import CaseStudyVideo from "../../components/CaseStudyVideo.astro";
+import PlatformIcon from "../../components/PlatformIcon.astro";
+import TestimonialCarousel from "../../components/TestimonialCarousel.astro";
+import CampaignProofGrid from "../../components/CampaignProofGrid.astro";
+import { caseStudies, slug } from "../../data/caseStudies.js";
+
+/* ===========================================================================
+   QUIZ THANK-YOU — the quiz funnel's own booking-confirmation page
+   (2026-08-26). Same structure and content as /thank-you (the proven,
+   already-approved 7-step confirmation flow — none of it is /apply-specific,
+   it applies to any booked consultation) with two differences: a quiz-
+   specific "thanks for taking the quiz" message ahead of the existing
+   confirm-your-booking hero, and the hero re-themed with /quiz's darker
+   purple gradient + no header, matching the quiz funnel's look. Steps 2-7
+   keep their existing proven light/dark section treatment as-is — a full
+   section-by-section re-theme wasn't attempted; flagged in the session
+   summary as a scope call, not silently assumed.
+
+   IMPORTANT — this page is not automatically reachable yet. The redirect
+   after a real iClosed booking is configured per-calendar in the iClosed
+   dashboard, not in this codebase (confirmed via ECOSYSTEM_MAP.md and
+   IClosedEmbed.astro — see the session's chat summary). The quiz currently
+   books through the SAME "social-media-consultation" calendar as /apply,
+   which redirects to /thank-you, not here. Reaching this page for real
+   requires either a new/duplicate iClosed calendar pointed at
+   /quiz/thank-you (a manual dashboard step) or accepting the quiz stays on
+   the shared calendar/redirect for now.
+=========================================================================== */
+
+// Step 3 — pre-call checklist
+const checklist = [
+  {
+    n: "1",
+    title: "Communication",
+    body:
+      "Check your email for a calendar invite confirming your scheduled date and time. Be sure to accept the invite so it's added to your calendar.",
+  },
+  {
+    n: "2",
+    title: "Punctuality",
+    body:
+      "Your call will take place over Zoom or phone — the link/number is included in your calendar invite. Please join from a quiet, private space with minimal distractions; we'll do the same. Important: due to high demand, missed calls can't be rescheduled, so if you need to make changes please let us know at least 24 hours in advance.",
+  },
+  {
+    n: "3",
+    title: "Preparation",
+    body:
+      "To make the most of our time together, please watch the Q&A videos below and review the emails we'll be sending over the next few days. These give a detailed overview of our service so you can come prepared with any questions.",
+  },
+];
+
+// Step 4 — Q&A videos (real, self-hosted on Wistia).
+const qaVideos = [
+  { id: "uqnl8bn89r", title: "What Exactly Do We Do?" },
+  { id: "qzz4nt1ceg", title: "Will This Work For My Niche Or Industry?" },
+  { id: "hfcfosmhb8", title: "How Fast Will I Get Results?" },
+  { id: "8j0lpgua9g", title: "How Much Time Will This Take?" },
+  { id: "m5wz3w5kji", title: "Do I Have To Be On Camera?" },
+];
+
+const year = new Date().getFullYear();
+---
+
+<Layout
+  title="You're Almost There — Synchro Social"
+  description="Two quick steps to confirm your call with Synchro Social."
+  bodyClass="v2"
+>
+  <script is:inline>
+    /* Booked-call conversion, fallback path — same dedup logic as
+       /thank-you. See that file for the full rationale. */
+    (function () {
+      if (typeof window.fbq !== "function") return;
+      var eid = null;
+      try {
+        var stored = JSON.parse(sessionStorage.getItem("ss_booked_eid") || "null");
+        if (stored && Date.now() - stored.at < 3600000) eid = stored.eid;
+      } catch (err) {}
+      if (!eid) {
+        eid =
+          window.crypto && crypto.randomUUID
+            ? crypto.randomUUID()
+            : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+      }
+      fbq("track", "Schedule", {}, { eventID: eid });
+      fbq("track", "Lead", {}, { eventID: "lead-" + eid });
+    })();
+  </script>
+
+  <IClosedLiftWidget />
+
+  <!-- ===================== HERO ===================== -->
+  <section class="relative overflow-hidden">
+    <!-- Black fading into the quiz funnel's darker purple, matching /quiz's
+         hero treatment instead of the bright-purple /thank-you fade. -->
+    <div
+      class="quiz-thankyou-fade pointer-events-none absolute inset-x-0 bottom-0 top-[40%]"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center max-md:pb-12 max-md:pt-8"
+    >
+      <img src="/images/thank-you-page-logo.png" alt="Synchro Social" class="h-[78px] w-auto max-md:h-[64px]" />
+
+      <p class="font-tight mt-7 text-sm font-semibold uppercase leading-none tracking-[0.2em] text-[#d8c4ff] max-md:mt-5 max-md:text-[11px] max-md:tracking-[0.16em]">
+        Thanks for taking the Growth Bottleneck Quiz
+      </p>
+
+      <h1 class="mt-4 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-3 max-md:text-[27.2px] max-md:leading-[27.2px]">
+        Your Call Is Not Confirmed
+      </h1>
+      <p class="mt-4 text-xl leading-[26px] text-white max-md:mt-3 max-md:max-w-[340px] max-md:text-[16px] max-md:leading-[25.12px]">
+        Make sure to do these 2 steps so you can confirm your call with us
+      </p>
+
+      <!-- STEP 1 — filled bar (the reference's solid hero step bar) -->
+      <div
+        class="mt-7 flex w-full max-w-[880px] items-center justify-center gap-3 rounded-[15px] border-2 border-[var(--g-purple)] bg-[var(--g-purple)] px-8 py-2 text-center text-2xl font-normal leading-[26px] text-black max-lg:text-lg max-md:mt-6 max-md:min-h-[52px] max-md:w-[calc(100vw-32px)] max-md:justify-start max-md:px-4 max-md:text-left max-md:text-[16px] max-md:leading-[17.6px]"
+      >
+        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black/85 text-white">
+          <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14M6 13l6 6 6-6" />
+          </svg>
+        </span>
+        STEP 1 : Watch This Short Video On How To Prepare For The Call
+      </div>
+
+      <!-- Step 1 prep video — "Watch This First - What Happens Next" (Wistia) -->
+      <div id="step-1-video" class="mt-9 w-full scroll-mt-24 max-md:mt-4 max-md:w-[calc(100vw-32px)]">
+        <VideoEmbed provider="wistia" id="feucj6axzn" title="Watch This First — What Happens Next" frame={false} class="shadow-2xl" />
+      </div>
+
+      <p class="mt-9 text-xl leading-[26px] text-white max-md:mt-4 max-md:text-[16px] max-md:leading-[25.12px]">
+        You'll get a confirmation text from us.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="w-full bg-white py-20 text-black max-md:py-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center max-md:w-[calc(100vw-32px)]">
+      <span class="step-pill">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 2
+      </span>
+
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-8 max-md:text-2xl">
+        Press The "I Know The Sender" Button In Your Event Email &amp; Accept
+        The Calendar Invite We Just Sent You
+      </h2>
+
+      <img
+        src="/images/thank-you/i-know-the-sender.webp"
+        alt={'Gmail "I know the sender" button highlighted on the calendar invite'}
+        class="mt-8 w-full rounded-[5px] max-md:w-[calc(100vw-32px)]"
+        loading="lazy"
+      />
+
+      <p class="mt-8 text-2xl leading-[38px] text-black max-md:mt-6 max-md:text-[16px] max-md:leading-[25.12px]">
+        Otherwise the event you just scheduled with us will not show up in your
+        calendar and you will likely miss the call.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="bg-brand-tint w-full py-20 text-black max-md:py-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center max-md:w-[calc(100vw-32px)]">
+      <span class="step-pill">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 3
+      </span>
+
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-8 max-md:text-2xl">
+        Pre-Call Checklist: Please Review Before Your Call
+      </h2>
+
+      <ol class="mt-10 flex w-full flex-col gap-7 text-left max-md:mt-6 max-md:gap-5">
+        {
+          checklist.map((c) => (
+            <li class="text-2xl leading-[38px] text-black max-md:text-[16px] max-md:leading-[25.12px]">
+              <span class="font-bold text-[var(--g-purple-text)]">
+                {c.n}. {c.title}
+              </span>{" "}
+              : {c.body}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 4 — Q&A VIDEOS ===================== -->
+  <section class="w-full bg-white py-20 text-black max-md:pb-8 max-md:pt-5">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
+      <span class="step-pill">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 4
+      </span>
+
+      <h2 class="mt-10 font-tight text-[37px] font-bold capitalize leading-none text-black max-md:mt-5 max-md:text-2xl">
+        Watch These Q&amp;A Videos Answering Most Common Questions To Save Time
+        In Your Decision-Making Process.
+      </h2>
+
+      <div class="mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:mt-8 max-md:grid-cols-1 max-md:gap-y-8">
+        {
+          qaVideos.map((v) => (
+            <div class="flex flex-col items-center gap-3">
+              <VideoEmbed provider="wistia" id={v.id} title={v.title} frame={false} class="rounded-[5px]" />
+              <h3 class="text-center text-2xl font-bold leading-none text-black max-md:text-lg">
+                {v.title}
+              </h3>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 5 — TESTIMONIALS ===================== -->
+  <section class="w-full bg-black py-20 max-md:pb-5 max-md:pt-5">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
+      <span class="step-pill step-pill--dark">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 5
+      </span>
+
+      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:mt-5 max-md:max-w-[332px] max-md:text-[28px]">
+        Here's What Other Customers Are Saying
+      </h2>
+      <p class="mt-3 max-w-[332px] text-xl leading-[31px] text-[#c4c4c4] max-md:text-base">
+        We're happy to keep helping our customers achieve their goals.
+      </p>
+
+      <TestimonialCarousel
+        class="mt-12 text-left max-md:!mt-6"
+        articleClass="md:!min-h-0"
+        videoClass="w-[250px] max-md:mx-auto max-md:w-[calc(100vw-32px)]"
+        compactMobile
+      />
+    </div>
+  </section>
+
+  <!-- ===================== STEP 6 — CASE STUDIES ===================== -->
+  <section class="w-full bg-white py-20 text-black max-md:pb-8 max-md:pt-5">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center">
+      <span class="step-pill">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 6
+      </span>
+      <h2 class="mt-10 text-center font-tight text-5xl font-bold capitalize leading-none text-black max-md:mt-5 max-md:text-[28px]">
+        Check Out (Just Some) Of Our Case Studies.
+      </h2>
+
+      <div class="mt-12 flex w-full flex-col gap-14 max-md:mt-9">
+        {
+          caseStudies.map((cs) => (
+            <div class="flex w-full flex-col">
+              <div class="mx-auto mb-10 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4 max-md:mb-3 max-md:border-b-0 max-md:pb-0">
+                <div class="text-lg font-light leading-[1.3]">SYNCHRO SOCIAL CASE STUDY</div>
+                <h3 class="text-center text-[40px] font-black uppercase leading-[1.3] max-md:text-[2rem]">
+                  {cs.name}
+                </h3>
+                <div class="mt-8 self-start text-left text-2xl font-normal leading-[1.3] max-md:hidden">
+                  RESULTS IN {cs.period.toUpperCase()}:
+                </div>
+              </div>
+
+              <div class="mx-auto grid w-full grid-cols-4 items-start gap-4 max-md:flex max-md:flex-col max-md:items-center max-md:gap-7 max-md:text-center">
+                {cs.stats.map((s) => (
+                  <div class="max-md:order-3 max-md:w-full">
+                    <div class="text-[56px] font-black leading-[1.3] max-lg:text-[3rem]">
+                      {s.value}
+                    </div>
+                    <div class="text-xl font-normal leading-[1.3]">{s.label}</div>
+                  </div>
+                ))}
+                <div class="relative col-start-4 overflow-hidden rounded-[5px] max-md:order-1 max-md:col-start-auto max-md:mx-auto max-md:w-full max-md:max-w-[312px]">
+                  <div class="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-brand-300 to-brand-600 text-4xl font-bold text-white/90">
+                    {cs.name.split(" ").map((w) => w[0]).join("")}
+                  </div>
+                  <img
+                    src={`/images/clients/${slug(cs.name)}.jpg`}
+                    alt={cs.name}
+                    class="absolute inset-0 h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+                <div class="hidden max-md:order-2 max-md:block max-md:w-full max-md:border-b max-md:border-black max-md:pb-6 max-md:text-center max-md:text-[18px] max-md:font-normal max-md:leading-[23.4px]">
+                  RESULTS IN {cs.period.toUpperCase()}:
+                </div>
+              </div>
+
+              <div class="mx-auto mt-9 flex w-full items-center gap-4 text-2xl font-normal leading-[20px] max-md:mt-6 max-md:flex-col max-md:justify-center">
+                <span>Platforms:</span>
+                <div class="flex items-center gap-2">
+                  {cs.platforms.map((p) => (
+                    <PlatformIcon name={p} class="h-8 w-8" />
+                  ))}
+                </div>
+              </div>
+
+              <div class="mx-auto mt-8 flex w-full flex-col items-center gap-9">
+                <div class="text-center text-[32px] font-black leading-[1.3] max-md:text-2xl">Video examples:</div>
+                <div class="grid w-full grid-cols-3 gap-16 max-lg:gap-8 max-md:grid-cols-1 max-md:gap-8">
+                  {cs.videos.map((v) => (
+                    <div class="flex w-full flex-col items-center justify-center gap-1">
+                      <CaseStudyVideo
+                        wistia={v.wistia}
+                        poster={v.poster}
+                        title={`${cs.name} reel — ${v.views} views`}
+                        rounded
+                      />
+                      <div class="text-base font-bold leading-[1.3]">{v.views} views</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 7 — CAMPAIGN PROOF ===================== -->
+  <section class="w-full overflow-hidden bg-[#0c0c0c] pt-20 max-md:pt-5">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
+      <span class="step-pill step-pill--dark">
+        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
+        STEP 7
+      </span>
+      <h2 class="mt-10 max-w-[900px] font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-5 max-md:text-2xl">
+        Check Out More Of What Our Clients Are Saying About Us
+      </h2>
+    </div>
+
+    <CampaignProofGrid />
+  </section>
+
+  <!-- ===================== FOOTER (dark, 4-column) ===================== -->
+  <footer class="w-full border-t border-white/10 bg-black">
+    <div class="mx-auto w-[95%] max-w-[1120px] py-14">
+      <div class="flex flex-wrap justify-between gap-10">
+        <div class="mr-auto">
+          <img src="/images/logo.png" alt="Synchro Social" class="h-10 w-auto" />
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="text-sm font-semibold uppercase leading-5 text-white">Links</div>
+          <a href="/" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">Home</a>
+          <a href="/quiz" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">Growth Quiz</a>
+          <a href="/apply" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">Apply</a>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="text-sm font-semibold uppercase leading-5 text-white">Legal</div>
+          <a href="/privacypolicy" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">Privacy Policy</a>
+          <a href="/terms-conditions" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">Terms of Service</a>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="text-sm font-semibold uppercase leading-5 text-white">Contact</div>
+          <a href="mailto:hello@synchrosocial.com" class="text-base leading-6 text-[#c4c4c4] transition hover:text-white">hello@synchrosocial.com</a>
+        </div>
+      </div>
+
+      <div class="mt-12 flex flex-col gap-2 border-t border-white/10 pt-6">
+        <div class="text-base leading-6 text-white">© {year} Synchro Social LLC. All rights reserved.</div>
+        <p class="max-w-3xl text-xs leading-relaxed text-white/45">
+          NOT FACEBOOK: This site is not a part of the Facebook website or
+          Facebook Inc. Additionally, this site is NOT endorsed by Facebook in
+          any way. FACEBOOK is a trademark of FACEBOOK, Inc.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .quiz-thankyou-fade {
+      background-image: linear-gradient(rgba(0, 0, 0, 0), var(--g-purple-deep));
+    }
+  </style>
+</Layout>

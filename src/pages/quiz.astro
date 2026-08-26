@@ -1,29 +1,61 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SiteNav from "../components/SiteNav.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import ApplyButton from "../components/ApplyButton.astro";
 import ApplyHeroProofBar from "../components/ApplyHeroProofBar.astro";
-import CampaignProofGrid from "../components/CampaignProofGrid.astro";
+import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
+import ApplyFaq from "../components/ApplyFaq.astro";
 import ApplyLegalFooter from "../components/ApplyLegalFooter.astro";
-import GrowthBottleneckQuiz from "../components/GrowthBottleneckQuiz.astro";
 
 /* ===========================================================================
-   GROWTH BOTTLENECK QUIZ — free lead-magnet funnel.
-   Source: "Growth Bottleneck Quiz Funnel — V2" (Google Doc). Single CTA
-   phrase everywhere: "Find My Growth Bottleneck". Headline A/B test via
-   ?hl=<variant> — see the inline script below; only "control" is wired
-   until real challenger copy exists (decision log, 2026-08-24).
+   GROWTH BOTTLENECK QUIZ — free lead-magnet funnel, landing page.
+   Source: "Growth Bottleneck Quiz Funnel — V2" (Google Doc). Headline A/B
+   test via ?hl=<variant> — see the inline script below; only "control" is
+   wired until real challenger copy exists (decision log, 2026-08-24).
 
-   Booking uses the same iClosed calendar as /apply
-   (synchrosocial/social-media-consultation) — see GrowthBottleneckQuiz.astro.
+   Rebuilt 2026-08-26 per owner feedback: the quiz itself now lives on its
+   own page (/quiz/take, opens in a new tab) — this page is pure marketing,
+   no header, single CTA "Book A Consultation Call" everywhere.
 =========================================================================== */
 
-const ctaLabel = "Find My Growth Bottleneck";
+const ctaLabel = "Book A Consultation Call";
+const quizHref = "/quiz/take";
 const steps = [
   { n: 1, title: "Answer 8 questions", body: "Tell us how you currently create and distribute content." },
   { n: 2, title: "Get your growth diagnosis", body: "Find the specific bottleneck preventing more people from discovering and following you." },
   { n: 3, title: "Get your next action", body: "Receive the one area to fix first to increase follower growth." },
+];
+
+const quizFaqs = [
+  {
+    question: "Is the quiz actually free?",
+    answer: "Yes — no cost, no credit card. Answer 8 questions and get your result immediately.",
+  },
+  {
+    question: "What happens after I finish the quiz?",
+    answer:
+      "You'll see your specific growth bottleneck and the one action to fix first. From there you can book a free consultation call if you want help implementing it.",
+  },
+  {
+    question: "How long does the call take?",
+    answer:
+      "About 20-30 minutes. We'll walk through your result, ask a few questions about your content and goals, and tell you honestly whether we're a fit.",
+  },
+  {
+    question: "Will I be pressured to buy anything?",
+    answer:
+      "No. The call is a diagnostic conversation, not a sales pitch. If we're not a fit, we'll tell you and point you in a useful direction anyway.",
+  },
+  {
+    question: "Is this quiz accurate for my niche or industry?",
+    answer:
+      "The four bottlenecks — reach, positioning, profile conversion, consistency — apply to any coach or expert publishing content, regardless of niche. Your specific numbers are unique to you.",
+  },
+  {
+    question: "What if I don't like my result?",
+    answer:
+      "Every result comes with a concrete next action, not just a diagnosis. Whatever your biggest constraint is, there's a specific first step to fix it.",
+  },
 ];
 ---
 
@@ -33,12 +65,11 @@ const steps = [
   bodyClass="v2"
   metaEvent={{ name: "ViewContent", params: { content_name: "quiz" } }}
 >
-  <SiteNav />
   <IClosedLiftWidget />
 
   <!-- ===================== HERO ===================== -->
   <section class="relative overflow-hidden pb-20 pt-24 max-lg:pt-16 max-md:pb-12 max-md:pt-12">
-    <div class="bg-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    <div class="quiz-hero-fade pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
     <div class="relative z-[3] mx-auto flex w-[95%] max-w-[1100px] flex-col items-center gap-7 text-center max-md:gap-5">
       <p class="font-tight text-sm font-semibold uppercase leading-none tracking-[0.2em] text-[#d8c4ff] max-md:text-[11px] max-md:tracking-[0.16em]">
@@ -68,13 +99,20 @@ const steps = [
         <span class="inline-block whitespace-nowrap">Out Why in 3 Minutes</span>
       </h1>
 
-      <p class="max-w-[620px] text-xl leading-[157%] text-[#d9d0ea] max-md:text-base">
+      <p class="max-w-[620px] text-xl leading-[157%] text-[#d9d0ea] max-md:text-base md:max-w-[900px]">
         Take the 3-minute quiz to uncover the specific bottleneck limiting your reach and follower
         growth, then get the one action to fix first.
       </p>
 
       <div class="mt-1 flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-16px)]">
-        <ApplyButton href="#quiz-start" label={ctaLabel} arrowDir="down" class="w-full" />
+        <ApplyButton
+          href={quizHref}
+          label={ctaLabel}
+          arrowDir="down"
+          class="w-full quiz-hero-cta"
+          target="_blank"
+          rel="noopener noreferrer"
+        />
       </div>
 
       <div class="mt-4 w-full">
@@ -83,41 +121,22 @@ const steps = [
     </div>
   </section>
 
-  <!-- ===================== QUALIFICATION LINE ===================== -->
-  <!-- Single line between hero and proof, per the spec doc. Its own
-     section, deliberately a different shade (black) than the proof section
-     right after it (#0c0c0c) — matching them made the gap between two
-     blocks of text read as an accidental void instead of an intentional
-     section break; a real color change reads as "this is a new section"
-     regardless of gap size. -->
-  <section class="w-full bg-black py-12 max-md:py-8">
-    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
-      Built for coaches, experts, and personal brands who publish content but aren't converting
-      views into followers.
-    </p>
-  </section>
+  <!-- ===================== SOCIAL PROOF ===================== -->
+  <!-- Reused verbatim from /apply (before/after comparison grid + proof
+     tiles) — only the title and CTA are page-specific, per owner request to
+     swap the 2x3 video grid for this instead. -->
+  <AudienceSkyrocket
+    title="How We Grow Our Clients"
+    ctaHref={quizHref}
+    ctaLabel={ctaLabel}
+    ctaCaption="Takes 3 Minutes • No Obligation"
+    target="_blank"
+    rel="noopener noreferrer"
+    ctaArrowDir="down"
+  />
 
-  <!-- ===================== PROOF ===================== -->
-  <!-- One section, per the spec doc: heading + 2x3 grid + featured callout +
-     strip + CTA all together. Grid/card markup and video-player behavior
-     reused verbatim from the shared CampaignProofGrid component (/apply,
-     /thank-you) — heading, client subset/order, and the slotted content
-     below are page-specific. Garrain Jones and Morgan Burch (the doc's
-     original two) are swapped for Dr. Sonia and Daniel Raphael since
-     neither has a case-study video. -->
-  <CampaignProofGrid
-    heading="Real growth for real experts"
-    showSubheading={false}
-    entries={[
-      "Baya Voce",
-      "Edward Mannix",
-      "Jessica Winterstern",
-      "Lucas Salame",
-      "Dr. Sonia Chopra",
-      "Daniel Raphael",
-    ]}
-  >
-    <div class="mx-auto mt-12 flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:mt-8 max-md:gap-6">
+  <section class="w-full bg-black pt-8 pb-16 max-md:pt-6 max-md:pb-10">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:gap-6">
       <!-- Featured proof callout — pulled out of the strip, own visual
          treatment, per the spec doc. -->
       <div class="relative w-full max-w-[820px] overflow-hidden rounded-2xl bg-brand-gradient p-10 text-center shadow-soft-band max-md:p-7">
@@ -135,21 +154,23 @@ const steps = [
         </p>
       </div>
 
-      <!-- Proof strip. The doc's second name (Daniel Raphael) is already the
-         grid's 6th card above, so this uses Danny Morel instead to avoid
-         featuring the same client twice (decision log, 2026-08-25). -->
+      <!-- Proof strip. The doc's second name (Daniel Raphael) already
+         appears in the case-study roster above, so this uses Danny Morel
+         instead to avoid featuring the same client twice. -->
       <p class="max-w-[760px] text-center text-base leading-[157%] text-[#c4c4c4]">
         Other results: Luke MacNaughton added 10K followers in one month. Danny Morel grew to
         3.5M+ followers with 500M+ views generated.
       </p>
 
       <div class="mt-2 flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
-        <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
+        <ApplyButton href={quizHref} label={ctaLabel} arrowDir="down" class="w-full" target="_blank" rel="noopener noreferrer" />
       </div>
     </div>
-  </CampaignProofGrid>
+  </section>
 
   <!-- ===================== HOW IT WORKS ===================== -->
+  <!-- Moved here (after social proof, before the qualification line) per
+     owner request, 2026-08-26. -->
   <section class="w-full bg-black pb-10 pt-12 max-md:pb-6 max-md:pt-8">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-14 max-md:gap-8">
       <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
@@ -172,16 +193,66 @@ const steps = [
       </div>
 
       <div class="flex w-full max-w-[420px] flex-col max-md:w-[calc(100%-32px)]">
-        <ApplyButton href="#quiz-start" label={ctaLabel} class="w-full" />
+        <ApplyButton href={quizHref} label={ctaLabel} arrowDir="down" class="w-full" target="_blank" rel="noopener noreferrer" />
       </div>
     </div>
   </section>
 
-  <!-- ===================== QUIZ ===================== -->
-  <GrowthBottleneckQuiz />
+  <!-- ===================== QUALIFICATION LINE ===================== -->
+  <!-- Single line, per the spec doc — now the last thing before the FAQ,
+     per owner request to move How It Works ahead of it. Its own section,
+     deliberately a different shade (black-on-black seam avoided by keeping
+     symmetric padding) — see 2026-08-25 decision log for why. -->
+  <section class="w-full bg-[#0c0c0c] py-12 max-md:py-8">
+    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
+      Built for coaches, experts, and personal brands who publish content but aren't converting
+      views into followers.
+    </p>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <ApplyFaq heading="Got Questions?<br />We've Got Answers" items={quizFaqs} />
 
   <ApplyLegalFooter />
 </Layout>
+
+<style>
+  .quiz-hero-fade {
+    background-image: linear-gradient(rgba(0, 0, 0, 0), var(--g-purple-deep));
+  }
+
+  /* Animated glow + hover treatment on the hero CTA only — see chat summary
+     for why it's scoped to just this one button. :global() because the
+     class lands on the <a> ApplyButton renders in its own component scope,
+     not an element written directly in this file. */
+  :global(.quiz-hero-cta) {
+    animation: quiz-cta-glow 2.4s ease-in-out infinite;
+    transition:
+      background-color 200ms ease,
+      transform 150ms ease,
+      box-shadow 200ms ease;
+  }
+
+  :global(.quiz-hero-cta:hover) {
+    background: var(--g-purple-deep);
+    transform: translateY(-2px);
+    animation-play-state: paused;
+  }
+
+  @keyframes quiz-cta-glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 0 rgba(131, 49, 232, 0.55),
+        0 4px 18px rgba(131, 49, 232, 0.35);
+    }
+    50% {
+      box-shadow:
+        0 0 0 12px rgba(131, 49, 232, 0),
+        0 4px 30px rgba(131, 49, 232, 0.6);
+    }
+  }
+</style>
 
 <script>
   /* Headline A/B — separate ad sets point at /quiz?hl=<variant>-style URLs
@@ -203,10 +274,35 @@ const steps = [
       variant = new URLSearchParams(window.location.search).get("hl") || "control";
     } catch (e) {}
     const copy = HEADLINE_VARIANTS[variant];
-    if (!copy) return;
-    document.querySelectorAll<HTMLElement>("[data-quiz-headline]").forEach((el) => {
-      el.textContent = copy;
-      el.setAttribute("data-quiz-headline", variant);
+    if (copy) {
+      document.querySelectorAll<HTMLElement>("[data-quiz-headline]").forEach((el) => {
+        el.textContent = copy;
+        el.setAttribute("data-quiz-headline", variant);
+      });
+    }
+  })();
+
+  /* Forward this page's querystring (utm_ params, fbclid, etc.) onto every
+     /quiz/take link. The quiz now opens in a new tab — a new tab gets its own
+     sessionStorage, not this page's — so IClosedCapture.astro's existing
+     "read attribution from the current page's own URL if nothing is stored
+     yet" fallback (see src/components/IClosedCapture.astro) needs /quiz/take
+     to actually carry the params in ITS OWN url to self-populate ss_attr.
+     No noopener-breaks-this concern either way since we still pass
+     noopener/noreferrer — this doesn't rely on window.opener at all. */
+  (function () {
+    const search = window.location.search;
+    if (!search) return;
+    document.querySelectorAll<HTMLAnchorElement>('a[href^="/quiz/take"]').forEach((a) => {
+      try {
+        const url = new URL(a.getAttribute("href") || "", window.location.origin);
+        const incoming = new URLSearchParams(search);
+        incoming.forEach((v, k) => {
+          if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+        });
+        const qs = url.searchParams.toString();
+        a.setAttribute("href", url.pathname + (qs ? `?${qs}` : ""));
+      } catch (e) {}
     });
   })();
 </script>

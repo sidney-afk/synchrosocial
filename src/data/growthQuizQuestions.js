@@ -1,7 +1,9 @@
 // Growth Bottleneck Quiz — questions, scoring, and result copy.
-// Source: "Growth Bottleneck Quiz Funnel — V2" (Google Doc), transcribed
-// verbatim. Q1 and Q5 are behavioral (real analytics numbers); the rest are
-// self-assessment. All options score 1-5 left to right.
+// Source: "Growth Bottleneck Quiz Funnel — V2" (Google Doc). Originally Q1
+// and Q5 sent people to check their real analytics — rewritten 2026-08-26 as
+// self-assessment (same category/scoring intent, no reason to leave the
+// page) since making someone tab away mid-quiz is a real drop-off risk.
+// All 8 are self-assessment now. All options score 1-5 left to right.
 //
 // Scoring: two questions per category, summed (min 2, max 10). Route to the
 // lowest-scoring category. Ties break in fixed priority order — reach fails
@@ -12,10 +14,15 @@ export const quizQuestions = [
   {
     id: "q1",
     category: "reach",
-    text: "Open your analytics. What percent of your recent views come from non-followers?",
-    helper:
-      "On Instagram: Insights → any recent reel → Views → Followers vs Non-followers. Don't have access right now? Give your best estimate.",
-    options: ["Under 10%", "10–25%", "25–50%", "50–75%", "Over 75%"],
+    text: "Think about who actually sees your posts. Who is it mostly?",
+    helper: "Go with your gut — no need to check your analytics.",
+    options: [
+      "Almost entirely people who already follow me",
+      "Mostly my followers, with a few new people",
+      "A fairly even mix of followers and new people",
+      "Mostly people who don't follow me yet",
+      "Almost entirely people who've never seen me before",
+    ],
   },
   {
     id: "q2",
@@ -56,9 +63,15 @@ export const quizQuestions = [
   {
     id: "q5",
     category: "profile",
-    text: "Check a recent post's analytics. How many profile visits did it drive per 1,000 views?",
-    helper: "Instagram: Insights → post → Profile activity. Estimate if needed.",
-    options: ["I don't know / almost none", "1–5", "5–15", "15–30", "30+"],
+    text: "When someone new sees your content, how likely are they to check out your profile?",
+    helper: "Go with your gut — no need to check your analytics.",
+    options: [
+      "Rarely — most people just scroll past",
+      "Occasionally, if the post is really strong",
+      "Sometimes, especially the better ones",
+      "Often — my content usually makes people curious",
+      "Very often — people frequently check out my profile after",
+    ],
   },
   {
     id: "q6",

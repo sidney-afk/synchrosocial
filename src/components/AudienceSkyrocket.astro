@@ -2,9 +2,23 @@
 interface Props {
   ctaHref?: string;
   ctaLabel?: string;
+  ctaCaption?: string;
+  /** Plain-text override for the default "Watch Your Audience Skyrocket 🚀" markup. */
+  title?: string;
+  target?: string;
+  rel?: string;
+  ctaArrowDir?: "right" | "down";
 }
 
-const { ctaHref = "/apply", ctaLabel = "Apply Now" } = Astro.props;
+const {
+  ctaHref = "/apply",
+  ctaLabel = "Apply Now",
+  ctaCaption = "Get Started In Less Than 60 Seconds • Cancel Anytime",
+  title,
+  target,
+  rel,
+  ctaArrowDir = "right",
+} = Astro.props;
 
 const imageBase = "/images/audience-skyrocket/";
 
@@ -127,8 +141,7 @@ const proofColumns = [
 <section class="audience-skyrocket" aria-labelledby="audience-skyrocket-title">
   <div class="audience-skyrocket__panel">
     <h2 id="audience-skyrocket-title" class="audience-skyrocket__title">
-      Watch Your<br />
-      Audience <em>Skyrocket</em> <span aria-hidden="true">&#128640;</span>
+      {title ?? (<>Watch Your<br />Audience <em>Skyrocket</em> <span aria-hidden="true">&#128640;</span></>)}
     </h2>
 
     <div class="audience-skyrocket__comparison" aria-label="Before and after client growth screenshots">
@@ -200,16 +213,25 @@ const proofColumns = [
     </div>
 
     <div class="audience-skyrocket__cta">
-      <a class="audience-skyrocket__cta-button" href={ctaHref}>
+      <a class="audience-skyrocket__cta-button" href={ctaHref} target={target} rel={rel}>
         <span>{ctaLabel}</span>
         <span class="audience-skyrocket__cta-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M5 12h13" />
-            <path d="m13 6 6 6-6 6" />
-          </svg>
+          {
+            ctaArrowDir === "down" ? (
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M7 13l5 5 5-5" />
+                <path d="M7 6l5 5 5-5" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h13" />
+                <path d="m13 6 6 6-6 6" />
+              </svg>
+            )
+          }
         </span>
       </a>
-      <p>Get Started In Less Than 60 Seconds &bull; Cancel Anytime</p>
+      <p>{ctaCaption}</p>
     </div>
   </div>
 </section>
