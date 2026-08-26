@@ -601,6 +601,141 @@ workflow sends S2 needs to confirm it's sending through that messaging
 service (not a specific from-number) for this to take effect — not verified
 yet, and n8n access was unavailable in this session to check directly.
 
+### S2 wired and live — 2026-08-26
+
+Audited what actually existed in n8n before touching anything: **no Twilio
+credential existed at all**, and **no SMS-sending node existed in any
+workflow** — every prior claim about "S2 waiting on Twilio" was accurate in
+the sense that literally nothing had been built yet, registration-only.
+Also found and fixed a live bug: two copies of "Kasper Ad Performance —
+Daily Pull" were both active on the same twice-daily schedule, writing to
+the same Supabase table — the old one from 2026-08-24 was never deactivated
+when the fixed 2026-08-25 version replaced it. Unpublished the stale one.
+
+**Credential.** Sidney added a native n8n Twilio credential himself
+(`croblhkQr6ec4xfK`, "Twilio — SMS") — Account SID + Auth Token, entered
+directly into n8n's UI. No MCP tool exists to create credentials, so this
+step cannot be automated from here.
+
+**S2 (booked-call confirmation) — built in both funnels**, since the AI
+funnel ("Sales — Call Booked (iClosed)") and the normal funnel ("Normal
+Sales — Booking Handler") are separate workflows and neither had any SMS
+logic. In both: after the confirmation email sends (same-day bookings still
+skip this, matching the email's own scope), a phone-number check gates a
+`n8n-nodes-base.twilio` send from `+18882725649`, using wording that mirrors
+the exact sample Twilio approved (`"Hi {name}, it's Kasper from Synchro
+Social & just saw that you booked a call for {tomorrow/weekday} at
+{time}..."` + STOP/HELP), then a Telegram ping to Kasper confirming the text
+went out. **Proven live** — test sent to Sidney's own number
+(+506 8349-3625), Twilio confirmed `delivered`, `error_code: null`.
+
+**Not tracked in Kasper's ad-performance dashboard.** That pull only
+surfaces *unfinished/recovery* leads, not completed bookings — S2 sends have
+no dashboard visibility beyond the Telegram ping. Flagged to Sidney;
+separate work if wanted.
+
+### S1 (recovery follow-up SMS) — built 2026-08-26, risk accepted by Sidney
+
+Sidney's original ask, going back to when this alerting was first built: email
+for leads with an email, and — once Twilio existed — **automated SMS for the
+phone-only leads Kasper was manually texting in the meantime.** That's what
+this ships.
+
+**Compliance flag raised before building:** the toll-free number was
+approved specifically for the S2 confirmation content (that's the literal
+message sample on file). Automated follow-up SMS to an abandoned-booking
+lead is different content, sent on a number that wasn't reviewed for it —
+real risk of the number getting flagged again, which could also take down
+the now-working S2 send. Presented the three options (send anyway, file a
+separate registration first, stay manual) — **Sidney chose to send anyway
+and accept the risk.**
+
+**What changed, in "Sales — Booking Recovery Dispatch":**
+- `Select Due` now computes `day_option_1`/`day_option_2` and a cleaned
+  `first_name` for the no-email ("park") branch too, not just the email
+  branch — and caps that branch at 5 sends/run, same discipline as email,
+  now that it triggers a real paid send instead of a free Telegram FYI. Also
+  added an `sms_sent_at` already-sent guard mirroring the existing
+  `email_sent_at` one (belt-and-suspenders; the `status`-based re-poll guard
+  already prevents a double-send on its own).
+- New chain off `Awaiting SMS?`: `Send Recovery SMS` (Twilio, same toll-free
+  number, message: *"Hi {name}, it's Kasper from Synchro Social. Saw you
+  started booking a call but didn't get to finish — want to grab a time for
+  {day1} or {day2}? Just reply here and I'll get you scheduled. Reply STOP to
+  opt out."*) → `Mark SMS Sent` (stamps `sms_sent_at` on the
+  `booking_recovery` row — this is the field the ad-performance pull already
+  reads) → the existing `Telegram Kasper (No Email — Text Them)` node,
+  repurposed from "please text them yourself" to a "text already sent, here's
+  what was said, follow up personally if you want" confirmation, and fixed to
+  read from `$('Safety Gate').item.json` instead of `$json` since `$json` by
+  that point is the Twilio/data-table node output, not the lead.
+- The old direct `Awaiting SMS? → Telegram` edge was removed (`removeConnection`
+  — worked fine as an update_workflow operation type) so Kasper gets one
+  message, not a stale one plus a new one.
+
+**Proven live** — inserted a synthetic no-email row
+(`test-recovery-sms-20260826`, phone +506 8349-3625, `utm_campaign:
+prospecting`) into `booking_recovery` and ran the workflow on demand
+(execution `438612`, `status: success`). Twilio confirms the follow-up text
+sent at 22:34:40Z and delivered. **Answers Sidney's dashboard question
+directly:** `sms_sent_at` is now the thing that actually gets stamped for
+this branch, so the twice-daily ad-performance pull (§ above) will show it
+for real recovery leads going forward — it only ever stayed blank before
+because nothing wrote to it.
+
+**Cleanup owed:** the synthetic test row above is still sitting in
+`booking_recovery` (marked suppressed/awaiting_sms with a real
+`sms_sent_at`, so it won't resend, but it's not real data) — no
+delete-row tool exists via MCP, needs removing by hand if it matters.
+
+### Inbound replies — the gap in §5 was still real, fixed same day
+
+§5's operating-rules table has always flagged this: *"Inbound replies reach
+a human — not yet built"*, with an explicit "do this before S1 goes live,
+not after." S1 went live today inviting replies (*"reply here and I'll get
+you scheduled"*), and S2 already said *"please text me"* — so before calling
+either done, checked the toll-free number's actual Twilio config directly.
+**`sms_url` was empty, `messaging_service_sid` was null.** Zero inbound
+routing existed; any reply from a lead would have landed in Twilio's logs
+and nowhere a human would see it — exactly the failure mode the doc warned
+about.
+
+Built the minimum viable fix from §5's own suggestion (Slack in the
+original text, Telegram in practice since that's the channel actually used
+everywhere else here): new workflow **"Sales — Inbound SMS Relay"**
+(`m6T2atZGGXKlDqfw`) — a public webhook (`/webhook/twilio-inbound-sms`,
+no auth, since Twilio can't authenticate outbound) that relays every
+inbound SMS's From/To/Body straight to Kasper's Telegram, HTML-escaped, no
+processing or filtering. Pointed the toll-free number's `SmsUrl` at it.
+Tested by POSTing a synthetic Twilio-shaped payload directly at the webhook
+(execution `438651`, `status: success`, ~260ms — consistent with one
+Telegram call, but not independently confirmed inside Kasper's actual chat
+from here).
+
+**Still not done, and this doc's own STOP-keyword warning still applies
+unchanged:** this relay surfaces every reply to a human, it does not parse
+or action anything. Twilio's built-in filter still catches STOP /
+UNSUBSCRIBE / CANCEL automatically at the carrier level regardless of this
+workflow. Free-text opt-outs ("please stop texting me", "not interested")
+still require Kasper actually reading the Telegram feed and honoring them
+by hand — this relay makes that possible, it doesn't make it automatic.
+
+### Quiet hours — also flagged in §5, also not applied until caught
+
+Same pattern as the inbound-reply gap: §5's rules table has always said "no
+sends before 08:00 or after 21:00 recipient-local, defer don't skip" for
+SMS, and the S1 build above shipped without it — a phone-only lead in a
+timezone hours ahead or behind could have gotten a "want to reschedule?"
+text at 3am their time. Caught rereading §5 after the fact, fixed same day:
+`Select Due` now computes the lead's local hour and skips the SMS branch
+entirely (leaves the row untouched at `status: pending`) when outside
+08:00–21:00 local, so a later 10-minute run picks it back up once the
+window opens rather than sending late or dropping it. Applied to SMS only,
+per §5's own framing — the recovery email has no equivalent rule and stays
+as it was. S2 (booking confirmation) is also unaffected: it fires in direct
+response to the lead's own action of booking, same as the confirmation
+email it rides alongside, not a proactively-scheduled outreach.
+
 ### Cost reality — retries are free
 
 | | |
@@ -1165,12 +1300,12 @@ the consent line points at it.
 | --- | --- |
 | STOP/UNSUBSCRIBE honoured automatically | Twilio Advanced Opt-Out — enable it; Twilio then refuses sends to opted-out numbers at the API level |
 | Opt-out state read from Twilio, never mirrored | `HUBSPOT_SCHEMA.md` §4 — a second copy can drift and let a message through |
-| Quiet hours: no sends before 08:00 or after 21:00 **recipient-local** | workflow 02, `QUIET_START`/`QUIET_END`; quiet hours defer, they do not skip |
+| Quiet hours: no sends before 08:00 or after 21:00 **recipient-local** | ✅ done 2026-08-26 — `Select Due` in "Sales — Booking Recovery Dispatch", SMS branch only; defers, does not skip |
 | Sender identified in the first clause | every template names Kasper and Synchro Social |
-| One S1 per lead, ever | keyed on E.164 phone, not session |
+| One S1 per lead, ever | keyed on `status`/`lead_key` re-poll guard, not session — see "Sales — Booking Recovery Dispatch" |
 | Never text someone who booked | the gate — see `README.md` §3 |
-| Phone stored E.164 or dropped | workflow 01 normalises; unparseable numbers are dropped, not stored malformed |
-| Inbound replies reach a human | **not yet built** — see below |
+| Phone stored E.164 or dropped | normalised inline in each Twilio node's `to` expression; malformed numbers are best-effort `+`-prefixed, not dropped — narrower than originally planned here |
+| Inbound replies reach a human | ✅ done 2026-08-26 — "Sales — Inbound SMS Relay" workflow, relays to Kasper's Telegram; still no automated free-text opt-out handling, see above |
 
 ### Replies are an obligation, not a nicety
 
@@ -1206,6 +1341,15 @@ until it is automated. **Do this before S1 goes live**, not after.
 > workflows have API keys pasted into code nodes
 > (`CLIENT_LIFECYCLE_MAP.md` §15.6) — do not add to that pile.
 
+> **Done, 2026-08-26 — against different workflow names than planned here.**
+> This section names generic "workflows 02 and 03"; what actually shipped is
+> the credential (`Twilio — SMS`, `croblhkQr6ec4xfK`) wired into three real
+> workflows — "Sales — Call Booked (iClosed)", "Normal Sales — Booking
+> Handler" (both S2), and "Sales — Booking Recovery Dispatch" (S1). See the
+> "S2 wired and live" / "S1 (recovery follow-up SMS)" sections above for what
+> was actually built. Error Workflow was already set on all three from
+> earlier work, not something added here.
+
 ---
 
 ## 7. Testing before it touches a real lead
@@ -1234,23 +1378,31 @@ In order, none skippable:
 
 ## 8. Checklist
 
-- [ ] **Checked whether iClosed sends SMS reminders natively** (§0.5) — may remove the need for most of this
-- [ ] EIN confirmed old enough for TCR (§2b)
-- [ ] Confirmed iClosed can host a separate consent checkbox (§4) — or decided on Route C
-- [ ] Twilio account on the business identity, upgraded, payment added
-- [ ] Local SMS number purchased
-- [ ] Customer Profile submitted and approved
-- [ ] Brand registered and approved
-- [ ] **Consent checkbox live on the iClosed form** (§4) — before campaign submission
-- [ ] Campaign submitted with real sample messages and the real opt-in description
-- [ ] Campaign approved, number attached to it
-- [ ] Advanced Opt-Out enabled
-- [ ] Inbound replies routed to Slack, and someone owns watching them (§5)
-- [ ] `Twilio SMS` credential created in n8n
-- [ ] Number set in workflows 02 and 03; Error Workflow set on both
-- [ ] Privacy policy mentions SMS
-- [ ] Tests 1–5 in §7 all pass
-- [ ] `SMS_ENABLED` flipped to `true`
+> **Status pass, 2026-08-26.** Most of this section predates the actual
+> build and names things (`SMS_ENABLED` flag, "workflow 01/02/03") that were
+> never implemented that way — the real send logic lives directly in "Sales
+> — Call Booked (iClosed)", "Normal Sales — Booking Handler", "Sales —
+> Booking Recovery Dispatch", and "Sales — Inbound SMS Relay". Checked off
+> below against what's actually true; unchecked items are genuinely still
+> open, not just unverified.
+
+- [x] ~~Checked whether iClosed sends SMS reminders natively~~ (§0.5) — resolved long ago, Twilio was the chosen path
+- [x] EIN confirmed old enough for TCR (§2b)
+- [x] Confirmed the consent checkbox already existed on the iClosed form (§4) — found already live, not added
+- [x] Twilio account on the business identity, upgraded, payment added
+- [x] Toll-free number purchased and **verified/approved** (10DLC local-number campaign remains rejected, unrelated path)
+- [x] Customer Profile submitted and approved
+- [x] Brand registered and approved
+- [x] Consent checkbox confirmed live on the iClosed form (§4) — pre-existing
+- [x] Campaign submitted with real sample messages and the real opt-in description — toll-free path; 10DLC still rejected after 5 attempts
+- [x] Toll-free verification approved, number sendable (10DLC campaign not attached to any approved registration)
+- [ ] **Advanced Opt-Out does not apply as configured** — checked: the toll-free number has no `messaging_service_sid` (sends go from the bare number, not through a Messaging Service), and Advanced Opt-Out is a Messaging Service feature. Basic STOP/START/HELP keyword handling is still automatic at the Twilio account level regardless — that part works — but the more granular Advanced Opt-Out behavior described in this doc isn't in effect. Would need to create a Messaging Service, attach the number to it, and switch the Twilio nodes to send via `MessagingServiceSid` instead of `From` to get it.
+- [x] Inbound replies routed to Telegram (not Slack, per house convention), and Kasper needs to actually own watching it (§5) — routing built, the human-ownership half is Sidney/Kasper's, not something I can verify or guarantee
+- [x] `Twilio — SMS` credential created in n8n (`croblhkQr6ec4xfK`)
+- [x] Number wired into all three sending workflows; Error Workflow already set on all three
+- [x] Privacy policy mentions SMS
+- [ ] No formal test-1-through-5 pass of §7 — tested differently, via real live sends (S2 and S1 both proven with real Twilio `delivered` status) rather than the specific 5-test sequence drafted in §7
+- [ ] No `SMS_ENABLED` flag exists — sends are live in production now, gated by the phone-number/quiet-hours/already-sent checks described above instead of a single kill switch. If a fast off-switch is wanted, that would need to be added; right now stopping S1/S2 means deactivating the relevant n8n workflow(s) directly
 
 ---
 
