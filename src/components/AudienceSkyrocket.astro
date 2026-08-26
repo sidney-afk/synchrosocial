@@ -8,6 +8,15 @@ interface Props {
   target?: string;
   rel?: string;
   ctaArrowDir?: "right" | "down";
+  /** "blue" (default) keeps /apply's original navy/blue palette. "purple"
+   * switches the section, panel, and CTA to the black/brand-purple palette
+   * used on /quiz. */
+  theme?: "blue" | "purple";
+  /** Suppresses this component's own built-in CTA block — used on /quiz,
+   * which instead passes page-specific content (a featured-result callout +
+   * one CTA) via the default slot so it's all one visual section instead of
+   * a boxed CTA followed by a separate section. */
+  hideCta?: boolean;
 }
 
 const {
@@ -18,7 +27,11 @@ const {
   target,
   rel,
   ctaArrowDir = "right",
+  theme = "blue",
+  hideCta = false,
 } = Astro.props;
+
+const sectionClass = theme === "purple" ? "audience-skyrocket audience-skyrocket--purple" : "audience-skyrocket";
 
 const imageBase = "/images/audience-skyrocket/";
 
@@ -138,7 +151,7 @@ const proofColumns = [
 ];
 ---
 
-<section class="audience-skyrocket" aria-labelledby="audience-skyrocket-title">
+<section class={sectionClass} aria-labelledby="audience-skyrocket-title">
   <div class="audience-skyrocket__panel">
     <h2 id="audience-skyrocket-title" class="audience-skyrocket__title">
       {title ?? (<>Watch Your<br />Audience <em>Skyrocket</em> <span aria-hidden="true">&#128640;</span></>)}
@@ -212,28 +225,34 @@ const proofColumns = [
       </div>
     </div>
 
-    <div class="audience-skyrocket__cta">
-      <a class="audience-skyrocket__cta-button" href={ctaHref} target={target} rel={rel}>
-        <span>{ctaLabel}</span>
-        <span class="audience-skyrocket__cta-icon" aria-hidden="true">
-          {
-            ctaArrowDir === "down" ? (
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M7 13l5 5 5-5" />
-                <path d="M7 6l5 5 5-5" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M5 12h13" />
-                <path d="m13 6 6 6-6 6" />
-              </svg>
-            )
-          }
-        </span>
-      </a>
-      <p>{ctaCaption}</p>
-    </div>
+    {
+      !hideCta && (
+        <div class="audience-skyrocket__cta">
+          <a class="audience-skyrocket__cta-button" href={ctaHref} target={target} rel={rel}>
+            <span>{ctaLabel}</span>
+            <span class="audience-skyrocket__cta-icon" aria-hidden="true">
+              {
+                ctaArrowDir === "down" ? (
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M7 13l5 5 5-5" />
+                    <path d="M7 6l5 5 5-5" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12h13" />
+                    <path d="m13 6 6 6-6 6" />
+                  </svg>
+                )
+              }
+            </span>
+          </a>
+          <p>{ctaCaption}</p>
+        </div>
+      )
+    }
   </div>
+
+  <slot />
 </section>
 
 <style>
@@ -251,6 +270,51 @@ const proofColumns = [
     border: 1px solid rgba(40, 129, 255, 0.18);
     border-radius: 20px;
     background: #010f23;
+  }
+
+  /* "purple" theme (/quiz): swap the navy/blue palette for black + brand
+     purple, and give the section room at the bottom for slotted content
+     (a featured-result callout + CTA) that now shares this same section. */
+  .audience-skyrocket--purple {
+    padding-bottom: 64px;
+    background: #000;
+  }
+
+  .audience-skyrocket--purple .audience-skyrocket__panel {
+    border-color: rgba(131, 49, 232, 0.25);
+    background: #0a0612;
+  }
+
+  .audience-skyrocket--purple .audience-skyrocket__cta-button {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) 70%,
+        rgba(255, 255, 255, 0.14) 94%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      var(--g-purple);
+    box-shadow:
+      0 1px 0.75px rgba(255, 255, 255, 0.28) inset,
+      0 0 0 1px var(--g-purple-ring);
+  }
+
+  .audience-skyrocket--purple .audience-skyrocket__cta-button:hover {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0) 70%,
+        rgba(255, 255, 255, 0.12) 94%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      var(--g-purple-deep);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.16),
+      0 0 0 1px var(--g-purple-ring);
+  }
+
+  .audience-skyrocket--purple .audience-skyrocket__cta-icon {
+    color: var(--g-purple);
   }
 
   .audience-skyrocket__title {
@@ -509,6 +573,10 @@ const proofColumns = [
       padding: 56px 0 20px;
     }
 
+    .audience-skyrocket--purple {
+      padding-bottom: 40px;
+    }
+
     .audience-skyrocket__panel {
       width: calc(100% - 32px);
       padding-bottom: 28px;
@@ -524,6 +592,10 @@ const proofColumns = [
   @media (max-width: 560px) {
     .audience-skyrocket {
       padding: 60px 0 16px;
+    }
+
+    .audience-skyrocket--purple {
+      padding-bottom: 32px;
     }
 
     .audience-skyrocket__panel {

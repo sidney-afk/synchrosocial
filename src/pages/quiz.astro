@@ -121,22 +121,26 @@ const quizFaqs = [
     </div>
   </section>
 
-  <!-- ===================== SOCIAL PROOF ===================== -->
-  <!-- Reused verbatim from /apply (before/after comparison grid + proof
-     tiles) — only the title and CTA are page-specific, per owner request to
-     swap the 2x3 video grid for this instead. -->
-  <AudienceSkyrocket
-    title="How We Grow Our Clients"
-    ctaHref={quizHref}
-    ctaLabel={ctaLabel}
-    ctaCaption="Takes 3 Minutes • No Obligation"
-    target="_blank"
-    rel="noopener noreferrer"
-    ctaArrowDir="down"
-  />
+  <!-- ===================== QUALIFICATION LINE ===================== -->
+  <!-- Single line, per the spec doc — right after the hero, before proof,
+     per owner request 2026-08-26 (an earlier pass had moved this after How
+     It Works; moved back). -->
+  <section class="w-full bg-[#0c0c0c] py-12 max-md:py-8">
+    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
+      Built for coaches, experts, and personal brands who publish content but aren't converting
+      views into followers.
+    </p>
+  </section>
 
-  <section class="w-full bg-black pt-8 pb-16 max-md:pt-6 max-md:pb-10">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 max-md:gap-6">
+  <!-- ===================== SOCIAL PROOF ===================== -->
+  <!-- Reused from /apply (before/after comparison grid + proof tiles), with
+     the "purple" theme swapping /apply's navy/blue palette for black +
+     brand purple, and hideCta so the featured-result callout, proof strip,
+     and single CTA below (passed as slot children) render inside the SAME
+     section/background instead of a separate one — no color seam, one CTA,
+     per owner request 2026-08-26. -->
+  <AudienceSkyrocket title="How We Grow Our Clients" theme="purple" hideCta>
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-8 pt-8 max-md:gap-6 max-md:pt-6">
       <!-- Featured proof callout — pulled out of the strip, own visual
          treatment, per the spec doc. -->
       <div class="relative w-full max-w-[820px] overflow-hidden rounded-2xl bg-brand-gradient p-10 text-center shadow-soft-band max-md:p-7">
@@ -166,11 +170,9 @@ const quizFaqs = [
         <ApplyButton href={quizHref} label={ctaLabel} arrowDir="down" class="w-full" target="_blank" rel="noopener noreferrer" />
       </div>
     </div>
-  </section>
+  </AudienceSkyrocket>
 
   <!-- ===================== HOW IT WORKS ===================== -->
-  <!-- Moved here (after social proof, before the qualification line) per
-     owner request, 2026-08-26. -->
   <section class="w-full bg-black pb-10 pt-12 max-md:pb-6 max-md:pt-8">
     <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-14 max-md:gap-8">
       <h2 class="font-tight text-5xl font-bold capitalize leading-none text-white max-md:text-[28px]">
@@ -198,18 +200,6 @@ const quizFaqs = [
     </div>
   </section>
 
-  <!-- ===================== QUALIFICATION LINE ===================== -->
-  <!-- Single line, per the spec doc — now the last thing before the FAQ,
-     per owner request to move How It Works ahead of it. Its own section,
-     deliberately a different shade (black-on-black seam avoided by keeping
-     symmetric padding) — see 2026-08-25 decision log for why. -->
-  <section class="w-full bg-[#0c0c0c] py-12 max-md:py-8">
-    <p class="font-tight mx-auto w-[90%] max-w-[680px] text-center text-2xl font-bold leading-snug text-white max-md:text-xl">
-      Built for coaches, experts, and personal brands who publish content but aren't converting
-      views into followers.
-    </p>
-  </section>
-
   <!-- ===================== FAQ ===================== -->
   <ApplyFaq heading="Got Questions?<br />We've Got Answers" items={quizFaqs} />
 
@@ -233,10 +223,24 @@ const quizFaqs = [
       box-shadow 200ms ease;
   }
 
+  /* Hover — deliberately more drastic than the site-wide .btn-g hover:
+     bigger lift + scale, a hard color jump, and a much stronger burst
+     shadow, per owner feedback 2026-08-26 that the original was too subtle.
+     `animation: none` (not just paused) — a *paused* CSS animation still
+     wins the cascade for any property it animates, so the idle glow's own
+     frozen box-shadow was silently overriding this rule's box-shadow. Fully
+     removing the animation on hover lets this box-shadow actually apply. */
   :global(.quiz-hero-cta:hover) {
+    animation: none;
     background: var(--g-purple-deep);
-    transform: translateY(-2px);
-    animation-play-state: paused;
+    transform: translateY(-5px) scale(1.045);
+    box-shadow:
+      0 14px 36px rgba(131, 49, 232, 0.8),
+      0 0 0 4px rgba(131, 49, 232, 0.4);
+  }
+
+  :global(.quiz-hero-cta:active) {
+    transform: translateY(-2px) scale(1.01);
   }
 
   @keyframes quiz-cta-glow {
