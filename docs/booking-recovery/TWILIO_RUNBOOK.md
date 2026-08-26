@@ -568,6 +568,14 @@ moved in six consecutive checks.
 **Check-in, 2026-08-26T08:01Z:** toll-free still `IN_REVIEW`, no change —
 ~36h since filing. Still within normal range.
 
+**Check-in, 2026-08-26T15:01Z:** toll-free still `IN_REVIEW`, no change —
+~43h since filing, eight consecutive checks with zero movement. Still not
+messaging Sidney per his own instruction (only interrupt on actual
+resolution) — but this is getting long enough that if it's still sitting
+here at the next check, it's worth a proactive nudge to him regardless,
+since silence this long starts to look indistinguishable from a stuck
+review.
+
 ### Superseded — the old cost note
 
 ### Cost reality — retries are free
