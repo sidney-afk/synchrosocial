@@ -93,7 +93,6 @@ const year = new Date().getFullYear();
             ? crypto.randomUUID()
             : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
       }
-      fbq("track", "Schedule", {}, { eventID: eid });
       fbq("track", "Lead", {}, { eventID: "lead-" + eid });
     })();
   </script>

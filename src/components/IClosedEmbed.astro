@@ -123,9 +123,13 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
                   JSON.stringify({ eid: eid, at: Date.now() })
                 );
               } catch (err) {}
-              /* Schedule + Lead mark the same moment; pick ONE as the
-                 campaign's optimization event in Ads Manager. */
-              fbq("track", "Schedule", {}, { eventID: eid });
+              /* Lead marks the booking moment for EVERY booking.
+                 Schedule is deliberately NOT fired here any more: it is now a
+                 QUALIFIED-ONLY event sent server-side via the Conversions API
+                 by the n8n workflow "Sales — Qualified Call → Meta CAPI", so it
+                 can be used as a clean optimization event. Firing it from the
+                 browser too would put unqualified bookings back into that
+                 signal and double-count the qualified ones. */
               fbq("track", "Lead", {}, { eventID: "lead-" + eid });
             }
           });
