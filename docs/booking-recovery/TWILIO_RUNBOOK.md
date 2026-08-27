@@ -786,6 +786,45 @@ Gmail confirmation nodes predate all of this work and were not introduced
 by it — flagged, not fixed, since the system has clearly been sending
 correctly with them in place.
 
+### Same-day bookings now get S2 confirmation + SMS too — 2026-08-27
+
+Triggered by Sidney checking a real live booking (Krista Williams, same-day,
+Normal funnel — booked ~20 min before her call). Pulled the actual execution
+trace rather than guessing: confirmed she got neither a confirmation email
+nor SMS, only the nurture sequence, because same-day bookings have always
+skipped the confirmation step entirely (pre-existing behavior, long before
+this project) and the new SMS branch inherited that same skip since it hangs
+off the confirmation-email node.
+
+While explaining this, also caught a real pre-existing inconsistency in the
+nurture sub-workflow ("Normal Sales — Pre-Call Nurture" / its AI-funnel
+counterpart): the gate that decides whether to *wait an hour* before the
+first nurture email treats today-or-tomorrow as "same day," but the
+separate gate deciding whether to *stop after one email* only treats
+literally-today that way — so a next-day booking silently falls through to
+the full 6-email sequence compressed into the ~24 hours before the call.
+Flagged this to Sidney; **left untouched per his explicit instruction** to
+leave the nurture logic exactly as it is for now.
+
+**What Sidney actually asked for:** confirmation email and SMS should fire
+on same-day bookings too, always — nurture logic unchanged, Kasper's
+Telegram ping follows naturally since it's downstream of the SMS send.
+Implemented in both funnels by adding one connection each: the same-day
+(true) output of `Normal New Booking Today?` / `Normal Returning Booking
+Today?` (and their AI-funnel equivalents `AI New Booking Today?` / `AI
+Returning Booking Today?`) now ALSO connects to the confirmation-email node,
+in parallel with the pre-existing connection to the nurture starter — so
+same-day bookings get both nurture AND confirmation now, instead of only
+nurture. Nothing about the nurture trigger itself was touched.
+
+**Proven live**, real webhook call end-to-end (execution `442420` →
+`442421` → `442422`), same-day booking for Sidney's own number: confirmation
+email sent, confirmation SMS sent reading *"...booked a call for **today**
+at 1:07pm..."* (the today/tomorrow/weekday phrasing was already built
+correctly, no changes needed there), Telegram to Kasper fired, and the
+nurture sub-execution still ran its normal single-email same-day path
+alongside it, confirming the nurture behavior is genuinely unchanged.
+
 ### Cost reality — retries are free
 
 | | |
