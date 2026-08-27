@@ -736,6 +736,20 @@ as it was. S2 (booking confirmation) is also unaffected: it fires in direct
 response to the lead's own action of booking, same as the confirmation
 email it rides alongside, not a proactively-scheduled outreach.
 
+### Sidney's Slack DM added for parity — 2026-08-27
+
+Sidney asked "do I get a Slack message when that happens?" — he didn't,
+which was itself a real asymmetry: the email branch DMs him on Slack
+(`DM Sidney (Sent)`) but the new SMS branch only pinged Kasper on Telegram.
+Added `DM Sidney (SMS Sent)` off `Mark SMS Sent`, same Slack bot/DM pattern
+as the email one, reading from `$('Safety Gate').item.json` (same reason as
+the Telegram node — `$json` at that point is the data-table write result,
+not the lead). Also removed the synthetic `test-recovery-sms-20260826` row
+from `booking_recovery` via a one-shot throwaway workflow (manual trigger +
+`dataTable` node, `operation: deleteRows` — this operation exists on the
+node even though no top-level MCP tool exposes row deletion directly),
+archived immediately after running once.
+
 ### Cost reality — retries are free
 
 | | |
