@@ -750,6 +750,42 @@ from `booking_recovery` via a one-shot throwaway workflow (manual trigger +
 node even though no top-level MCP tool exposes row deletion directly),
 archived immediately after running once.
 
+### Full audit, 2026-08-27 — one real bug found and fixed
+
+Sidney asked for an audit of everything built. Pulled live details on all
+four touched workflows plus Twilio account state (balance, campaign,
+toll-free, recent message log) rather than trusting memory of what was
+built.
+
+**Found:** every `retryOnFail`/`onError`/`maxTries`/`waitBetweenTries`
+setting specified when the SMS nodes were originally added (`Send
+Confirmation SMS` ×2, `Telegram Kasper (SMS Sent)` ×2, `Send Recovery SMS`,
+`Mark SMS Sent`, `DM Sidney (SMS Sent)`, `Telegram Kasper (Inbound SMS
+Reply)`) had silently not applied. Root cause: `update_workflow`'s `addNode`
+operation only honors `name`/`type`/`typeVersion`/`position`/`parameters`/
+`credentials` on the node object — top-level error/retry settings bundled
+into the same call are dropped without any error. The correct mechanism is
+a separate `setNodeSettings` operation, confirmed working and applied to
+all seven affected nodes across all four workflows, each republished and
+verified in the live (not just draft) version afterward.
+
+**Practical effect of the bug while it was live** (2026-08-26 evening
+through 2026-08-27 morning): a transient Twilio/Telegram/Slack hiccup on
+any of those nodes would have failed the whole execution immediately
+instead of retrying — not silent (the existing Error Workflow still DMs
+Sidney on any failure), just less resilient than intended. No evidence this
+actually happened — the Twilio message log for the period shows only the
+two intentional test sends, both delivered clean.
+
+**Also checked and confirmed healthy:** Twilio balance ($27.20, not
+draining unexpectedly), exactly one `Twilio — SMS` credential exists (no
+accidental duplicate), the old duplicate Ad Performance workflow stayed
+deactivated, the one-shot test-row-deletion workflow was archived after
+running. The two pre-existing validator warnings on "Create Deal" and the
+Gmail confirmation nodes predate all of this work and were not introduced
+by it — flagged, not fixed, since the system has clearly been sending
+correctly with them in place.
+
 ### Cost reality — retries are free
 
 | | |
