@@ -123,9 +123,14 @@ const monthLabel = new Date().toLocaleDateString("en-US", {
                   JSON.stringify({ eid: eid, at: Date.now() })
                 );
               } catch (err) {}
-              /* Schedule + Lead mark the same moment; pick ONE as the
-                 campaign's optimization event in Ads Manager. */
-              fbq("track", "Schedule", {}, { eventID: eid });
+              /* Lead marks the booking moment for EVERY booking.
+                 Schedule is deliberately NOT fired here any more. It is now
+                 sent server-side via the Conversions API by the n8n workflow
+                 "Sales - Booked Call to Meta CAPI" (s8lsPpKqWYhscLPV), gated on
+                 a real acquisition-calendar booking, so it can be used as a
+                 clean optimization event. Firing it from the browser too would
+                 put non-acquisition and abandoned traffic back into that signal
+                 and double-count every real booking. */
               fbq("track", "Lead", {}, { eventID: "lead-" + eid });
             }
           });

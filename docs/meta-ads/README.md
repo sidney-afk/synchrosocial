@@ -136,14 +136,18 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
-| **`Schedule` + `Lead`** ← the conversion | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (→ Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. |
+| **`Lead`** ← every booking | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. Fires for **all** bookings, qualified or not. |
+| **`Schedule`** ← ACQUISITION bookings only (CHANGED 2026-08-27) | **server-side only**, via Conversions API | No longer fired from the browser. n8n workflow **"Sales - Booked Call to Meta CAPI"** (`s8lsPpKqWYhscLPV`) receives iClosed's Contact-by-status webhook (status **STRATEGY_CALL_BOOKED**) at `/webhook/iclosed-booked-capi` and POSTs a standard `Schedule` event to the dataset when `is_acquisition && hasCall && status !== "disqualified"`. **The gate is `latestCall` being present, NOT an iClosed status string** - verified against live payloads: iClosed assigns no qualified/disqualified verdict on this account (`disqualifyingGroup` is empty; only `potential` and `strategy_call_booked` ever appear), so an earlier build that required `status === "qualified"` would have never fired at all. `is_acquisition` also keeps the `check-in` calendar out, so a returning client rebooking is never counted as a new conversion. Deduped durably in the `meta_capi_sent` Data Table (`0PRw0Vtw8eKGUche`), because iClosed re-fires status events and Meta's own event_id dedupe only covers 48h. User data is SHA-256 hashed (email, phone, first, last) plus `fbc`/`fbp` when iClosed captured them. |
 | `QuizStarted` (custom) | `/quiz/take`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
 | `QuizCompleted` (custom, param `quiz_result`) | `/quiz/take`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
 Rules:
-- **Schedule and Lead mark the same moment.** Pick ONE as the campaign's
-  optimization event in Ads Manager (gameplan says booked-call → `Schedule`);
-  never report them summed.
+- **Schedule and Lead no longer mark the same moment.** `Lead` = every booking
+  (browser). `Schedule` = qualified bookings only (server/CAPI). Optimize
+  campaigns on **`Schedule`**; use `Lead` for audiences and as a volume read.
+  Never report them summed. **Do not re-add a browser `Schedule` fire** - that
+  would put unqualified bookings back into the optimization signal and
+  double-count the qualified ones.
 - Direct visits to `/thank-you` (or `/quiz/thank-you`) overcount slightly —
   accepted, tiny.
 - iClosed's server-side CAPI events (once connected, see §6) are a SEPARATE
