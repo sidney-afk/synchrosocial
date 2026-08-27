@@ -1,0 +1,160 @@
+---
+/* ===========================================================================
+   VslProofBar — the three proof tiles from /apply (Client Reach, the 2026
+   European Agency Awards finalist badge, Audience Growth), restated in the
+   reference funnel's card language.
+
+   Same three claims and same figures as ApplyHeroProofBar; only the shell
+   changes (#121212 fill, 16px radius, accent-tinted border) so the tiles sit
+   in the reference's visual system rather than /apply's. The award badge is
+   the same asset.
+=========================================================================== */
+---
+
+<section class="vslpb" aria-label="Synchro Social proof points">
+  <div class="vslpb__grid">
+    <article class="vslpb__card">
+      <p class="vslpb__label">Client Reach</p>
+      <strong class="vslpb__metric">1.2B</strong>
+      <p class="vslpb__copy">Views generated for our clients</p>
+    </article>
+
+    <article class="vslpb__card vslpb__card--award">
+      <img
+        src="/images/awards/european-agency-awards-2026-finalist-white.png"
+        alt="European Agency Awards 2026"
+        width="1024"
+        height="680"
+        loading="lazy"
+        decoding="async"
+      />
+      <strong class="vslpb__award">2026 Finalist</strong>
+      <p class="vslpb__copy">Social Media Agency of the Year</p>
+    </article>
+
+    <article class="vslpb__card">
+      <p class="vslpb__label">Audience Growth</p>
+      <strong class="vslpb__metric">8M</strong>
+      <p class="vslpb__copy">Followers grown across platforms</p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .vslpb {
+    width: min(900px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 8px 0 4px;
+  }
+
+  .vslpb__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .vslpb__card {
+    display: flex;
+    min-height: 158px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 16px;
+    background: var(--vsl-card);
+    text-align: center;
+    transition: border-color 0.22s ease, background 0.22s ease;
+  }
+
+  .vslpb__card:hover {
+    border-color: rgba(154, 93, 255, 0.36);
+    background: #16131b;
+  }
+
+  .vslpb__label {
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 14px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+  }
+
+  .vslpb__metric,
+  .vslpb__award {
+    margin: 10px 0 7px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: var(--vsl-accent-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .vslpb__metric {
+    font-size: 44px;
+    line-height: 1.05;
+  }
+
+  .vslpb__award {
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 20px;
+  }
+
+  .vslpb__copy {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    color: var(--vsl-ink-dim);
+  }
+
+  .vslpb__card--award img {
+    display: block;
+    width: 134px;
+    max-width: 76%;
+    height: 52px;
+    object-fit: contain;
+  }
+
+  @media (max-width: 700px) {
+    .vslpb {
+      width: calc(100% - 28px);
+    }
+    .vslpb__grid {
+      gap: 8px;
+    }
+    .vslpb__card {
+      min-height: 132px;
+      padding: 12px 6px;
+      border-radius: 12px;
+    }
+    .vslpb__label {
+      font-size: 8px;
+      line-height: 11px;
+      letter-spacing: 0.1em;
+    }
+    .vslpb__metric {
+      margin: 8px 0 5px;
+      font-size: 28px;
+    }
+    .vslpb__copy {
+      max-width: 96px;
+      font-size: 10px;
+      line-height: 13px;
+    }
+    .vslpb__card--award img {
+      width: 84px;
+      max-width: 88%;
+      height: 34px;
+    }
+    .vslpb__award {
+      margin: 5px 0 3px;
+      font-size: 13px;
+      line-height: 14px;
+    }
+  }
+</style>

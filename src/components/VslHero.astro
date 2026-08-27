@@ -1,0 +1,293 @@
+---
+/* ===========================================================================
+   VslHero — the reference funnel's hero, in Synchro purple.
+
+   Geometry/typography transcribed verbatim from the reference embed:
+     wrap        max 900px, padding 56px 24px 72px, centred
+     brand       52px logo, 40px below
+     eyebrow     11px/700, 0.20em tracking, uppercase, accent, 18px below
+     headline    clamp(28px,5vw,46px)/600, lh 1.14, ls -0.022em, max 34ch
+     subheadline clamp(15.5px,1.9vw,19px)/400, lh 1.55, max 82ch, 48px below
+     vsl         max 760px, 16:9, radius 16px, accent-tinted border + shadow
+     watch-tag   pill at top:-14px left:18px
+   plus the same staggered rise-in and the 600px / 380px breakpoints.
+
+   The <slot /> after the VSL is where the page drops its CTA button.
+=========================================================================== */
+interface Props {
+  eyebrow?: string;
+  /** Headline text before the gradient-underlined half. */
+  headlineLead: string;
+  /** The gradient-underlined half (the reference's .hl-accent). */
+  headlineAccent: string;
+  subheadline: string;
+  watchTag?: string;
+}
+const {
+  eyebrow = "For Coaches & Experts",
+  headlineLead,
+  headlineAccent,
+  subheadline,
+  watchTag = "Watch The Breakdown",
+} = Astro.props;
+---
+
+<main class="vslh">
+  <div class="vslh__wrap">
+    <div class="vslh__brand">
+      <img src="/images/logo.png" alt="Synchro Social" width="52" height="52" />
+    </div>
+
+    <div class="vslh__eyebrow">{eyebrow}</div>
+
+    <h1 class="vslh__headline">
+      {headlineLead}{" "}
+      <span class="vslh__accent">{headlineAccent}</span>
+    </h1>
+
+    <p class="vslh__sub">{subheadline}</p>
+
+    <div class="vslh__vsl-wrap">
+      <div class="vslh__vsl">
+        <div class="vslh__frame">
+          <!-- PLACEHOLDER — swap this block for the real VSL player embed.
+               Keep the 16:9 .vslh__frame wrapper so the surrounding geometry
+               (radius, border, shadow, watch tag) stays put. -->
+          <div class="vslh__placeholder">
+            <span class="vslh__play" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z"></path></svg>
+            </span>
+            <p class="vslh__placeholder-label">VSL placeholder</p>
+          </div>
+        </div>
+      </div>
+      <div class="vslh__watch-tag" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z"></path></svg>
+        {watchTag}
+      </div>
+    </div>
+
+    <slot />
+  </div>
+</main>
+
+<style>
+  .vslh {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: var(--vsl-black);
+  }
+
+  .vslh__wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .vslh__brand {
+    margin-bottom: 40px;
+  }
+  .vslh__brand img {
+    width: 52px;
+    height: 52px;
+    display: block;
+  }
+
+  .vslh__eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin: 0 auto 18px;
+    padding: 0 12px;
+  }
+
+  .vslh__headline {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.022em;
+    max-width: 34ch;
+    margin: 0 auto 30px;
+    color: var(--vsl-ink);
+  }
+
+  .vslh__accent {
+    background: var(--vsl-accent-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: underline;
+    text-decoration-color: var(--vsl-p);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+
+  .vslh__sub {
+    font-size: clamp(15.5px, 1.9vw, 19px);
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--vsl-ink-dim);
+    max-width: 82ch;
+    width: 94%;
+    margin: 0 auto 48px;
+  }
+
+  /* ---------- VSL ---------- */
+  .vslh__vsl-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .vslh__vsl {
+    position: relative;
+    width: 100%;
+    border-radius: var(--vsl-radius);
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow: var(--vsl-shadow-md);
+    border: 1px solid var(--vsl-border);
+  }
+
+  .vslh__frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  @supports not (aspect-ratio: 16 / 9) {
+    .vslh__frame {
+      height: 0;
+      padding-top: 56.25%;
+    }
+  }
+
+  .vslh__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background:
+      radial-gradient(ellipse 70% 70% at 50% 40%, rgba(131, 49, 232, 0.16), transparent 70%),
+      #0a0a0a;
+  }
+
+  .vslh__play {
+    display: flex;
+    width: 62px;
+    height: 62px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  }
+
+  .vslh__play svg {
+    width: 24px;
+    height: 24px;
+    fill: #0a0a0a;
+    margin-left: 3px;
+  }
+
+  .vslh__placeholder-label {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--vsl-ink-faint);
+  }
+
+  .vslh__watch-tag {
+    position: absolute;
+    top: -14px;
+    left: 18px;
+    z-index: 5;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--vsl-black);
+    color: var(--vsl-p);
+    font-family: var(--vsl-font);
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--vsl-border);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+  }
+
+  .vslh__watch-tag svg {
+    width: 12px;
+    height: 12px;
+    fill: var(--vsl-p);
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .vslh__brand,
+    .vslh__eyebrow,
+    .vslh__headline,
+    .vslh__sub,
+    .vslh__vsl-wrap {
+      transform: translateY(8px);
+      animation: vslhRise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+    .vslh__brand { animation-delay: 0s; }
+    .vslh__eyebrow { animation-delay: 0.03s; }
+    .vslh__headline { animation-delay: 0.06s; }
+    .vslh__sub { animation-delay: 0.09s; }
+    .vslh__vsl-wrap { animation-delay: 0.14s; }
+  }
+
+  @keyframes vslhRise {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .vslh__wrap { padding: 40px 18px 52px; }
+    .vslh__brand { margin-bottom: 28px; }
+    .vslh__brand img { width: 42px; height: 42px; }
+    .vslh__eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 14px; }
+    .vslh__headline {
+      font-size: clamp(28px, 8.6vw, 36px);
+      max-width: 20ch;
+      margin-bottom: 22px;
+      line-height: 1.2;
+    }
+    .vslh__sub {
+      font-size: 15.5px;
+      max-width: 30ch;
+      width: 88%;
+      line-height: 1.55;
+      margin-bottom: 36px;
+    }
+    .vslh__watch-tag { top: -12px; left: 14px; font-size: 12px; padding: 8px 15px; }
+    .vslh__play { width: 52px; height: 52px; }
+    .vslh__play svg { width: 20px; height: 20px; }
+  }
+
+  @media (max-width: 380px) {
+    .vslh__headline { font-size: 25px; }
+    .vslh__sub { max-width: 27ch; }
+  }
+</style>

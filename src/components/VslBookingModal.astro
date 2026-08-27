@@ -1,0 +1,277 @@
+---
+/* ===========================================================================
+   VslBookingModal — the popup the VSL pages' CTA opens.
+
+   Wraps the SAME production booking embed /apply uses (Kasper's iClosed
+   "Social Media Consultation" calendar, synchrosocial/social-media-consultation),
+   so ad attribution (IClosedCapture) and the iClosed -> Meta Pixel bridge
+   behave identically here. Do not swap this for a hand-rolled iframe; the
+   passthrough that joins the ad click to iClosed's server-side webhook lives
+   inside IClosedEmbed.
+
+   The embed is mounted at page load inside a display:none dialog rather than
+   injected on first open: iClosed's widget.js scans the DOM once on load and
+   has no public re-scan, so a lazily inserted .iclosed-widget would never be
+   upgraded to the scheduler. `resize={false}` with a fixed height keeps that
+   safe — the auto-resize path is the one that would misbehave measuring a
+   hidden element.
+
+   Any element on the page with `data-vsl-book` opens it.
+=========================================================================== */
+import IClosedEmbed from "./IClosedEmbed.astro";
+
+interface Props {
+  linkPrefix?: string;
+  title?: string;
+}
+const {
+  linkPrefix = "synchrosocial/social-media-consultation",
+  title = "Social Media Consultation",
+} = Astro.props;
+---
+
+<div class="vslm" id="vsl-booking-modal" hidden>
+  <div class="vslm__backdrop" data-vsl-close aria-hidden="true"></div>
+
+  <div class="vslm__panel" role="dialog" aria-modal="true" aria-labelledby="vslm-title">
+    <div class="vslm__head">
+      <div>
+        <p class="vslm__eyebrow">Apply Now</p>
+        <h2 class="vslm__title" id="vslm-title">Book Your Consultation Call</h2>
+      </div>
+      <button type="button" class="vslm__close" data-vsl-close aria-label="Close booking">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="vslm__body">
+      <IClosedEmbed
+        linkPrefix={linkPrefix}
+        title={title}
+        height="620px"
+        card={false}
+        resize={false}
+      />
+
+      <!-- A2P 10DLC consent disclosure — carriers require message type,
+           frequency, rates and opt-out adjacent to the control where the phone
+           number is given. Mirrors /apply. See
+           docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+      <p class="vslm__legal">
+        By booking a call you agree to receive text messages from Synchro Social about your
+        call. Message frequency varies, typically one message per booking. Message and data
+        rates may apply. Reply STOP to opt out, HELP for help. See our
+        <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        and
+        <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var modal = document.getElementById("vsl-booking-modal");
+    if (!modal || modal.dataset.bound === "true") return;
+    modal.dataset.bound = "true";
+
+    var lastFocus = null;
+
+    function open(trigger) {
+      lastFocus = trigger || document.activeElement;
+      modal.hidden = false;
+      document.body.classList.add("vsl-modal-open");
+      var closeBtn = modal.querySelector(".vslm__close");
+      if (closeBtn) closeBtn.focus();
+      /* Mirrors the reference funnel's button-click conversion. The booking
+         itself still fires Lead from the iClosed bridge in IClosedEmbed —
+         this only marks intent. See docs/meta-ads/README.md §event map. */
+      if (typeof window.fbq === "function") {
+        window.fbq("trackCustom", "VslApplyClick", {
+          content_name: document.body.dataset.vslPage || "vsl",
+        });
+      }
+    }
+
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove("vsl-modal-open");
+      if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+    }
+
+    document.addEventListener("click", function (e) {
+      var opener = e.target.closest ? e.target.closest("[data-vsl-book]") : null;
+      if (opener) {
+        e.preventDefault();
+        open(opener);
+        return;
+      }
+      var closer = e.target.closest ? e.target.closest("[data-vsl-close]") : null;
+      if (closer && modal.contains(closer)) {
+        e.preventDefault();
+        close();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.hidden) close();
+    });
+  })();
+</script>
+
+<style is:global>
+  body.vsl-modal-open {
+    overflow: hidden;
+  }
+
+  .vslm[hidden] {
+    display: none;
+  }
+
+  .vslm {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 20px;
+    overflow-y: auto;
+  }
+
+  .vslm__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .vslm__panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 760px;
+    margin: auto;
+    border: 1px solid var(--vsl-border);
+    border-radius: var(--vsl-radius);
+    background: var(--vsl-card);
+    box-shadow: var(--vsl-shadow-md);
+    animation: vslmRise 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  @keyframes vslmRise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vslm__panel {
+      animation: none;
+    }
+  }
+
+  .vslm__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid var(--vsl-card-border);
+  }
+
+  .vslm__eyebrow {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+  }
+
+  .vslm__title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--vsl-ink);
+  }
+
+  .vslm__close {
+    display: flex;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--vsl-border);
+    border-radius: 999px;
+    background: rgba(154, 93, 255, 0.06);
+    color: var(--vsl-ink);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .vslm__close:hover {
+    background: rgba(154, 93, 255, 0.16);
+    border-color: rgba(154, 93, 255, 0.4);
+  }
+
+  .vslm__close svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .vslm__body {
+    padding: 18px 18px 20px;
+  }
+
+  .vslm__legal {
+    margin: 14px auto 0;
+    max-width: 620px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(244, 241, 250, 0.45);
+  }
+
+  .vslm__legal a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .vslm__legal a:hover {
+    color: rgba(244, 241, 250, 0.75);
+  }
+
+  @media (max-width: 600px) {
+    .vslm {
+      padding: 0;
+    }
+    .vslm__panel {
+      min-height: 100%;
+      border: 0;
+      border-radius: 0;
+    }
+    .vslm__head {
+      padding: 18px 16px 14px;
+    }
+    .vslm__title {
+      font-size: 18px;
+    }
+    .vslm__body {
+      padding: 14px 12px 18px;
+    }
+  }
+</style>

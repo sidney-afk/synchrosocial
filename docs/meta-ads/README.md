@@ -135,9 +135,11 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | --- | --- | --- |
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
+| `ViewContent` (content_name `danny_vsl` / `baya_vsl` / `success_stories`) | `/danny_vsl`, `/baya_vsl`, `/success-stories` | `metaEvent` prop on `Layout` |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
 | **`Lead`** ← every booking | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. Fires for **all** bookings, qualified or not. |
 | **`Schedule`** ← ACQUISITION bookings only (CHANGED 2026-08-27) | **server-side only**, via Conversions API | No longer fired from the browser. n8n workflow **"Sales - Booked Call to Meta CAPI"** (`s8lsPpKqWYhscLPV`) receives iClosed's Contact-by-status webhook (status **STRATEGY_CALL_BOOKED**) at `/webhook/iclosed-booked-capi` and POSTs a standard `Schedule` event to the dataset when `is_acquisition && hasCall && status !== "disqualified"`. **The gate is `latestCall` being present, NOT an iClosed status string** - verified against live payloads: iClosed assigns no qualified/disqualified verdict on this account (`disqualifyingGroup` is empty; only `potential` and `strategy_call_booked` ever appear), so an earlier build that required `status === "qualified"` would have never fired at all. `is_acquisition` also keeps the `check-in` calendar out, so a returning client rebooking is never counted as a new conversion. Deduped durably in the `meta_capi_sent` Data Table (`0PRw0Vtw8eKGUche`), because iClosed re-fires status events and Meta's own event_id dedupe only covers 48h. User data is SHA-256 hashed (email, phone, first, last) plus `fbc`/`fbp` when iClosed captured them. |
+| `VslApplyClick` (custom, param `content_name` = `danny_vsl` / `baya_vsl` / `success_stories`) | `/danny_vsl`, `/baya_vsl`, `/success-stories`, when an "Apply for Consultation Call" button opens the booking popup | `VslBookingModal.astro`. Marks **intent to book, not a booking** — the VSL pages hide the calendar behind a popup, so this is the only read on how many VSL viewers actually opened it. The booking itself still fires `Lead` from the usual `IClosedEmbed` bridge, and `Schedule` still comes server-side via CAPI; this event is deliberately NOT one of those and must never be used as a conversion. No contact info is in the params. |
 | `QuizStarted` (custom) | `/quiz/take`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
 | `QuizCompleted` (custom, param `quiz_result`) | `/quiz/take`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
@@ -158,6 +160,16 @@ Rules:
   `<IClosedEmbed>` on the result screen, same bridge as `/apply`. Quiz
   engagement is tracked separately (`QuizStarted`/`QuizCompleted`) so it
   can't be mistaken for a booked call in reporting.
+- **The VSL pages (`/danny_vsl`, `/baya_vsl`) book through a popup, not an
+  inline embed.** The popup wraps the same `<IClosedEmbed>` and the same
+  `social-media-consultation` calendar as `/apply`, so `Lead` (bridge) and
+  server-side `Schedule` are unchanged. `VslApplyClick` is a
+  popup-open/intent event only — do not build a custom conversion on it, and
+  do not treat it as booking volume. The embed is mounted at page load inside
+  the hidden dialog (iClosed's `widget.js` scans the DOM once and has no
+  re-scan), which means the booking iframe loads on every VSL pageview exactly
+  as it does on `/apply` — its own iClosed pageview is not new noise.
+
 - **`/quiz` is the marketing landing page; `/quiz/take` is the quiz itself**
   (split 2026-08-26, opens in a new tab from every CTA on `/quiz` so ad
   attribution isn't lost mid-funnel — the new tab's own `IClosedCapture`
@@ -453,6 +465,34 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-27 (VSL landing pages — `/danny_vsl`, `/baya_vsl`, `/success-stories`)** —
+  Built two paid-traffic VSL landing pages, one per client angle, matched to
+  an external reference funnel the owner supplied
+  (`gohconsulting.perspectivefunnel.com/apply`) and recoloured gold → Synchro
+  purple. The reference's own page source was recovered from its Perspective
+  layout JSON (`/apply/data/indexPage.json`), which ships the two hand-written
+  custom-HTML embeds that draw the whole page — so geometry, type scale,
+  radii, breakpoints and motion are transcribed exactly rather than eyeballed.
+  Palette mapping and the reasoning live in `src/styles/vsl.css`.
+  Sections: hero (eyebrow / per-client headline / subheadline / **VSL video is
+  a PLACEHOLDER** awaiting the real embed) → apply CTA → proof tiles → Real
+  Results (6 case-study cards) → How It Works → FAQ → apply CTA.
+  **Booking moved into a popup** (`VslBookingModal.astro`) rather than an
+  inline embed, per the brief. It wraps the same `<IClosedEmbed>` and the same
+  `social-media-consultation` calendar as `/apply`, so `IClosedCapture`
+  attribution passthrough, the iClosed → Meta bridge, `Lead`, and server-side
+  `Schedule` are all unchanged. One new custom pixel event, `VslApplyClick`
+  (popup-open intent only, never a conversion) — added to the event map in §4.
+  `/success-stories` (new tab, linked from How It Works) condenses every case
+  study, testimonial video, before/after comparison and proof screenshot from
+  `/apply` into a single page in the same aesthetic.
+  **Two copy figures came from the owner's brief doc and are NOT corroborated
+  by this repo's data — confirm before spending on these pages:** the Danny
+  subheadline's "over 100,000 qualified leads" appears nowhere in
+  `campaignProof.js`/`caseStudies.js`, and the Baya headline's "over 450,000
+  followers" conflicts with our recorded 7K → 350K+ / +350K. Both are used as
+  written; the discrepancy is flagged in each page's header comment.
 
 - **2026-08-26 (Quiz funnel restructure — landing/take/thank-you split)** —
   Split `/quiz` into three pages per owner request: `/quiz` is now a pure

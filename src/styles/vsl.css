@@ -1,0 +1,63 @@
+/* ===========================================================================
+   VSL funnel design system — /danny_vsl, /baya_vsl, /success-stories.
+
+   Transcribed 1:1 from the reference funnel
+   (gohconsulting.perspectivefunnel.com/apply), whose page source was recovered
+   from its Perspective layout JSON — the two custom-HTML embeds that draw the
+   whole page. Geometry, typography, spacing, radii and animation are kept
+   EXACTLY as measured; only the palette is swapped gold -> Synchro purple.
+
+   Palette mapping (reference -> ours), role for role:
+     --gold-light #F3D98B -> --p-light #D8C4FF
+     --gold       #D9A84E -> --p       #9A5DFF   (accent/eyebrow/rules)
+     --gold-deep  #9C7530 -> --p-deep  #5F1FAE
+     --ink        #F5F1E8 -> --ink     #F4F1FA   (cream -> the cool-white
+                                                  analog that pairs with purple)
+   The brand action colour (#8331e8, --g-purple in global.css) sits at the 55%
+   stop of every accent gradient, exactly where --gold sat in the reference.
+
+   FONT: the reference embeds override Perspective's Inter with the native
+   system stack, so that stack IS the reference's rendered typeface. It is
+   reproduced verbatim here rather than substituting the site's Inter.
+=========================================================================== */
+
+:root {
+  --vsl-black: #000000;
+  --vsl-card: #121212;
+  --vsl-card-border: rgba(154, 93, 255, 0.14);
+  --vsl-ink: #f4f1fa;
+  --vsl-ink-dim: rgba(244, 241, 250, 0.62);
+  --vsl-ink-faint: rgba(244, 241, 250, 0.38);
+  --vsl-p-light: #d8c4ff;
+  --vsl-p: #9a5dff;
+  --vsl-p-deep: #5f1fae;
+  --vsl-border: rgba(154, 93, 255, 0.16);
+  --vsl-shadow-md: 0 12px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --vsl-radius: 16px;
+  --vsl-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --vsl-accent-grad: linear-gradient(180deg, var(--vsl-p-light), #8331e8 55%, var(--vsl-p-deep));
+}
+
+body.vsl {
+  background: var(--vsl-black);
+  color: var(--vsl-ink);
+  font-family: var(--vsl-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+  line-height: 1.5;
+}
+
+body.vsl * {
+  box-sizing: border-box;
+}
+
+/* Shared accent treatment — the gradient-filled text used for the headline
+   half-highlight and every card stat. */
+.vsl-accent {
+  background: var(--vsl-accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

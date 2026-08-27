@@ -1,0 +1,170 @@
+---
+/* ===========================================================================
+   VslButton — the two CTA shapes the reference funnel uses.
+
+   variant="solid"  the Perspective button block that carries the apply CTA:
+                    filled accent, "minor" radius, 20px mobile / 24px desktop
+                    bold label, hugging its content, centred.
+   variant="pill"   the reference's .cta-btn: 999px pill, accent gradient,
+                    19px/40px padding, 14.5-16.5px bold label, and the pulsing
+                    radial glow behind it.
+
+   The reference fills both with gold and sets near-black label text. Purple is
+   far darker than gold, so the label flips to white here — the one place the
+   palette swap forces a value change rather than a straight substitution.
+
+   Renders an <a> when `href` is given, otherwise a <button>. Pass
+   `book` to wire it to the booking popup (VslBookingModal).
+=========================================================================== */
+interface Props {
+  label: string;
+  href?: string;
+  variant?: "solid" | "pill";
+  /** Opens the iClosed booking popup on click. */
+  book?: boolean;
+  target?: string;
+  rel?: string;
+  /** Leading play glyph — the reference uses one on the pill CTA. */
+  icon?: boolean;
+  class?: string;
+}
+const {
+  label,
+  href,
+  variant = "solid",
+  book = false,
+  target,
+  rel,
+  icon = false,
+  class: className = "",
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const cls = ["vslbtn", `vslbtn--${variant}`, className].filter(Boolean).join(" ");
+---
+
+<div class="vslbtn-wrap">
+  <Tag
+    class={cls}
+    href={href}
+    target={target}
+    rel={rel}
+    type={href ? undefined : "button"}
+    data-vsl-book={book ? "" : undefined}
+  >
+    {icon && (
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z"></path></svg>
+    )}
+    {label}
+  </Tag>
+</div>
+
+<style>
+  .vslbtn-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .vslbtn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: var(--vsl-font);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    text-align: center;
+    border: 0;
+    cursor: pointer;
+    color: #fff;
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  .vslbtn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  .vslbtn:hover {
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vslbtn:hover {
+      transform: none;
+    }
+  }
+
+  /* ---------- solid (apply CTA) ---------- */
+  .vslbtn--solid {
+    padding: 17px 38px;
+    border-radius: 8px;
+    background: #8331e8;
+    font-size: 20px;
+    line-height: 1.25;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+  }
+
+  .vslbtn--solid:hover {
+    filter: brightness(1.08);
+  }
+
+  @media (min-width: 768px) {
+    .vslbtn--solid {
+      font-size: 24px;
+    }
+  }
+
+  /* ---------- pill (secondary / success-stories CTA) ---------- */
+  .vslbtn--pill {
+    padding: 19px 40px;
+    border-radius: 999px;
+    background: linear-gradient(160deg, var(--vsl-p-light), #8331e8 55%, var(--vsl-p-deep));
+    color: #fff;
+    font-size: clamp(14.5px, 1.9vw, 16.5px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+    isolation: isolate;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .vslbtn--pill::before {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    border-radius: inherit;
+    background: radial-gradient(closest-side, rgba(131, 49, 232, 0.55), transparent 72%);
+    z-index: -1;
+    opacity: 0.7;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .vslbtn--pill::before {
+      animation: vslCtaGlow 2.8s ease-in-out infinite;
+    }
+  }
+
+  @keyframes vslCtaGlow {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vslbtn--pill::before {
+      animation: none;
+      opacity: 0.6;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .vslbtn--solid {
+      padding: 16px 30px;
+      font-size: 18px;
+    }
+  }
+</style>

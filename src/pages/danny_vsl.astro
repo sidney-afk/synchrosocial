@@ -1,0 +1,36 @@
+---
+/* ===========================================================================
+   /danny_vsl — VSL landing page, Danny Morel angle.
+
+   Design is matched to the reference funnel supplied by the owner
+   (gohconsulting.perspectivefunnel.com/apply) — same geometry, type scale and
+   motion, recoloured to Synchro purple. See src/styles/vsl.css for the
+   palette mapping and src/components/Vsl*.astro for the sections.
+
+   Headline and subheadline are the owner's approved copy, verbatim from the
+   brief doc. NOTE: the "over 100,000 qualified leads" figure comes from that
+   doc and is not corroborated anywhere in this repo's data files — confirm
+   before this goes to paid traffic.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+import VslFunnel from "../components/VslFunnel.astro";
+import "../styles/vsl.css";
+---
+
+<Layout
+  title="Apply — Install The Content Machine Behind Danny Morel | Synchro Social"
+  description="Apply today and we'll install the same content machine that generated Danny over 3,500,000 followers, organically — without increasing your ad spend."
+  bodyClass="vsl"
+  metaEvent={{ name: "ViewContent", params: { content_name: "danny_vsl" } }}
+>
+  <VslFunnel
+    pageKey="danny"
+    headlineLead="Apply Today And We'll Install The Same Content Machine"
+    headlineAccent="That Generated Danny Over 3,500,000 Followers, Organically."
+    subheadline="Without increasing your ad spend or wasting more hours on content, we'll build you the same machine that generated him over 100,000 qualified leads."
+  />
+</Layout>
+
+<script is:inline>
+  document.body.dataset.vslPage = "danny_vsl";
+</script>

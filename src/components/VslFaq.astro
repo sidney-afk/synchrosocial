@@ -1,0 +1,216 @@
+---
+/* ===========================================================================
+   VslFaq — FAQ accordion in the reference funnel's visual system.
+
+   The reference's own page carries a FAQ in the flow but draws it outside the
+   two recovered embeds, so there is no geometry to transcribe. This is built
+   from the reference's established card language instead — #121212 fill, 16px
+   radius, accent-tinted border, the same head/eyebrow type scale as Real
+   Results — so it reads as part of the same page.
+
+   Answers are carried over from ApplyFaq.astro and the homepage FAQ, tightened
+   for a visitor who has just watched the VSL. No new claims.
+=========================================================================== */
+interface FaqItem {
+  q: string;
+  a: string;
+}
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  items?: FaqItem[];
+}
+
+const defaults: FaqItem[] = [
+  {
+    q: "How do I know if I'm a fit?",
+    a: "This is built for established coaches and experts who already have a message that works and want it to reach far more people — without running the content operation themselves. If you have an offer and an audience, even a small one, you're likely a fit. The consultation call exists to answer this honestly, in both directions.",
+  },
+  {
+    q: "Do I have to film constantly?",
+    a: "No. We run guided recording sessions that fit around your calendar, and in many cases we build the entire engine from footage you have already shot. One of the clients on this page added over 30,000 followers in two months with zero additional filming.",
+  },
+  {
+    q: "What exactly do you handle?",
+    a: "Audience research, messaging and angles, scripting, recording direction, editing, thumbnails, publishing and performance tracking. You show up with your expertise; the system around it is ours to run.",
+  },
+  {
+    q: "How long before I see results?",
+    a: "Early signal usually shows within the first weeks, and the compounding shows across months. Some clients had a video pass 500K views before their first month was out; the bigger numbers on this page are twelve-month and two-year runs. Outcomes vary by starting point, niche, offer and consistency.",
+  },
+  {
+    q: "Is this paid ads?",
+    a: "No. Everything on this page is organic. We don't need you to increase ad spend — the machine is built to generate reach and qualified leads from content itself.",
+  },
+  {
+    q: "What happens on the consultation call?",
+    a: "We review your goals, your current content and your offer, then tell you plainly whether our process fits. If it does, we walk you through exactly what installing it looks like. If it doesn't, we'll say so.",
+  },
+];
+
+const {
+  eyebrow = "FAQ",
+  heading = "Questions, Answered",
+  items = defaults,
+} = Astro.props;
+---
+
+<section class="vslfaq" id="faq">
+  <div class="vslfaq__head">
+    <div class="vslfaq__eyebrow">{eyebrow}</div>
+    <h2>{heading}</h2>
+  </div>
+
+  <div class="vslfaq__list">
+    {
+      items.map((item) => (
+        <details class="vslfaq__item">
+          <summary>
+            <span class="vslfaq__q">{item.q}</span>
+            <span class="vslfaq__plus" aria-hidden="true" />
+          </summary>
+          <p>{item.a}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .vslfaq {
+    width: 100%;
+    padding: 72px 20px 90px;
+    background: var(--vsl-black);
+  }
+
+  .vslfaq__head {
+    max-width: 720px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+
+  .vslfaq__eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin-bottom: 16px;
+  }
+
+  .vslfaq__head h2 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.16;
+    color: var(--vsl-ink);
+    margin: 0;
+  }
+
+  .vslfaq__list {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .vslfaq__item {
+    background: var(--vsl-card);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 16px;
+    transition: border-color 0.22s ease, background 0.22s ease;
+  }
+
+  .vslfaq__item:hover,
+  .vslfaq__item[open] {
+    border-color: rgba(154, 93, 255, 0.36);
+  }
+
+  .vslfaq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 24px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .vslfaq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .vslfaq__q {
+    font-size: 16.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    color: var(--vsl-ink);
+  }
+
+  .vslfaq__plus {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+  }
+
+  .vslfaq__plus::before,
+  .vslfaq__plus::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--vsl-p);
+    border-radius: 2px;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .vslfaq__plus::before {
+    width: 16px;
+    height: 2px;
+  }
+
+  .vslfaq__plus::after {
+    width: 2px;
+    height: 16px;
+  }
+
+  .vslfaq__item[open] .vslfaq__plus::after {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .vslfaq__item p {
+    margin: 0;
+    padding: 0 24px 22px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: rgba(244, 241, 250, 0.8);
+  }
+
+  @media (max-width: 600px) {
+    .vslfaq {
+      padding: 40px 14px 52px;
+    }
+    .vslfaq__head {
+      margin-bottom: 28px;
+    }
+    .vslfaq__head h2 {
+      font-size: clamp(22px, 6.5vw, 28px);
+    }
+    .vslfaq__item summary {
+      padding: 18px 18px;
+      gap: 14px;
+    }
+    .vslfaq__q {
+      font-size: 15px;
+    }
+    .vslfaq__item p {
+      padding: 0 18px 18px;
+      font-size: 13.5px;
+    }
+  }
+</style>
