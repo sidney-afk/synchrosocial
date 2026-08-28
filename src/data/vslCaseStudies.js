@@ -1,5 +1,5 @@
 /* ===========================================================================
-   Case-study cards for the VSL funnel pages (/danny_vsl, /baya_vsl) and
+   Case-study cards for the VSL funnel pages (/apply2, /apply3) and
    /success-stories.
 
    Shape matches the reference funnel's card: a name line, one headline stat,
@@ -107,8 +107,8 @@ export const vslCaseStudies = [
   },
 ];
 
-/** Cards for a VSL page. The page's OWN client leads — /danny_vsl opens with
- *  Danny, /baya_vsl with Baya. (An earlier build had the pair swapped; corrected
+/** Cards for a VSL page. The page's OWN client leads — /apply2 opens with
+ *  Danny, /apply3 with Baya. (An earlier build had the pair swapped; corrected
  *  on owner feedback 2026-08-28.) The rest follow the brief's order. */
 export function vslCardsFor(pageKey) {
   const lead = pageKey === "danny" ? "danny" : "baya";
