@@ -86,6 +86,7 @@ const ctaLabel = "Apply for Consultation Call";
     heading="The Full Roster"
     intro="Nine clients, nine different starting points. Each one tells the story in their own words."
     cards={allVslCaseStudies}
+    columns={2}
   />
 
   <!-- ===================== 2. BEST PERFORMING VIDEOS ===================== -->
@@ -434,7 +435,11 @@ const ctaLabel = "Apply for Consultation Call";
   .ss-testimonial__video {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    /* These three testimonials are natively 9:16 (verified against Wistia's
+       media API: 1080x1920, 1080x1920, 720x1280 — all aspectRatio 0.5625).
+       A 16/9 box around portrait footage cropped the speakers' heads off.
+       Matches ApplyTestimonials.astro, which renders the same three videos. */
+    aspect-ratio: 9 / 16;
     border-radius: 12px;
     overflow: hidden;
     background: #000;

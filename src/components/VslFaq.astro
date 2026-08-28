@@ -79,7 +79,9 @@ const {
 <style>
   .vslfaq {
     width: 100%;
-    padding: 72px 20px 90px;
+    /* Top trimmed 72px -> 48px; pairs with the How It Works bottom trim so the
+       CTA and the FAQ heading sit ~72px apart instead of 136px. */
+    padding: 48px 20px 90px;
     background: var(--vsl-black);
   }
 
@@ -193,7 +195,7 @@ const {
 
   @media (max-width: 600px) {
     .vslfaq {
-      padding: 40px 14px 52px;
+      padding: 32px 14px 52px;
     }
     .vslfaq__head {
       margin-bottom: 28px;

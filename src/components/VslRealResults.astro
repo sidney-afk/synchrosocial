@@ -29,6 +29,10 @@ interface Props {
   intro?: string;
   cards: Card[];
   disclaimer?: string;
+  /** 1 (default) stacks the cards one after another, which is how the reference
+   *  funnel actually renders. 2 opts into the two-up grid — used by
+   *  /success-stories, where nine cards stacked would be an enormous scroll. */
+  columns?: 1 | 2;
 }
 const {
   eyebrow = "Real Results",
@@ -36,6 +40,7 @@ const {
   intro,
   cards,
   disclaimer = "These are real outcomes from clients who followed our process as built. Growth depends on execution and platform algorithms, results will vary by effort and market.",
+  columns = 1,
 } = Astro.props;
 ---
 
@@ -46,7 +51,7 @@ const {
     {intro && <p>{intro}</p>}
   </div>
 
-  <div class="vslrr__grid">
+  <div class:list={["vslrr__grid", { "vslrr__grid--two": columns === 2 }]}>
     {
       cards.map((c) => (
         <div class="vslrr__card">
@@ -109,7 +114,10 @@ const {
   .vslrr {
     position: relative;
     width: 100%;
-    padding: 72px 20px 90px;
+    /* Reference is 72px on top. Trimmed to 56px because the proof tiles the
+       owner added sit directly above this section — 72 + the hero's own bottom
+       padding read as dead space. Sides/bottom stay reference-exact. */
+    padding: 56px 20px 90px;
     background: var(--vsl-black);
   }
 
@@ -141,14 +149,29 @@ const {
     font-size: 16px;
     color: var(--vsl-ink-dim);
     line-height: 1.6;
-    max-width: 52ch;
+    /* Reference is 52ch, which set this intro in 4 lines with a one-word widow
+       ("personally."). Widened to 68ch so it breaks to 3 balanced lines. */
+    max-width: 68ch;
     margin: 0 auto;
   }
 
+  /* The reference's stylesheet declares a two-column grid, but that rule is
+     dead code on the real page: Perspective caps the funnel's content column at
+     896px, just under the rule's own 900px breakpoint, so the single-column
+     branch always wins and the cards render one after another at 856px wide.
+     Measured on the live reference at both 1440 and 1920 — it never goes
+     two-up. We match what it RENDERS, not what it declares. */
   .vslrr__grid {
-    max-width: 1200px;
+    max-width: 856px;
     margin: 0 auto;
     display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  /* columns={2} — the denser roster layout, used only by /success-stories. */
+  .vslrr__grid--two {
+    max-width: 1200px;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
@@ -321,7 +344,7 @@ const {
   }
 
   @media (max-width: 900px) {
-    .vslrr__grid {
+    .vslrr__grid--two {
       grid-template-columns: 1fr;
       gap: 18px;
     }
@@ -329,7 +352,7 @@ const {
 
   @media (max-width: 600px) {
     .vslrr {
-      padding: 40px 14px 52px;
+      padding: 32px 14px 52px;
     }
     .vslrr__head {
       margin-bottom: 32px;

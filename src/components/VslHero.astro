@@ -84,7 +84,10 @@ const {
     z-index: 1;
     max-width: 900px;
     margin: 0 auto;
-    padding: 56px 24px 72px;
+    /* Bottom padding is 72px in the reference, where the hero ends at the CTA.
+       Ours ends with the proof tiles, and 72px under them plus the next
+       section's own top padding read as a large void — trimmed to 12px. */
+    padding: 56px 24px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -264,7 +267,7 @@ const {
   }
 
   @media (max-width: 600px) {
-    .vslh__wrap { padding: 40px 18px 52px; }
+    .vslh__wrap { padding: 40px 18px 10px; }
     .vslh__brand { margin-bottom: 28px; }
     .vslh__brand img { width: 42px; height: 42px; }
     .vslh__eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 14px; }
