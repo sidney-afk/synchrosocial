@@ -1,0 +1,640 @@
+---
+/* ===========================================================================
+   /success-stories — the "See More Success Stories" destination from the VSL
+   pages (opened in a new tab).
+
+   Everything proof-related that lives on /apply, condensed onto one page in
+   the VSL funnel's aesthetic:
+
+     1. Case Studies        — all 9 clients from campaignProof.js, as the
+                              reference funnel's story cards (VslRealResults)
+     2. Best Performing Videos — the reels + headline stats from caseStudies.js
+     3. What Clients Say    — the 3 testimonial videos from testimonials.js
+     4. Before & After      — the /apply "Watch Your Audience Skyrocket"
+                              account comparisons
+     5. More Proof          — the /apply proof-screenshot wall
+
+   Image and video sources are the SAME assets /apply uses; nothing here is a
+   new asset or a new claim. Sections 4 and 5 read their file lists from the
+   arrays below, which mirror AudienceSkyrocket.astro — keep them in sync if
+   that component's list changes.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+import VslRealResults from "../components/VslRealResults.astro";
+import VslButton from "../components/VslButton.astro";
+import VslBookingModal from "../components/VslBookingModal.astro";
+import CaseStudyVideo from "../components/CaseStudyVideo.astro";
+import PlatformIcon from "../components/PlatformIcon.astro";
+import { allVslCaseStudies } from "../data/vslCaseStudies.js";
+import { caseStudies } from "../data/caseStudies.js";
+import { testimonials } from "../data/testimonials.js";
+import "../styles/vsl.css";
+
+const imageBase = "/images/audience-skyrocket/";
+
+// Mirrors AudienceSkyrocket.astro's comparisonRows.
+const comparisons = [
+  { key: "danny", label: "Danny Morel", before: "danny-before-feed.webp", after: "danny-after-feed.webp" },
+  { key: "baya", label: "Baya Voce", before: "baya-before.webp", after: "baya-after.webp" },
+  { key: "lucas", label: "Lucas Salame", before: "lucas-before.webp", after: "lucas-after.webp" },
+  { key: "oliver", label: "Oliver Nino", before: "oliver-before.webp", after: "oliver-after.webp" },
+];
+
+// Mirrors AudienceSkyrocket.astro's proofTiles.
+const proofTiles = [
+  { src: "danny-morel-podcast-millions.webp", alt: "Podcast clips with millions of views" },
+  { src: "danny-morel-2025-growth.webp", alt: "Danny Morel thirty day Instagram growth analytics" },
+  { src: "danny-podcast-chart.webp", alt: "Apple Podcasts chart showing Danny Morel at number one" },
+  { src: "danny-morel-tiktok.webp", alt: "Danny Morel TikTok profile at one million followers" },
+  { src: "jessica-growth-chart.webp", alt: "Jessica Winterstern follower growth chart" },
+  { src: "amber-rae-bestseller.webp", alt: "USA Today bestselling booklist proof for Amber Rae" },
+  { src: "jessica-client-message.webp", alt: "Client message praising new content" },
+  { src: "sabrina-client-message.webp", alt: "Client message praising edits and music" },
+  { src: "organic-30-day-follower-growth.webp", alt: "Analytics showing 78,749 followers and 105 percent growth over thirty days" },
+  { src: "open-posture-doc-profile.webp", alt: "The Open Posture Doc TikTok profile with 93,100 followers" },
+  { src: "open-posture-doc-follower-growth.webp", alt: "The Open Posture Doc follower growth over five days" },
+];
+
+const ctaLabel = "Apply for Consultation Call";
+---
+
+<Layout
+  title="Success Stories — Synchro Social"
+  description="Every Synchro Social case study, client testimonial and growth result in one place — 1.2B views generated and 8M followers grown for coaches and experts."
+  bodyClass="vsl"
+  metaEvent={{ name: "ViewContent", params: { content_name: "success_stories" } }}
+>
+  <!-- ===================== HERO ===================== -->
+  <header class="ss-hero">
+    <div class="ss-hero__brand">
+      <img src="/images/logo.png" alt="Synchro Social" width="52" height="52" />
+    </div>
+    <div class="ss-hero__eyebrow">Success Stories</div>
+    <h1 class="ss-hero__title">
+      Every Result We've Built,
+      <span class="vsl-accent">In One Place.</span>
+    </h1>
+    <p class="ss-hero__sub">
+      1.2 billion views generated and 8 million followers grown for coaches and experts —
+      the case studies, the testimonials and the receipts behind them.
+    </p>
+  </header>
+
+  <!-- ===================== 1. CASE STUDIES ===================== -->
+  <VslRealResults
+    eyebrow="Case Studies"
+    heading="The Full Roster"
+    intro="Nine clients, nine different starting points. Each one tells the story in their own words."
+    cards={allVslCaseStudies}
+  />
+
+  <!-- ===================== 2. BEST PERFORMING VIDEOS ===================== -->
+  <section class="ss-section ss-reels">
+    <div class="ss-head">
+      <div class="ss-eyebrow">Best Performing Videos</div>
+      <h2>The Content That Did It</h2>
+      <p>The individual videos behind those numbers, and what each account generated overall.</p>
+    </div>
+
+    <div class="ss-reels__list">
+      {
+        caseStudies.map((cs) => (
+          <article class="ss-reel-block">
+            <div class="ss-reel-block__head">
+              <div>
+                <h3>{cs.name}</h3>
+                <p class="ss-reel-block__credit">{cs.credit} &middot; {cs.period}</p>
+              </div>
+              <div class="ss-reel-block__platforms" aria-label="Platforms">
+                {cs.platforms.map((p) => <PlatformIcon name={p} class="h-5 w-5" />)}
+              </div>
+            </div>
+
+            <div class="ss-reel-block__stats">
+              {cs.stats.map((s) => (
+                <div class="ss-stat">
+                  <div class="ss-stat__value vsl-accent">{s.value}</div>
+                  <div class="ss-stat__label">{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="ss-reel-block__videos">
+              {cs.videos.map((v) => (
+                <div class="ss-reel">
+                  <CaseStudyVideo
+                    wistia={v.wistia}
+                    poster={v.poster}
+                    mp4={v.mp4}
+                    mp4Poster={v.mp4Poster}
+                    title={`${cs.name} reel — ${v.views} views`}
+                    rounded
+                  />
+                  <div class="ss-reel__views">{v.views} views</div>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 3. TESTIMONIALS ===================== -->
+  <section class="ss-section ss-testimonials">
+    <div class="ss-head">
+      <div class="ss-eyebrow">In Their Own Words</div>
+      <h2>What Our Clients Say</h2>
+      <p>Unscripted, on camera, from people who have run the whole process with us.</p>
+    </div>
+
+    <div class="ss-testimonials__grid">
+      {
+        testimonials.map((t) => (
+          <article class="ss-testimonial">
+            <div class="ss-testimonial__video">
+              <iframe
+                src={`https://fast.wistia.net/embed/iframe/${t.wistia}?seo=false&videoFoam=true`}
+                title={`${t.name} testimonial`}
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+            <h3>{t.name}</h3>
+            <p class="ss-testimonial__role">{t.shortRole ?? t.role}</p>
+            <p class="ss-testimonial__quote">{t.title}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 4. BEFORE & AFTER ===================== -->
+  <section class="ss-section ss-compare">
+    <div class="ss-head">
+      <div class="ss-eyebrow">Before &amp; After</div>
+      <h2>Watch The Audience Skyrocket</h2>
+      <p>The same accounts, before we started and after the system had been running.</p>
+    </div>
+
+    <div class="ss-compare__list">
+      {
+        comparisons.map((row) => (
+          <div class="ss-compare__row">
+            <figure class="ss-compare__card">
+              <figcaption class="ss-compare__bar ss-compare__bar--before">Before</figcaption>
+              <img src={`${imageBase}${row.before}`} alt={`${row.label} account before growth`} loading="lazy" decoding="async" />
+            </figure>
+            <figure class="ss-compare__card">
+              <figcaption class="ss-compare__bar ss-compare__bar--after">After</figcaption>
+              <img src={`${imageBase}${row.after}`} alt={`${row.label} account after growth`} loading="lazy" decoding="async" />
+            </figure>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 5. PROOF WALL ===================== -->
+  <section class="ss-section ss-wall">
+    <div class="ss-head">
+      <div class="ss-eyebrow">Receipts</div>
+      <h2>More Proof Behind The Growth</h2>
+      <p>Analytics, charts, chart placements and the messages that came with them.</p>
+    </div>
+
+    <div class="ss-wall__grid">
+      {
+        proofTiles.map((tile) => (
+          <figure class="ss-wall__tile">
+            <img src={`${imageBase}${tile.src}`} alt={tile.alt} loading="lazy" decoding="async" />
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== CTA ===================== -->
+  <section class="ss-cta">
+    <h2>Want This For Your Brand?</h2>
+    <p>Apply below and we'll tell you honestly whether our process fits what you're building.</p>
+    <VslButton label={ctaLabel} book />
+  </section>
+
+  <VslBookingModal />
+</Layout>
+
+<style>
+  /* ---------- hero ---------- */
+  .ss-hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 8px;
+    text-align: center;
+  }
+
+  .ss-hero__brand {
+    margin-bottom: 40px;
+  }
+
+  .ss-hero__brand img {
+    width: 52px;
+    height: 52px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .ss-hero__eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin-bottom: 18px;
+  }
+
+  .ss-hero__title {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.022em;
+    max-width: 24ch;
+    margin: 0 auto 30px;
+    color: var(--vsl-ink);
+  }
+
+  .ss-hero__sub {
+    font-size: clamp(15.5px, 1.9vw, 19px);
+    line-height: 1.55;
+    color: var(--vsl-ink-dim);
+    max-width: 62ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- shared section chrome ---------- */
+  .ss-section {
+    width: 100%;
+    padding: 72px 20px 90px;
+    background: var(--vsl-black);
+  }
+
+  .ss-head {
+    max-width: 720px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+
+  .ss-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin-bottom: 16px;
+  }
+
+  .ss-head h2 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.16;
+    margin-bottom: 16px;
+    color: var(--vsl-ink);
+  }
+
+  .ss-head p {
+    font-size: 16px;
+    color: var(--vsl-ink-dim);
+    line-height: 1.6;
+    max-width: 52ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- reels ---------- */
+  .ss-reels__list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .ss-reel-block {
+    background: var(--vsl-card);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 16px;
+    padding: 26px;
+    transition: border-color 0.22s ease;
+  }
+
+  .ss-reel-block:hover {
+    border-color: rgba(154, 93, 255, 0.36);
+  }
+
+  .ss-reel-block__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ss-reel-block__head h3 {
+    font-size: clamp(19px, 2.2vw, 22px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.28;
+    color: var(--vsl-ink);
+    margin: 0;
+  }
+
+  .ss-reel-block__credit {
+    margin: 4px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vsl-p);
+  }
+
+  .ss-reel-block__platforms {
+    display: flex;
+    gap: 8px;
+    color: var(--vsl-ink-dim);
+  }
+
+  /* PlatformIcon ships each network's own brand colour. Full-saturation
+     Instagram pink and YouTube red fight the monochrome purple palette, so
+     they read as muted metadata here and only come up to colour on hover. */
+  .ss-reel-block__platforms :global(svg) {
+    filter: grayscale(1);
+    opacity: 0.55;
+    transition: filter 0.22s ease, opacity 0.22s ease;
+  }
+
+  .ss-reel-block:hover .ss-reel-block__platforms :global(svg) {
+    filter: none;
+    opacity: 0.9;
+  }
+
+  .ss-reel-block__stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin: 20px 0 22px;
+  }
+
+  .ss-stat__value {
+    font-size: clamp(24px, 2.6vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+  }
+
+  .ss-stat__label {
+    font-size: 13px;
+    color: var(--vsl-ink-dim);
+    margin-top: 2px;
+  }
+
+  .ss-reel-block__videos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .ss-reel__views {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--vsl-ink-dim);
+  }
+
+  /* ---------- testimonials ---------- */
+  .ss-testimonials__grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .ss-testimonial {
+    background: var(--vsl-card);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 16px;
+    padding: 18px 18px 22px;
+    transition: border-color 0.22s ease;
+  }
+
+  .ss-testimonial:hover {
+    border-color: rgba(154, 93, 255, 0.36);
+  }
+
+  .ss-testimonial__video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--vsl-card-border);
+  }
+
+  .ss-testimonial__video iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ss-testimonial h3 {
+    margin: 16px 0 2px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--vsl-ink);
+  }
+
+  .ss-testimonial__role {
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vsl-p);
+  }
+
+  .ss-testimonial__quote {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: rgba(244, 241, 250, 0.8);
+  }
+
+  /* ---------- before / after ---------- */
+  .ss-compare__list {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .ss-compare__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .ss-compare__card {
+    margin: 0;
+    background: var(--vsl-card);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .ss-compare__bar {
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .ss-compare__bar--before {
+    background: rgba(244, 241, 250, 0.07);
+    color: var(--vsl-ink-dim);
+  }
+
+  .ss-compare__bar--after {
+    background: linear-gradient(160deg, var(--vsl-p-light), #8331e8 55%, var(--vsl-p-deep));
+    color: #fff;
+  }
+
+  .ss-compare__card img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- proof wall ---------- */
+  .ss-wall__grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    columns: 3;
+    column-gap: 16px;
+  }
+
+  .ss-wall__tile {
+    margin: 0 0 16px;
+    break-inside: avoid;
+    background: var(--vsl-card);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.22s ease;
+  }
+
+  .ss-wall__tile:hover {
+    border-color: rgba(154, 93, 255, 0.36);
+  }
+
+  .ss-wall__tile img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ---------- cta ---------- */
+  .ss-cta {
+    width: 100%;
+    padding: 0 20px 96px;
+    text-align: center;
+    background: var(--vsl-black);
+  }
+
+  .ss-cta h2 {
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.16;
+    color: var(--vsl-ink);
+    margin: 0 0 14px;
+  }
+
+  .ss-cta p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--vsl-ink-dim);
+    max-width: 52ch;
+    margin: 0 auto 32px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .ss-testimonials__grid {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .ss-wall__grid {
+      columns: 2;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .ss-hero {
+      padding: 40px 18px 4px;
+    }
+    .ss-hero__brand {
+      margin-bottom: 28px;
+    }
+    .ss-hero__brand img {
+      width: 42px;
+      height: 42px;
+    }
+    .ss-hero__title {
+      font-size: clamp(28px, 8.6vw, 36px);
+      margin-bottom: 22px;
+    }
+    .ss-hero__sub {
+      font-size: 15.5px;
+    }
+    .ss-section {
+      padding: 40px 14px 52px;
+    }
+    .ss-head {
+      margin-bottom: 32px;
+    }
+    .ss-head h2 {
+      font-size: clamp(22px, 6.5vw, 28px);
+    }
+    .ss-head p {
+      font-size: 14.5px;
+    }
+    .ss-reel-block {
+      padding: 18px;
+      border-radius: 14px;
+    }
+    .ss-reel-block__stats {
+      gap: 20px;
+      margin: 16px 0 18px;
+    }
+    .ss-reel-block__videos {
+      gap: 10px;
+    }
+    .ss-reel__views {
+      font-size: 12px;
+    }
+    .ss-compare__row {
+      gap: 10px;
+    }
+    .ss-wall__grid {
+      columns: 1;
+    }
+    .ss-cta {
+      padding: 0 14px 64px;
+    }
+  }
+</style>

@@ -1,0 +1,436 @@
+---
+/* ===========================================================================
+   VslHowItWorks — the reference funnel's scroll-activated timeline, rebuilt
+   around Synchro's actual process.
+
+   Geometry transcribed verbatim: 520px column, 72/24/64 padding over a radial
+   accent wash, 52px timeline indent with a 2px rail, 38px/10px-radius check
+   tiles that light up as you scroll, the gradient fill that chases the last
+   activated step, and the 440/400/360px breakpoints.
+
+   CONTENT is ours, not theirs. The three pillars are the real "Our Proven
+   3-Step Formula" from the homepage (Generate -> Nurture -> Monetize Traffic,
+   src/pages/index.astro), and each step's features restate what /apply and
+   /thank-you already promise: audience research, scripting, recording
+   sessions, editing/thumbnails/publishing, lead generation, and performance
+   tracking. No new claims are introduced here.
+=========================================================================== */
+import VslButton from "./VslButton.astro";
+
+interface Props {
+  eyebrow?: string;
+  titleLead?: string;
+  titleAccent?: string;
+  sub?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+const {
+  eyebrow = "How It Works",
+  titleLead = "The System Behind",
+  titleAccent = "1.2B Views, Organic",
+  sub = "Audience research. Content that earns attention. A team that runs the whole thing for you.",
+  ctaLabel = "See More Success Stories",
+  ctaHref = "/success-stories",
+} = Astro.props;
+
+const pillars = [
+  {
+    label: "Step 1 — Generate Traffic",
+    features: [
+      {
+        title: "We Study Your Audience Before We Write A Word",
+        body: "We decode your audience's interests, behaviors and emotional drivers first. Your messaging, angles and hooks get built from that data instead of from guesswork.",
+      },
+      {
+        title: "Your Expertise, Rebuilt For The Feed",
+        body: "You already know what you're talking about. We turn it into ready-to-film scripts engineered to hook attention in the first second and hold it to the end.",
+      },
+    ],
+  },
+  {
+    label: "Step 2 — Nurture Traffic",
+    features: [
+      {
+        title: "Filming That Fits Around Your Calendar",
+        body: "Guided recording sessions with our team — or, when you already have footage, we build the whole engine out of what you've shot. Some of our best runs needed no new filming at all.",
+      },
+      {
+        title: "Editing, Thumbnails And Publishing, Handled",
+        body: "Raw clips come back as polished, on-brand videos, scheduled and posted for you. You stop being the bottleneck standing between an idea and a published video.",
+      },
+      {
+        title: "Content Your New Audience Actually Stays For",
+        body: "Growing the following is the easy half. We keep the audience you just earned engaged with content they genuinely want to watch, so the reach compounds instead of leaking.",
+      },
+    ],
+  },
+  {
+    label: "Step 3 — Monetize Traffic",
+    features: [
+      {
+        title: "Views Turned Into Qualified Leads",
+        body: "Attention only counts once it reaches your calendar. Back-end systems and the right calls to action convert viewers into booked calls and real enquiries on autopilot.",
+        final: false,
+      },
+      {
+        title: "Full Visibility Into What's Actually Working",
+        body: "Clear analytics on every video and every angle, reviewed with you, so the winners get scaled and growth stops being a guess and starts being a number you can track.",
+        final: true,
+      },
+    ],
+  },
+];
+---
+
+<div class="vslhiw-page">
+  <section class="vslhiw" id="how-it-works">
+    <div class="vslhiw__eyebrow">{eyebrow}</div>
+    <h2 class="vslhiw__title">
+      {titleLead} <span class="vslhiw__accent">{titleAccent}</span>
+    </h2>
+    <p class="vslhiw__sub">{sub}</p>
+
+    <div class="vslhiw__timeline" id="vslhiw-timeline">
+      <div class="vslhiw__fill" id="vslhiw-fill"></div>
+
+      {
+        pillars.map((p) => (
+          <>
+            <div class="vslhiw__pillar">
+              <span class="vslhiw__pillar-label">{p.label}</span>
+            </div>
+            {p.features.map((f) => (
+              <div class={`vslhiw__feature${f.final ? " is-final" : ""}`} data-feature>
+                <div class="vslhiw__check">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <polyline points="5,12 10,17 19,7" />
+                  </svg>
+                </div>
+                <div class="vslhiw__feature-title">{f.title}</div>
+                <div class="vslhiw__feature-body">{f.body}</div>
+              </div>
+            ))}
+          </>
+        ))
+      }
+    </div>
+
+    <div class="vslhiw__cta">
+      <VslButton
+        label={ctaLabel}
+        href={ctaHref}
+        variant="pill"
+        icon
+        target="_blank"
+        rel="noopener"
+      />
+    </div>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const timeline = document.getElementById("vslhiw-timeline");
+    const fill = document.getElementById("vslhiw-fill");
+    if (!timeline || !fill) return;
+
+    const features = Array.from(
+      timeline.querySelectorAll<HTMLElement>("[data-feature]")
+    );
+    if (!features.length) return;
+
+    // Reduced motion: light everything up and skip the chase animation.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      features.forEach((f) => f.classList.add("is-active"));
+      fill.style.height = "100%";
+      return;
+    }
+
+    /* Scroll-driven rather than IntersectionObserver-driven, deliberately.
+       An observer drops callbacks during a fast flick-scroll, which leaves
+       steps the reader has already passed stuck in the dim state. Re-testing
+       every step's position on each frame is cheap (7 elements) and is what
+       the reference funnel does. A step never un-lights once lit. */
+    const ACTIVATE_AT = 0.66; // step lights once its top crosses 2/3 viewport
+
+    const update = () => {
+      const line = window.innerHeight * ACTIVATE_AT;
+      let last: HTMLElement | null = null;
+
+      for (const f of features) {
+        if (f.getBoundingClientRect().top < line) f.classList.add("is-active");
+        if (f.classList.contains("is-active")) last = f;
+      }
+
+      if (!last) {
+        fill.style.height = "0px";
+        return;
+      }
+      const check = last.querySelector(".vslhiw__check");
+      if (!check) return;
+      const c = check.getBoundingClientRect();
+      const t = timeline.getBoundingClientRect();
+      fill.style.height = `${Math.max(0, c.top + c.height / 2 - t.top - 6)}px`;
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  })();
+</script>
+
+<style>
+  .vslhiw-page {
+    max-width: 520px;
+    margin: 0 auto;
+    background: var(--vsl-black);
+  }
+
+  .vslhiw {
+    padding: 72px 24px 64px;
+    background:
+      radial-gradient(ellipse 900px 480px at 50% -10%, rgba(131, 49, 232, 0.14), transparent 60%),
+      var(--vsl-black);
+    position: relative;
+  }
+
+  .vslhiw__eyebrow {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin-bottom: 16px;
+  }
+
+  .vslhiw__title {
+    text-align: center;
+    font-weight: 700;
+    font-size: clamp(26px, 7vw, 36px);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: var(--vsl-ink);
+    margin-bottom: 14px;
+    padding: 0 4px;
+  }
+
+  .vslhiw__accent {
+    background: linear-gradient(160deg, var(--vsl-p-light), #8331e8 55%, var(--vsl-p-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .vslhiw__sub {
+    text-align: center;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--vsl-ink-dim);
+    margin-bottom: 52px;
+    padding: 0 8px;
+  }
+
+  .vslhiw__timeline {
+    position: relative;
+    padding-left: 52px;
+  }
+
+  .vslhiw__timeline::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: rgba(154, 93, 255, 0.16);
+    border-radius: 2px;
+    z-index: 0;
+  }
+
+  .vslhiw__fill {
+    position: absolute;
+    left: 19px;
+    top: 6px;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(180deg, var(--vsl-p-light) 0, var(--vsl-p-deep) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    box-shadow: 0 0 12px rgba(131, 49, 232, 0.45);
+    transition: height 0.5s ease;
+    will-change: height;
+  }
+
+  .vslhiw__pillar {
+    position: relative;
+    margin-bottom: 8px;
+    padding-top: 4px;
+  }
+
+  .vslhiw__pillar:first-of-type {
+    padding-top: 0;
+  }
+
+  .vslhiw__pillar-label {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--vsl-p-light);
+    background: rgba(154, 93, 255, 0.1);
+    border: 1px solid rgba(154, 93, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+    transform: translateX(-2px);
+  }
+
+  .vslhiw__feature {
+    position: relative;
+    margin-bottom: 28px;
+  }
+
+  .vslhiw__check {
+    position: absolute;
+    left: -52px;
+    top: -2px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #14111a;
+    border: 1.5px solid rgba(154, 93, 255, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.45s ease, border-color 0.45s ease, box-shadow 0.45s ease,
+      transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .vslhiw__check svg {
+    width: 20px;
+    height: 20px;
+    stroke: #514a5c;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    transition: stroke 0.45s ease, stroke-dashoffset 0.65s ease 0.18s;
+  }
+
+  .vslhiw__feature.is-active .vslhiw__check {
+    background: linear-gradient(180deg, var(--vsl-p-light) 0, var(--vsl-p-deep) 100%);
+    border-color: var(--vsl-p-deep);
+    box-shadow: 0 0 0 4px rgba(131, 49, 232, 0.16), 0 4px 16px rgba(131, 49, 232, 0.36);
+    transform: scale(1.05);
+  }
+
+  .vslhiw__feature.is-active .vslhiw__check svg {
+    stroke: #0a0a0a;
+    stroke-dashoffset: 0;
+  }
+
+  .vslhiw__feature-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--vsl-ink);
+    margin-bottom: 6px;
+    transition: color 0.45s ease;
+  }
+
+  .vslhiw__feature-body {
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(244, 241, 250, 0.72);
+    transition: color 0.45s ease;
+  }
+
+  .vslhiw__feature:not(.is-active) .vslhiw__feature-title {
+    color: rgba(244, 241, 250, 0.42);
+  }
+
+  .vslhiw__feature:not(.is-active) .vslhiw__feature-body {
+    color: rgba(244, 241, 250, 0.32);
+  }
+
+  .vslhiw__feature.is-final .vslhiw__check {
+    background: #14111a;
+    border-color: rgba(154, 93, 255, 0.16);
+  }
+
+  .vslhiw__feature.is-final.is-active .vslhiw__check {
+    background: linear-gradient(180deg, var(--vsl-p-light) 0, var(--vsl-p-deep) 100%);
+    border-color: var(--vsl-p-deep);
+    box-shadow: 0 0 0 4px rgba(131, 49, 232, 0.22), 0 6px 22px rgba(131, 49, 232, 0.44);
+  }
+
+  .vslhiw__feature.is-final .vslhiw__check svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .vslhiw__cta {
+    max-width: 420px;
+    margin: 56px auto 0;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  @media (max-width: 440px) {
+    .vslhiw { padding: 56px 20px 48px; }
+    .vslhiw__timeline { padding-left: 48px; }
+    .vslhiw__timeline::before, .vslhiw__fill { left: 17px; }
+    .vslhiw__check { left: -48px; width: 34px; height: 34px; border-radius: 9px; }
+    .vslhiw__check svg { width: 18px; height: 18px; }
+  }
+
+  @media (max-width: 400px) {
+    .vslhiw { padding: 48px 18px 40px; }
+    .vslhiw__sub { margin-bottom: 40px; }
+    .vslhiw__timeline { padding-left: 44px; }
+    .vslhiw__timeline::before, .vslhiw__fill { left: 15px; }
+    .vslhiw__check { left: -44px; width: 32px; height: 32px; border-radius: 8px; }
+    .vslhiw__check svg { width: 17px; height: 17px; stroke-width: 3.2; }
+    .vslhiw__feature { margin-bottom: 24px; }
+    .vslhiw__feature-title { font-size: 15px; }
+    .vslhiw__feature-body { font-size: 13.5px; }
+    .vslhiw__pillar-label { font-size: 9.5px; padding: 4px 9px; margin-bottom: 16px; }
+  }
+
+  @media (max-width: 360px) {
+    .vslhiw { padding: 44px 16px 36px; }
+    .vslhiw__timeline { padding-left: 40px; }
+    .vslhiw__timeline::before, .vslhiw__fill { left: 13px; }
+    .vslhiw__check { left: -40px; width: 30px; height: 30px; }
+    .vslhiw__check svg { width: 16px; height: 16px; }
+    .vslhiw__feature-title { font-size: 14px; }
+    .vslhiw__feature-body { font-size: 13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vslhiw__check,
+    .vslhiw__check svg,
+    .vslhiw__feature-title,
+    .vslhiw__feature-body,
+    .vslhiw__fill {
+      transition: none;
+    }
+  }
+</style>

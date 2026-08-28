@@ -1,0 +1,113 @@
+---
+/* ===========================================================================
+   VslFunnel — the whole VSL page body, shared by /danny_vsl and /baya_vsl.
+
+   Section order follows the reference funnel plus the two additions the owner
+   asked for (the proof tiles under the CTA, and a closing CTA after the FAQ):
+
+     hero (eyebrow / headline / subheadline / VSL)
+     -> apply CTA  (opens the iClosed booking popup)
+     -> proof tiles
+     -> Real Results (6 cards)
+     -> How It Works  (-> See More Success Stories, new tab)
+     -> FAQ
+     -> apply CTA
+=========================================================================== */
+import VslHero from "./VslHero.astro";
+import VslButton from "./VslButton.astro";
+import VslProofBar from "./VslProofBar.astro";
+import VslRealResults from "./VslRealResults.astro";
+import VslHowItWorks from "./VslHowItWorks.astro";
+import VslFaq from "./VslFaq.astro";
+import VslBookingModal from "./VslBookingModal.astro";
+import { vslCardsFor } from "../data/vslCaseStudies.js";
+
+interface Props {
+  /** "danny" | "baya" — picks the card order (the other of the pair leads). */
+  pageKey: string;
+  headlineLead: string;
+  headlineAccent: string;
+  subheadline: string;
+  resultsHeading?: string;
+  resultsIntro?: string;
+}
+const {
+  pageKey,
+  headlineLead,
+  headlineAccent,
+  subheadline,
+  resultsHeading = "What The System Built For Them",
+  resultsIntro = "Every client below came to us with real expertise and a message that already worked in the room. Here's what changed once the content, the reach and the lead flow stopped running through them personally.",
+} = Astro.props;
+
+const cards = vslCardsFor(pageKey);
+const ctaLabel = "Apply for Consultation Call";
+---
+
+<VslHero
+  headlineLead={headlineLead}
+  headlineAccent={headlineAccent}
+  subheadline={subheadline}
+>
+  <div class="vslf__cta vslf__cta--hero">
+    <VslButton label={ctaLabel} book />
+  </div>
+
+  <div class="vslf__proof">
+    <VslProofBar />
+  </div>
+</VslHero>
+
+<VslRealResults heading={resultsHeading} intro={resultsIntro} cards={cards} />
+
+<VslHowItWorks />
+
+<VslFaq />
+
+<section class="vslf__closing">
+  <VslButton label={ctaLabel} book />
+  <p class="vslf__closing-note">
+    Applications are reviewed by our team — the call is a real conversation, not a pitch.
+  </p>
+</section>
+
+<VslBookingModal />
+
+<style>
+  .vslf__cta--hero {
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .vslf__proof {
+    width: 100%;
+    margin-top: 44px;
+  }
+
+  .vslf__closing {
+    width: 100%;
+    padding: 0 20px 96px;
+    background: var(--vsl-black);
+    text-align: center;
+  }
+
+  .vslf__closing-note {
+    max-width: 480px;
+    margin: 18px auto 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--vsl-ink-faint);
+  }
+
+  @media (max-width: 600px) {
+    .vslf__cta--hero {
+      margin-top: 32px;
+    }
+    .vslf__proof {
+      margin-top: 36px;
+    }
+    .vslf__closing {
+      padding: 0 14px 64px;
+    }
+  }
+</style>

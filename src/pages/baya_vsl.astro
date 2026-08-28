@@ -1,0 +1,37 @@
+---
+/* ===========================================================================
+   /baya_vsl — VSL landing page, Baya Voce angle.
+
+   Design is matched to the reference funnel supplied by the owner
+   (gohconsulting.perspectivefunnel.com/apply) — same geometry, type scale and
+   motion, recoloured to Synchro purple. See src/styles/vsl.css for the
+   palette mapping and src/components/Vsl*.astro for the sections.
+
+   Headline and subheadline are the owner's approved copy, verbatim from the
+   brief doc. NOTE: that doc says "over 450,000 followers", while this repo's
+   own data (src/data/campaignProof.js, src/data/caseStudies.js) records Baya
+   at 7K -> 350K+ / +350K. The doc's figure is used here as written; reconcile
+   the two before this goes to paid traffic.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+import VslFunnel from "../components/VslFunnel.astro";
+import "../styles/vsl.css";
+---
+
+<Layout
+  title="Apply — Install The Content Machine Behind Baya Voce | Synchro Social"
+  description="Apply today and we'll install the same content machine that grew Baya over 450,000 followers, organically — without increasing your ad spend."
+  bodyClass="vsl"
+  metaEvent={{ name: "ViewContent", params: { content_name: "baya_vsl" } }}
+>
+  <VslFunnel
+    pageKey="baya"
+    headlineLead="Apply Today And We'll Install The Same Content Machine"
+    headlineAccent="That Grew Baya Over 450,000 Followers, Organically."
+    subheadline="Without increasing your ad spend or wasting more hours on content, we'll build you the same machine that fully booked her calendar."
+  />
+</Layout>
+
+<script is:inline>
+  document.body.dataset.vslPage = "baya_vsl";
+</script>

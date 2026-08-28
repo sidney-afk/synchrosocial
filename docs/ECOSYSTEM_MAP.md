@@ -105,6 +105,8 @@ kept as a site surface, not the current Meta launch target.
 | --- | --- | --- | --- | --- | --- |
 | Cold ads | `/ai` → `/call` | coral | **AI Intro Call** (`ai-intro-call`) | **YES — filter** | internal (no redirect) |
 | Main site | `/` → `/apply` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
+| VSL ads — Danny | `/danny_vsl` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
+| VSL ads — Baya | `/baya_vsl` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
 | Events Hub "Book a call" | `/event` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Clients | `/ai-invite/schedule-clients` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Investors | `/ai-invite/schedule-investors` | — | **1:1 Call** (`1-1-call-with-kasper`) | No | internal |
@@ -119,6 +121,27 @@ kept as a site surface, not the current Meta launch target.
 - **Warm doors don't filter.** Event leads (`/ai-invite`, `/event`) and investors get friction-free calendars (`demo`, `1:1`), all internal confirmation.
 - **Onboarding never dumps clients on the sales thank-you page.** Both onboarding calendars use internal confirmation so the client continues to step 4 ("Final Words").
 - **Two AI surfaces, on purpose:** `/ai` = cold ad landing (filtered) vs `/ai-invite/` = warm event invite (unfiltered). Same theme, different traffic temperature.
+
+## VSL funnel pages (added 2026-08-27)
+
+`/danny_vsl` and `/baya_vsl` are paid-traffic VSL landing pages, one per
+client angle (Danny Morel / Baya Voce). They are visually matched to an
+external reference funnel supplied by the owner and recoloured to Synchro
+purple — see `src/styles/vsl.css` for the palette mapping and the
+`src/components/Vsl*.astro` set for the sections.
+
+Booking difference from `/apply`: the calendar is NOT inline on the page. It
+lives in a popup (`VslBookingModal.astro`) opened by the "Apply for
+Consultation Call" buttons. It is the SAME calendar and the SAME
+`IClosedEmbed` component `/apply` uses, so attribution passthrough
+(`IClosedCapture`) and the iClosed → Meta Pixel bridge behave identically,
+and bookings still redirect to `/thank-you`.
+
+`/success-stories` is the shared proof page both VSL pages link to (new tab,
+from the "See More Success Stories" button in How It Works). It condenses
+every case study, testimonial video and proof screenshot that lives on
+`/apply` into one page in the VSL aesthetic, and carries the same booking
+popup. It is not an entry point — nothing points ads at it.
 
 ## Notes
 
