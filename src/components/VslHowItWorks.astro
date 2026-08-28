@@ -198,7 +198,10 @@ const pillars = [
   }
 
   .vslhiw {
-    padding: 72px 24px 64px;
+    /* Bottom trimmed 64px -> 24px: the "See More Success Stories" CTA is the
+       last element here, and 64px plus the FAQ's own top padding left a void
+       between the two. */
+    padding: 72px 24px 24px;
     background:
       radial-gradient(ellipse 900px 480px at 50% -10%, rgba(131, 49, 232, 0.14), transparent 60%),
       var(--vsl-black);
@@ -394,7 +397,7 @@ const pillars = [
   }
 
   @media (max-width: 440px) {
-    .vslhiw { padding: 56px 20px 48px; }
+    .vslhiw { padding: 56px 20px 20px; }
     .vslhiw__timeline { padding-left: 48px; }
     .vslhiw__timeline::before, .vslhiw__fill { left: 17px; }
     .vslhiw__check { left: -48px; width: 34px; height: 34px; border-radius: 9px; }
@@ -402,7 +405,7 @@ const pillars = [
   }
 
   @media (max-width: 400px) {
-    .vslhiw { padding: 48px 18px 40px; }
+    .vslhiw { padding: 48px 18px 18px; }
     .vslhiw__sub { margin-bottom: 40px; }
     .vslhiw__timeline { padding-left: 44px; }
     .vslhiw__timeline::before, .vslhiw__fill { left: 15px; }
@@ -415,7 +418,7 @@ const pillars = [
   }
 
   @media (max-width: 360px) {
-    .vslhiw { padding: 44px 16px 36px; }
+    .vslhiw { padding: 44px 16px 16px; }
     .vslhiw__timeline { padding-left: 40px; }
     .vslhiw__timeline::before, .vslhiw__fill { left: 13px; }
     .vslhiw__check { left: -40px; width: 30px; height: 30px; }
