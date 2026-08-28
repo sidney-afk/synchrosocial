@@ -135,11 +135,11 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | --- | --- | --- |
 | `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
-| `ViewContent` (content_name `danny_vsl` / `baya_vsl` / `success_stories`) | `/danny_vsl`, `/baya_vsl`, `/success-stories` | `metaEvent` prop on `Layout` |
+| `ViewContent` (content_name `danny_vsl` / `baya_vsl` / `success_stories`) | `/apply2`, `/apply3`, `/success-stories` | `metaEvent` prop on `Layout`. **The content_name deliberately does NOT match the URL**: the pages were renamed `/danny_vsl`→`/apply2` and `/baya_vsl`→`/apply3` on 2026-08-28, but the param kept its client-named value so Ads Manager still shows which client's page fired — `apply2`/`apply3` would be unreadable in reporting. Renaming the param would also break continuity with data already collected. Leave it. |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
 | **`Lead`** ← every booking | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. Fires for **all** bookings, qualified or not. |
 | **`Schedule`** ← ACQUISITION bookings only (CHANGED 2026-08-27) | **server-side only**, via Conversions API | No longer fired from the browser. n8n workflow **"Sales - Booked Call to Meta CAPI"** (`s8lsPpKqWYhscLPV`) receives iClosed's Contact-by-status webhook (status **STRATEGY_CALL_BOOKED**) at `/webhook/iclosed-booked-capi` and POSTs a standard `Schedule` event to the dataset when `is_acquisition && hasCall && status !== "disqualified"`. **The gate is `latestCall` being present, NOT an iClosed status string** - verified against live payloads: iClosed assigns no qualified/disqualified verdict on this account (`disqualifyingGroup` is empty; only `potential` and `strategy_call_booked` ever appear), so an earlier build that required `status === "qualified"` would have never fired at all. `is_acquisition` also keeps the `check-in` calendar out, so a returning client rebooking is never counted as a new conversion. Deduped durably in the `meta_capi_sent` Data Table (`0PRw0Vtw8eKGUche`), because iClosed re-fires status events and Meta's own event_id dedupe only covers 48h. User data is SHA-256 hashed (email, phone, first, last) plus `fbc`/`fbp` when iClosed captured them. |
-| `VslApplyClick` (custom, param `content_name` = `danny_vsl` / `baya_vsl` / `success_stories`) | `/danny_vsl`, `/baya_vsl`, `/success-stories`, when an "Apply for Consultation Call" button opens the booking popup | `VslBookingModal.astro`. Marks **intent to book, not a booking** — the VSL pages hide the calendar behind a popup, so this is the only read on how many VSL viewers actually opened it. The booking itself still fires `Lead` from the usual `IClosedEmbed` bridge, and `Schedule` still comes server-side via CAPI; this event is deliberately NOT one of those and must never be used as a conversion. No contact info is in the params. |
+| `VslApplyClick` (custom, param `content_name` = `danny_vsl` / `baya_vsl` / `success_stories`) | `/apply2`, `/apply3`, `/success-stories`, when an "Apply for Consultation Call" button opens the booking popup | `VslBookingModal.astro`. Marks **intent to book, not a booking** — the VSL pages hide the calendar behind a popup, so this is the only read on how many VSL viewers actually opened it. The booking itself still fires `Lead` from the usual `IClosedEmbed` bridge, and `Schedule` still comes server-side via CAPI; this event is deliberately NOT one of those and must never be used as a conversion. No contact info is in the params. |
 | `QuizStarted` (custom) | `/quiz/take`, after the name+email step | `GrowthBottleneckQuiz.astro`, fresh `eventID` per fire. Marks quiz engagement, not a lead — no contact info is in the event params. |
 | `QuizCompleted` (custom, param `quiz_result`) | `/quiz/take`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
@@ -160,7 +160,7 @@ Rules:
   `<IClosedEmbed>` on the result screen, same bridge as `/apply`. Quiz
   engagement is tracked separately (`QuizStarted`/`QuizCompleted`) so it
   can't be mistaken for a booked call in reporting.
-- **The VSL pages (`/danny_vsl`, `/baya_vsl`) book through a popup, not an
+- **The VSL pages (`/apply2`, `/apply3`) book through a popup, not an
   inline embed.** The popup wraps the same `<IClosedEmbed>` and the same
   `social-media-consultation` calendar as `/apply`, so `Lead` (bridge) and
   server-side `Schedule` are unchanged. `VslApplyClick` is a
@@ -465,6 +465,26 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-08-28 (VSL pages renamed `/apply2` + `/apply3`; copy and layout round 2)** —
+  Owner feedback pass on the VSL funnel. **URL change: `/danny_vsl` → `/apply2`
+  (Danny) and `/baya_vsl` → `/apply3` (Baya).** Both had already gone out on
+  paid traffic under the old paths, so `astro.config.mjs` now carries permanent
+  redirects for both; do not remove them while any ad, link or QR code could
+  still point at the old URLs.
+  **The pixel params were deliberately NOT renamed** — `content_name` stays
+  `danny_vsl` / `baya_vsl` for both `ViewContent` and `VslApplyClick`, because
+  `apply2` / `apply3` would be unreadable in Ads Manager and renaming would
+  break continuity with data already collected. The URL/param mismatch is
+  intentional and is called out in §4 and in each page's header comment.
+  Non-tracking changes in the same pass: each page now leads its Real Results
+  grid with its own client (the pair had been swapped); Danny's card tag became
+  "100,000+ Qualified Leads Generated"; Sonia, Lucas and Daniel's stat/tag lines
+  were rewritten; the hero headline's underlined half moved to a lighter accent
+  gradient for legibility; the proof strip's 1.2B and 8M went white; and
+  `/success-stories` was reordered (testimonials first, best-performing videos
+  last) and its heading changed from "The Full Roster" to "Just Some Of Our
+  Case Studies".
 
 - **2026-08-27 (VSL landing pages — `/danny_vsl`, `/baya_vsl`, `/success-stories`)** —
   Built two paid-traffic VSL landing pages, one per client angle, matched to

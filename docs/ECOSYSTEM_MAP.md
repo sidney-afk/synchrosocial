@@ -105,8 +105,8 @@ kept as a site surface, not the current Meta launch target.
 | --- | --- | --- | --- | --- | --- |
 | Cold ads | `/ai` → `/call` | coral | **AI Intro Call** (`ai-intro-call`) | **YES — filter** | internal (no redirect) |
 | Main site | `/` → `/apply` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
-| VSL ads — Danny | `/danny_vsl` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
-| VSL ads — Baya | `/baya_vsl` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
+| VSL ads — Danny | `/apply2` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
+| VSL ads — Baya | `/apply3` | purple | **Social Media Consultation** (`social-media-consultation`) | **YES — filter** | → `/thank-you` |
 | Events Hub "Book a call" | `/event` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Clients | `/ai-invite/schedule-clients` | — | **demo** (`synchrosocial/demo`) | No | internal |
 | AI invite — Investors | `/ai-invite/schedule-investors` | — | **1:1 Call** (`1-1-call-with-kasper`) | No | internal |
@@ -124,7 +124,8 @@ kept as a site surface, not the current Meta launch target.
 
 ## VSL funnel pages (added 2026-08-27)
 
-`/danny_vsl` and `/baya_vsl` are paid-traffic VSL landing pages, one per
+`/apply2` (Danny) and `/apply3` (Baya) are paid-traffic VSL landing pages,
+one per
 client angle (Danny Morel / Baya Voce). They are visually matched to an
 external reference funnel supplied by the owner and recoloured to Synchro
 purple — see `src/styles/vsl.css` for the palette mapping and the

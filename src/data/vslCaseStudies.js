@@ -1,5 +1,5 @@
 /* ===========================================================================
-   Case-study cards for the VSL funnel pages (/danny_vsl, /baya_vsl) and
+   Case-study cards for the VSL funnel pages (/apply2, /apply3) and
    /success-stories.
 
    Shape matches the reference funnel's card: a name line, one headline stat,
@@ -29,7 +29,7 @@ export const vslCaseStudies = [
     key: "danny",
     name: "Danny Morel | Life Coach",
     stat: "+3.5M Followers",
-    tag: "And 500M+ Views Generated",
+    tag: "100,000+ Qualified Leads Generated",
     story:
       "Danny was already a strong operator, but his reach was capped by how much content he could personally drive. We took over ideation, scripting, editing and publishing across Instagram, TikTok, YouTube and Facebook. Over two years he added more than 3.5M followers and generated over 500M views, with individual videos hitting 16.8M and 9.2M, and built the #1 spirituality podcast in the process.",
     wistia: "g89atir80n",
@@ -39,7 +39,7 @@ export const vslCaseStudies = [
     key: "sonia",
     name: "Dr. Sonia Chopra | Endodontist",
     stat: "1,000s Of Qualified Leads",
-    tag: "From A Standing Start In Healthcare",
+    tag: "Grew Her Following By 50% In Under 6 Months",
     story:
       "Dr. Sonia is a board-certified endodontist in one of the hardest markets to make content work in — clinical healthcare, where most accounts stay invisible. We built her a content system that turned her expertise into content patients actually watch. One post alone pulled 1,500 comments, her following grew roughly 50%, and the account now produces thousands of qualified leads.",
     wistia: "vr83s40k0b",
@@ -49,7 +49,7 @@ export const vslCaseStudies = [
     key: "lucas",
     name: "Lucas Salame | Spiritual Guide",
     stat: "57K → 140K+ Followers",
-    tag: "With Clients Landing Straight From Videos",
+    tag: "Over 20 Million Views Across All Platforms",
     story:
       "Lucas was stuck at 57K with content that wasn't converting attention into business. We rebuilt his positioning and content system and ran it end to end across Instagram, TikTok and YouTube. He more than doubled to 140K+ followers, generated over 20M views with his strongest reels at 2.0M and 1.2M, and started landing clients directly from the videos themselves.",
     wistia: "nry8m1uctv",
@@ -78,8 +78,8 @@ export const vslCaseStudies = [
   {
     key: "daniel",
     name: "Daniel Raphael | Spiritual Guide",
-    stat: "11.4M Views On One Video",
-    tag: "And 30M+ Views Overall",
+    stat: "250K Instagram Followers",
+    tag: "From 11.4M Views On One Video",
     story:
       "Daniel's ideas travelled well in person but had never been cut for the feed. Once the content system was installed, one video alone reached 11.4M views. That run carried him past 250K Instagram followers and more than 30M total views, turning a message that used to live in rooms into one that scales without him.",
     wistia: "auyg1fhovv",
@@ -107,10 +107,11 @@ export const vslCaseStudies = [
   },
 ];
 
-/** Cards for a VSL page, in the doc's order. The page's own client leads, and
- *  the other of the Danny/Baya pair takes the first slot. */
+/** Cards for a VSL page. The page's OWN client leads — /apply2 opens with
+ *  Danny, /apply3 with Baya. (An earlier build had the pair swapped; corrected
+ *  on owner feedback 2026-08-28.) The rest follow the brief's order. */
 export function vslCardsFor(pageKey) {
-  const lead = pageKey === "danny" ? "baya" : "danny";
+  const lead = pageKey === "danny" ? "danny" : "baya";
   const order = [lead, "sonia", "lucas", "jessica", "alexi", "daniel"];
   return order.map((k) => vslCaseStudies.find((c) => c.key === k)).filter(Boolean);
 }
