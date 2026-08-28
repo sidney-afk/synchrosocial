@@ -37,6 +37,10 @@
   --vsl-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto,
     Helvetica, Arial, sans-serif;
   --vsl-accent-grad: linear-gradient(180deg, var(--vsl-p-light), #8331e8 55%, var(--vsl-p-deep));
+  /* Lighter sibling of the accent gradient, for large display text where the
+     standard one's dark bottom stop (#5f1fae on black) costs legibility.
+     Used by the hero headline's underlined half. */
+  --vsl-accent-grad-soft: linear-gradient(180deg, #f0e8ff, #c9a6ff 55%, #9a5dff);
 }
 
 body.vsl {

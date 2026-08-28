@@ -176,6 +176,16 @@ const {
     gap: 24px;
   }
 
+  /* An odd card count leaves the last one alone in its row, hugging the left
+     column. Span it across both tracks and centre it at one column's width so
+     it reads as deliberate. calc(50% - 12px) is one track (half the grid minus
+     half the 24px gap) at any container width. */
+  .vslrr__grid--two > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 12px);
+  }
+
   .vslrr__disclaimer {
     max-width: 620px;
     margin: 40px auto 0;
@@ -347,6 +357,13 @@ const {
     .vslrr__grid--two {
       grid-template-columns: 1fr;
       gap: 18px;
+    }
+
+    /* Single column below 900px — the lone-card centring above would otherwise
+       shrink the last card to half width. */
+    .vslrr__grid--two > :last-child:nth-child(odd) {
+      grid-column: auto;
+      width: 100%;
     }
   }
 

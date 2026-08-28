@@ -6,13 +6,17 @@
    Everything proof-related that lives on /apply, condensed onto one page in
    the VSL funnel's aesthetic:
 
-     1. Case Studies        — all 9 clients from campaignProof.js, as the
-                              reference funnel's story cards (VslRealResults)
-     2. Best Performing Videos — the reels + headline stats from caseStudies.js
-     3. What Clients Say    — the 3 testimonial videos from testimonials.js
-     4. Before & After      — the /apply "Watch Your Audience Skyrocket"
+     1. What Clients Say    — the 3 testimonial videos from testimonials.js
+     2. Before & After      — the /apply "Watch Your Audience Skyrocket"
                               account comparisons
-     5. More Proof          — the /apply proof-screenshot wall
+     3. More Proof          — the /apply proof-screenshot wall. Kept adjacent to
+                              Before & After because the two are one component
+                              on /apply and read as a single proof block.
+     4. Case Studies        — all 9 clients from campaignProof.js, as the
+                              reference funnel's story cards (VslRealResults)
+     5. Best Performing Videos — the reels + headline stats from caseStudies.js
+
+   Section order is owner-specified (2026-08-28): testimonials first, reels last.
 
    Image and video sources are the SAME assets /apply uses; nothing here is a
    new asset or a new claim. Sections 4 and 5 read their file lists from the
@@ -71,7 +75,7 @@ const ctaLabel = "Apply for Consultation Call";
     </div>
     <div class="ss-hero__eyebrow">Success Stories</div>
     <h1 class="ss-hero__title">
-      Every Result We've Built,
+      Every Result We've Built,<br />
       <span class="vsl-accent">In One Place.</span>
     </h1>
     <p class="ss-hero__sub">
@@ -80,16 +84,91 @@ const ctaLabel = "Apply for Consultation Call";
     </p>
   </header>
 
-  <!-- ===================== 1. CASE STUDIES ===================== -->
+  <!-- ===================== 1. TESTIMONIALS ===================== -->
+  <section class="ss-section ss-testimonials">
+    <div class="ss-head">
+      <div class="ss-eyebrow">In Their Own Words</div>
+      <h2>What Our Clients Say</h2>
+      <p>Unscripted, on camera, from people who have run the whole process with us.</p>
+    </div>
+
+    <div class="ss-testimonials__grid">
+      {
+        testimonials.map((t) => (
+          <article class="ss-testimonial">
+            <div class="ss-testimonial__video">
+              <iframe
+                src={`https://fast.wistia.net/embed/iframe/${t.wistia}?seo=false&videoFoam=true`}
+                title={`${t.name} testimonial`}
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+            <h3>{t.name}</h3>
+            <p class="ss-testimonial__role">{t.shortRole ?? t.role}</p>
+            <p class="ss-testimonial__quote">{t.title}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 2. BEFORE & AFTER ===================== -->
+  <section class="ss-section ss-compare">
+    <div class="ss-head">
+      <div class="ss-eyebrow">Before &amp; After</div>
+      <h2>Watch The Audience Skyrocket</h2>
+      <p>The same accounts, before we started and after the system had been running.</p>
+    </div>
+
+    <div class="ss-compare__list">
+      {
+        comparisons.map((row) => (
+          <div class="ss-compare__row">
+            <figure class="ss-compare__card">
+              <figcaption class="ss-compare__bar ss-compare__bar--before">Before</figcaption>
+              <img src={`${imageBase}${row.before}`} alt={`${row.label} account before growth`} loading="lazy" decoding="async" />
+            </figure>
+            <figure class="ss-compare__card">
+              <figcaption class="ss-compare__bar ss-compare__bar--after">After</figcaption>
+              <img src={`${imageBase}${row.after}`} alt={`${row.label} account after growth`} loading="lazy" decoding="async" />
+            </figure>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 3. PROOF WALL ===================== -->
+  <section class="ss-section ss-wall">
+    <div class="ss-head">
+      <div class="ss-eyebrow">Receipts</div>
+      <h2>More Proof Behind The Growth</h2>
+      <p>Analytics, charts, chart placements and the messages that came with them.</p>
+    </div>
+
+    <div class="ss-wall__grid">
+      {
+        proofTiles.map((tile) => (
+          <figure class="ss-wall__tile">
+            <img src={`${imageBase}${tile.src}`} alt={tile.alt} loading="lazy" decoding="async" />
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===================== 4. CASE STUDIES ===================== -->
   <VslRealResults
     eyebrow="Case Studies"
-    heading="The Full Roster"
+    heading="Just Some Of Our Case Studies"
     intro="Nine clients, nine different starting points. Each one tells the story in their own words."
     cards={allVslCaseStudies}
     columns={2}
   />
 
-  <!-- ===================== 2. BEST PERFORMING VIDEOS ===================== -->
+  <!-- ===================== 5. BEST PERFORMING VIDEOS ===================== -->
   <section class="ss-section ss-reels">
     <div class="ss-head">
       <div class="ss-eyebrow">Best Performing Videos</div>
@@ -136,81 +215,6 @@ const ctaLabel = "Apply for Consultation Call";
               ))}
             </div>
           </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ===================== 3. TESTIMONIALS ===================== -->
-  <section class="ss-section ss-testimonials">
-    <div class="ss-head">
-      <div class="ss-eyebrow">In Their Own Words</div>
-      <h2>What Our Clients Say</h2>
-      <p>Unscripted, on camera, from people who have run the whole process with us.</p>
-    </div>
-
-    <div class="ss-testimonials__grid">
-      {
-        testimonials.map((t) => (
-          <article class="ss-testimonial">
-            <div class="ss-testimonial__video">
-              <iframe
-                src={`https://fast.wistia.net/embed/iframe/${t.wistia}?seo=false&videoFoam=true`}
-                title={`${t.name} testimonial`}
-                allow="autoplay; fullscreen"
-                allowfullscreen
-                loading="lazy"
-              />
-            </div>
-            <h3>{t.name}</h3>
-            <p class="ss-testimonial__role">{t.shortRole ?? t.role}</p>
-            <p class="ss-testimonial__quote">{t.title}</p>
-          </article>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ===================== 4. BEFORE & AFTER ===================== -->
-  <section class="ss-section ss-compare">
-    <div class="ss-head">
-      <div class="ss-eyebrow">Before &amp; After</div>
-      <h2>Watch The Audience Skyrocket</h2>
-      <p>The same accounts, before we started and after the system had been running.</p>
-    </div>
-
-    <div class="ss-compare__list">
-      {
-        comparisons.map((row) => (
-          <div class="ss-compare__row">
-            <figure class="ss-compare__card">
-              <figcaption class="ss-compare__bar ss-compare__bar--before">Before</figcaption>
-              <img src={`${imageBase}${row.before}`} alt={`${row.label} account before growth`} loading="lazy" decoding="async" />
-            </figure>
-            <figure class="ss-compare__card">
-              <figcaption class="ss-compare__bar ss-compare__bar--after">After</figcaption>
-              <img src={`${imageBase}${row.after}`} alt={`${row.label} account after growth`} loading="lazy" decoding="async" />
-            </figure>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ===================== 5. PROOF WALL ===================== -->
-  <section class="ss-section ss-wall">
-    <div class="ss-head">
-      <div class="ss-eyebrow">Receipts</div>
-      <h2>More Proof Behind The Growth</h2>
-      <p>Analytics, charts, chart placements and the messages that came with them.</p>
-    </div>
-
-    <div class="ss-wall__grid">
-      {
-        proofTiles.map((tile) => (
-          <figure class="ss-wall__tile">
-            <img src={`${imageBase}${tile.src}`} alt={tile.alt} loading="lazy" decoding="async" />
-          </figure>
         ))
       }
     </div>
