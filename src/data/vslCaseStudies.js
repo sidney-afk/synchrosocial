@@ -110,11 +110,14 @@ export const vslCaseStudies = [
 /** Cards for a VSL page. Neither page shows its OWN client's case study —
  *  the whole page already IS that client's story (hero, VSL, headline), so
  *  repeating it in the proof grid read as redundant (owner feedback
- *  2026-08-28). Both pages therefore show the same five OTHER clients as
- *  supporting proof. `pageKey` stays a parameter for future per-page
- *  variation even though it's currently unused. */
+ *  2026-08-28). It DOES show the OTHER launch client's story: /apply2
+ *  (Danny) leads with Baya's card, /apply3 (Baya) leads with Danny's —
+ *  someone else's result, not a repeat (owner feedback 2026-08-31, reversing
+ *  the brief self-exclusion further up in this file's history that had
+ *  dropped both). */
 export function vslCardsFor(pageKey) {
-  const order = ["sonia", "lucas", "jessica", "alexi", "daniel"];
+  const other = pageKey === "danny" ? "baya" : "danny";
+  const order = [other, "sonia", "lucas", "jessica", "alexi", "daniel"];
   return order.map((k) => vslCaseStudies.find((c) => c.key === k)).filter(Boolean);
 }
 
