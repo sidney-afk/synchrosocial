@@ -1,0 +1,189 @@
+---
+/* ===========================================================================
+   /application-status — the page a disqualified applicant lands on.
+
+   iClosed calendars support a per-event "disqualification redirect" URL,
+   configured in the iClosed dashboard (the public API is read-only for event
+   config, so that half of the wiring happens outside this repo — see
+   docs/ECOSYSTEM_MAP.md and docs/booking-recovery/README.md §"Confirmation-
+   page + disqualification settings"). This page is a candidate target for
+   that setting on the social-media-consultation calendar used by /apply,
+   /apply2 and /apply3. It is currently NOT wired up anywhere — the
+   calendar's disqualification redirect URL is empty today (per
+   booking-recovery/README.md), so nothing links here yet.
+
+   iClosed's disqualification redirect appends the contact's PII to the URL
+   (?iclosedEmail=&iclosedPhone=&iclosedName=). docs/booking-recovery/README.md
+   documents a deliberate decision NOT to read that data — it belongs to the
+   one cohort that must never be chased, since they were filtered out on
+   purpose. This page follows that decision: it does not read, log, or
+   forward any query string.
+
+   Named to be discreet if a visitor glances at the URL bar (never
+   "disqualified" or similar), reusing the pattern candidate-facing ATS
+   portals use. Same visual system as the VSL pages (src/styles/vsl.css) —
+   logo, eyebrow, headline, body copy — but deliberately WITHOUT their CTA
+   button. A big "Apply Now" purple button under a decline message would be
+   tone-deaf; the copy itself already tells the visitor what to do if their
+   situation changes.
+
+   No metaEvent: iClosed's own native Meta integration already fires the
+   capitalized `Disqualified` event browser+server when this path is used
+   (see docs/meta-ads/README.md §4). Adding a custom event here would
+   duplicate that signal — the exact mistake the removed
+   iclosed_potential/_qualified/_disqualified custom events made before they
+   were pulled 2026-08-17.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+import "../styles/vsl.css";
+---
+
+<Layout
+  title="Your Application — Synchro Social"
+  description="An update on your Synchro Social application."
+  bodyClass="vsl"
+>
+  <main class="as-page">
+    <div class="as-wrap">
+      <div class="as-brand">
+        <img src="/images/logo.png" alt="Synchro Social" width="52" height="52" />
+      </div>
+
+      <div class="as-eyebrow">Application Update</div>
+
+      <h1 class="as-headline">Thank You For Applying</h1>
+
+      <div class="as-body">
+        <p>
+          Thank you for applying. Based on your responses, we don't think we're the right fit
+          for each other right now.
+        </p>
+        <p>
+          We work with established professionals who are ready to invest $2,000+ per month
+          into their content and social growth.
+        </p>
+        <p>
+          If your situation changes, please reach out again. We'd love to work with you when
+          the timing is right.
+        </p>
+      </div>
+
+      <a class="as-home-link" href="/">Return to homepage</a>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .as-page {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--vsl-black);
+  }
+
+  .as-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 56px 24px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .as-brand {
+    margin-bottom: 40px;
+  }
+  .as-brand img {
+    width: 52px;
+    height: 52px;
+    display: block;
+  }
+
+  .as-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin: 0 auto 18px;
+    padding: 0 12px;
+  }
+
+  .as-headline {
+    font-size: clamp(26px, 4.4vw, 38px);
+    font-weight: 600;
+    line-height: 1.16;
+    letter-spacing: -0.02em;
+    margin: 0 auto 26px;
+    color: var(--vsl-ink);
+  }
+
+  .as-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .as-body p {
+    margin: 0;
+    font-size: clamp(15.5px, 1.7vw, 17px);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--vsl-ink-dim);
+  }
+
+  .as-home-link {
+    font-family: var(--vsl-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--vsl-ink-dim);
+    text-decoration: underline;
+    text-decoration-color: var(--vsl-border);
+    text-underline-offset: 3px;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+
+  .as-home-link:hover {
+    color: var(--vsl-ink);
+    text-decoration-color: var(--vsl-p);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .as-brand,
+    .as-eyebrow,
+    .as-headline,
+    .as-body,
+    .as-home-link {
+      transform: translateY(8px);
+      animation: asRise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+    .as-brand { animation-delay: 0s; }
+    .as-eyebrow { animation-delay: 0.03s; }
+    .as-headline { animation-delay: 0.06s; }
+    .as-body { animation-delay: 0.09s; }
+    .as-home-link { animation-delay: 0.12s; }
+  }
+
+  @keyframes asRise {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .as-wrap { padding: 40px 18px 52px; }
+    .as-brand { margin-bottom: 28px; }
+    .as-brand img { width: 42px; height: 42px; }
+    .as-eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 14px; }
+    .as-headline { font-size: clamp(24px, 7.4vw, 30px); margin-bottom: 20px; }
+    .as-body { gap: 14px; margin-bottom: 32px; }
+  }
+</style>

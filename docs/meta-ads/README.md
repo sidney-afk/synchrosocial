@@ -466,6 +466,23 @@ both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
 
+- **2026-08-31 (`/application-status` — a disqualification-redirect candidate page)** —
+  Added a static page matching the VSL pages' visual system, carrying the
+  owner's decline copy for an applicant iClosed disqualifies. It is a
+  candidate target for a calendar's disqualification redirect URL (configured
+  per-event in the iClosed dashboard, not in this repo) but is **NOT wired up
+  yet** — every calendar's disqualification redirect URL is empty today (see
+  `docs/booking-recovery/README.md`). No `metaEvent` on this page: iClosed's
+  own native Meta integration already fires the capitalized `Disqualified`
+  event browser+server on this path, so a custom event here would duplicate
+  it — the same mistake the removed `iclosed_potential`/`_qualified`/
+  `_disqualified` custom events made before they were pulled 2026-08-17 (§4).
+  The page also does not read the PII iClosed appends to the disqualification
+  redirect (`iclosedEmail`/`iclosedPhone`/`iclosedName`), per the existing
+  decision in `docs/booking-recovery/README.md`'s "one postMessage that does
+  carry PII" section — verified by loading the page with those params set and
+  confirming none of the values render anywhere on it.
+
 - **2026-08-28 (VSL pages renamed `/apply2` + `/apply3`; copy and layout round 2)** —
   Owner feedback pass on the VSL funnel. **URL change: `/danny_vsl` → `/apply2`
   (Danny) and `/baya_vsl` → `/apply3` (Baya).** Both had already gone out on
