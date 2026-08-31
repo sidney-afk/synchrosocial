@@ -8,7 +8,7 @@
      hero (eyebrow / headline / subheadline / VSL)
      -> apply CTA  (opens the iClosed booking popup)
      -> proof tiles
-     -> Real Results (6 cards)
+     -> Real Results (5 cards — neither page's OWN client, see vslCardsFor)
      -> How It Works  (-> See More Success Stories, new tab)
      -> FAQ
      -> apply CTA
@@ -23,7 +23,8 @@ import VslBookingModal from "./VslBookingModal.astro";
 import { vslCardsFor } from "../data/vslCaseStudies.js";
 
 interface Props {
-  /** "danny" | "baya" — picks the card order (the other of the pair leads). */
+  /** "danny" | "baya" — currently unused by vslCardsFor (both pages show the
+   *  same five non-self cards), kept for future per-page variation. */
   pageKey: string;
   headlineLead: string;
   headlineAccent: string;

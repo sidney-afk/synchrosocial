@@ -107,12 +107,14 @@ export const vslCaseStudies = [
   },
 ];
 
-/** Cards for a VSL page. The page's OWN client leads — /apply2 opens with
- *  Danny, /apply3 with Baya. (An earlier build had the pair swapped; corrected
- *  on owner feedback 2026-08-28.) The rest follow the brief's order. */
+/** Cards for a VSL page. Neither page shows its OWN client's case study —
+ *  the whole page already IS that client's story (hero, VSL, headline), so
+ *  repeating it in the proof grid read as redundant (owner feedback
+ *  2026-08-28). Both pages therefore show the same five OTHER clients as
+ *  supporting proof. `pageKey` stays a parameter for future per-page
+ *  variation even though it's currently unused. */
 export function vslCardsFor(pageKey) {
-  const lead = pageKey === "danny" ? "danny" : "baya";
-  const order = [lead, "sonia", "lucas", "jessica", "alexi", "daniel"];
+  const order = ["sonia", "lucas", "jessica", "alexi", "daniel"];
   return order.map((k) => vslCaseStudies.find((c) => c.key === k)).filter(Boolean);
 }
 
