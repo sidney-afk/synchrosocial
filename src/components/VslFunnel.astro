@@ -3,15 +3,18 @@
    VslFunnel — the whole VSL page body, shared by /apply2 and /apply3.
 
    Section order follows the reference funnel plus the two additions the owner
-   asked for (the proof tiles under the CTA, and a closing CTA after the FAQ):
+   asked for (the proof tiles under the calendar, and a closing CTA after the FAQ):
 
      hero (eyebrow / headline / subheadline / VSL)
-     -> apply CTA  (opens the iClosed booking popup)
+     -> booking calendar, inline (id="book" — no popup, no button; see below)
      -> proof tiles
      -> Real Results (6 cards — the OTHER launch client leads, never OWN, see vslCardsFor)
      -> How It Works  (-> See More Success Stories, new tab)
      -> FAQ
-     -> apply CTA
+     -> closing CTA, an anchor link back up to #book (owner feedback 2026-08-31:
+        no popup anywhere on these pages — the calendar sits inline in the hero,
+        matching /apply's own "video, then the calendar right there" pattern,
+        and every CTA on the page just scrolls up to it)
 =========================================================================== */
 import VslHero from "./VslHero.astro";
 import VslButton from "./VslButton.astro";
@@ -19,7 +22,7 @@ import VslProofBar from "./VslProofBar.astro";
 import VslRealResults from "./VslRealResults.astro";
 import VslHowItWorks from "./VslHowItWorks.astro";
 import VslFaq from "./VslFaq.astro";
-import VslBookingModal from "./VslBookingModal.astro";
+import IClosedEmbed from "./IClosedEmbed.astro";
 import { vslCardsFor } from "../data/vslCaseStudies.js";
 
 interface Props {
@@ -55,8 +58,27 @@ const ctaLabel = "Apply for Consultation Call";
   subheadline={subheadline}
   wistiaId={wistiaId}
 >
-  <div class="vslf__cta vslf__cta--hero">
-    <VslButton label={ctaLabel} book />
+  <div id="book" class="vslf__book">
+    <IClosedEmbed
+      linkPrefix="synchrosocial/social-media-consultation"
+      title="Social Media Consultation"
+      height="620px"
+      card={false}
+      resize={false}
+    />
+
+    <!-- A2P 10DLC consent disclosure — carriers require message type,
+         frequency, rates and opt-out adjacent to the control where the phone
+         number is given. Mirrors /apply. See
+         docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+    <p class="vslf__book-legal">
+      By booking a call you agree to receive text messages from Synchro Social about your
+      call. Message frequency varies, typically one message per booking. Message and data
+      rates may apply. Reply STOP to opt out, HELP for help. See our
+      <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      and
+      <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+    </p>
   </div>
 
   <div class="vslf__proof">
@@ -71,18 +93,36 @@ const ctaLabel = "Apply for Consultation Call";
 <VslFaq />
 
 <section class="vslf__closing">
-  <VslButton label={ctaLabel} book />
+  <VslButton label={ctaLabel} href="#book" />
   <p class="vslf__closing-note">
     Applications are reviewed by our team — the call is a real conversation, not a pitch.
   </p>
 </section>
 
-<VslBookingModal />
-
 <style>
-  .vslf__cta--hero {
+  .vslf__book {
     width: 100%;
-    margin-top: 40px;
+    max-width: 760px;
+    margin: 40px auto 0;
+  }
+
+  .vslf__book-legal {
+    max-width: 620px;
+    margin: 14px auto 0;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--vsl-ink-faint);
+  }
+
+  .vslf__book-legal a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .vslf__book-legal a:hover {
+    color: var(--vsl-ink-dim);
   }
 
   .vslf__proof {
@@ -106,7 +146,7 @@ const ctaLabel = "Apply for Consultation Call";
   }
 
   @media (max-width: 600px) {
-    .vslf__cta--hero {
+    .vslf__book {
       margin-top: 32px;
     }
     .vslf__proof {
