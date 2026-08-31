@@ -22,6 +22,9 @@ interface Props {
   headlineAccent: string;
   subheadline: string;
   watchTag?: string;
+  /** Wistia hashed_id for the real VSL. Omit to keep the placeholder — used
+   *  by pages whose video hasn't been delivered yet. */
+  wistiaId?: string;
 }
 const {
   eyebrow = "For Coaches & Experts",
@@ -29,6 +32,7 @@ const {
   headlineAccent,
   subheadline,
   watchTag = "Watch The Breakdown",
+  wistiaId,
 } = Astro.props;
 ---
 
@@ -50,15 +54,34 @@ const {
     <div class="vslh__vsl-wrap">
       <div class="vslh__vsl">
         <div class="vslh__frame">
-          <!-- PLACEHOLDER — swap this block for the real VSL player embed.
-               Keep the 16:9 .vslh__frame wrapper so the surrounding geometry
-               (radius, border, shadow, watch tag) stays put. -->
-          <div class="vslh__placeholder">
-            <span class="vslh__play" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z"></path></svg>
-            </span>
-            <p class="vslh__placeholder-label">VSL placeholder</p>
-          </div>
+          {
+            wistiaId ? (
+              /* Wistia's own player renders its own thumbnail + play button —
+                 no local poster asset to maintain, and it mounts directly
+                 in place rather than behind an extra click, matching how
+                 the reference funnel's own hero mounted its Vidalytics
+                 player (id="vidalytics_embed_..." straight in the frame,
+                 no click-through gate). */
+              <iframe
+                class="vslh__wistia-iframe"
+                title={watchTag}
+                src={`https://fast.wistia.net/embed/iframe/${wistiaId}?seo=false&videoFoam=false`}
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="eager"
+              />
+            ) : (
+              /* PLACEHOLDER — pass wistiaId to swap this for the real VSL.
+                 Keep the 16:9 .vslh__frame wrapper so the surrounding
+                 geometry (radius, border, shadow, watch tag) stays put. */
+              <div class="vslh__placeholder">
+                <span class="vslh__play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg>
+                </span>
+                <p class="vslh__placeholder-label">VSL placeholder</p>
+              </div>
+            )
+          }
         </div>
       </div>
       <div class="vslh__watch-tag" aria-hidden="true">
@@ -173,6 +196,15 @@ const {
       height: 0;
       padding-top: 56.25%;
     }
+  }
+
+  .vslh__wistia-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
   }
 
   .vslh__placeholder {

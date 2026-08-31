@@ -31,6 +31,9 @@ interface Props {
   subheadline: string;
   resultsHeading?: string;
   resultsIntro?: string;
+  /** Wistia hashed_id for this page's VSL. Omit to keep the hero's
+   *  placeholder — see VslHero. */
+  wistiaId?: string;
 }
 const {
   pageKey,
@@ -39,6 +42,7 @@ const {
   subheadline,
   resultsHeading = "What The System Built For Them",
   resultsIntro = "Every client below came to us with real expertise and a message that already worked in the room. Here's what changed once the content, the reach and the lead flow stopped running through them personally.",
+  wistiaId,
 } = Astro.props;
 
 const cards = vslCardsFor(pageKey);
@@ -49,6 +53,7 @@ const ctaLabel = "Apply for Consultation Call";
   headlineLead={headlineLead}
   headlineAccent={headlineAccent}
   subheadline={subheadline}
+  wistiaId={wistiaId}
 >
   <div class="vslf__cta vslf__cta--hero">
     <VslButton label={ctaLabel} book />
