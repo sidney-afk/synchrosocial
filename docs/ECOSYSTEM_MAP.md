@@ -147,6 +147,7 @@ popup. It is not an entry point — nothing points ads at it.
 ## Notes
 
 - Confirmation-page + disqualification settings are configured per event in the **iClosed dashboard** (the public API is read-only for event config), not in this repo.
+  `/application-status` (added 2026-08-31) is a candidate target for a calendar's disqualification redirect URL — same visual system as the VSL pages, the owner's decline copy, no CTA back into booking. **Not wired up yet**: every calendar's disqualification redirect URL is still empty (see `docs/booking-recovery/README.md`), so nothing links here until Sidney sets it in the iClosed dashboard. The page deliberately does not read the PII iClosed appends to that redirect (`iclosedEmail`/`iclosedPhone`/`iclosedName`) — see that doc's "one postMessage that does carry PII" section for why.
 - `/old` is a kept legacy homepage; its booking uses `demo` like the other warm entry points.
 - **Two more booking surfaces not in the diagram above:**
   - The floating **iClosed LIFT widget** (`IClosedLiftWidget.astro`, widget id
