@@ -4,9 +4,12 @@ import ApplyButton from "./ApplyButton.astro";
 
 interface Props {
   ctaLabel?: string;
+  /** Suppresses the built-in "Apply Now" CTA — used on /thank-you, which has
+   *  no #book anchor and no reason to re-prompt an already-booked lead. */
+  hideCta?: boolean;
 }
 
-const { ctaLabel = "Apply Now" } = Astro.props;
+const { ctaLabel = "Apply Now", hideCta = false } = Astro.props;
 ---
 
 <section class="apply-testimonials" aria-labelledby="apply-testimonials-title">
@@ -36,10 +39,14 @@ const { ctaLabel = "Apply Now" } = Astro.props;
       }
     </div>
 
-    <div class="apply-testimonials__cta">
-      <ApplyButton href="#book" label={ctaLabel} class="w-full" />
-      <p>Get Started In Less Than 60 Seconds &bull; Cancel Anytime</p>
-    </div>
+    {
+      !hideCta && (
+        <div class="apply-testimonials__cta">
+          <ApplyButton href="#book" label={ctaLabel} class="w-full" />
+          <p>Get Started In Less Than 60 Seconds &bull; Cancel Anytime</p>
+        </div>
+      )
+    }
   </div>
 </section>
 
