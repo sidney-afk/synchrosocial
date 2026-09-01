@@ -164,8 +164,11 @@ const {
     font-weight: 400;
     line-height: 1.55;
     color: var(--vsl-ink-dim);
+    /* No extra width squeeze beyond max-width — the headline only has
+       max-width + the wrap's own side padding, so an added width:94% here
+       inset the subtitle further than the headline (owner feedback
+       2026-09-02): it should reach the same left/right edges. */
     max-width: 82ch;
-    width: 94%;
     margin: 0 auto 48px;
   }
 
@@ -313,8 +316,10 @@ const {
     }
     .vslh__sub {
       font-size: 15.5px;
-      max-width: 30ch;
-      width: 88%;
+      /* No max-width/width cap here — same reasoning as the desktop rule
+         above: at this width the headline is bound only by the wrap's own
+         side padding, not its own max-width, so the subtitle needs the same
+         "no cap of its own" treatment to reach the same edges. */
       line-height: 1.55;
       margin-bottom: 36px;
     }
@@ -325,6 +330,5 @@ const {
 
   @media (max-width: 380px) {
     .vslh__headline { font-size: 25px; }
-    .vslh__sub { max-width: 27ch; }
   }
 </style>
