@@ -220,22 +220,10 @@ const year = new Date().getFullYear();
         In Your Decision-Making Process.
       </h2>
 
-      <div class="mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:mt-8 max-md:grid-cols-1 max-md:gap-y-8">
+      <div class="qa-video-grid mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:mt-8 max-md:grid-cols-1 max-md:gap-y-8">
         {
-          qaVideos.map((v, i) => (
-            <div
-              class:list={[
-                "flex flex-col items-center gap-3",
-                {
-                  // An odd video count leaves the last card alone in its row,
-                  // hugging the left column. Span both tracks and centre it
-                  // at one column's width so it reads as deliberate — same
-                  // technique VslRealResults uses for its own odd-card grid.
-                  "col-span-2 mx-auto max-w-[calc(50%-16px)] max-md:col-span-1 max-md:max-w-none":
-                    i === qaVideos.length - 1 && qaVideos.length % 2 === 1,
-                },
-              ]}
-            >
+          qaVideos.map((v) => (
+            <div class="flex flex-col items-center gap-3">
               <VideoEmbed provider="wistia" id={v.id} title={v.title} frame={false} class="rounded-[5px]" />
               <h3 class="text-center text-2xl font-bold leading-none text-black max-md:text-lg">
                 {v.title}
@@ -385,3 +373,25 @@ const year = new Date().getFullYear();
     </div>
   </footer>
 </Layout>
+
+<style>
+  /* An odd Q&A video count leaves the last card alone in its row, hugging
+     the left column. Span it across both grid tracks and centre it at one
+     column's width so it reads as deliberate — same technique
+     VslRealResults.astro uses for its own odd-card grid. A Tailwind
+     max-w-[calc(50%-16px)] class doesn't work here: CSS calc() requires
+     whitespace around +/- operators, so the bracket value is invalid and
+     silently dropped by the browser — a real rule avoids that trap. */
+  .qa-video-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 16px);
+  }
+
+  @media (max-width: 767px) {
+    .qa-video-grid > :last-child:nth-child(odd) {
+      grid-column: auto;
+      width: 100%;
+    }
+  }
+</style>
