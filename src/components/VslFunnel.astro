@@ -2,26 +2,26 @@
 /* ===========================================================================
    VslFunnel — the whole VSL page body, shared by /apply2 and /apply3.
 
-   Section order follows the reference funnel plus the two additions the owner
-   asked for (the proof tiles under the calendar, and a closing CTA after the FAQ):
+   Section order (owner feedback 2026-09-01 — no FAQ, and the two CTAs swap
+   places from the earlier layout):
 
      hero (eyebrow / headline / subheadline / VSL)
      -> booking calendar, inline (id="book" — no popup, no button; see below)
      -> proof tiles
-     -> Real Results (6 cards — the OTHER launch client leads, never OWN, see vslCardsFor)
-     -> How It Works  (-> See More Success Stories, new tab)
-     -> FAQ
-     -> closing CTA, an anchor link back up to #book (owner feedback 2026-08-31:
-        no popup anywhere on these pages — the calendar sits inline in the hero,
-        matching /apply's own "video, then the calendar right there" pattern,
-        and every CTA on the page just scrolls up to it)
+     -> Real Results (3 cards — the OTHER launch client leads, never OWN, see vslCardsFor)
+     -> "See More Success Stories", new tab — right after the disclaimer line,
+        before How It Works (used to sit at the end of How It Works instead)
+     -> How It Works, now ending in "Apply for Consultation Call" (used to be
+        the very last section's closing CTA — moved up into How It Works' own
+        CTA slot, an anchor back up to #book; no popup anywhere on these pages,
+        the calendar sits inline in the hero, matching /apply's own "video,
+        then the calendar right there" pattern)
 =========================================================================== */
 import VslHero from "./VslHero.astro";
 import VslButton from "./VslButton.astro";
 import VslProofBar from "./VslProofBar.astro";
 import VslRealResults from "./VslRealResults.astro";
 import VslHowItWorks from "./VslHowItWorks.astro";
-import VslFaq from "./VslFaq.astro";
 import IClosedEmbed from "./IClosedEmbed.astro";
 import { vslCardsFor } from "../data/vslCaseStudies.js";
 
@@ -88,16 +88,18 @@ const ctaLabel = "Apply for Consultation Call";
 
 <VslRealResults heading={resultsHeading} intro={resultsIntro} cards={cards} />
 
-<VslHowItWorks />
+<div class="vslf__success-cta">
+  <VslButton
+    label="See More Success Stories"
+    href="/success-stories"
+    variant="pill"
+    icon
+    target="_blank"
+    rel="noopener"
+  />
+</div>
 
-<VslFaq />
-
-<section class="vslf__closing">
-  <VslButton label={ctaLabel} href="#book" />
-  <p class="vslf__closing-note">
-    Applications are reviewed by our team — the call is a real conversation, not a pitch.
-  </p>
-</section>
+<VslHowItWorks ctaLabel={ctaLabel} ctaHref="#book" />
 
 <style>
   .vslf__book {
@@ -130,19 +132,14 @@ const ctaLabel = "Apply for Consultation Call";
     margin-top: 44px;
   }
 
-  .vslf__closing {
+  /* Sits right after Real Results' own disclaimer line (that section already
+     carries 90px of bottom padding, so no extra top spacing needed here) and
+     before How It Works — same black background on both sides, no seam. */
+  .vslf__success-cta {
     width: 100%;
-    padding: 0 20px 96px;
+    padding: 0 20px 56px;
     background: var(--vsl-black);
     text-align: center;
-  }
-
-  .vslf__closing-note {
-    max-width: 480px;
-    margin: 18px auto 0;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--vsl-ink-faint);
   }
 
   @media (max-width: 600px) {
@@ -152,8 +149,8 @@ const ctaLabel = "Apply for Consultation Call";
     .vslf__proof {
       margin-top: 36px;
     }
-    .vslf__closing {
-      padding: 0 14px 64px;
+    .vslf__success-cta {
+      padding: 0 14px 40px;
     }
   }
 </style>

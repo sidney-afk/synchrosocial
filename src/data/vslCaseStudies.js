@@ -117,7 +117,9 @@ export const vslCaseStudies = [
  *  dropped both). */
 export function vslCardsFor(pageKey) {
   const other = pageKey === "danny" ? "baya" : "danny";
-  const order = [other, "sonia", "lucas", "jessica", "alexi", "daniel"];
+  // Lucas Salame, Alexi Panos and Daniel Raphael dropped from this grid per
+  // owner request 2026-09-01 — still appear on /success-stories (allVslCaseStudies).
+  const order = [other, "sonia", "jessica"];
   return order.map((k) => vslCaseStudies.find((c) => c.key === k)).filter(Boolean);
 }
 

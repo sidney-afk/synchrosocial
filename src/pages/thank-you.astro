@@ -1,22 +1,37 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SiteNav from "../components/SiteNav.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
 import CaseStudyVideo from "../components/CaseStudyVideo.astro";
 import PlatformIcon from "../components/PlatformIcon.astro";
-import TestimonialCarousel from "../components/TestimonialCarousel.astro";
 import CampaignProofGrid from "../components/CampaignProofGrid.astro";
+import ApplyTestimonials from "../components/ApplyTestimonials.astro";
+import AudienceSkyrocket from "../components/AudienceSkyrocket.astro";
 import { caseStudies, slug } from "../data/caseStudies.js";
 
 /* ===========================================================================
-   THANK-YOU / "Your call is not confirmed" page.
+   THANK-YOU page — confirm-your-call flow after booking.
 
-   Rebuilt 1:1 to the reference funnel's thank-you page — every font, size,
-   weight, line-height, color, spacing and layout measured in a headless
-   browser off the rendered reference and reproduced exactly here, re-skinned
-   in Synchro purple (the reference's blue → #8331e8; geometry/typography are
-   identical).
+   Originally rebuilt 1:1 to the reference funnel's thank-you page (every
+   font, size, weight, line-height, color, spacing and layout measured in a
+   headless browser and reproduced exactly, re-skinned in Synchro purple).
+   Steps 1–4 below are still that build, unchanged.
+
+   Owner feedback 2026-09-01: only steps 1–4 are actual "STEP N" checklist
+   items now (watch the prep video, accept the calendar invite, the pre-call
+   checklist, the Q&A videos). Everything after that is no longer labeled as
+   a step — it's the same proof content /apply itself uses post-booking-form,
+   reused verbatim: CampaignProofGrid ("Real Campaigns. Real Growth."),
+   ApplyTestimonials ("Here's What Other Customers Are Saying"), the case
+   studies section (copied from apply.astro, since it isn't a shared
+   component), then AudienceSkyrocket ("Watch Your Audience Skyrocket" +
+   "More Proof Behind The Growth"). Both reused components get `hideCta` —
+   their built-in "Apply Now" CTAs point at an `#book` anchor that doesn't
+   exist on this page, and re-prompting someone who already booked to apply
+   again doesn't make sense here anyway.
+
+   Header (SiteNav) removed — this is a focused post-booking flow, not a
+   page visitors should navigate away from.
 
    Type system (measured):
      • InterTight 700 48/48  — h1 + the three section titles (capitalize)
@@ -27,8 +42,6 @@ import { caseStudies, slug } from "../data/caseStudies.js";
    Sections: 80px vertical padding; 1040px content column.
 
    Step 1 (hero) and Step 4 (Q&A) videos are real, self-hosted on Wistia.
-   The Step 5 testimonial videos are still ⟨PLACEHOLDER⟩ — search this file
-   for "PLACEHOLDER".
 =========================================================================== */
 
 // Step 3 — pre-call checklist
@@ -97,7 +110,6 @@ const year = new Date().getFullYear();
     })();
   </script>
 
-  <SiteNav />
   <IClosedLiftWidget />
 
   <!-- ===================== HERO ===================== -->
@@ -109,13 +121,13 @@ const year = new Date().getFullYear();
     <div
       class="relative z-[3] mx-auto flex w-[95%] max-w-[1040px] flex-col items-center pb-[88px] pt-10 text-center max-md:pb-12 max-md:pt-8"
     >
-      <img src="/images/thank-you-page-logo.png" alt="Synchro Social" class="h-[78px] w-auto max-md:h-[64px]" />
+      <img src="/images/thank-you-page-logo.png" alt="Synchro Social" class="h-[39px] w-auto max-md:h-[32px]" />
 
       <h1 class="mt-9 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-6 max-md:text-[27.2px] max-md:leading-[27.2px]">
-        Your Call Is Not Confirmed
+        Let's Lock In Your Call
       </h1>
       <p class="mt-4 text-xl leading-[26px] text-white max-md:mt-3 max-md:max-w-[340px] max-md:text-[16px] max-md:leading-[25.12px]">
-        Make sure to do these 2 steps so you can confirm your call with us
+        Make sure to do these 4 steps so you can confirm your call with us
       </p>
 
       <!-- STEP 1 — filled bar (the reference's solid hero step bar) -->
@@ -210,8 +222,20 @@ const year = new Date().getFullYear();
 
       <div class="mt-12 grid w-full grid-cols-2 gap-x-8 gap-y-10 max-md:mt-8 max-md:grid-cols-1 max-md:gap-y-8">
         {
-          qaVideos.map((v) => (
-            <div class="flex flex-col items-center gap-3">
+          qaVideos.map((v, i) => (
+            <div
+              class:list={[
+                "flex flex-col items-center gap-3",
+                {
+                  // An odd video count leaves the last card alone in its row,
+                  // hugging the left column. Span both tracks and centre it
+                  // at one column's width so it reads as deliberate — same
+                  // technique VslRealResults uses for its own odd-card grid.
+                  "col-span-2 mx-auto max-w-[calc(50%-16px)] max-md:col-span-1 max-md:max-w-none":
+                    i === qaVideos.length - 1 && qaVideos.length % 2 === 1,
+                },
+              ]}
+            >
               <VideoEmbed provider="wistia" id={v.id} title={v.title} frame={false} class="rounded-[5px]" />
               <h3 class="text-center text-2xl font-bold leading-none text-black max-md:text-lg">
                 {v.title}
@@ -223,48 +247,36 @@ const year = new Date().getFullYear();
     </div>
   </section>
 
-  <!-- ===================== STEP 5 — TESTIMONIALS ===================== -->
-  <section class="w-full bg-black py-20 max-md:pb-5 max-md:pt-5">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
-      <span class="step-pill step-pill--dark">
-        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
-        STEP 5
-      </span>
+  <!-- ===================== REAL CAMPAIGNS, REAL GROWTH =====================
+       Not a "step" — same section /apply itself uses, reused as-is. -->
+  <CampaignProofGrid />
 
-      <h2 class="mt-10 font-tight text-5xl font-bold capitalize leading-none text-white max-md:mx-auto max-md:mt-5 max-md:max-w-[332px] max-md:text-[28px]">
-        Here's What Other Customers Are Saying
-      </h2>
-      <p class="mt-3 max-w-[332px] text-xl leading-[31px] text-[#c4c4c4] max-md:text-base">
-        We're happy to keep helping our customers achieve their goals.
-      </p>
+  <!-- ===================== TESTIMONIALS =====================
+       Same component /apply uses ("Here's What Other Customers Are Saying").
+       hideCta: its built-in "Apply Now" button targets an #book anchor this
+       page doesn't have, and there's no reason to re-prompt someone who
+       already booked to apply again. -->
+  <ApplyTestimonials hideCta />
 
-      <TestimonialCarousel
-        class="mt-12 text-left max-md:!mt-6"
-        articleClass="md:!min-h-0"
-        videoClass="w-[250px] max-md:mx-auto max-md:w-[calc(100vw-32px)]"
-        compactMobile
-      />
-    </div>
-  </section>
+  <!-- ===================== CASE STUDIES =====================
+       Copied verbatim from apply.astro (not a shared component) — same
+       markup, same classes, minus its trailing "Book A Consultation Call"
+       CTA for the same reason ApplyTestimonials' is hidden above. -->
+  <section class="w-full bg-white pb-14 pt-20 text-black max-lg:pb-12 max-lg:pt-6 max-md:pt-8">
+    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center gap-[60px] max-lg:gap-[30px]">
+      <div class="flex w-full flex-col items-center gap-4 text-center">
+        <h2 class="font-tight text-5xl font-bold capitalize leading-none text-black max-md:mx-auto max-md:w-[calc(100vw-32px)] max-md:max-w-[398px] max-md:text-[28px]">
+          <strong>Check Out (Just Some) Of Our Case Studies</strong>
+        </h2>
+      </div>
 
-  <!-- ===================== STEP 6 — CASE STUDIES ===================== -->
-  <section class="w-full bg-white py-20 text-black max-md:pb-8 max-md:pt-5">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center">
-      <span class="step-pill">
-        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
-        STEP 6
-      </span>
-      <h2 class="mt-10 text-center font-tight text-5xl font-bold capitalize leading-none text-black max-md:mt-5 max-md:text-[28px]">
-        Check Out (Just Some) Of Our Case Studies.
-      </h2>
-
-      <div class="mt-12 flex w-full flex-col gap-14 max-md:mt-9">
+      <div class="mt-0 flex w-full flex-col gap-12">
         {
           caseStudies.map((cs) => (
             <div class="flex w-full flex-col">
-              <div class="mx-auto mb-10 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4 max-md:mb-3 max-md:border-b-0 max-md:pb-0">
+              <div class="mx-auto mb-4 flex w-full max-w-[61rem] flex-col items-center border-b border-black pb-4">
                 <div class="text-lg font-light leading-[1.3]">SYNCHRO SOCIAL CASE STUDY</div>
-                <h3 class="text-center text-[40px] font-black uppercase leading-[1.3] max-md:text-[2rem]">
+                <h3 class="text-center text-[2.5rem] font-black uppercase leading-[1.3] max-md:text-[2rem]">
                   {cs.name}
                 </h3>
                 <div class="mt-8 self-start text-left text-2xl font-normal leading-[1.3] max-md:hidden">
@@ -272,16 +284,16 @@ const year = new Date().getFullYear();
                 </div>
               </div>
 
-              <div class="mx-auto grid w-full grid-cols-4 items-start gap-4 max-md:flex max-md:flex-col max-md:items-center max-md:gap-7 max-md:text-center">
+              <div class="mx-auto grid w-full max-w-[61rem] grid-cols-3 items-center gap-4 max-md:flex max-md:flex-col max-md:items-center max-md:gap-7 max-md:text-center">
                 {cs.stats.map((s) => (
                   <div class="max-md:order-3 max-md:w-full">
-                    <div class="text-[56px] font-black leading-[1.3] max-lg:text-[3rem]">
+                    <div class="text-[3.5rem] font-black leading-[1.3] max-lg:text-[3rem]">
                       {s.value}
                     </div>
-                    <div class="text-xl font-normal leading-[1.3]">{s.label}</div>
+                    <div class="text-xl font-normal leading-[1.3] max-md:text-base">{s.label}</div>
                   </div>
                 ))}
-                <div class="relative col-start-4 overflow-hidden rounded-[5px] max-md:order-1 max-md:col-start-auto max-md:mx-auto max-md:w-full max-md:max-w-[312px]">
+                <div class="relative overflow-hidden rounded-[5px] max-md:order-1 max-md:mx-auto max-md:w-[80vw] max-md:max-w-none">
                   <div class="flex aspect-square w-full items-center justify-center bg-gradient-to-br from-brand-300 to-brand-600 text-4xl font-bold text-white/90">
                     {cs.name.split(" ").map((w) => w[0]).join("")}
                   </div>
@@ -295,27 +307,27 @@ const year = new Date().getFullYear();
                 <div class="hidden max-md:order-2 max-md:block max-md:w-full max-md:border-b max-md:border-black max-md:pb-6 max-md:text-center max-md:text-[18px] max-md:font-normal max-md:leading-[23.4px]">
                   RESULTS IN {cs.period.toUpperCase()}:
                 </div>
-              </div>
-
-              <div class="mx-auto mt-9 flex w-full items-center gap-4 text-2xl font-normal leading-[20px] max-md:mt-6 max-md:flex-col max-md:justify-center">
-                <span>Platforms:</span>
-                <div class="flex items-center gap-2">
-                  {cs.platforms.map((p) => (
-                    <PlatformIcon name={p} class="h-8 w-8" />
-                  ))}
+                <div class="col-span-3 flex items-center gap-4 text-2xl max-md:order-4 max-md:col-span-1 max-md:mt-4 max-md:flex-col max-md:justify-center">
+                  <span>Platforms:</span>
+                  <div class="flex gap-2">
+                    {cs.platforms.map((p) => (
+                      <PlatformIcon name={p} class="h-8 w-8" />
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div class="mx-auto mt-8 flex w-full flex-col items-center gap-9">
-                <div class="text-center text-[32px] font-black leading-[1.3] max-md:text-2xl">Video examples:</div>
+              <div class="mx-auto mt-8 flex w-full max-w-[61rem] flex-col gap-4">
+                <div class="text-[2rem] font-black leading-[1.3] max-md:text-center max-md:text-2xl">Video examples:</div>
                 <div class="grid w-full grid-cols-3 gap-16 max-lg:gap-8 max-md:grid-cols-1 max-md:gap-8">
                   {cs.videos.map((v) => (
                     <div class="flex w-full flex-col items-center justify-center gap-1">
                       <CaseStudyVideo
                         wistia={v.wistia}
                         poster={v.poster}
+                        mp4={v.mp4}
+                        mp4Poster={v.mp4Poster}
                         title={`${cs.name} reel — ${v.views} views`}
-                        rounded
                       />
                       <div class="text-base font-bold leading-[1.3]">{v.views} views</div>
                     </div>
@@ -329,20 +341,10 @@ const year = new Date().getFullYear();
     </div>
   </section>
 
-  <!-- ===================== STEP 7 — CAMPAIGN PROOF ===================== -->
-  <section class="w-full overflow-hidden bg-[#0c0c0c] pt-20 max-md:pt-5">
-    <div class="mx-auto flex w-[95%] max-w-[1040px] flex-col items-center text-center">
-      <span class="step-pill step-pill--dark">
-        <span class="step-dot"><svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6" /></svg></span>
-        STEP 7
-      </span>
-      <h2 class="mt-10 max-w-[900px] font-tight text-5xl font-bold capitalize leading-none text-white max-md:mt-5 max-md:text-2xl">
-        Check Out More Of What Our Clients Are Saying About Us
-      </h2>
-    </div>
-
-    <CampaignProofGrid />
-  </section>
+  <!-- ===================== WATCH YOUR AUDIENCE SKYROCKET =====================
+       Same component /apply uses — its own "More Proof Behind The Growth"
+       section is built in. hideCta for the same reason as above. -->
+  <AudienceSkyrocket hideCta />
 
   <!-- ===================== FOOTER (dark, 4-column) ===================== -->
   <footer class="w-full border-t border-white/10 bg-black">

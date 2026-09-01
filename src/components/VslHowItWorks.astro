@@ -24,14 +24,21 @@ interface Props {
   sub?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  /** Small reassurance line under the CTA. Pass "" to omit it. */
+  ctaNote?: string;
+  ctaTarget?: string;
+  ctaRel?: string;
 }
 const {
   eyebrow = "How It Works",
   titleLead = "The System Behind",
   titleAccent = "1.2B Views, Organic",
   sub = "Audience research. Content that earns attention. A team that runs the whole thing for you.",
-  ctaLabel = "See More Success Stories",
-  ctaHref = "/success-stories",
+  ctaLabel = "Apply for Consultation Call",
+  ctaHref = "#book",
+  ctaNote = "Applications are reviewed by our team — the call is a real conversation, not a pitch.",
+  ctaTarget,
+  ctaRel,
 } = Astro.props;
 
 const pillars = [
@@ -123,9 +130,10 @@ const pillars = [
         href={ctaHref}
         variant="pill"
         icon
-        target="_blank"
-        rel="noopener"
+        target={ctaTarget}
+        rel={ctaRel}
       />
+      {ctaNote && <p class="vslhiw__cta-note">{ctaNote}</p>}
     </div>
   </section>
 </div>
@@ -395,6 +403,14 @@ const pillars = [
     margin: 56px auto 0;
     text-align: center;
     padding: 0 24px;
+  }
+
+  .vslhiw__cta-note {
+    max-width: 480px;
+    margin: 18px auto 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--vsl-ink-faint);
   }
 
   @media (max-width: 440px) {
