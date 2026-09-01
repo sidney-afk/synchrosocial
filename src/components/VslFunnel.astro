@@ -2,18 +2,19 @@
 /* ===========================================================================
    VslFunnel — the whole VSL page body, shared by /apply2 and /apply3.
 
-   Section order (owner feedback 2026-09-01 — no FAQ, and the two CTAs swap
-   places from the earlier layout):
+   Section order (owner feedback 2026-09-01/02):
 
      hero (eyebrow / headline / subheadline / VSL)
      -> booking calendar, inline (id="book" — no popup, no button; see below)
      -> proof tiles
      -> Real Results (3 cards — the OTHER launch client leads, never OWN, see vslCardsFor)
-     -> "See More Success Stories", new tab — right after the disclaimer line,
-        before How It Works (used to sit at the end of How It Works instead)
-     -> How It Works, now ending in "Apply for Consultation Call" (used to be
-        the very last section's closing CTA — moved up into How It Works' own
-        CTA slot, an anchor back up to #book; no popup anywhere on these pages,
+     -> "Apply for Consultation Call", an anchor back up to #book — right
+        after the disclaimer line, before How It Works. Used to be a "See
+        More Success Stories" link to /success-stories in a new tab; owner
+        asked to drop that destination and make it a second apply CTA
+        instead (2026-09-02), so the page now has two identical buttons.
+     -> How It Works, ending in its own "Apply for Consultation Call" CTA
+        (also an anchor back up to #book; no popup anywhere on these pages —
         the calendar sits inline in the hero, matching /apply's own "video,
         then the calendar right there" pattern)
 =========================================================================== */
@@ -88,15 +89,8 @@ const ctaLabel = "Apply for Consultation Call";
 
 <VslRealResults heading={resultsHeading} intro={resultsIntro} cards={cards} />
 
-<div class="vslf__success-cta">
-  <VslButton
-    label="See More Success Stories"
-    href="/success-stories"
-    variant="pill"
-    icon
-    target="_blank"
-    rel="noopener"
-  />
+<div class="vslf__mid-cta">
+  <VslButton label={ctaLabel} href="#book" variant="pill" icon />
 </div>
 
 <VslHowItWorks ctaLabel={ctaLabel} ctaHref="#book" />
@@ -135,7 +129,7 @@ const ctaLabel = "Apply for Consultation Call";
   /* Sits right after Real Results' own disclaimer line (that section already
      carries 90px of bottom padding, so no extra top spacing needed here) and
      before How It Works — same black background on both sides, no seam. */
-  .vslf__success-cta {
+  .vslf__mid-cta {
     width: 100%;
     padding: 0 20px 56px;
     background: var(--vsl-black);
@@ -149,7 +143,7 @@ const ctaLabel = "Apply for Consultation Call";
     .vslf__proof {
       margin-top: 36px;
     }
-    .vslf__success-cta {
+    .vslf__mid-cta {
       padding: 0 14px 40px;
     }
   }
