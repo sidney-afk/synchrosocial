@@ -8,10 +8,13 @@
    variant="pill"   the reference's .cta-btn: 999px pill, accent gradient,
                     19px/40px padding, 14.5-16.5px bold label, and the pulsing
                     radial glow behind it.
-   variant="outline" a quieter secondary CTA — border only, no fill or glow —
-                    for a CTA that sits beside/above other page furniture
-                    (e.g. VslHero's "skip the video" link) rather than
-                    anchoring a section on its own.
+   variant="outline" a secondary CTA — tinted fill + solid accent border, no
+                    glow — for a CTA that sits beside/above other page
+                    furniture (e.g. VslHero's "skip the video" link) rather
+                    than anchoring a section on its own. Reads clearly as a
+                    button without competing with the "solid"/"pill" primary
+                    CTAs (owner feedback 2026-09-14: first pass was too
+                    discreet).
 
    The reference fills both with gold and sets near-black label text. Purple is
    far darker than gold, so the label flips to white here — the one place the
@@ -172,19 +175,19 @@ const cls = ["vslbtn", `vslbtn--${variant}`, className].filter(Boolean).join(" "
     }
   }
 
-  /* ---------- outline (quiet secondary CTA) ---------- */
+  /* ---------- outline (secondary CTA) ---------- */
   .vslbtn--outline {
-    padding: 13px 26px;
+    padding: 15px 32px;
     border-radius: 999px;
-    background: transparent;
-    border: 1px solid var(--vsl-border);
-    color: var(--vsl-ink-dim);
-    font-size: 14.5px;
+    background: rgba(154, 93, 255, 0.14);
+    border: 1.5px solid var(--vsl-p);
+    color: var(--vsl-ink);
+    font-size: 16px;
     box-shadow: none;
   }
 
   .vslbtn--outline:hover {
-    border-color: var(--vsl-p);
-    color: var(--vsl-ink);
+    background: rgba(154, 93, 255, 0.22);
+    border-color: var(--vsl-p-light);
   }
 </style>
