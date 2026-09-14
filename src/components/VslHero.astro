@@ -15,7 +15,14 @@
    The <slot /> after the VSL is where the page drops its booking calendar
    (see VslFunnel) — no popup, no intermediate button, matching /apply's own
    "video, then the calendar right there" pattern.
+
+   preVideoCta* (optional) drops a quiet secondary CTA between the
+   subheadline and the VSL, for visitors who'd rather not watch — added for
+   /apply2 (owner request 2026-09-14). Omit both props to leave the hero
+   unchanged, as /apply3 still does.
 =========================================================================== */
+import VslButton from "./VslButton.astro";
+
 interface Props {
   eyebrow?: string;
   /** Headline text before the gradient-underlined half. */
@@ -27,6 +34,10 @@ interface Props {
   /** Wistia hashed_id for the real VSL. Omit to keep the placeholder — used
    *  by pages whose video hasn't been delivered yet. */
   wistiaId?: string;
+  /** Label for the optional "skip the video" CTA above the VSL. */
+  preVideoCtaLabel?: string;
+  /** href for the above — e.g. "#book" to jump to the inline booking calendar. */
+  preVideoCtaHref?: string;
 }
 const {
   eyebrow = "For Coaches & Experts",
@@ -35,6 +46,8 @@ const {
   subheadline,
   watchTag = "Watch The Breakdown",
   wistiaId,
+  preVideoCtaLabel,
+  preVideoCtaHref,
 } = Astro.props;
 ---
 
@@ -52,6 +65,14 @@ const {
     </h1>
 
     <p class="vslh__sub">{subheadline}</p>
+
+    {
+      preVideoCtaLabel && preVideoCtaHref && (
+        <div class="vslh__pre-cta">
+          <VslButton label={preVideoCtaLabel} href={preVideoCtaHref} variant="outline" />
+        </div>
+      )
+    }
 
     <div class="vslh__vsl-wrap">
       <div class="vslh__vsl">
@@ -172,6 +193,10 @@ const {
     margin: 0 auto 48px;
   }
 
+  .vslh__pre-cta {
+    margin: 0 auto 32px;
+  }
+
   /* ---------- VSL ---------- */
   .vslh__vsl-wrap {
     position: relative;
@@ -286,6 +311,7 @@ const {
     .vslh__eyebrow,
     .vslh__headline,
     .vslh__sub,
+    .vslh__pre-cta,
     .vslh__vsl-wrap {
       transform: translateY(8px);
       animation: vslhRise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
@@ -294,6 +320,7 @@ const {
     .vslh__eyebrow { animation-delay: 0.03s; }
     .vslh__headline { animation-delay: 0.06s; }
     .vslh__sub { animation-delay: 0.09s; }
+    .vslh__pre-cta { animation-delay: 0.11s; }
     .vslh__vsl-wrap { animation-delay: 0.14s; }
   }
 
