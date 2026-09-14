@@ -11,10 +11,16 @@
    motion, recoloured to Synchro purple. See src/styles/vsl.css for the
    palette mapping and src/components/Vsl*.astro for the sections.
 
-   Headline and subheadline are the owner's approved copy, verbatim from the
-   brief doc. NOTE: the "over 100,000 qualified leads" figure comes from that
-   doc and is not corroborated anywhere in this repo's data files — confirm
-   before this goes to paid traffic.
+   Headline and subheadline are the owner's approved copy (2026-09-14 request).
+   The accent/underline treatment is applied to the Danny Morel attribution
+   clause, matching the pattern on /apply3's own headline. NOTE: the "100,000
+   qualified leads" figure is carried over from the prior copy and is not
+   corroborated anywhere in this repo's data files — confirm before this goes
+   to paid traffic.
+
+   A pre-video CTA sits between the subheadline and the VSL, for visitors who
+   don't want to watch — it anchors to the same inline #book calendar as
+   every other CTA on this page (see VslHero).
 
    VSL: Wistia hashed_id 0penlfi67d ("Danny VSL — Apply Page (VSL 2_V4)",
    8:50, 1920x1080). Sourced from the owner's Frame.io share
@@ -35,9 +41,11 @@ import "../styles/vsl.css";
 >
   <VslFunnel
     pageKey="danny"
-    headlineLead="Apply Today And We'll Install The Same Content Machine"
-    headlineAccent="That Generated Danny Over 3,500,000 Followers, Organically."
-    subheadline="Without increasing your ad spend or wasting more hours on content, we'll build you the same machine that generated him over 100,000 qualified leads."
+    headlineLead="The Real Reason Your Content Isn't Building Your Audience"
+    headlineAccent="(And The One Shift That Fixed It For Danny Morel)"
+    subheadline="He added 3.5 million followers and 100,000 qualified leads without posting more, hiring a bigger team, or spending more time on content. This is the shift that made the difference."
+    preVideoCtaLabel="Rather skip the video? Apply directly — takes 90 seconds."
+    preVideoCtaHref="#book"
     wistiaId="0penlfi67d"
   />
 </Layout>

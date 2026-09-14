@@ -8,6 +8,10 @@
    variant="pill"   the reference's .cta-btn: 999px pill, accent gradient,
                     19px/40px padding, 14.5-16.5px bold label, and the pulsing
                     radial glow behind it.
+   variant="outline" a quieter secondary CTA — border only, no fill or glow —
+                    for a CTA that sits beside/above other page furniture
+                    (e.g. VslHero's "skip the video" link) rather than
+                    anchoring a section on its own.
 
    The reference fills both with gold and sets near-black label text. Purple is
    far darker than gold, so the label flips to white here — the one place the
@@ -19,7 +23,7 @@
 interface Props {
   label: string;
   href?: string;
-  variant?: "solid" | "pill";
+  variant?: "solid" | "pill" | "outline";
   /** Opens the iClosed booking popup on click. */
   book?: boolean;
   target?: string;
@@ -166,5 +170,21 @@ const cls = ["vslbtn", `vslbtn--${variant}`, className].filter(Boolean).join(" "
       padding: 16px 30px;
       font-size: 18px;
     }
+  }
+
+  /* ---------- outline (quiet secondary CTA) ---------- */
+  .vslbtn--outline {
+    padding: 13px 26px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--vsl-border);
+    color: var(--vsl-ink-dim);
+    font-size: 14.5px;
+    box-shadow: none;
+  }
+
+  .vslbtn--outline:hover {
+    border-color: var(--vsl-p);
+    color: var(--vsl-ink);
   }
 </style>

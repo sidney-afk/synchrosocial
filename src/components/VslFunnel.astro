@@ -38,6 +38,10 @@ interface Props {
   /** Wistia hashed_id for this page's VSL. Omit to keep the hero's
    *  placeholder — see VslHero. */
   wistiaId?: string;
+  /** Optional "skip the video" CTA between the subheadline and the VSL —
+   *  see VslHero. Omit both to leave the hero unchanged. */
+  preVideoCtaLabel?: string;
+  preVideoCtaHref?: string;
 }
 const {
   pageKey,
@@ -47,6 +51,8 @@ const {
   resultsHeading = "What The System Built For Them",
   resultsIntro = "Every client below came to us with real expertise and a message that already worked in the room. Here's what changed once the content, the reach and the lead flow stopped running through them personally.",
   wistiaId,
+  preVideoCtaLabel,
+  preVideoCtaHref,
 } = Astro.props;
 
 const cards = vslCardsFor(pageKey);
@@ -58,6 +64,8 @@ const ctaLabel = "Apply for Consultation Call";
   headlineAccent={headlineAccent}
   subheadline={subheadline}
   wistiaId={wistiaId}
+  preVideoCtaLabel={preVideoCtaLabel}
+  preVideoCtaHref={preVideoCtaHref}
 >
   <div id="book" class="vslf__book">
     <IClosedEmbed
