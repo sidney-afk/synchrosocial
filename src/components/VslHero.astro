@@ -64,7 +64,9 @@ const {
       <span class="vslh__accent">{headlineAccent}</span>
     </h1>
 
-    <p class="vslh__sub">{subheadline}</p>
+    <p class:list={["vslh__sub", { "vslh__sub--tight": preVideoCtaLabel && preVideoCtaHref }]}>
+      {subheadline}
+    </p>
 
     {
       preVideoCtaLabel && preVideoCtaHref && (
@@ -191,6 +193,13 @@ const {
        2026-09-02): it should reach the same left/right edges. */
     max-width: 82ch;
     margin: 0 auto 48px;
+  }
+
+  /* When the pre-video CTA follows, its own bottom margin (see
+     .vslh__pre-cta below) becomes the space below it too — so the two
+     gaps around the button match (owner feedback 2026-09-14). */
+  .vslh__sub--tight {
+    margin-bottom: 32px;
   }
 
   .vslh__pre-cta {
@@ -350,6 +359,7 @@ const {
       line-height: 1.55;
       margin-bottom: 36px;
     }
+    .vslh__sub--tight { margin-bottom: 32px; }
     .vslh__watch-tag { top: -12px; left: 14px; font-size: 12px; padding: 8px 15px; }
     .vslh__play { width: 52px; height: 52px; }
     .vslh__play svg { width: 20px; height: 20px; }
