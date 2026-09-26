@@ -6,11 +6,12 @@ import SiteFooter from "../components/SiteFooter.astro";
 interface Props {
   title: string;
   effectiveDate: string;
+  description: string;
 }
-const { title, effectiveDate } = Astro.props;
+const { title, effectiveDate, description } = Astro.props;
 ---
 
-<Layout title={`${title} — Synchro Social`}>
+<Layout title={`${title} — Synchro Social`} description={description}>
   <header class="border-b border-black/5 py-6">
     <Logo tone="brand" href="/" class="mx-auto" />
   </header>

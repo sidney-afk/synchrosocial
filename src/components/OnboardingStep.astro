@@ -26,10 +26,25 @@ const headingColor = isDark ? "text-white" : "text-[#6f1d1d]";
 const captionColor = isDark ? "text-white/45" : "text-coral-700/70";
 const trackDone = isDark ? "bg-brand-400" : "bg-coral-500";
 const trackTodo = isDark ? "bg-white/12" : "bg-coral-200";
+const descriptions = {
+  dark: [
+    "Start your social media onboarding with Synchro Social and see what to expect from your content partnership.",
+    "Complete your social media onboarding form so the team can prepare your content strategy.",
+    "Schedule your first social media strategy session with Synchro Social as part of your onboarding.",
+    "Finish your social media onboarding with final guidance from Synchro Social.",
+  ],
+  light: [
+    "Start your AI Clone onboarding with Synchro Social and see what to expect from your content system.",
+    "Complete your AI Clone onboarding form so the team can prepare your strategy.",
+    "Schedule your AI Clone consultation with Synchro Social as part of your onboarding.",
+    "Finish your AI Clone onboarding with final guidance from Synchro Social.",
+  ],
+};
 ---
 
 <Layout
   title={pageTitle ?? `Step ${step}/4: ${title} — Synchro Social`}
+  description={descriptions[theme][step - 1]}
   bodyClass={bodyClass}
 >
   <main
