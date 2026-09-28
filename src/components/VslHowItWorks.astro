@@ -28,6 +28,8 @@ interface Props {
   ctaNote?: string;
   ctaTarget?: string;
   ctaRel?: string;
+  /** Replaces the default 3-step timeline (added for /apply4). */
+  pillars?: { label?: string; features: { title: string; body: string; final?: boolean }[] }[];
 }
 const {
   eyebrow = "How It Works",
@@ -39,9 +41,10 @@ const {
   ctaNote = "Applications are reviewed by our team — the call is a real conversation, not a pitch.",
   ctaTarget,
   ctaRel,
+  pillars: pillarsProp,
 } = Astro.props;
 
-const pillars = [
+const pillars = pillarsProp ?? [
   {
     label: "Step 1 — Generate Traffic",
     features: [
@@ -94,8 +97,8 @@ const pillars = [
   <section class="vslhiw" id="how-it-works">
     <div class="vslhiw__eyebrow">{eyebrow}</div>
     <h2 class="vslhiw__title">
-      {titleLead}<br />
-      <span class="vslhiw__accent">{titleAccent}</span>
+      {titleLead}
+      {titleAccent && (<><br /><span class="vslhiw__accent">{titleAccent}</span></>)}
     </h2>
     <p class="vslhiw__sub">{sub}</p>
 
@@ -105,9 +108,11 @@ const pillars = [
       {
         pillars.map((p) => (
           <>
-            <div class="vslhiw__pillar">
-              <span class="vslhiw__pillar-label">{p.label}</span>
-            </div>
+            {p.label && (
+              <div class="vslhiw__pillar">
+                <span class="vslhiw__pillar-label">{p.label}</span>
+              </div>
+            )}
             {p.features.map((f) => (
               <div class={`vslhiw__feature${f.final ? " is-final" : ""}`} data-feature>
                 <div class="vslhiw__check">
