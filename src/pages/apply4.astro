@@ -332,11 +332,12 @@ const faqs = [
         ["iclosedName", v.name],
         ["iclosedEmail", v.email],
         ["iclosedPhone", v.phone],
-        // Identifiers set on the iClosed event's questions.
+        // The iClosed questions' own Identifiers (auto-generated; shared with
+        // the "For The Apply Page" event, so do not rename them in iClosed).
         ["specialty", v.specialty],
-        ["instagram", v.instagram],
-        ["investment", v.investment],
-        ["start-date", v.start],
+        ["instagram-handle-eg-yourhandle", v.instagram],
+        ["how-much-are-you-ready-to-invest-per-month", v.investment],
+        ["when-do-you-want-to-start", v.start],
       ];
       // Carry ad attribution through, as IClosedCapture does on other pages.
       new URLSearchParams(location.search).forEach(function (val, key) {
