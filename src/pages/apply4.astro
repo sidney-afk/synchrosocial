@@ -633,7 +633,17 @@ const faqs = [
   @media (min-width: 721px) {
     /* Guarantee line fits on two lines. */
     .dm .guarantee { max-width: 62ch; }
-    /* Lily's proof card: same content, larger on desktop. */
+    /* More room above "How it works" so it clears the section edge. */
+    .dm .how {
+      padding-top: 80px;
+      /* Centre the glow inside the section so it fades in instead of
+         starting as a hard line at the section's top edge. */
+      background: radial-gradient(closest-side at 50% 50%, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0));
+    }
+  }
+  @media (min-width: 960px) {
+    /* Lily's proof card: same content, larger once the page is wide
+       enough to hold the fixed columns (below ~960px they'd crush the text). */
     .dm .proof-card {
       max-width: 860px;
       grid-template-columns: 300px 170px 1fr;
@@ -647,13 +657,6 @@ const faqs = [
     .dm .proof-text .who { font-size: 13px; }
     .dm .proof-text .big { font-size: 26px; line-height: 1.25; }
     .dm .proof-text p { font-size: 16px; }
-    /* More room above "How it works" so it clears the section edge. */
-    .dm .how {
-      padding-top: 80px;
-      /* Centre the glow inside the section so it fades in instead of
-         starting as a hard line at the section's top edge. */
-      background: radial-gradient(closest-side at 50% 50%, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0));
-    }
   }
   @media (prefers-reduced-motion: no-preference) {
     .dm .btn { transition: transform 0.15s ease; }
