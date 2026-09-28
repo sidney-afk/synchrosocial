@@ -144,14 +144,17 @@ const faqs = [
   <!-- 2. Lily proof card: VslRealResults card shell -->
   <section class="a4-lily" aria-label="Client result">
     <div class="a4-card">
-      <img
-        class="a4-lily__img"
-        src="/images/apply4/lily-baker-growth.webp"
-        alt="Dr. Lily Baker's Instagram profile at 151K followers, with a growth chart from 90K to 150K followers in under 90 days and 12M views"
-        width="900"
-        height="890"
-        decoding="async"
+      <div class="a4-lily__shots">
+        <img
+          class="a4-lily__img"
+          src="/images/apply4/lily-baker-growth.webp"
+          alt="Dr. Lily Baker's Instagram profile at 151K followers, with a growth chart from 90K to 150K followers in under 90 days and 12M views"
+          width="900"
+          height="890"
+          decoding="async"
       />
+        <div class="a4-shot"><span class="a4-todo">Reel insights screenshot<br />17,000+ followers from one reel</span></div>
+      </div>
       <div class="a4-lily__title">{lily.name}</div>
       <div class="a4-lily__stat">{lily.stat}</div>
       <p class="a4-lily__story">{lily.story}</p>
@@ -418,15 +421,29 @@ const faqs = [
     color: rgba(244, 241, 250, 0.8);
     margin: 0;
   }
-  /* Square proof image: full width on phones, capped on desktop so it
-     doesn't tower over the card. Never cropped, so it reads the same on both. */
+  /* Profile screenshot and reel insights side by side on every width
+     (brief). The profile image is near-square and never cropped; the
+     insights slot matches its shape. */
+  .a4-lily__shots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
   .a4-lily__img {
     display: block;
     width: 100%;
-    max-width: 520px;
     height: auto;
-    margin: 0 auto;
     border-radius: 12px;
+    border: 1px solid var(--vsl-card-border);
+  }
+  .a4-shot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: #0a0a0a;
     border: 1px solid var(--vsl-card-border);
   }
 
@@ -546,6 +563,8 @@ const faqs = [
     .a4h--end .a4h__headline { font-size: clamp(22px, 6.5vw, 28px); }
     .a4-lily { padding: 0 14px; }
     .a4-lily .a4-card { padding: 20px 18px; border-radius: 14px; }
+    .a4-lily__shots { gap: 10px; }
+    .a4-todo { font-size: 11px; }
     .a4-lily__stat { font-size: 22px; }
     .a4-form { padding: 52px 14px 32px; }
     .a4-head { margin-bottom: 28px; }
