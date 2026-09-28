@@ -1,0 +1,689 @@
+---
+/* ===========================================================================
+   /apply4 — doctor offer page for cold Meta ads.
+
+   Built from the owner's brief ("Doctor Offer Page: Brief for Sidney",
+   2026-09-27): doctor-only offer, follower guarantee, short page, no VSL and
+   no founder video. Look and feel reuse the /apply2 + /apply3 design system
+   (src/styles/vsl.css): black, Synchro purple, system font, pill buttons.
+
+   Section order (from the brief, top to bottom):
+     1 top section  2 Lily proof card  3 application form (iClosed)
+     4 stats bar    5 how it works     6 doctor results
+     7 FAQ          8 headline + button repeated
+
+   Form: an iClosed event with its own questions and a disqualifier for
+   "Under $2,000" a month. Set ICLOSED_PREFIX once that event exists; until
+   then IClosedEmbed shows its placeholder. The booking fires `Lead` through
+   the IClosedEmbed pixel bridge, same as every other apply page.
+
+   Items marked with .a4-todo are content still owed by Kasper (see the
+   brief's last section). Replace them before ad traffic goes live.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+import VslButton from "../components/VslButton.astro";
+import IClosedEmbed from "../components/IClosedEmbed.astro";
+import "../styles/vsl.css";
+
+// TODO: iClosed link prefix of the doctor event, e.g. "synchrosocial/doctor-strategy-call".
+const ICLOSED_PREFIX: string | null = null;
+
+const ctaLabel = "See If You Qualify";
+const eyebrow = "For doctors, dentists, chiropractors, and surgeons";
+const sub =
+  "We film you for 2-3 hours a month with scripts we create and you approve. We edit and post, and bring you followers who want what you offer.";
+const guarantee =
+  "If we don't hit the monthly follower target we set for you in your first 3 months, we keep working for free until we do.";
+
+const stats = [
+  { label: "Reach", value: "1.2B+", text: "views generated for our clients" },
+  { label: "Growth", value: "8M+", text: "followers grown across platforms" },
+  { label: "Leads", value: "150K+", text: "over 150,000 leads generated for clients" },
+];
+
+const steps = [
+  {
+    title: "We set your target",
+    text: "On a strategy call we review your account and set your monthly follower target.",
+  },
+  {
+    title: "We film you",
+    text: "2-3 hours a month, with the strategy and scripts we create and you approve.",
+  },
+  {
+    title: "We edit and post",
+    text: "Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.",
+  },
+];
+
+const doctors = [
+  {
+    name: "Dr. Lily Baker",
+    role: "Chiropractor",
+    result: "90K → 150K followers",
+    wistia: null,
+    poster: null,
+  },
+  {
+    name: "Dr. Sonia Chopra",
+    role: "Endodontist",
+    result: "~50% follower growth in under 6 months",
+    wistia: "vr83s40k0b",
+    poster: "/images/campaign-proof/11-dr-sonia-chopra.webp",
+  },
+  {
+    name: "Third doctor",
+    role: "Dr. Rocco Piazza or Dr. John Baker",
+    result: "Result pending",
+    wistia: null,
+    poster: null,
+  },
+];
+
+const faqs = [
+  {
+    q: "Who is this for?",
+    a: "Doctors, dentists, chiropractors and surgeons who want to grow on Instagram and turn that attention into patients, programs or opportunities. We only work with medical professionals on this offer.",
+  },
+  {
+    q: "How much of my time does it take?",
+    a: "About 2 to 3 hours of filming a month, plus a quick review of the scripts before we shoot. We handle the strategy, scripts, editing and posting.",
+  },
+  {
+    q: "How does the guarantee work?",
+    a: "On your strategy call we agree on a monthly follower target. We count every new follower from your first post to the end of your third 4-week cycle and divide by 3. If that average is below your target, we keep working for free until we hit it.",
+  },
+  {
+    q: "What about patient privacy?",
+    a: "Nothing goes live without your approval. We build content around your expertise, not patient details, and we never film or post patient information without their written consent.",
+  },
+  {
+    q: "How soon will I see results?",
+    a: "Your first post goes live 2 to 3 weeks after you start. You get a report every week on how each video performed, so you can see the growth as it happens.",
+  },
+  {
+    q: "Do I need to be good on camera or already have a following?",
+    a: "No. We write the scripts and guide you through every shoot. Some of our doctors started with a few hundred followers, others with tens of thousands.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "It depends on your goals and your account. We go through pricing on the strategy call, once we know what target makes sense for you.",
+  },
+];
+---
+
+<Layout
+  title="For Doctors: 3,000 to 5,000 New Followers a Month, Guaranteed | Synchro Social"
+  description="We film you for 2-3 hours a month, edit and post, and bring you followers who want what you offer. Guaranteed."
+  bodyClass="vsl"
+  metaEvent={{ name: "ViewContent", params: { content_name: "doctor_offer" } }}
+>
+  <div class="a4">
+    <!-- 1. Top section -->
+    <header class="a4-hero a4-wrap">
+      <img class="a4-logo" src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" />
+      <p class="a4-eyebrow">{eyebrow}</p>
+      <h1 class="a4-headline">
+        <span>We'll get you 3,000 to 5,000</span>
+        <span>new followers a month.</span>
+        <span class="a4-accent"><em>Guaranteed.</em></span>
+      </h1>
+      <p class="a4-sub">{sub}</p>
+      <VslButton label={ctaLabel} href="#apply" variant="pill" />
+      <p class="a4-guarantee">{guarantee}</p>
+    </header>
+
+    <!-- 2. Lily proof card -->
+    <section class="a4-wrap a4-lily" aria-label="Client result">
+      <div class="a4-card a4-lily__card">
+        <div class="a4-lily__shots">
+          <div class="a4-shot"><span class="a4-todo">Lily: Instagram profile screenshot</span></div>
+          <div class="a4-shot"><span class="a4-todo">Lily: reel insights screenshot</span></div>
+        </div>
+        <div class="a4-lily__text">
+          <p class="a4-lily__name">Dr. Lily Baker, Chiropractor</p>
+          <p class="a4-lily__stat"><span class="vsl-accent">17,000+</span> new followers from one reel</p>
+          <p class="a4-lily__more">Grew from 90K to 150K followers with Synchro Social.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Application form -->
+    <section id="apply" class="a4-wrap a4-form">
+      <h2 class="a4-h2">See If You Qualify</h2>
+      <div class="a4-form__embed">
+        <IClosedEmbed
+          linkPrefix={ICLOSED_PREFIX}
+          title="Doctor Strategy Call"
+          height="620px"
+          card={false}
+          resize={false}
+        />
+      </div>
+      <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
+           See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+      <p class="a4-legal">
+        By booking a call you agree to receive text messages from Synchro Social about your
+        call. Message frequency varies, typically one message per booking. Message and data
+        rates may apply. Reply STOP to opt out, HELP for help. See our
+        <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        and
+        <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+      </p>
+    </section>
+
+    <!-- 4. Stats bar -->
+    <section class="a4-wrap a4-stats" aria-label="Results in numbers">
+      {
+        stats.map((s) => (
+          <div class="a4-card a4-stat">
+            <p class="a4-stat__label">{s.label}</p>
+            <p class="a4-stat__value vsl-accent">{s.value}</p>
+            <p class="a4-stat__text">{s.text}</p>
+          </div>
+        ))
+      }
+    </section>
+
+    <!-- 5. How it works -->
+    <section class="a4-wrap a4-how">
+      <h2 class="a4-h2">From your first call to your first post</h2>
+      <ol class="a4-steps">
+        {
+          steps.map((s, i) => (
+            <li class="a4-card a4-step">
+              <span class="a4-step__num">{i + 1}</span>
+              <h3 class="a4-step__title">{s.title}</h3>
+              <p class="a4-step__text">{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- 6. Doctor results -->
+    <section class="a4-wrap a4-results">
+      <h2 class="a4-h2">Doctor results</h2>
+      <div class="a4-tiles">
+        {
+          doctors.map((d) => (
+            <article class="a4-card a4-tile">
+              {d.wistia ? (
+                <button class="a4-video" type="button" data-wistia={d.wistia} aria-label={`Play ${d.name}'s testimonial`}>
+                  <img src={d.poster} alt="" loading="lazy" decoding="async" />
+                  <span class="a4-play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg>
+                  </span>
+                </button>
+              ) : (
+                <div class="a4-shot a4-shot--tile">
+                  <span class="a4-todo">{d.name}: video or screenshots</span>
+                </div>
+              )}
+              <p class="a4-tile__name">{d.name}</p>
+              <p class="a4-tile__role">{d.role}</p>
+              <p class="a4-tile__result">{d.result}</p>
+            </article>
+          ))
+        }
+      </div>
+      <figure class="a4-card a4-quote">
+        <blockquote><span class="a4-todo">Written doctor quote (name, specialty, photo) from Kasper</span></blockquote>
+      </figure>
+      <p class="a4-disclaimer">
+        Results shown are from real clients and are not typical or guaranteed beyond the terms of
+        our follower guarantee. Results vary based on execution and platform algorithms.
+      </p>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section class="a4-wrap a4-faq">
+      <h2 class="a4-h2">Questions</h2>
+      {
+        faqs.map((f) => (
+          <details class="a4-faq__item">
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))
+      }
+    </section>
+
+    <!-- 8. Repeat -->
+    <section class="a4-wrap a4-end">
+      <h2 class="a4-headline a4-headline--end">
+        <span>We'll get you 3,000 to 5,000</span>
+        <span>new followers a month.</span>
+        <span class="a4-accent"><em>Guaranteed.</em></span>
+      </h2>
+      <VslButton label={ctaLabel} href="#apply" variant="pill" />
+      <p class="a4-guarantee">{guarantee}</p>
+    </section>
+  </div>
+</Layout>
+
+<script is:inline>
+  document.body.dataset.vslPage = "doctor_offer";
+  // Testimonial videos load only on tap, so they cost nothing on first paint.
+  document.querySelectorAll(".a4-video").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var f = document.createElement("iframe");
+      f.src = "https://fast.wistia.net/embed/iframe/" + btn.dataset.wistia + "?autoPlay=true&seo=false";
+      f.allow = "autoplay; fullscreen";
+      f.allowFullscreen = true;
+      f.title = btn.getAttribute("aria-label");
+      f.className = "a4-video__frame";
+      btn.replaceWith(f);
+    });
+  });
+</script>
+
+<style>
+  .a4 {
+    /* Black at the top, deep purple around the form, back to black. */
+    background: linear-gradient(
+      180deg,
+      #000 0%,
+      #000 14%,
+      #1a0b33 32%,
+      #210d42 42%,
+      #12071f 56%,
+      #000 70%
+    );
+    padding-bottom: 72px;
+    text-align: center;
+    overflow-x: hidden;
+  }
+
+  .a4-wrap {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .a4-card {
+    background: rgba(18, 18, 18, 0.85);
+    border: 1px solid var(--vsl-card-border);
+    border-radius: var(--vsl-radius);
+  }
+
+  .a4-h2 {
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin: 0 0 24px;
+  }
+
+  /* Placeholder tag for content Kasper still owes. */
+  .a4-todo {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1.5px dashed #f5c542;
+    border-radius: 8px;
+    color: #f5c542;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* ---------- 1. Top ---------- */
+  .a4-hero {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .a4-logo {
+    width: 170px;
+    height: auto;
+    margin-bottom: 32px;
+  }
+  .a4-eyebrow {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 16px;
+  }
+  .a4-headline {
+    font-size: clamp(27px, 7.4vw, 54px);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.025em;
+    margin: 0 0 22px;
+  }
+  .a4-headline span {
+    display: block;
+  }
+  @media (min-width: 420px) {
+    .a4-headline span {
+      white-space: nowrap;
+    }
+  }
+  .a4-accent {
+    background: var(--vsl-accent-grad-soft);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.08em;
+  }
+  .a4-sub,
+  .a4-guarantee {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .a4-sub {
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.55;
+    max-width: 38em;
+    margin: 0 auto 30px;
+  }
+  .a4-guarantee {
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 30em;
+    margin: 16px auto 0;
+  }
+
+  /* ---------- 2. Lily ---------- */
+  .a4-lily__card {
+    padding: 16px;
+    display: grid;
+    gap: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .a4-lily__shots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .a4-shot {
+    aspect-ratio: 9 / 16;
+    max-height: 340px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 12px;
+    background: #0a0a0a;
+    border: 1px solid var(--vsl-border);
+  }
+  .a4-lily__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .a4-lily__name {
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  .a4-lily__stat {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  .a4-lily__more {
+    color: var(--vsl-ink-dim);
+    margin: 0;
+  }
+
+  /* ---------- 3. Form ---------- */
+  .a4-form {
+    margin-top: 56px;
+  }
+  .a4-form__embed {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .a4-legal {
+    max-width: 620px;
+    margin: 14px auto 0;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--vsl-ink-faint);
+  }
+  .a4-legal a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* ---------- 4. Stats ---------- */
+  .a4-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 40px;
+  }
+  .a4-stat {
+    padding: 14px 8px;
+  }
+  .a4-stat__label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--vsl-p-light);
+    margin: 0 0 4px;
+  }
+  .a4-stat__value {
+    font-size: clamp(24px, 6vw, 40px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 6px;
+  }
+  .a4-stat__text {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--vsl-ink-dim);
+    margin: 0;
+  }
+
+  /* ---------- 5. How it works ---------- */
+  .a4-how {
+    margin-top: 56px;
+  }
+  .a4-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .a4-step {
+    padding: 22px 20px;
+  }
+  .a4-step__num {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--vsl-accent-grad);
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .a4-step__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+  .a4-step__text {
+    color: var(--vsl-ink-dim);
+    margin: 0;
+  }
+
+  /* ---------- 6. Results ---------- */
+  .a4-results {
+    margin-top: 64px;
+  }
+  .a4-tiles {
+    display: grid;
+    gap: 16px;
+  }
+  .a4-tile {
+    padding: 14px 14px 18px;
+  }
+  .a4-shot--tile,
+  .a4-video,
+  :global(.a4-video__frame) {
+    aspect-ratio: 9 / 16;
+    width: 100%;
+    max-height: 520px;
+    border-radius: 12px;
+  }
+  .a4-video {
+    position: relative;
+    display: block;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    cursor: pointer;
+    background: #0a0a0a;
+  }
+  .a4-video img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  :global(.a4-video__frame) {
+    border: 0;
+    display: block;
+    background: #000;
+  }
+  .a4-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .a4-play svg {
+    width: 24px;
+    height: 24px;
+    fill: #0a0a0a;
+    margin-left: 3px;
+  }
+  .a4-tile__name {
+    font-weight: 700;
+    margin: 14px 0 2px;
+  }
+  .a4-tile__role {
+    color: var(--vsl-ink-dim);
+    font-size: 14px;
+    margin: 0 0 6px;
+  }
+  .a4-tile__result {
+    color: var(--vsl-p-light);
+    font-weight: 600;
+    margin: 0;
+  }
+  .a4-quote {
+    margin: 20px auto 0;
+    padding: 24px 20px;
+    max-width: 760px;
+  }
+  .a4-quote blockquote {
+    margin: 0;
+  }
+  .a4-disclaimer {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--vsl-ink-faint);
+    max-width: 620px;
+    margin: 16px auto 0;
+  }
+
+  /* ---------- 7. FAQ ---------- */
+  .a4-faq {
+    margin-top: 64px;
+    max-width: 760px;
+    text-align: left;
+  }
+  .a4-faq .a4-h2 {
+    text-align: center;
+  }
+  .a4-faq__item {
+    border-bottom: 1px solid var(--vsl-border);
+  }
+  .a4-faq__item summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px 32px 18px 0;
+    font-weight: 600;
+    font-size: 17px;
+    position: relative;
+  }
+  .a4-faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+  .a4-faq__item summary::after {
+    content: "+";
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vsl-p);
+    font-size: 22px;
+    font-weight: 400;
+  }
+  .a4-faq__item[open] summary::after {
+    content: "−";
+  }
+  .a4-faq__item p {
+    margin: 0 0 18px;
+    color: var(--vsl-ink-dim);
+    line-height: 1.6;
+  }
+
+  /* ---------- 8. End ---------- */
+  .a4-end {
+    margin-top: 72px;
+  }
+  .a4-headline--end {
+    font-size: clamp(24px, 6vw, 42px);
+    margin-bottom: 28px;
+  }
+
+  /* ---------- Desktop ---------- */
+  @media (min-width: 760px) {
+    .a4-wrap {
+      padding: 0 24px;
+    }
+    .a4-hero {
+      padding-top: 56px;
+    }
+    .a4-lily__card {
+      grid-template-columns: 2fr 1fr;
+      padding: 20px;
+      text-align: left;
+    }
+    .a4-stats {
+      gap: 16px;
+    }
+    .a4-stat {
+      padding: 22px 16px;
+    }
+    .a4-stat__text {
+      font-size: 14px;
+    }
+    .a4-steps,
+    .a4-tiles {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
