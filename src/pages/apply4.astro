@@ -748,6 +748,18 @@ const faqs = [
     .dm .proof-text .big { font-size: 26px; line-height: 1.25; }
     .dm .proof-text p { font-size: 16px; }
   }
+  /* Phone: lighter hero so the headline, sub and guarantee don't crowd
+     the first screen (owner feedback 2026-09-28). */
+  @media (max-width: 560px) {
+    .dm .hero { padding-block: 32px 28px; }
+    .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .dm h1 { font-size: 28px; line-height: 1.12; }
+    .dm .sub { font-size: 15px; line-height: 1.5; margin-top: 18px; }
+    .dm .cta { margin-top: 24px; gap: 12px; }
+    .dm .btn { font-size: 15px; padding: 14px 30px; }
+    .dm .guarantee { font-size: 13px; line-height: 1.5; }
+    .dm .final h2 { font-size: 24px; }
+  }
   @media (prefers-reduced-motion: no-preference) {
     .dm .btn { transition: transform 0.15s ease; }
     .dm .btn:hover { transform: translateY(-1px); }
