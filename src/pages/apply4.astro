@@ -147,7 +147,8 @@ const faqs = [
             </div>
           </form>
           <div class="step-dq" hidden>
-            <p>Thanks for applying. Our program starts at $2,000 a month, so we're not the right fit right now.</p>
+            <p class="dq-title">Thanks for applying!</p>
+            <p>We've received your application and our team will review it.</p>
           </div>
           <div class="step-cal" hidden>
             <p class="note">Last step: pick a time for your strategy call.</p>
@@ -318,8 +319,10 @@ const faqs = [
         fbq("track", "Lead", { content_name: "doctor_offer" });
       }
 
+      // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
       if (v.investment === "Under $2,000") {
         form.hidden = true;
+        card.querySelector("h2").hidden = true;
         card.querySelector(".step-dq").hidden = false;
         return;
       }
@@ -502,6 +505,7 @@ const faqs = [
   .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .dm .form-error { margin: 18px 0 0; color: #ff9b9b; font-size: 14px; text-align: center; }
   .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
+  .dm .step-dq .dq-title { color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
   .dm .legal { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); text-align: center; }
   .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
