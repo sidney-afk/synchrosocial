@@ -48,15 +48,15 @@ const steps = [
   {
     features: [
       {
-        title: "1. We Set Your Target",
+        title: "We set your target",
         body: "On a strategy call we review your account and set your monthly follower target.",
       },
       {
-        title: "2. We Film You",
+        title: "We film you",
         body: "2-3 hours a month, with the strategy and scripts we create and you approve.",
       },
       {
-        title: "3. We Edit And Post",
+        title: "We edit and post",
         body: "Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.",
         final: true,
       },
@@ -64,59 +64,58 @@ const steps = [
   },
 ];
 
+// Copy verbatim from the brief's mockup.
+const lily = {
+  name: "Dr. Lily Baker · Chiropractor",
+  stat: "60K New Followers in Under 90 Days",
+  story: "Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new followers alone.",
+};
 const doctors = [
+  { ...lily, placeholder: "Video testimonial or Instagram screenshot" },
   {
-    name: "Dr. Lily Baker | Chiropractor",
-    stat: "90K → 150K Followers",
-    tag: "17,000+ New Followers From One Reel",
-    story: "Placeholder story: Kasper to confirm Lily's numbers and send her profile and reel insights screenshots.",
-    placeholder: "Lily: video testimonial or screenshots",
-  },
-  {
-    name: "Dr. Sonia Chopra | Endodontist",
-    stat: "1,000s Of Qualified Leads",
-    tag: "Grew Her Following By 50% In Under 6 Months",
-    story: "Dr. Sonia is a board-certified endodontist in one of the hardest markets to make content work in: clinical healthcare, where most accounts stay invisible. One post alone pulled 1,500 comments, her following grew roughly 50%, and the account now produces thousands of qualified leads.",
+    name: "Dr. Sonia Chopra · Endodontist",
+    stat: "Following up about 50% in under 6 months",
+    story: "One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.",
     wistia: "vr83s40k0b",
     poster: "/images/campaign-proof/11-dr-sonia-chopra.webp",
   },
   {
-    name: "Third Doctor | Specialty",
-    stat: "Result Pending",
-    tag: "Dr. Rocco Piazza or Dr. John Baker",
-    story: "Placeholder: Kasper to send this doctor's specialty, results and screenshots.",
-    placeholder: "Third doctor: video or screenshots",
+    name: "Dr. Rocco Piazza or Dr. John Baker",
+    stat: "Results needed",
+    story: "Pick one doctor.",
+    placeholder: "Video testimonial or Instagram screenshot",
   },
 ];
 
 const faqs = [
   {
-    q: "Who is this for?",
-    a: "Doctors, dentists, chiropractors and surgeons who want to grow on Instagram and turn that attention into patients, programs or opportunities. We only work with medical professionals on this offer.",
+    q: "What do you do?",
+    a: "We run your short-form content from start to finish: strategy, filming plans, scripts, editing, posting on all your platforms, and weekly reports.",
   },
   {
-    q: "How much of my time does it take?",
-    a: "About 2 to 3 hours of filming a month, plus a quick review of the scripts before we shoot. We handle the strategy, scripts, editing and posting.",
+    q: "What do I need to do?",
+    a: "Film about once a month. We tell you exactly what to say.",
   },
   {
     q: "How does the guarantee work?",
-    a: "On your strategy call we agree on a monthly follower target. We count every new follower from your first post to the end of your third 4-week cycle and divide by 3. If that average is below your target, we keep working for free until we hit it.",
+    a: "On your strategy call we set your monthly follower target based on your account. If we don't hit it in your first 3 months, we keep working for free until we do.",
+  },
+  {
+    q: "Does this work for my specialty?",
+    a: "Yes. The same system works across specialties. No skits or trends you're not comfortable with.",
   },
   {
     q: "What about patient privacy?",
-    a: "Nothing goes live without your approval. We build content around your expertise, not patient details, and we never film or post patient information without their written consent.",
+    a: "We follow platform health-content guidelines and never show patients or patient information. You approve every post before it goes live.",
   },
   {
-    q: "How soon will I see results?",
-    a: "Your first post goes live 2 to 3 weeks after you start. You get a report every week on how each video performed, so you can see the growth as it happens.",
+    q: "When will I see results?",
+    a: "Your first post goes live 2 to 3 weeks after you start. Month one tests a wide range of angles. From month two, we double down on what's working.",
   },
   {
-    q: "Do I need to be good on camera or already have a following?",
-    a: "No. We write the scripts and guide you through every shoot. Some of our doctors started with a few hundred followers, others with tens of thousands.",
-  },
-  {
-    q: "How much does it cost?",
-    a: "It depends on your goals and your account. We go through pricing on the strategy call, once we know what target makes sense for you.",
+    // Owner: no price on the page. Mockup left this answer open.
+    q: "What does it cost?",
+    a: "We go over pricing on your strategy call, once we've set your target.",
   },
 ];
 ---
@@ -145,20 +144,19 @@ const faqs = [
   <!-- 2. Lily proof card: VslRealResults card shell -->
   <section class="a4-lily" aria-label="Client result">
     <div class="a4-card">
-      <div class="a4-lily__title">Dr. Lily Baker | Chiropractor</div>
-      <div class="a4-lily__stat">17,000+ New Followers From One Reel</div>
-      <div class="a4-lily__tag">Grew From 90K To 150K Followers</div>
       <div class="a4-lily__shots">
-        <div class="a4-shot"><span class="a4-todo">Instagram profile screenshot</span></div>
-        <div class="a4-shot"><span class="a4-todo">Reel insights screenshot</span></div>
+        <div class="a4-shot"><span class="a4-todo">Instagram profile screenshot<br />150K followers visible</span></div>
+        <div class="a4-shot"><span class="a4-todo">Reel insights screenshot<br />17,000+ followers from one reel</span></div>
       </div>
+      <div class="a4-lily__title">{lily.name}</div>
+      <div class="a4-lily__stat">{lily.stat}</div>
+      <p class="a4-lily__story">{lily.story}</p>
     </div>
   </section>
 
   <!-- 3. Application form -->
   <section id="apply" class="a4-form">
     <div class="a4-head">
-      <div class="a4-eyebrow">Apply</div>
       <h2>See If You Qualify</h2>
     </div>
     <div class="a4-form__embed">
@@ -190,33 +188,32 @@ const faqs = [
   <!-- 5. How it works -->
   <div class="a4-how">
   <VslHowItWorks
-    titleLead="From Your First Call"
-    titleAccent="To Your First Post"
-    sub="Three steps. You film for a few hours a month; we handle everything else."
+    eyebrow="How it works"
+    titleLead="From your first call to your first post"
+    titleAccent=""
+    sub=""
     pillars={steps}
-    ctaLabel={ctaLabel}
-    ctaHref="#apply"
-    ctaNote={guarantee}
+    ctaLabel=""
   />
   </div>
 
   <!-- 6. Doctor results -->
   <VslRealResults
-    heading="What We Built For Doctors"
-    intro="Every doctor below came to us with real expertise and almost no time for content. Here's what changed once we ran it for them."
+    eyebrow="Doctor results"
+    heading="Doctors we've grown"
     cards={doctors}
-    disclaimer="These are real outcomes from clients who followed our process as built. Growth depends on execution and platform algorithms, results will vary by effort and market."
+    disclaimer="These are outcomes from clients who followed our process as built. Growth depends on execution and platform algorithms, and results vary by effort and market."
   >
     <figure class="a4-quote a4-card">
-      <span class="a4-todo">Written doctor quote (name, specialty, photo) from Kasper</span>
+      <span class="a4-todo">Written quote from a doctor client<br />Name · Specialty · photo</span>
     </figure>
   </VslRealResults>
 
   <!-- 7. FAQ -->
   <section class="a4-faq">
     <div class="a4-head">
-      <div class="a4-eyebrow">FAQ</div>
-      <h2>Questions Doctors Ask</h2>
+      <div class="a4-eyebrow">Questions</div>
+      <h2>What doctors ask us</h2>
     </div>
     <div class="a4-faq__list">
       {
@@ -234,8 +231,7 @@ const faqs = [
   <section class="a4h a4h--end">
     <div class="a4h__wrap">
       <h2 class="a4h__headline">
-        We'll get you 3,000 to 5,000 new followers a month.{" "}
-        <span class="a4h__accent">Guaranteed.</span>
+        Doctors: 3,000 to 5,000 new followers a month, <span class="a4h__accent">guaranteed.</span>
       </h2>
       <VslButton label={ctaLabel} href="#apply" variant="pill" />
       <p class="a4h__guarantee">{guarantee}</p>
@@ -411,10 +407,11 @@ const faqs = [
     background-clip: text;
     color: transparent;
   }
-  .a4-lily__tag {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--vsl-p);
+  .a4-lily__story {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: rgba(244, 241, 250, 0.8);
+    margin: 0;
   }
   .a4-lily__shots {
     display: grid;
@@ -470,6 +467,10 @@ const faqs = [
      reads as a small purple box on a full-width black page. Drop it here. */
   .a4-how :global(.vslhiw) {
     background: var(--vsl-black);
+  }
+  /* No subheadline here (mockup has none), so the title takes its gap. */
+  .a4-how :global(.vslhiw__title) {
+    margin-bottom: 52px;
   }
 
   /* ---------- 6. Quote ---------- */
