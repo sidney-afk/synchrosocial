@@ -2,100 +2,47 @@
 /* ===========================================================================
    /apply4 — doctor offer page for cold Meta ads.
 
-   Built from the owner's brief ("Doctor Offer Page: Brief for Sidney",
-   2026-09-27): doctor-only offer, follower guarantee, short page, no VSL and
-   no founder video. Look and feel reuse the /apply2 + /apply3 design system
-   (src/styles/vsl.css): black, Synchro purple, system font, pill buttons.
+   Owner decision 2026-09-28: the page matches the brief's MOCKUP ("Doctor
+   Offer Page", the artifact Kasper sent) as closely as possible: colors,
+   fonts, layout, buttons and copy are ported from it 1:1. Earlier versions
+   matched /apply3 instead; that was superseded.
 
-   Section order (from the brief, top to bottom):
-     1 top section  2 Lily proof card  3 application form (iClosed)
-     4 stats bar    5 how it works     6 doctor results
-     7 FAQ          8 headline + button repeated
+   Differences from the mockup, all deliberate:
+     - The form works in two steps, like viralcoach.com/cpy/book2: our own
+       form (mockup fields; Specialty is a choice so it matches iClosed), then
+       the iClosed "Doctor Strategy Call" calendar with every answer passed as
+       URL parameters (iclosedName/Email/Phone + question identifiers) and
+       iClosed's "Pre-qualified form skipping" on, so the doctor only picks a
+       time. "Under $2,000" is turned away on our page. Meta `Lead` fires on
+       submit (brief), not on booking.
+     - Real assets replace placeholders where we have them: Lily's profile
+       image, her growth image in the results tile, Sonia's Wistia video.
+     - The yellow "mockup" bar and demo submit handler are dropped; the SMS
+       consent text from the other apply pages sits under the form.
+     - The FAQ price answer stays off the page (owner).
 
-   Form: an iClosed event with its own questions and a disqualifier for
-   "Under $2,000" a month. Set ICLOSED_PREFIX once that event exists; until
-   then IClosedEmbed shows its placeholder. The booking fires `Lead` through
-   the IClosedEmbed pixel bridge, same as every other apply page.
-
-   Items marked with .a4-todo are content still owed by Kasper (see the
-   brief's last section). Replace them before ad traffic goes live.
+   Every class lives under .dm so none of this leaks into shared styles.
 =========================================================================== */
 import Layout from "../layouts/Layout.astro";
-import VslButton from "../components/VslButton.astro";
-import IClosedEmbed from "../components/IClosedEmbed.astro";
-import VslProofBar from "../components/VslProofBar.astro";
-import VslRealResults from "../components/VslRealResults.astro";
-import VslHowItWorks from "../components/VslHowItWorks.astro";
-import "../styles/vsl.css";
 
 // iClosed "Doctor Strategy Call" event (disqualifies "Under $2,000" a month).
-const ICLOSED_PREFIX: string | null = "synchrosocial/doctor-strategy-call";
+const ICLOSED_URL = "https://app.iclosed.io/e/synchrosocial/doctor-strategy-call";
 
-const ctaLabel = "See If You Qualify";
-const eyebrow = "For doctors, dentists, chiropractors, and surgeons";
-const sub =
-  "We film you for 2-3 hours a month with scripts we create and you approve. We edit and post, and bring you followers who want what you offer.";
-const guarantee =
-  "If we don't hit the monthly follower target we set for you in your first 3 months, we keep working for free until we do.";
+// Answer text must match the iClosed event's options EXACTLY: they are passed
+// to iClosed as URL parameters and matched as strings.
+const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
+const investments = ["Under $2,000", "$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
+const starts = ["Now", "Within 30 days", "Within 90 days", "Next quarter"];
 
-const stats = [
-  { label: "Reach", metric: "1.2B+", copy: "Views generated for our clients" },
-  { label: "Growth", metric: "8M+", copy: "Followers grown across platforms" },
-  { label: "Leads", metric: "150K+", copy: "Over 150,000 leads generated for clients" },
-];
-
-const steps = [
-  {
-    features: [
-      {
-        title: "We set your target",
-        body: "On a strategy call we review your account and set your monthly follower target.",
-      },
-      {
-        title: "We film you",
-        body: "2-3 hours a month, with the strategy and scripts we create and you approve.",
-      },
-      {
-        title: "We edit and post",
-        body: "Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.",
-        final: true,
-      },
-    ],
-  },
-];
-
-// Copy verbatim from the brief's mockup.
-const lily = {
-  name: "Dr. Lily Baker · Chiropractor",
-  stat: "60K New Followers in Under 90 Days",
-  story: "Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new followers alone.",
-};
-const doctors = [
-  { ...lily, image: "/images/apply4/lily-baker-growth-wide.webp", imageAlt: "Dr. Lily Baker's Instagram growth: 90K to 150K followers in under 90 days" },
-  {
-    name: "Dr. Sonia Chopra · Endodontist",
-    stat: "Following up about 50% in under 6 months",
-    story: "One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.",
-    wistia: "vr83s40k0b",
-    poster: "/images/campaign-proof/11-dr-sonia-chopra.webp",
-  },
-  {
-    name: "Dr. Rocco Piazza or Dr. John Baker",
-    stat: "Results needed",
-    story: "Pick one doctor.",
-    placeholder: "Video testimonial or Instagram screenshot",
-  },
-];
+const guaranteeLead = "If we don't hit the monthly follower target we set for you in your first 3 months,";
+const guaranteeBold = "we keep working for free until we do.";
 
 const faqs = [
   {
     q: "What do you do?",
     a: "We run your short-form content from start to finish: strategy, filming plans, scripts, editing, posting on all your platforms, and weekly reports.",
   },
-  {
-    q: "What do I need to do?",
-    a: "Film about once a month. We tell you exactly what to say.",
-  },
+  { q: "What do I need to do?", a: "Film about once a month. We tell you exactly what to say." },
   {
     q: "How does the guarantee work?",
     a: "On your strategy call we set your monthly follower target based on your account. If we don't hit it in your first 3 months, we keep working for free until we do.",
@@ -113,7 +60,7 @@ const faqs = [
     a: "Your first post goes live 2 to 3 weeks after you start. Month one tests a wide range of angles. From month two, we double down on what's working.",
   },
   {
-    // Owner: no price on the page. Mockup left this answer open.
+    // Owner: no price on the page. The mockup left this answer open.
     q: "What does it cost?",
     a: "We go over pricing on your strategy call, once we've set your target.",
   },
@@ -123,466 +70,566 @@ const faqs = [
 <Layout
   title="For Doctors: 3,000 to 5,000 New Followers a Month, Guaranteed | Synchro Social"
   description="We film you for 2-3 hours a month, edit and post, and bring you followers who want what you offer. Guaranteed."
-  bodyClass="vsl"
+  bodyClass="dm-body"
   metaEvent={{ name: "ViewContent", params: { content_name: "doctor_offer" } }}
 >
-  <!-- 1. Top section: VslHero geometry -->
-  <header class="a4h">
-    <div class="a4h__wrap">
-      <img class="a4h__logo" src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" />
-      <p class="a4h__eyebrow">{eyebrow}</p>
-      <h1 class="a4h__headline">
-        We'll get you 3,000 to 5,000 new followers a month.{" "}
-        <span class="a4h__accent">Guaranteed.</span>
-      </h1>
-      <p class="a4h__sub">{sub}</p>
-      <VslButton label={ctaLabel} href="#apply" variant="pill" />
-      <p class="a4h__guarantee">{guarantee}</p>
-    </div>
-  </header>
+  <div class="dm">
+    <div class="brand"><img src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" /></div>
 
-  <!-- 2. Lily proof card: VslRealResults card shell -->
-  <section class="a4-lily" aria-label="Client result">
-    <div class="a4-card">
-      <div class="a4-lily__shots">
-        <img
-          class="a4-lily__img"
-          src="/images/apply4/lily-baker-growth.webp"
-          alt="Dr. Lily Baker's Instagram profile at 151K followers, with a growth chart from 90K to 150K followers in under 90 days and 12M views"
-          width="900"
-          height="890"
-          decoding="async"
-      />
-        <div class="a4-shot"><span class="a4-todo">Reel insights screenshot<br />17,000+ followers from one reel</span></div>
+    <!-- 1. TOP -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="kicker">For doctors, dentists, chiropractors, and surgeons</p>
+        <h1>
+          <span class="line">We'll get you <span class="hl">3,000 to 5,000</span></span>
+          <span class="line">new followers a month.</span>
+          <span class="line"><em>Guaranteed.</em></span>
+        </h1>
+        <p class="sub">
+          We film you for 2-3 hours a month with scripts we create and you approve. We edit and
+          post, and bring you followers who want what you offer.
+        </p>
+        <div class="cta">
+          <a class="btn" href="#apply">See If You Qualify</a>
+          <p class="guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
+        </div>
       </div>
-      <div class="a4-lily__title">{lily.name}</div>
-      <div class="a4-lily__stat">{lily.stat}</div>
-      <p class="a4-lily__story">{lily.story}</p>
-    </div>
-  </section>
+    </section>
 
-  <!-- 3. Application form -->
-  <section id="apply" class="a4-form">
-    <div class="a4-head">
-      <h2>See If You Qualify</h2>
-    </div>
-    <div class="a4-form__embed">
-      <IClosedEmbed
-        linkPrefix={ICLOSED_PREFIX}
-        title="Doctor Strategy Call"
-        height="620px"
-        card={false}
-        resize={false}
-      />
-    </div>
-    <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
-         See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
-    <p class="a4-legal">
-      By booking a call you agree to receive text messages from Synchro Social about your
-      call. Message frequency varies, typically one message per booking. Message and data
-      rates may apply. Reply STOP to opt out, HELP for help. See our
-      <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-      and
-      <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
-    </p>
-  </section>
+    <!-- 2-4. PROOF CARD, FORM, STATS -->
+    <section class="apply">
+      <div class="wrap">
+        <div class="proof-card">
+          <img
+            class="shot-img"
+            src="/images/apply4/lily-baker-growth.webp"
+            alt="Dr. Lily Baker's Instagram profile at 151K followers, with a growth chart from 90K to 150K followers in under 90 days and 12M views"
+            width="900"
+            height="890"
+            decoding="async"
+          />
+          <div class="shot" role="img" aria-label="Placeholder for viral reel insights screenshot">
+            <span>Reel insights screenshot</span><small>17,000+ followers from one reel</small>
+          </div>
+          <div class="proof-text">
+            <div class="who">Dr. Lily Baker · Chiropractor</div>
+            <div class="big">60K New Followers in Under 90 Days</div>
+            <p>
+              Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new
+              followers alone.
+            </p>
+          </div>
+        </div>
 
-  <!-- 4. Stats bar -->
-  <div class="a4-stats">
-    <VslProofBar items={stats} />
+        <div id="apply" class="form-card">
+          <h2>See If You Qualify</h2>
+          <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
+               answers prefilled, so the doctor only picks a time. -->
+          <form class="apply-form" data-step="1" novalidate>
+            <div class="grid">
+              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
+              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+              <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required /></div>
+              <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" required /></div></div>
+              <div class="field full"><span class="q">Specialty</span>
+                <div class="chips">{specialties.map((v) => <label><input type="radio" name="specialty" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">How much are you ready to invest monthly in growing your audience?</span>
+                <div class="chips">{investments.map((v) => <label><input type="radio" name="investment" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">When can you start?</span>
+                <div class="chips">{starts.map((v) => <label><input type="radio" name="start" value={v} required />{v}</label>)}</div>
+              </div>
+            </div>
+            <p class="form-error" role="alert" hidden></p>
+            <div class="submit">
+              <button class="btn" type="submit">Submit application</button>
+            </div>
+          </form>
+          <div class="step-dq" hidden>
+            <p class="dq-title">Thanks for applying!</p>
+            <p>We've received your application and our team will review it.</p>
+          </div>
+          <div class="step-cal" hidden>
+            <p class="note">Last step: pick a time for your strategy call.</p>
+            <div class="form-embed"></div>
+          </div>
+          <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
+               See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+          <p class="legal">
+            By booking a call you agree to receive text messages from Synchro Social about your
+            call. Message frequency varies, typically one message per booking. Message and data
+            rates may apply. Reply STOP to opt out, HELP for help. See our
+            <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+            and
+            <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+          </p>
+        </div>
+
+        <div class="proof-grid">
+          <div class="pg"><div class="pg-label">Reach</div><div class="pg-num">1.2B+</div><p>Views generated for our clients</p></div>
+          <div class="pg"><div class="pg-label">Growth</div><div class="pg-num">8M+</div><p>Followers grown across platforms</p></div>
+          <div class="pg"><div class="pg-label">Leads</div><div class="pg-num">150K+</div><p>Over 150,000 leads generated for clients</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. HOW IT WORKS -->
+    <section class="glow" style="padding-top:8px">
+      <div class="wrap">
+        <p class="kicker">How it works</p>
+        <h2>From your first call to your first post</h2>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><h3>We set your target</h3><p>On a strategy call we review your account and set your monthly follower target.</p></div>
+          <div class="step"><div class="n">2</div><h3>We film you</h3><p>2-3 hours a month, with the strategy and scripts we create and you approve.</p></div>
+          <div class="step"><div class="n">3</div><h3>We edit and post</h3><p>Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. RESULTS -->
+    <section style="padding-top:0">
+      <div class="wrap">
+        <p class="kicker">Doctor results</p>
+        <h2>Doctors we've grown</h2>
+        <div class="tiles">
+          <article class="tile">
+            <img
+              class="thumb-img"
+              src="/images/apply4/lily-baker-growth-wide.webp"
+              alt="Dr. Lily Baker's Instagram growth: 90K to 150K followers in under 90 days"
+              width="1280"
+              height="720"
+              loading="lazy"
+              decoding="async"
+            />
+            <div class="tile-body">
+              <div class="who">Dr. Lily Baker · Chiropractor</div>
+              <div class="big">60K New Followers in Under 90 Days</div>
+              <p>Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new followers alone.</p>
+            </div>
+          </article>
+          <article class="tile">
+            <!-- Testimonial video loads only on tap (brief). -->
+            <button class="thumb video-btn" type="button" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial">
+              <img src="/images/campaign-proof/11-dr-sonia-chopra.webp" alt="" loading="lazy" decoding="async" />
+              <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg></span>
+            </button>
+            <div class="tile-body">
+              <div class="who">Dr. Sonia Chopra · Endodontist</div>
+              <div class="big">Following up about 50% in under 6 months</div>
+              <p>One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p>
+            </div>
+          </article>
+          <article class="tile">
+            <div class="shot" role="img" aria-label="Placeholder for video testimonial or Instagram screenshot">
+              <span>Video testimonial or Instagram screenshot</span><small>15 to 30 sec clip, or profile and insights</small>
+            </div>
+            <div class="tile-body">
+              <div class="who">Dr. Rocco Piazza or Dr. John Baker</div>
+              <span class="need" style="align-self:flex-start">Pick one doctor · results needed</span>
+            </div>
+          </article>
+        </div>
+        <figure class="quote">
+          <p><span class="need">Written quote from a doctor client</span></p>
+          <figcaption class="by"><span class="ph" aria-hidden="true"></span>Name · Specialty · photo</figcaption>
+        </figure>
+        <p class="disclaimer">
+          These are outcomes from clients who followed our process as built. Growth depends on
+          execution and platform algorithms, and results vary by effort and market.
+        </p>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section style="padding-top:24px">
+      <div class="wrap narrow">
+        <p class="kicker">Questions</p>
+        <h2>What doctors ask us</h2>
+        <div class="faq">
+          {
+            faqs.map((f, i) => (
+              <details open={i === 0}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. REPEAT -->
+    <section class="final glow">
+      <div class="wrap">
+        <h2>Doctors: <span class="hl">3,000 to 5,000 new followers a month</span>, <em>guaranteed.</em></h2>
+        <div class="cta">
+          <a class="btn" href="#apply">See If You Qualify</a>
+          <p class="guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
+        </div>
+      </div>
+    </section>
+
+    <footer>© Synchro Social</footer>
   </div>
-
-  <!-- 5. How it works -->
-  <div class="a4-how">
-  <VslHowItWorks
-    eyebrow="How it works"
-    titleLead="From your first call to your first post"
-    titleAccent=""
-    sub=""
-    pillars={steps}
-    ctaLabel=""
-  />
-  </div>
-
-  <!-- 6. Doctor results -->
-  <div class="a4-results">
-  <VslRealResults
-    eyebrow="Doctor results"
-    heading="Doctors we've grown"
-    cards={doctors}
-    disclaimer="These are outcomes from clients who followed our process as built. Growth depends on execution and platform algorithms, and results vary by effort and market."
-  >
-    <figure class="a4-quote a4-card">
-      <span class="a4-todo">Written quote from a doctor client<br />Name · Specialty · photo</span>
-    </figure>
-  </VslRealResults>
-  </div>
-
-  <!-- 7. FAQ -->
-  <section class="a4-faq">
-    <div class="a4-head">
-      <div class="a4-eyebrow">Questions</div>
-      <h2>What doctors ask us</h2>
-    </div>
-    <div class="a4-faq__list">
-      {
-        faqs.map((f) => (
-          <details class="a4-card a4-faq__item">
-            <summary>{f.q}</summary>
-            <p>{f.a}</p>
-          </details>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- 8. Repeat -->
-  <section class="a4h a4h--end">
-    <div class="a4h__wrap">
-      <h2 class="a4h__headline">
-        Doctors: 3,000 to 5,000 new followers a month, <span class="a4h__accent">guaranteed.</span>
-      </h2>
-      <VslButton label={ctaLabel} href="#apply" variant="pill" />
-      <p class="a4h__guarantee">{guarantee}</p>
-    </div>
-  </section>
 </Layout>
 
-<script is:inline>
-  document.body.dataset.vslPage = "doctor_offer";
+<script is:inline define:vars={{ ICLOSED_URL }}>
+  (function () {
+    var form = document.querySelector(".dm .apply-form");
+    if (!form) return;
+    var card = form.closest(".form-card");
+    var err = form.querySelector(".form-error");
+
+    // iClosed skips its own form only when email/phone are valid, so send
+    // phone in international format. Bare 10-digit numbers are assumed US.
+    function normPhone(v) {
+      var d = v.replace(/[^\d+]/g, "");
+      if (d.charAt(0) === "+") return d;
+      if (d.length === 10) return "+1" + d;
+      if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+      return d.length >= 8 ? "+" + d : "";
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = new FormData(form);
+      var v = {};
+      ["name", "email", "phone", "instagram", "specialty", "investment", "start"].forEach(function (k) {
+        v[k] = String(f.get(k) || "").trim();
+      });
+      v.instagram = v.instagram.replace(/^@+/, "");
+      v.phone = normPhone(v.phone);
+      var missing = Object.keys(v).filter(function (k) { return !v[k]; });
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
+      if (missing.length || !emailOk) {
+        err.textContent = !emailOk && v.email
+          ? "Please enter a valid email."
+          : missing.indexOf("phone") > -1 && f.get("phone")
+            ? "Please enter your phone number with country code, e.g. +1 555 123 4567."
+            : "Please fill in every field.";
+        err.hidden = false;
+        return;
+      }
+      err.hidden = true;
+
+      // Brief: fire the Meta pixel Lead event when the form is submitted.
+      if (typeof window.fbq === "function") {
+        fbq("track", "Lead", { content_name: "doctor_offer" });
+      }
+
+      // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
+      if (v.investment === "Under $2,000") {
+        form.hidden = true;
+        card.querySelector("h2").hidden = true;
+        card.querySelector(".step-dq").hidden = false;
+        return;
+      }
+
+      // iClosed expects %20 for spaces (encodeURIComponent), not "+".
+      var q = [
+        ["iclosedName", v.name],
+        ["iclosedEmail", v.email],
+        ["iclosedPhone", v.phone],
+        // The iClosed questions' own Identifiers (auto-generated; shared with
+        // the "For The Apply Page" event, so do not rename them in iClosed).
+        ["specialty", v.specialty],
+        ["instagram-handle-eg-yourhandle", v.instagram],
+        ["how-much-are-you-ready-to-invest-per-month", v.investment],
+        ["when-do-you-want-to-start", v.start],
+      ];
+      // Carry ad attribution through, as IClosedCapture does on other pages.
+      new URLSearchParams(location.search).forEach(function (val, key) {
+        if (/^utm_|^fbclid$|^test-pixel$/.test(key)) q.push([key, val]);
+      });
+      var url = ICLOSED_URL + "?" + q.map(function (kv) {
+        return encodeURIComponent(kv[0]) + "=" + encodeURIComponent(kv[1]);
+      }).join("&");
+
+      var slot = card.querySelector(".form-embed");
+      var w = document.createElement("div");
+      w.className = "iclosed-widget";
+      w.setAttribute("data-url", url);
+      w.setAttribute("title", "Doctor Strategy Call");
+      w.style.cssText = "width:100%;height:680px;";
+      slot.appendChild(w);
+      var sc = document.createElement("script");
+      sc.src = "https://app.iclosed.io/assets/widget.js";
+      sc.async = true;
+      slot.appendChild(sc);
+
+      form.hidden = true;
+      card.querySelector("h2").textContent = "Pick a Time";
+      card.querySelector(".step-cal").hidden = false;
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  })();
+
+  document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var f = document.createElement("iframe");
+      f.src = "https://fast.wistia.net/embed/iframe/" + btn.dataset.wistia + "?autoPlay=true&seo=false";
+      f.allow = "autoplay; fullscreen";
+      f.allowFullscreen = true;
+      f.title = btn.getAttribute("aria-label");
+      f.className = "thumb video-frame";
+      btn.replaceWith(f);
+    });
+  });
 </script>
 
-<style>
-  /* Every value below is lifted from the /apply3 components (VslHero,
-     VslRealResults, VslProofBar) so the two pages read as one system. */
-
-  /* ---------- Hero (VslHero) ---------- */
-  .a4h {
-    width: 100%;
-    background: var(--vsl-black);
-  }
-  .a4h__wrap {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 56px 24px 48px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .a4h__logo {
-    width: 170px;
-    height: auto;
-    display: block;
-    margin-bottom: 40px;
-  }
-  .a4h__eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--vsl-p);
-    margin: 0 auto 18px;
-    padding: 0 12px;
-  }
-  .a4h__headline {
-    font-size: clamp(28px, 5vw, 46px);
-    font-weight: 600;
-    line-height: 1.14;
-    letter-spacing: -0.022em;
-    margin: 0 auto 30px;
-    max-width: 34ch;
-    color: var(--vsl-ink);
-  }
-  .a4h__accent {
-    background: var(--vsl-accent-grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-decoration: underline;
-    text-decoration-color: var(--vsl-p-light);
-    text-decoration-thickness: 3px;
-    text-underline-offset: 0.2em;
-    text-decoration-skip-ink: none;
-  }
-  .a4h__sub {
-    font-size: clamp(15.5px, 1.9vw, 19px);
-    line-height: 1.55;
-    color: var(--vsl-ink-dim);
-    max-width: 82ch;
-    margin: 0 auto 32px;
-  }
-  .a4h__guarantee {
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--vsl-ink-dim);
-    max-width: 480px;
-    margin: 18px auto 0;
-  }
-  .a4h--end .a4h__wrap {
-    padding-top: 24px;
-    padding-bottom: 90px;
-  }
-  .a4h--end .a4h__headline {
-    font-size: clamp(26px, 4vw, 38px);
-    line-height: 1.16;
-  }
-
-
-  @media (prefers-reduced-motion: no-preference) {
-    .a4h:not(.a4h--end) .a4h__wrap > * {
-      transform: translateY(8px);
-      animation: a4Rise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-    }
-    .a4h__wrap > :nth-child(2) { animation-delay: 0.03s; }
-    .a4h__wrap > :nth-child(3) { animation-delay: 0.06s; }
-    .a4h__wrap > :nth-child(4) { animation-delay: 0.09s; }
-    .a4h__wrap > :nth-child(5) { animation-delay: 0.11s; }
-    .a4h__wrap > :nth-child(6) { animation-delay: 0.14s; }
-  }
-  @keyframes a4Rise {
-    to { transform: translateY(0); }
-  }
-
-  /* ---------- Shared card + section head (VslRealResults) ---------- */
-  .a4-card {
-    background: var(--vsl-card);
-    border: 1px solid var(--vsl-card-border);
-    border-radius: 16px;
-    transition: border-color 0.22s ease, background 0.22s ease;
-  }
-  .a4-card:hover {
-    border-color: rgba(154, 93, 255, 0.36);
-    background: #16131b;
-  }
-  .a4-head {
-    max-width: 720px;
-    margin: 0 auto 48px;
-    text-align: center;
-  }
-  .a4-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--vsl-p);
-    margin-bottom: 16px;
-  }
-  .a4-head h2 {
-    font-size: clamp(26px, 4vw, 38px);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.16;
+<style is:global>
+  /* Ported 1:1 from the mockup's stylesheet, scoped under .dm. */
+  body.dm-body {
     margin: 0;
-    color: var(--vsl-ink);
+    background-color: #000;
+    background-image:
+      radial-gradient(1100px 560px at 50% 0, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0)),
+      linear-gradient(180deg, #070312 0px, #0e0620 520px, #1b0b38 950px, #0e0620 1400px, #000 1900px);
+    background-repeat: no-repeat;
   }
-  .a4-todo {
-    display: inline-block;
-    padding: 6px 10px;
-    border: 1.5px dashed #f5c542;
-    border-radius: 8px;
-    color: #f5c542;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.4;
-    text-align: center;
-  }
-
-  /* ---------- 2. Lily ---------- */
-  .a4-lily {
-    padding: 0 20px;
-  }
-  .a4-lily .a4-card {
-    max-width: 856px;
-    margin: 0 auto;
-    padding: 26px 26px 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    text-align: left;
-  }
-  .a4-lily__title {
-    font-size: clamp(19px, 2.2vw, 22px);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    line-height: 1.28;
-  }
-  .a4-lily__stat {
-    font-size: clamp(24px, 2.6vw, 28px);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    line-height: 1.15;
-    background: var(--vsl-accent-grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .a4-lily__story {
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: rgba(244, 241, 250, 0.8);
-    margin: 0;
-  }
-  /* Profile screenshot and reel insights side by side on every width
-     (brief). The profile image is near-square and never cropped; the
-     insights slot matches its shape. */
-  .a4-lily__shots {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    align-items: stretch;
-  }
-  .a4-lily__img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 12px;
-    border: 1px solid var(--vsl-card-border);
-  }
-  .a4-shot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    border-radius: 12px;
-    background: #0a0a0a;
-    border: 1px solid var(--vsl-card-border);
-  }
-
-  /* ---------- 3. Form ---------- */
-  /* Brief: black top, deep purple around the form, back to black. Same
-     radial wash VslHowItWorks uses, a little stronger. */
-  .a4-form {
-    padding: 72px 20px 44px;
-    background:
-      radial-gradient(ellipse 900px 600px at 50% 45%, rgba(131, 49, 232, 0.22), transparent 70%),
-      var(--vsl-black);
-  }
-  .a4-form__embed {
-    width: 100%;
-    max-width: 760px;
-    margin: 0 auto;
-  }
-  .a4-legal {
-    max-width: 620px;
-    margin: 14px auto 0;
-    text-align: center;
-    font-size: 12px;
-    line-height: 1.55;
-    color: var(--vsl-ink-faint);
-  }
-  .a4-legal a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-  .a4-legal a:hover {
-    color: var(--vsl-ink-dim);
-  }
-
-  /* ---------- 5. How it works ---------- */
-  /* VslHowItWorks paints its radial wash inside its own 520px column, which
-     reads as a small purple box on a full-width black page. Drop it here. */
-  .a4-how :global(.vslhiw) {
-    background: var(--vsl-black);
-  }
-  /* No subheadline here (mockup has none), so the title takes its gap. */
-  .a4-how :global(.vslhiw__title) {
-    margin-bottom: 52px;
-  }
-
-  /* ---------- 6. Results ---------- */
-  /* Owner: purple stat lines should use the brighter gradient the hero's
-     "Guaranteed." uses, not the darker card gradient apply3 keeps. */
-  .a4-results :global(.vslrr__stat) {
-    background: var(--vsl-accent-grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  /* ---------- 6. Quote ---------- */
-  .a4-quote {
-    max-width: 856px;
-    margin: 18px auto 0;
-    padding: 26px;
-    text-align: center;
-  }
-
-  /* ---------- 7. FAQ ---------- */
-  .a4-faq {
-    padding: 0 20px 24px;
-    background: var(--vsl-black);
-  }
-  .a4-faq__list {
-    max-width: 720px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .a4-faq__item {
-    padding: 0 22px;
-    text-align: left;
-  }
-  .a4-faq__item summary {
-    cursor: pointer;
-    list-style: none;
-    position: relative;
-    padding: 20px 32px 20px 0;
+  .dm {
+    color-scheme: dark;
+    --black: #000000;
+    --card: #121212;
+    --card-border: rgba(154, 93, 255, 0.14);
+    --border: rgba(154, 93, 255, 0.16);
+    --ink: #f4f1fa;
+    --ink-dim: rgba(244, 241, 250, 0.62);
+    --ink-faint: rgba(244, 241, 250, 0.38);
+    --p: #9a5dff;
+    --p-light: #d8c4ff;
+    --p-deep: #5f1fae;
+    --p-mid: #8331e8;
+    --grad: linear-gradient(180deg, #d8c4ff, #8331e8 55%, #5f1fae);
+    --grad-soft: linear-gradient(180deg, #f0e8ff, #c9a6ff 55%, #9a5dff);
+    --glow: radial-gradient(900px 480px at 50% -10%, rgba(131, 49, 232, 0.14), rgba(0, 0, 0, 0));
+    --need: #ffcf6b;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    font-family: var(--font);
     font-size: 16px;
-    font-weight: 700;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    color: var(--vsl-ink);
-  }
-  .a4-faq__item summary::-webkit-details-marker {
-    display: none;
-  }
-  .a4-faq__item summary::after {
-    content: "+";
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 22px;
-    font-weight: 400;
-    color: var(--vsl-p);
-  }
-  .a4-faq__item[open] summary::after {
-    content: "−";
-  }
-  .a4-faq__item p {
-    margin: 0 0 20px;
-    font-size: 14.5px;
     line-height: 1.6;
-    color: rgba(244, 241, 250, 0.8);
+    letter-spacing: -0.011em;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  .dm * { box-sizing: border-box; }
+  .dm .wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; }
+  .dm .narrow { max-width: 720px; }
+
+  .dm .brand { padding-block: 28px 0; display: flex; justify-content: center; }
+  .dm .brand img { width: 170px; height: auto; }
+
+  .dm section { padding-block: 72px; }
+  .dm .glow { background: var(--glow); }
+  .dm .kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--p); margin: 0 0 18px; }
+  .dm .hero .kicker { color: var(--ink); letter-spacing: 0.04em; font-size: 16px; }
+  .dm h1, .dm h2, .dm h3 { margin: 0; text-wrap: balance; font-weight: 700; }
+  .dm h1 { font-size: clamp(30px, 6vw, 72px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; }
+  .dm h1 .line { display: block; white-space: nowrap; }
+  @media (max-width: 700px) { .dm h1 .line { white-space: normal; } }
+  .dm .hero .wrap { max-width: 1200px; }
+  .dm .hl {
+    background: var(--grad-soft);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: underline 3px var(--p-light);
+    -webkit-text-decoration: underline 3px var(--p-light);
+    text-underline-offset: 6px;
+  }
+  .dm h2 { font-size: clamp(26px, 4vw, 38px); line-height: 1.15; letter-spacing: -0.02em; }
+  .dm h3 { font-size: 18px; }
+  .dm .sub { font-size: 18px; color: rgba(244, 241, 250, 0.9); max-width: 640px; margin: 28px auto 0; }
+
+  .dm .hero { padding-block: 48px 36px; }
+  .dm .cta { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 32px; }
+  .dm .btn {
+    display: inline-block;
+    background: var(--grad);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 16px 36px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(131, 49, 232, 0.35);
+  }
+  .dm .btn:focus-visible { outline: 3px solid var(--p-light); outline-offset: 3px; }
+  .dm .guarantee { font-size: 15px; color: rgba(244, 241, 250, 0.9); max-width: 46ch; margin: 0; }
+  .dm .guarantee b { color: var(--ink); font-weight: 600; }
+  .dm .need { display: inline-block; border: 1px dashed var(--need); color: var(--need); font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 6px; background: rgba(255, 207, 107, 0.07); }
+
+  .dm .apply { padding-top: 8px; }
+
+  /* form */
+  .dm .form-card {
+    scroll-margin-top: 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 34px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: left;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
+  .dm .form-embed { border-radius: 12px; overflow: hidden; }
+  .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
+  .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dm .field { display: flex; flex-direction: column; gap: 7px; }
+  .dm .full { grid-column: 1 / -1; }
+  .dm .field label, .dm .q { font-size: 14px; font-weight: 600; }
+  .dm input[type="text"], .dm input[type="email"], .dm input[type="tel"] {
+    background: #0a0a0a; border: 1px solid var(--border); color: var(--ink); border-radius: 10px;
+    padding: 12px 14px; font: inherit; font-size: 15px; width: 100%;
+  }
+  .dm input::placeholder { color: var(--ink-faint); }
+  .dm input:focus-visible { outline: 2px solid var(--p); outline-offset: 1px; }
+  .dm .handle { position: relative; }
+  .dm .handle span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
+  .dm .handle input { padding-left: 30px; }
+  .dm .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dm .chips label {
+    position: relative; font-weight: 500; font-size: 14px; border: 1.5px solid var(--border);
+    background: rgba(154, 93, 255, 0.05); border-radius: 999px; padding: 8px 15px; cursor: pointer; color: var(--ink-dim);
+  }
+  .dm .chips input { position: absolute; opacity: 0; pointer-events: none; }
+  .dm .chips label:has(input:checked) { border-color: var(--p); color: var(--ink); background: rgba(154, 93, 255, 0.14); }
+  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-light); }
+  .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .dm .form-error { margin: 18px 0 0; color: #ff9b9b; font-size: 14px; text-align: center; }
+  .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
+  .dm .step-dq .dq-title { color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .dm .legal { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); text-align: center; }
+  .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* proof card above form: the mockup's two 120px slots, first one widened
+     so Lily's near-square image stays readable. */
+  .dm .proof-card {
+    max-width: 640px;
+    margin: 0 auto 22px;
+    display: grid;
+    grid-template-columns: 200px 120px 1fr;
+    gap: 14px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: left;
+  }
+  .dm .shot-img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  .dm .shot {
+    aspect-ratio: 9 / 16;
+    border-radius: 10px;
+    border: 1px dashed var(--need);
+    background: rgba(255, 207, 107, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    text-align: center;
+    font-size: 11.5px;
+    color: var(--need);
+    font-weight: 600;
+  }
+  .dm .proof-card .shot { aspect-ratio: auto; align-self: stretch; }
+  .dm .shot small { font-weight: 500; color: var(--ink-faint); font-size: 11px; }
+  .dm .proof-text { display: flex; flex-direction: column; gap: 6px; padding-right: 6px; }
+  .dm .proof-text .big { font-size: 20px; }
+  .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
+  .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
+  .dm .quote { max-width: 720px; margin: 40px auto 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 28px; }
+  .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
+  .dm .quote .by { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--ink-dim); }
+  .dm .quote .ph { width: 36px; height: 36px; border-radius: 50%; border: 1px dashed var(--need); }
+  @media (max-width: 560px) {
+    .dm .proof-card { grid-template-columns: 1fr 1fr; }
+    .dm .proof-text { grid-column: 1 / -1; }
   }
 
-  /* ---------- Phone (VslHero / VslRealResults 600px breakpoint) ---------- */
-  @media (max-width: 600px) {
-    .a4h__wrap { padding: 40px 18px 36px; }
-    .a4h__logo { width: 150px; margin-bottom: 28px; }
-    .a4h__eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 14px; }
-    .a4h__headline {
-      font-size: clamp(28px, 8.6vw, 36px);
-      max-width: 20ch;
-      line-height: 1.2;
-      margin-bottom: 22px;
-    }
-    .a4h__sub { font-size: 15.5px; margin-bottom: 28px; }
-    .a4h--end .a4h__wrap { padding-bottom: 56px; }
-    .a4h--end .a4h__headline { font-size: clamp(22px, 6.5vw, 28px); }
-    .a4-lily { padding: 0 14px; }
-    .a4-lily .a4-card { padding: 20px 18px; border-radius: 14px; }
-    .a4-lily__shots { gap: 10px; }
-    .a4-todo { font-size: 11px; }
-    .a4-lily__stat { font-size: 22px; }
-    .a4-form { padding: 52px 14px 32px; }
-    .a4-head { margin-bottom: 28px; }
-    .a4-head h2 { font-size: clamp(22px, 6.5vw, 28px); }
-    .a4-faq { padding: 0 14px 16px; }
-    .a4-faq__item { padding: 0 18px; border-radius: 14px; }
-    .a4-faq__item summary { font-size: 15px; }
-    .a4-faq__item p { font-size: 13.5px; }
+  /* proof grid under form */
+  .dm .proof-grid { max-width: 640px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: left; }
+  .dm .pg {
+    background: linear-gradient(180deg, rgba(154, 93, 255, 0.04), rgba(154, 93, 255, 0.1) 50%, rgba(154, 93, 255, 0.04)), var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    box-shadow: 0 20px 60px -2.5px rgba(0, 0, 0, 0.4);
+  }
+  .dm .pg-label { font-size: 20px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; }
+  .dm .pg-num {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 8px 0 6px;
+    background: var(--grad-soft);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .dm .pg p { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.45; }
+  @media (max-width: 560px) {
+    .dm .proof-grid { gap: 8px; }
+    .dm .pg { padding: 14px 12px; }
+    .dm .pg-num { font-size: 26px; }
+    .dm .pg-label { font-size: 14px; }
+    .dm .pg p { font-size: 12.5px; }
+  }
+
+  /* steps */
+  .dm .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+  .dm .step { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 22px; }
+  .dm .step .n { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--p); color: var(--p-light); font-weight: 700; font-size: 14px; display: grid; place-items: center; margin: 0 auto 14px; }
+  .dm .step p { margin: 8px 0 0; color: var(--ink-dim); font-size: 15px; }
+
+  /* results */
+  .dm .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; text-align: left; }
+  .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+  .dm .thumb { aspect-ratio: 16 / 10; width: 100%; background: radial-gradient(90% 90% at 50% 0%, #2a1850, #0b0b0b); display: grid; place-items: center; }
+  .dm .thumb-img { display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; }
+  .dm .video-btn { position: relative; padding: 0; border: 0; cursor: pointer; overflow: hidden; }
+  .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dm .video-frame { border: 0; display: block; }
+  .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
+  .dm .play svg { width: 18px; height: 18px; fill: #0a0a0a; margin-left: 2px; }
+  .dm .tile-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .dm .who { font-size: 12px; color: var(--p); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .dm .big { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .tile p { margin: 0; color: var(--ink-dim); font-size: 15px; }
+  .dm .disclaimer { color: var(--ink-faint); font-size: 13px; margin: 22px auto 0; max-width: 70ch; }
+
+  /* faq */
+  .dm .faq { margin-top: 28px; text-align: left; border-top: 1px solid var(--border); }
+  .dm details { border-bottom: 1px solid var(--border); padding-block: 18px; }
+  .dm summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .dm summary::-webkit-details-marker { display: none; }
+  .dm summary::after { content: "+"; color: var(--p); font-size: 22px; line-height: 1; }
+  .dm details[open] summary::after { content: "−"; }
+  .dm details p { margin: 10px 0 0; color: var(--ink-dim); }
+
+  .dm .final { border-top: 1px solid var(--border); }
+  .dm footer { padding-block: 28px; color: var(--ink-faint); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    .dm section { padding-block: 52px; }
+    .dm .tiles, .dm .steps { grid-template-columns: 1fr; }
+    .dm .form-card { padding: 22px; }
+    .dm .grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .dm .btn { transition: transform 0.15s ease; }
+    .dm .btn:hover { transform: translateY(-1px); }
   }
 </style>
