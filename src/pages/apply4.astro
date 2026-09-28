@@ -133,9 +133,8 @@ const faqs = [
       <img class="a4h__logo" src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" />
       <p class="a4h__eyebrow">{eyebrow}</p>
       <h1 class="a4h__headline">
-        <span>We'll get you 3,000 to 5,000</span>
-        <span>new followers a month.</span>
-        <span class="a4h__accent"><em>Guaranteed.</em></span>
+        We'll get you 3,000 to 5,000 new followers a month.{" "}
+        <span class="a4h__accent">Guaranteed.</span>
       </h1>
       <p class="a4h__sub">{sub}</p>
       <VslButton label={ctaLabel} href="#apply" variant="pill" />
@@ -189,6 +188,7 @@ const faqs = [
   </div>
 
   <!-- 5. How it works -->
+  <div class="a4-how">
   <VslHowItWorks
     titleLead="From Your First Call"
     titleAccent="To Your First Post"
@@ -198,6 +198,7 @@ const faqs = [
     ctaHref="#apply"
     ctaNote={guarantee}
   />
+  </div>
 
   <!-- 6. Doctor results -->
   <VslRealResults
@@ -233,9 +234,8 @@ const faqs = [
   <section class="a4h a4h--end">
     <div class="a4h__wrap">
       <h2 class="a4h__headline">
-        <span>We'll get you 3,000 to 5,000</span>
-        <span>new followers a month.</span>
-        <span class="a4h__accent"><em>Guaranteed.</em></span>
+        We'll get you 3,000 to 5,000 new followers a month.{" "}
+        <span class="a4h__accent">Guaranteed.</span>
       </h2>
       <VslButton label={ctaLabel} href="#apply" variant="pill" />
       <p class="a4h__guarantee">{guarantee}</p>
@@ -271,13 +271,12 @@ const faqs = [
     display: block;
     margin-bottom: 40px;
   }
-  /* Brief: white, tighter tracking than apply3's purple 0.20em. */
   .a4h__eyebrow {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--vsl-ink);
+    color: var(--vsl-p);
     margin: 0 auto 18px;
     padding: 0 12px;
   }
@@ -287,10 +286,8 @@ const faqs = [
     line-height: 1.14;
     letter-spacing: -0.022em;
     margin: 0 auto 30px;
+    max-width: 34ch;
     color: var(--vsl-ink);
-  }
-  .a4h__headline span {
-    display: block;
   }
   .a4h__accent {
     background: var(--vsl-accent-grad-soft);
@@ -301,23 +298,18 @@ const faqs = [
     text-decoration-color: var(--vsl-p-light);
     text-decoration-thickness: 3px;
     text-underline-offset: 6px;
-    padding-right: 0.06em;
-  }
-  .a4h__accent em {
-    display: inline-block;
-    padding-right: 0.06em;
   }
   .a4h__sub {
     font-size: clamp(15.5px, 1.9vw, 19px);
     line-height: 1.55;
-    color: rgba(244, 241, 250, 0.9);
-    max-width: 44em;
+    color: var(--vsl-ink-dim);
+    max-width: 82ch;
     margin: 0 auto 32px;
   }
   .a4h__guarantee {
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(244, 241, 250, 0.9);
+    color: var(--vsl-ink-dim);
     max-width: 480px;
     margin: 18px auto 0;
   }
@@ -330,11 +322,6 @@ const faqs = [
     line-height: 1.16;
   }
 
-  @media (min-width: 600px) {
-    .a4h__headline span {
-      white-space: nowrap;
-    }
-  }
 
   @media (prefers-reduced-motion: no-preference) {
     .a4h:not(.a4h--end) .a4h__wrap > * {
@@ -478,6 +465,13 @@ const faqs = [
     color: var(--vsl-ink-dim);
   }
 
+  /* ---------- 5. How it works ---------- */
+  /* VslHowItWorks paints its radial wash inside its own 520px column, which
+     reads as a small purple box on a full-width black page. Drop it here. */
+  .a4-how :global(.vslhiw) {
+    background: var(--vsl-black);
+  }
+
   /* ---------- 6. Quote ---------- */
   .a4-quote {
     max-width: 856px;
@@ -540,9 +534,10 @@ const faqs = [
   @media (max-width: 600px) {
     .a4h__wrap { padding: 40px 18px 36px; }
     .a4h__logo { width: 150px; margin-bottom: 28px; }
-    .a4h__eyebrow { font-size: 10px; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .a4h__eyebrow { font-size: 10px; letter-spacing: 0.16em; margin-bottom: 14px; }
     .a4h__headline {
-      font-size: clamp(22px, 6.6vw, 36px);
+      font-size: clamp(28px, 8.6vw, 36px);
+      max-width: 20ch;
       line-height: 1.2;
       margin-bottom: 22px;
     }
