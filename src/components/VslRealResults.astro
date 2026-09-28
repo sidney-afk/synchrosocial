@@ -25,6 +25,9 @@ interface Card {
   wistia?: string;
   poster?: string;
   placeholder?: string;
+  /** A still proof image shown uncropped instead of a video. */
+  image?: string;
+  imageAlt?: string;
 }
 interface Props {
   eyebrow?: string;
@@ -85,6 +88,8 @@ const {
                   <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg>
                 </span>
               </button>
+              ) : c.image ? (
+                <img class="vslrr__image" src={c.image} alt={c.imageAlt ?? ""} loading="lazy" decoding="async" />
               ) : (
                 <div class="vslrr__pending"><span>{c.placeholder}</span></div>
               )}
@@ -296,6 +301,13 @@ const {
     }
   }
 
+  .vslrr__image {
+    display: block;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    margin: 0 auto;
+  }
   .vslrr__pending {
     aspect-ratio: 16 / 9;
     display: flex;
