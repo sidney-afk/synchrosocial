@@ -18,7 +18,7 @@
 interface Card {
   name: string;
   stat: string;
-  tag: string;
+  tag?: string;
   story: string;
   /** Omit wistia/poster to show `placeholder` in the video slot instead
    *  (used by /apply4 while proof assets are pending). */
@@ -62,7 +62,7 @@ const {
           <div class="vslrr__stat-row">
             <div class="vslrr__stat">{c.stat}</div>
           </div>
-          <div class="vslrr__tag">{c.tag}</div>
+          {c.tag && <div class="vslrr__tag">{c.tag}</div>}
           <p class="vslrr__story">{c.story}</p>
           <div class="vslrr__vsl-wrap">
             <div class="vslrr__vsl">

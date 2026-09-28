@@ -100,7 +100,7 @@ const pillars = pillarsProp ?? [
       {titleLead}
       {titleAccent && (<><br /><span class="vslhiw__accent">{titleAccent}</span></>)}
     </h2>
-    <p class="vslhiw__sub">{sub}</p>
+    {sub && <p class="vslhiw__sub">{sub}</p>}
 
     <div class="vslhiw__timeline" id="vslhiw-timeline">
       <div class="vslhiw__fill" id="vslhiw-fill"></div>
@@ -129,7 +129,7 @@ const pillars = pillarsProp ?? [
       }
     </div>
 
-    <div class="vslhiw__cta">
+    {ctaLabel && (<div class="vslhiw__cta">
       <VslButton
         label={ctaLabel}
         href={ctaHref}
@@ -139,7 +139,7 @@ const pillars = pillarsProp ?? [
         rel={ctaRel}
       />
       {ctaNote && <p class="vslhiw__cta-note">{ctaNote}</p>}
-    </div>
+    </div>)}
   </section>
 </div>
 
