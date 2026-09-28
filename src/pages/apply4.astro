@@ -71,7 +71,7 @@ const lily = {
   story: "Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new followers alone.",
 };
 const doctors = [
-  { ...lily, image: "/images/apply4/lily-baker-growth.webp", imageAlt: "Dr. Lily Baker's Instagram growth: 90K to 150K followers in under 90 days" },
+  { ...lily, image: "/images/apply4/lily-baker-growth-wide.webp", imageAlt: "Dr. Lily Baker's Instagram growth: 90K to 150K followers in under 90 days" },
   {
     name: "Dr. Sonia Chopra · Endodontist",
     stat: "Following up about 50% in under 6 months",
@@ -205,6 +205,7 @@ const faqs = [
   </div>
 
   <!-- 6. Doctor results -->
+  <div class="a4-results">
   <VslRealResults
     eyebrow="Doctor results"
     heading="Doctors we've grown"
@@ -215,6 +216,7 @@ const faqs = [
       <span class="a4-todo">Written quote from a doctor client<br />Name · Specialty · photo</span>
     </figure>
   </VslRealResults>
+  </div>
 
   <!-- 7. FAQ -->
   <section class="a4-faq">
@@ -410,7 +412,7 @@ const faqs = [
     font-weight: 700;
     letter-spacing: -0.015em;
     line-height: 1.15;
-    background: var(--vsl-accent-grad);
+    background: var(--vsl-accent-grad-soft);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -487,6 +489,15 @@ const faqs = [
   /* No subheadline here (mockup has none), so the title takes its gap. */
   .a4-how :global(.vslhiw__title) {
     margin-bottom: 52px;
+  }
+
+  /* ---------- 6. Results ---------- */
+  /* Owner: purple stat lines should use the brighter gradient the hero's
+     "Guaranteed." uses, not the darker card gradient apply3 keeps. */
+  .a4-results :global(.vslrr__stat) {
+    background: var(--vsl-accent-grad-soft);
+    -webkit-background-clip: text;
+    background-clip: text;
   }
 
   /* ---------- 6. Quote ---------- */
