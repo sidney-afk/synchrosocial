@@ -101,7 +101,7 @@ const faqs = [
       <div class="wrap">
         <div class="proof-card">
           <img
-            class="shot-img"
+            class="shot-img" data-zoom
             src="/images/apply4/lily-baker-before-after.webp"
             alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
             width="900"
@@ -195,7 +195,7 @@ const faqs = [
         <div class="tiles">
           <article class="tile">
             <img
-              class="thumb-img"
+              class="thumb-img" data-zoom
               src="/images/apply4/lily-baker-before-after-wide.webp"
               alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
               width="1280"
@@ -211,7 +211,7 @@ const faqs = [
           </article>
           <article class="tile">
             <img
-              class="thumb-img"
+              class="thumb-img" data-zoom
               src="/images/apply4/sonia-chopra-before-after.webp"
               alt="Dr. Sonia Chopra's Instagram profile before (19K followers) and after (31.1K followers)"
               width="1280"
@@ -227,7 +227,7 @@ const faqs = [
           </article>
           <article class="tile">
             <img
-              class="thumb-img"
+              class="thumb-img" data-zoom
               src="/images/apply4/rocco-piazza-featured.webp"
               alt="Dr. Rocco Piazza as a guest on one @theplasticsurgerychannel video: 615.8K views, 32.7K likes"
               width="1280"
@@ -243,8 +243,14 @@ const faqs = [
           </article>
         </div>
         <figure class="quote">
-          <p><span class="need">Written quote from a doctor client</span></p>
-          <figcaption class="by"><span class="ph" aria-hidden="true"></span>Name · Specialty · photo</figcaption>
+          <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
+          <blockquote>
+            <p>“Overall I am SO IMPRESSED by you guys. All the videos are amazing and you make me look so good! And your captions sound exactly like me.”</p>
+          </blockquote>
+          <figcaption class="by">
+            <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+            Dr. Lily Baker · Chiropractor
+          </figcaption>
         </figure>
         <p class="disclaimer">
           These are outcomes from clients who followed our process as built. Growth depends on
@@ -281,6 +287,11 @@ const faqs = [
         </div>
       </div>
     </section>
+
+    <dialog class="lightbox" aria-label="Image preview">
+      <button class="lb-close" type="button" aria-label="Close">×</button>
+      <img alt="" />
+    </dialog>
 
     <footer>© Synchro Social</footer>
   </div>
@@ -375,6 +386,32 @@ const faqs = [
       card.querySelector(".step-cal").hidden = false;
       card.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  })();
+
+  // Proof images: hover hint + click/tap to view full screen.
+  (function () {
+    var lb = document.querySelector(".dm .lightbox");
+    if (!lb || typeof lb.showModal !== "function") return;
+    var big = lb.querySelector("img");
+    document.querySelectorAll(".dm img[data-zoom]").forEach(function (img) {
+      var wrap = document.createElement("button");
+      wrap.type = "button";
+      wrap.className = "zoom";
+      wrap.setAttribute("aria-label", "View full screen: " + (img.alt || "image"));
+      img.parentNode.insertBefore(wrap, img);
+      wrap.appendChild(img);
+      var icon = document.createElement("span");
+      icon.className = "zoom-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
+      wrap.appendChild(icon);
+      wrap.addEventListener("click", function () {
+        big.src = img.currentSrc || img.src;
+        big.alt = img.alt;
+        lb.showModal();
+      });
+    });
+    lb.addEventListener("click", function () { lb.close(); });
   })();
 
   document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
@@ -562,7 +599,8 @@ const faqs = [
   .dm .quote { max-width: 720px; margin: 40px auto 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 28px; }
   .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
   .dm .quote .by { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--ink-dim); }
-  .dm .quote .ph { width: 36px; height: 36px; border-radius: 50%; border: 1px dashed var(--need); }
+  .dm .quote blockquote { margin: 0; }
+  .dm .quote .ph-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
   @media (max-width: 560px) {
     .dm .proof-card { grid-template-columns: 1fr 1fr; }
     .dm .proof-text { grid-column: 1 / -1; }
@@ -600,6 +638,30 @@ const faqs = [
     .dm .pg-num { font-size: 26px; }
     .dm .pg-label { font-size: 14px; }
     .dm .pg p { font-size: 12.5px; }
+  }
+
+  /* zoomable proof images */
+  .dm .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; border-radius: inherit; }
+  .dm .proof-card .zoom { border-radius: 10px; }
+  .dm .zoom img { transition: transform 0.35s ease, filter 0.35s ease; }
+  .dm .zoom-icon {
+    position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center; background: rgba(10, 10, 10, 0.7); border: 1px solid var(--border);
+    opacity: 0.85; transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  }
+  .dm .zoom-icon svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  @media (hover: hover) {
+    .dm .zoom-icon { opacity: 0; transform: scale(0.9); }
+    .dm .zoom:hover img { transform: scale(1.03); filter: brightness(1.08); }
+    .dm .zoom:hover .zoom-icon { opacity: 1; transform: scale(1); background: var(--p-mid); }
+  }
+  .dm .zoom:focus-visible { outline: 2px solid var(--p-light); outline-offset: 2px; }
+  .dm .lightbox { position: fixed; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 0; border: 0; background: transparent; max-width: 96vw; max-height: 92vh; overflow: visible; cursor: zoom-out; }
+  .dm .lightbox::backdrop { background: rgba(0, 0, 0, 0.88); }
+  .dm .lightbox img { display: block; max-width: 96vw; max-height: 92vh; width: auto; height: auto; border-radius: 12px; }
+  .dm .lb-close {
+    position: fixed; top: 14px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border);
+    background: rgba(18, 18, 18, 0.9); color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
   }
 
   /* steps */
@@ -643,7 +705,7 @@ const faqs = [
     .dm .grid { grid-template-columns: 1fr; }
   }
   /* Desktop-only tweaks (owner feedback 2026-09-28). */
-  .dm .how { padding-top: 8px; }
+  .dm .how { padding-top: 40px; }
   @media (min-width: 721px) {
     /* Guarantee line fits on two lines. */
     .dm .guarantee { max-width: 62ch; }
