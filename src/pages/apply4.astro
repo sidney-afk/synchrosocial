@@ -23,10 +23,13 @@
 import Layout from "../layouts/Layout.astro";
 import VslButton from "../components/VslButton.astro";
 import IClosedEmbed from "../components/IClosedEmbed.astro";
+import VslProofBar from "../components/VslProofBar.astro";
+import VslRealResults from "../components/VslRealResults.astro";
+import VslHowItWorks from "../components/VslHowItWorks.astro";
 import "../styles/vsl.css";
 
-// TODO: iClosed link prefix of the doctor event, e.g. "synchrosocial/doctor-strategy-call".
-const ICLOSED_PREFIX: string | null = null;
+// iClosed "Doctor Strategy Call" event (disqualifies "Under $2,000" a month).
+const ICLOSED_PREFIX: string | null = "synchrosocial/doctor-strategy-call";
 
 const ctaLabel = "See If You Qualify";
 const eyebrow = "For doctors, dentists, chiropractors, and surgeons";
@@ -36,47 +39,53 @@ const guarantee =
   "If we don't hit the monthly follower target we set for you in your first 3 months, we keep working for free until we do.";
 
 const stats = [
-  { label: "Reach", value: "1.2B+", text: "views generated for our clients" },
-  { label: "Growth", value: "8M+", text: "followers grown across platforms" },
-  { label: "Leads", value: "150K+", text: "over 150,000 leads generated for clients" },
+  { label: "Reach", metric: "1.2B+", copy: "Views generated for our clients" },
+  { label: "Growth", metric: "8M+", copy: "Followers grown across platforms" },
+  { label: "Leads", metric: "150K+", copy: "Over 150,000 leads generated for clients" },
 ];
 
 const steps = [
   {
-    title: "We set your target",
-    text: "On a strategy call we review your account and set your monthly follower target.",
-  },
-  {
-    title: "We film you",
-    text: "2-3 hours a month, with the strategy and scripts we create and you approve.",
-  },
-  {
-    title: "We edit and post",
-    text: "Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.",
+    features: [
+      {
+        title: "1. We Set Your Target",
+        body: "On a strategy call we review your account and set your monthly follower target.",
+      },
+      {
+        title: "2. We Film You",
+        body: "2-3 hours a month, with the strategy and scripts we create and you approve.",
+      },
+      {
+        title: "3. We Edit And Post",
+        body: "Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.",
+        final: true,
+      },
+    ],
   },
 ];
 
 const doctors = [
   {
-    name: "Dr. Lily Baker",
-    role: "Chiropractor",
-    result: "90K → 150K followers",
-    wistia: null,
-    poster: null,
+    name: "Dr. Lily Baker | Chiropractor",
+    stat: "90K → 150K Followers",
+    tag: "17,000+ New Followers From One Reel",
+    story: "Placeholder story: Kasper to confirm Lily's numbers and send her profile and reel insights screenshots.",
+    placeholder: "Lily: video testimonial or screenshots",
   },
   {
-    name: "Dr. Sonia Chopra",
-    role: "Endodontist",
-    result: "~50% follower growth in under 6 months",
+    name: "Dr. Sonia Chopra | Endodontist",
+    stat: "1,000s Of Qualified Leads",
+    tag: "Grew Her Following By 50% In Under 6 Months",
+    story: "Dr. Sonia is a board-certified endodontist in one of the hardest markets to make content work in: clinical healthcare, where most accounts stay invisible. One post alone pulled 1,500 comments, her following grew roughly 50%, and the account now produces thousands of qualified leads.",
     wistia: "vr83s40k0b",
     poster: "/images/campaign-proof/11-dr-sonia-chopra.webp",
   },
   {
-    name: "Third doctor",
-    role: "Dr. Rocco Piazza or Dr. John Baker",
-    result: "Result pending",
-    wistia: null,
-    poster: null,
+    name: "Third Doctor | Specialty",
+    stat: "Result Pending",
+    tag: "Dr. Rocco Piazza or Dr. John Baker",
+    story: "Placeholder: Kasper to send this doctor's specialty, results and screenshots.",
+    placeholder: "Third doctor: video or screenshots",
   },
 ];
 
@@ -118,205 +127,262 @@ const faqs = [
   bodyClass="vsl"
   metaEvent={{ name: "ViewContent", params: { content_name: "doctor_offer" } }}
 >
-  <div class="a4">
-    <!-- 1. Top section -->
-    <header class="a4-hero a4-wrap">
-      <img class="a4-logo" src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" />
-      <p class="a4-eyebrow">{eyebrow}</p>
-      <h1 class="a4-headline">
+  <!-- 1. Top section: VslHero geometry -->
+  <header class="a4h">
+    <div class="a4h__wrap">
+      <img class="a4h__logo" src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" />
+      <p class="a4h__eyebrow">{eyebrow}</p>
+      <h1 class="a4h__headline">
         <span>We'll get you 3,000 to 5,000</span>
         <span>new followers a month.</span>
-        <span class="a4-accent"><em>Guaranteed.</em></span>
+        <span class="a4h__accent"><em>Guaranteed.</em></span>
       </h1>
-      <p class="a4-sub">{sub}</p>
+      <p class="a4h__sub">{sub}</p>
       <VslButton label={ctaLabel} href="#apply" variant="pill" />
-      <p class="a4-guarantee">{guarantee}</p>
-    </header>
+      <p class="a4h__guarantee">{guarantee}</p>
+    </div>
+  </header>
 
-    <!-- 2. Lily proof card -->
-    <section class="a4-wrap a4-lily" aria-label="Client result">
-      <div class="a4-card a4-lily__card">
-        <div class="a4-lily__shots">
-          <div class="a4-shot"><span class="a4-todo">Lily: Instagram profile screenshot</span></div>
-          <div class="a4-shot"><span class="a4-todo">Lily: reel insights screenshot</span></div>
-        </div>
-        <div class="a4-lily__text">
-          <p class="a4-lily__name">Dr. Lily Baker, Chiropractor</p>
-          <p class="a4-lily__stat"><span class="vsl-accent">17,000+</span> new followers from one reel</p>
-          <p class="a4-lily__more">Grew from 90K to 150K followers with Synchro Social.</p>
-        </div>
+  <!-- 2. Lily proof card: VslRealResults card shell -->
+  <section class="a4-lily" aria-label="Client result">
+    <div class="a4-card">
+      <div class="a4-lily__title">Dr. Lily Baker | Chiropractor</div>
+      <div class="a4-lily__stat">17,000+ New Followers From One Reel</div>
+      <div class="a4-lily__tag">Grew From 90K To 150K Followers</div>
+      <div class="a4-lily__shots">
+        <div class="a4-shot"><span class="a4-todo">Instagram profile screenshot</span></div>
+        <div class="a4-shot"><span class="a4-todo">Reel insights screenshot</span></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 3. Application form -->
-    <section id="apply" class="a4-wrap a4-form">
-      <h2 class="a4-h2">See If You Qualify</h2>
-      <div class="a4-form__embed">
-        <IClosedEmbed
-          linkPrefix={ICLOSED_PREFIX}
-          title="Doctor Strategy Call"
-          height="620px"
-          card={false}
-          resize={false}
-        />
-      </div>
-      <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
-           See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
-      <p class="a4-legal">
-        By booking a call you agree to receive text messages from Synchro Social about your
-        call. Message frequency varies, typically one message per booking. Message and data
-        rates may apply. Reply STOP to opt out, HELP for help. See our
-        <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
-        and
-        <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
-      </p>
-    </section>
+  <!-- 3. Application form -->
+  <section id="apply" class="a4-form">
+    <div class="a4-head">
+      <div class="a4-eyebrow">Apply</div>
+      <h2>See If You Qualify</h2>
+    </div>
+    <div class="a4-form__embed">
+      <IClosedEmbed
+        linkPrefix={ICLOSED_PREFIX}
+        title="Doctor Strategy Call"
+        height="620px"
+        card={false}
+        resize={false}
+      />
+    </div>
+    <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
+         See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+    <p class="a4-legal">
+      By booking a call you agree to receive text messages from Synchro Social about your
+      call. Message frequency varies, typically one message per booking. Message and data
+      rates may apply. Reply STOP to opt out, HELP for help. See our
+      <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      and
+      <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+    </p>
+  </section>
 
-    <!-- 4. Stats bar -->
-    <section class="a4-wrap a4-stats" aria-label="Results in numbers">
-      {
-        stats.map((s) => (
-          <div class="a4-card a4-stat">
-            <p class="a4-stat__label">{s.label}</p>
-            <p class="a4-stat__value vsl-accent">{s.value}</p>
-            <p class="a4-stat__text">{s.text}</p>
-          </div>
-        ))
-      }
-    </section>
+  <!-- 4. Stats bar -->
+  <div class="a4-stats">
+    <VslProofBar items={stats} />
+  </div>
 
-    <!-- 5. How it works -->
-    <section class="a4-wrap a4-how">
-      <h2 class="a4-h2">From your first call to your first post</h2>
-      <ol class="a4-steps">
-        {
-          steps.map((s, i) => (
-            <li class="a4-card a4-step">
-              <span class="a4-step__num">{i + 1}</span>
-              <h3 class="a4-step__title">{s.title}</h3>
-              <p class="a4-step__text">{s.text}</p>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
+  <!-- 5. How it works -->
+  <VslHowItWorks
+    titleLead="From Your First Call"
+    titleAccent="To Your First Post"
+    sub="Three steps. You film for a few hours a month; we handle everything else."
+    pillars={steps}
+    ctaLabel={ctaLabel}
+    ctaHref="#apply"
+    ctaNote={guarantee}
+  />
 
-    <!-- 6. Doctor results -->
-    <section class="a4-wrap a4-results">
-      <h2 class="a4-h2">Doctor results</h2>
-      <div class="a4-tiles">
-        {
-          doctors.map((d) => (
-            <article class="a4-card a4-tile">
-              {d.wistia ? (
-                <button class="a4-video" type="button" data-wistia={d.wistia} aria-label={`Play ${d.name}'s testimonial`}>
-                  <img src={d.poster} alt="" loading="lazy" decoding="async" />
-                  <span class="a4-play" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg>
-                  </span>
-                </button>
-              ) : (
-                <div class="a4-shot a4-shot--tile">
-                  <span class="a4-todo">{d.name}: video or screenshots</span>
-                </div>
-              )}
-              <p class="a4-tile__name">{d.name}</p>
-              <p class="a4-tile__role">{d.role}</p>
-              <p class="a4-tile__result">{d.result}</p>
-            </article>
-          ))
-        }
-      </div>
-      <figure class="a4-card a4-quote">
-        <blockquote><span class="a4-todo">Written doctor quote (name, specialty, photo) from Kasper</span></blockquote>
-      </figure>
-      <p class="a4-disclaimer">
-        Results shown are from real clients and are not typical or guaranteed beyond the terms of
-        our follower guarantee. Results vary based on execution and platform algorithms.
-      </p>
-    </section>
+  <!-- 6. Doctor results -->
+  <VslRealResults
+    heading="What We Built For Doctors"
+    intro="Every doctor below came to us with real expertise and almost no time for content. Here's what changed once we ran it for them."
+    cards={doctors}
+    disclaimer="These are real outcomes from clients who followed our process as built. Growth depends on execution and platform algorithms, results will vary by effort and market."
+  >
+    <figure class="a4-quote a4-card">
+      <span class="a4-todo">Written doctor quote (name, specialty, photo) from Kasper</span>
+    </figure>
+  </VslRealResults>
 
-    <!-- 7. FAQ -->
-    <section class="a4-wrap a4-faq">
-      <h2 class="a4-h2">Questions</h2>
+  <!-- 7. FAQ -->
+  <section class="a4-faq">
+    <div class="a4-head">
+      <div class="a4-eyebrow">FAQ</div>
+      <h2>Questions Doctors Ask</h2>
+    </div>
+    <div class="a4-faq__list">
       {
         faqs.map((f) => (
-          <details class="a4-faq__item">
+          <details class="a4-card a4-faq__item">
             <summary>{f.q}</summary>
             <p>{f.a}</p>
           </details>
         ))
       }
-    </section>
+    </div>
+  </section>
 
-    <!-- 8. Repeat -->
-    <section class="a4-wrap a4-end">
-      <h2 class="a4-headline a4-headline--end">
+  <!-- 8. Repeat -->
+  <section class="a4h a4h--end">
+    <div class="a4h__wrap">
+      <h2 class="a4h__headline">
         <span>We'll get you 3,000 to 5,000</span>
         <span>new followers a month.</span>
-        <span class="a4-accent"><em>Guaranteed.</em></span>
+        <span class="a4h__accent"><em>Guaranteed.</em></span>
       </h2>
       <VslButton label={ctaLabel} href="#apply" variant="pill" />
-      <p class="a4-guarantee">{guarantee}</p>
-    </section>
-  </div>
+      <p class="a4h__guarantee">{guarantee}</p>
+    </div>
+  </section>
 </Layout>
 
 <script is:inline>
   document.body.dataset.vslPage = "doctor_offer";
-  // Testimonial videos load only on tap, so they cost nothing on first paint.
-  document.querySelectorAll(".a4-video").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var f = document.createElement("iframe");
-      f.src = "https://fast.wistia.net/embed/iframe/" + btn.dataset.wistia + "?autoPlay=true&seo=false";
-      f.allow = "autoplay; fullscreen";
-      f.allowFullscreen = true;
-      f.title = btn.getAttribute("aria-label");
-      f.className = "a4-video__frame";
-      btn.replaceWith(f);
-    });
-  });
 </script>
 
 <style>
-  .a4 {
-    /* Black at the top, deep purple around the form, back to black. */
-    background: linear-gradient(
-      180deg,
-      #000 0%,
-      #000 14%,
-      #1a0b33 32%,
-      #210d42 42%,
-      #12071f 56%,
-      #000 70%
-    );
-    padding-bottom: 72px;
-    text-align: center;
-    overflow-x: hidden;
-  }
+  /* Every value below is lifted from the /apply3 components (VslHero,
+     VslRealResults, VslProofBar) so the two pages read as one system. */
 
-  .a4-wrap {
+  /* ---------- Hero (VslHero) ---------- */
+  .a4h {
     width: 100%;
-    max-width: 960px;
+    background: var(--vsl-black);
+  }
+  .a4h__wrap {
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 56px 24px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .a4h__logo {
+    width: 170px;
+    height: auto;
+    display: block;
+    margin-bottom: 40px;
+  }
+  /* Brief: white, tighter tracking than apply3's purple 0.20em. */
+  .a4h__eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--vsl-ink);
+    margin: 0 auto 18px;
+    padding: 0 12px;
+  }
+  .a4h__headline {
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 600;
+    line-height: 1.14;
+    letter-spacing: -0.022em;
+    margin: 0 auto 30px;
+    color: var(--vsl-ink);
+  }
+  .a4h__headline span {
+    display: block;
+  }
+  .a4h__accent {
+    background: var(--vsl-accent-grad-soft);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: underline;
+    text-decoration-color: var(--vsl-p-light);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+    padding-right: 0.06em;
+  }
+  .a4h__accent em {
+    display: inline-block;
+    padding-right: 0.06em;
+  }
+  .a4h__sub {
+    font-size: clamp(15.5px, 1.9vw, 19px);
+    line-height: 1.55;
+    color: rgba(244, 241, 250, 0.9);
+    max-width: 44em;
+    margin: 0 auto 32px;
+  }
+  .a4h__guarantee {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(244, 241, 250, 0.9);
+    max-width: 480px;
+    margin: 18px auto 0;
+  }
+  .a4h--end .a4h__wrap {
+    padding-top: 24px;
+    padding-bottom: 90px;
+  }
+  .a4h--end .a4h__headline {
+    font-size: clamp(26px, 4vw, 38px);
+    line-height: 1.16;
   }
 
+  @media (min-width: 600px) {
+    .a4h__headline span {
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .a4h:not(.a4h--end) .a4h__wrap > * {
+      transform: translateY(8px);
+      animation: a4Rise 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+    .a4h__wrap > :nth-child(2) { animation-delay: 0.03s; }
+    .a4h__wrap > :nth-child(3) { animation-delay: 0.06s; }
+    .a4h__wrap > :nth-child(4) { animation-delay: 0.09s; }
+    .a4h__wrap > :nth-child(5) { animation-delay: 0.11s; }
+    .a4h__wrap > :nth-child(6) { animation-delay: 0.14s; }
+  }
+  @keyframes a4Rise {
+    to { transform: translateY(0); }
+  }
+
+  /* ---------- Shared card + section head (VslRealResults) ---------- */
   .a4-card {
-    background: rgba(18, 18, 18, 0.85);
+    background: var(--vsl-card);
     border: 1px solid var(--vsl-card-border);
-    border-radius: var(--vsl-radius);
+    border-radius: 16px;
+    transition: border-color 0.22s ease, background 0.22s ease;
   }
-
-  .a4-h2 {
-    font-size: clamp(24px, 4vw, 34px);
+  .a4-card:hover {
+    border-color: rgba(154, 93, 255, 0.36);
+    background: #16131b;
+  }
+  .a4-head {
+    max-width: 720px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+  .a4-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--vsl-p);
+    margin-bottom: 16px;
+  }
+  .a4-head h2 {
+    font-size: clamp(26px, 4vw, 38px);
     font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 1.2;
-    margin: 0 0 24px;
+    line-height: 1.16;
+    margin: 0;
+    color: var(--vsl-ink);
   }
-
-  /* Placeholder tag for content Kasper still owes. */
   .a4-todo {
     display: inline-block;
     padding: 6px 10px;
@@ -326,123 +392,79 @@ const faqs = [
     font-size: 12px;
     font-weight: 600;
     line-height: 1.4;
-  }
-
-  /* ---------- 1. Top ---------- */
-  .a4-hero {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .a4-logo {
-    width: 170px;
-    height: auto;
-    margin-bottom: 32px;
-  }
-  .a4-eyebrow {
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin: 0 0 16px;
-  }
-  .a4-headline {
-    font-size: clamp(27px, 7.4vw, 54px);
-    font-weight: 600;
-    line-height: 1.14;
-    letter-spacing: -0.025em;
-    margin: 0 0 22px;
-  }
-  .a4-headline span {
-    display: block;
-  }
-  @media (min-width: 420px) {
-    .a4-headline span {
-      white-space: nowrap;
-    }
-  }
-  .a4-accent {
-    background: var(--vsl-accent-grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    padding-right: 0.08em;
-  }
-  .a4-sub,
-  .a4-guarantee {
-    color: rgba(255, 255, 255, 0.9);
-  }
-  .a4-sub {
-    font-size: clamp(16px, 2vw, 19px);
-    line-height: 1.55;
-    max-width: 38em;
-    margin: 0 auto 30px;
-  }
-  .a4-guarantee {
-    font-size: 14px;
-    line-height: 1.5;
-    max-width: 30em;
-    margin: 16px auto 0;
+    text-align: center;
   }
 
   /* ---------- 2. Lily ---------- */
-  .a4-lily__card {
-    padding: 16px;
-    display: grid;
-    gap: 16px;
-    max-width: 760px;
+  .a4-lily {
+    padding: 0 20px;
+  }
+  .a4-lily .a4-card {
+    max-width: 856px;
     margin: 0 auto;
+    padding: 26px 26px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+  }
+  .a4-lily__title {
+    font-size: clamp(19px, 2.2vw, 22px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.28;
+  }
+  .a4-lily__stat {
+    font-size: clamp(24px, 2.6vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    background: var(--vsl-accent-grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .a4-lily__tag {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vsl-p);
   }
   .a4-lily__shots {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px;
   }
   .a4-shot {
-    aspect-ratio: 9 / 16;
-    max-height: 340px;
+    aspect-ratio: 4 / 5;
+    max-height: 320px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    padding: 12px;
     border-radius: 12px;
     background: #0a0a0a;
-    border: 1px solid var(--vsl-border);
-  }
-  .a4-lily__text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .a4-lily__name {
-    font-weight: 700;
-    margin: 0 0 6px;
-  }
-  .a4-lily__stat {
-    font-size: 22px;
-    font-weight: 700;
-    margin: 0 0 6px;
-  }
-  .a4-lily__more {
-    color: var(--vsl-ink-dim);
-    margin: 0;
+    border: 1px solid var(--vsl-card-border);
   }
 
   /* ---------- 3. Form ---------- */
+  /* Brief: black top, deep purple around the form, back to black. Same
+     radial wash VslHowItWorks uses, a little stronger. */
   .a4-form {
-    margin-top: 56px;
+    padding: 72px 20px 44px;
+    background:
+      radial-gradient(ellipse 900px 600px at 50% 45%, rgba(131, 49, 232, 0.22), transparent 70%),
+      var(--vsl-black);
   }
   .a4-form__embed {
+    width: 100%;
     max-width: 760px;
     margin: 0 auto;
   }
   .a4-legal {
     max-width: 620px;
     margin: 14px auto 0;
+    text-align: center;
     font-size: 12px;
     line-height: 1.55;
     color: var(--vsl-ink-faint);
@@ -452,181 +474,44 @@ const faqs = [
     text-decoration: underline;
     text-underline-offset: 2px;
   }
-
-  /* ---------- 4. Stats ---------- */
-  .a4-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 40px;
-  }
-  .a4-stat {
-    padding: 14px 8px;
-  }
-  .a4-stat__label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--vsl-p-light);
-    margin: 0 0 4px;
-  }
-  .a4-stat__value {
-    font-size: clamp(24px, 6vw, 40px);
-    font-weight: 700;
-    line-height: 1.1;
-    margin: 0 0 6px;
-  }
-  .a4-stat__text {
-    font-size: 12px;
-    line-height: 1.4;
+  .a4-legal a:hover {
     color: var(--vsl-ink-dim);
-    margin: 0;
   }
 
-  /* ---------- 5. How it works ---------- */
-  .a4-how {
-    margin-top: 56px;
-  }
-  .a4-steps {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    gap: 12px;
-  }
-  .a4-step {
-    padding: 22px 20px;
-  }
-  .a4-step__num {
-    display: inline-flex;
-    width: 34px;
-    height: 34px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--vsl-accent-grad);
-    color: #fff;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .a4-step__title {
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0 0 6px;
-  }
-  .a4-step__text {
-    color: var(--vsl-ink-dim);
-    margin: 0;
-  }
-
-  /* ---------- 6. Results ---------- */
-  .a4-results {
-    margin-top: 64px;
-  }
-  .a4-tiles {
-    display: grid;
-    gap: 16px;
-  }
-  .a4-tile {
-    padding: 14px 14px 18px;
-  }
-  .a4-shot--tile,
-  .a4-video,
-  :global(.a4-video__frame) {
-    aspect-ratio: 9 / 16;
-    width: 100%;
-    max-height: 520px;
-    border-radius: 12px;
-  }
-  .a4-video {
-    position: relative;
-    display: block;
-    padding: 0;
-    border: 0;
-    overflow: hidden;
-    cursor: pointer;
-    background: #0a0a0a;
-  }
-  .a4-video img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  :global(.a4-video__frame) {
-    border: 0;
-    display: block;
-    background: #000;
-  }
-  .a4-play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 60px;
-    height: 60px;
-    margin: -30px 0 0 -30px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .a4-play svg {
-    width: 24px;
-    height: 24px;
-    fill: #0a0a0a;
-    margin-left: 3px;
-  }
-  .a4-tile__name {
-    font-weight: 700;
-    margin: 14px 0 2px;
-  }
-  .a4-tile__role {
-    color: var(--vsl-ink-dim);
-    font-size: 14px;
-    margin: 0 0 6px;
-  }
-  .a4-tile__result {
-    color: var(--vsl-p-light);
-    font-weight: 600;
-    margin: 0;
-  }
+  /* ---------- 6. Quote ---------- */
   .a4-quote {
-    margin: 20px auto 0;
-    padding: 24px 20px;
-    max-width: 760px;
-  }
-  .a4-quote blockquote {
-    margin: 0;
-  }
-  .a4-disclaimer {
-    font-size: 12px;
-    line-height: 1.55;
-    color: var(--vsl-ink-faint);
-    max-width: 620px;
-    margin: 16px auto 0;
+    max-width: 856px;
+    margin: 18px auto 0;
+    padding: 26px;
+    text-align: center;
   }
 
   /* ---------- 7. FAQ ---------- */
   .a4-faq {
-    margin-top: 64px;
-    max-width: 760px;
-    text-align: left;
+    padding: 56px 20px 24px;
+    background: var(--vsl-black);
   }
-  .a4-faq .a4-h2 {
-    text-align: center;
+  .a4-faq__list {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
   .a4-faq__item {
-    border-bottom: 1px solid var(--vsl-border);
+    padding: 0 22px;
+    text-align: left;
   }
   .a4-faq__item summary {
     cursor: pointer;
     list-style: none;
-    padding: 18px 32px 18px 0;
-    font-weight: 600;
-    font-size: 17px;
     position: relative;
+    padding: 20px 32px 20px 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--vsl-ink);
   }
   .a4-faq__item summary::-webkit-details-marker {
     display: none;
@@ -634,56 +519,46 @@ const faqs = [
   .a4-faq__item summary::after {
     content: "+";
     position: absolute;
-    right: 4px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--vsl-p);
     font-size: 22px;
     font-weight: 400;
+    color: var(--vsl-p);
   }
   .a4-faq__item[open] summary::after {
     content: "−";
   }
   .a4-faq__item p {
-    margin: 0 0 18px;
-    color: var(--vsl-ink-dim);
+    margin: 0 0 20px;
+    font-size: 14.5px;
     line-height: 1.6;
+    color: rgba(244, 241, 250, 0.8);
   }
 
-  /* ---------- 8. End ---------- */
-  .a4-end {
-    margin-top: 72px;
-  }
-  .a4-headline--end {
-    font-size: clamp(24px, 6vw, 42px);
-    margin-bottom: 28px;
-  }
-
-  /* ---------- Desktop ---------- */
-  @media (min-width: 760px) {
-    .a4-wrap {
-      padding: 0 24px;
+  /* ---------- Phone (VslHero / VslRealResults 600px breakpoint) ---------- */
+  @media (max-width: 600px) {
+    .a4h__wrap { padding: 40px 18px 36px; }
+    .a4h__logo { width: 150px; margin-bottom: 28px; }
+    .a4h__eyebrow { font-size: 10px; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .a4h__headline {
+      font-size: clamp(22px, 6.6vw, 36px);
+      line-height: 1.2;
+      margin-bottom: 22px;
     }
-    .a4-hero {
-      padding-top: 56px;
-    }
-    .a4-lily__card {
-      grid-template-columns: 2fr 1fr;
-      padding: 20px;
-      text-align: left;
-    }
-    .a4-stats {
-      gap: 16px;
-    }
-    .a4-stat {
-      padding: 22px 16px;
-    }
-    .a4-stat__text {
-      font-size: 14px;
-    }
-    .a4-steps,
-    .a4-tiles {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    .a4h__sub { font-size: 15.5px; margin-bottom: 28px; }
+    .a4h--end .a4h__wrap { padding-bottom: 56px; }
+    .a4h--end .a4h__headline { font-size: clamp(22px, 6.5vw, 28px); }
+    .a4-lily { padding: 0 14px; }
+    .a4-lily .a4-card { padding: 20px 18px; border-radius: 14px; }
+    .a4-lily__stat { font-size: 22px; }
+    .a4-lily__shots { gap: 10px; }
+    .a4-form { padding: 52px 14px 32px; }
+    .a4-head { margin-bottom: 28px; }
+    .a4-head h2 { font-size: clamp(22px, 6.5vw, 28px); }
+    .a4-faq { padding: 40px 14px 16px; }
+    .a4-faq__item { padding: 0 18px; border-radius: 14px; }
+    .a4-faq__item summary { font-size: 15px; }
+    .a4-faq__item p { font-size: 13.5px; }
   }
 </style>

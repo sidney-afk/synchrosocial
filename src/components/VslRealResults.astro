@@ -20,8 +20,11 @@ interface Card {
   stat: string;
   tag: string;
   story: string;
-  wistia: string;
-  poster: string;
+  /** Omit wistia/poster to show `placeholder` in the video slot instead
+   *  (used by /apply4 while proof assets are pending). */
+  wistia?: string;
+  poster?: string;
+  placeholder?: string;
 }
 interface Props {
   eyebrow?: string;
@@ -63,6 +66,7 @@ const {
           <p class="vslrr__story">{c.story}</p>
           <div class="vslrr__vsl-wrap">
             <div class="vslrr__vsl">
+              {c.wistia ? (
               <button
                 type="button"
                 class="vslrr__facade"
@@ -81,12 +85,17 @@ const {
                   <svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg>
                 </span>
               </button>
+              ) : (
+                <div class="vslrr__pending"><span>{c.placeholder}</span></div>
+              )}
             </div>
           </div>
         </div>
       ))
     }
   </div>
+
+  <slot />
 
   {disclaimer && <p class="vslrr__disclaimer">{disclaimer}</p>}
 </section>
@@ -287,6 +296,22 @@ const {
     }
   }
 
+  .vslrr__pending {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: #0a0a0a;
+  }
+  .vslrr__pending span {
+    padding: 6px 10px;
+    border: 1.5px dashed #f5c542;
+    border-radius: 8px;
+    color: #f5c542;
+    font-size: 12px;
+    font-weight: 600;
+  }
   .vslrr__thumb {
     position: absolute;
     inset: 0;

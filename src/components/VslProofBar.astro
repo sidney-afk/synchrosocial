@@ -8,11 +8,25 @@
    changes (#121212 fill, 16px radius, accent-tinted border) so the tiles sit
    in the reference's visual system rather than /apply's. The award badge is
    the same asset.
+
+   `items` (optional, added for /apply4) swaps the three tiles for plain
+   metric tiles in the same shell. Omit it to keep the default set.
 =========================================================================== */
+interface Props {
+  items?: { label: string; metric: string; copy: string }[];
+}
+const { items } = Astro.props;
 ---
 
 <section class="vslpb" aria-label="Synchro Social proof points">
   <div class="vslpb__grid">
+    {items ? items.map((i) => (
+      <article class="vslpb__card">
+        <p class="vslpb__label">{i.label}</p>
+        <strong class="vslpb__metric">{i.metric}</strong>
+        <p class="vslpb__copy">{i.copy}</p>
+      </article>
+    )) : (<>
     <article class="vslpb__card">
       <p class="vslpb__label">Client Reach</p>
       <strong class="vslpb__metric">1.2B</strong>
@@ -37,6 +51,7 @@
       <strong class="vslpb__metric">8M</strong>
       <p class="vslpb__copy">Followers grown across platforms</p>
     </article>
+    </>)}
   </div>
 </section>
 
