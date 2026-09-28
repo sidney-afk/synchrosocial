@@ -88,7 +88,7 @@ const faqs = [
     </section>
 
     <!-- 2-4. PROOF CARD, FORM, STATS -->
-    <section id="apply" class="apply">
+    <section class="apply">
       <div class="wrap">
         <div class="proof-card">
           <img
@@ -112,7 +112,7 @@ const faqs = [
           </div>
         </div>
 
-        <div class="form-card">
+        <div id="apply" class="form-card">
           <h2>See If You Qualify</h2>
           <div class="form-embed">
             <IClosedEmbed
@@ -348,6 +348,7 @@ const faqs = [
 
   /* form */
   .dm .form-card {
+    scroll-margin-top: 16px;
     background: var(--card);
     border: 1px solid var(--card-border);
     border-radius: 16px;
@@ -477,7 +478,8 @@ const faqs = [
   @media (max-width: 720px) {
     .dm section { padding-block: 52px; }
     .dm .tiles, .dm .steps { grid-template-columns: 1fr; }
-    .dm .form-card { padding: 22px; }
+    .dm .form-card {
+    scroll-margin-top: 16px; padding: 22px; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .dm .btn { transition: transform 0.15s ease; }
