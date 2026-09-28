@@ -242,6 +242,17 @@ const faqs = [
             </div>
           </article>
         </div>
+        <div class="quotes">
+        <figure class="quote">
+          <!-- Verbatim from Lily in her Slack channel, 2026-07-12. -->
+          <blockquote>
+            <p>“The first reel went so good!!!! Amazing job you guys. 500,000 views 🎉”</p>
+          </blockquote>
+          <figcaption class="by">
+            <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+            Dr. Lily Baker · Chiropractor
+          </figcaption>
+        </figure>
         <figure class="quote">
           <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
           <blockquote>
@@ -252,6 +263,7 @@ const faqs = [
             Dr. Lily Baker · Chiropractor
           </figcaption>
         </figure>
+        </div>
         <p class="disclaimer">
           These are outcomes from clients who followed our process as built. Growth depends on
           execution and platform algorithms, and results vary by effort and market.
@@ -596,7 +608,9 @@ const faqs = [
   .dm .proof-text .big { font-size: 20px; }
   .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
   .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
-  .dm .quote { max-width: 720px; margin: 40px auto 0; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 28px; }
+  .dm .quotes { max-width: 860px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 720px) { .dm .quotes { grid-template-columns: 1fr; } }
+  .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 28px; }
   .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
   .dm .quote .by { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--ink-dim); }
   .dm .quote blockquote { margin: 0; }
