@@ -167,9 +167,9 @@ const faqs = [
         </div>
 
         <div class="proof-grid">
-          <div class="pg"><div class="pg-label">Reach</div><div class="pg-num">1.2B+</div><p>Views generated for our clients</p></div>
-          <div class="pg"><div class="pg-label">Growth</div><div class="pg-num">8M+</div><p>Followers grown across platforms</p></div>
-          <div class="pg"><div class="pg-label">Leads</div><div class="pg-num">150K+</div><p>Over 150,000 leads generated for clients</p></div>
+          <div class="pg"><div class="pg-label">Reach</div><div class="pg-num">1.2<span class="u">B+</span></div><p>Views generated for our clients</p></div>
+          <div class="pg"><div class="pg-label">Growth</div><div class="pg-num">8<span class="u">M+</span></div><p>Followers grown across platforms</p></div>
+          <div class="pg"><div class="pg-label">Leads</div><div class="pg-num">150<span class="u">K+</span></div><p>Over 150,000 leads generated for clients</p></div>
         </div>
       </div>
     </section>
@@ -562,7 +562,7 @@ const faqs = [
   }
 
   /* proof grid under form */
-  .dm .proof-grid { max-width: 640px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: left; }
+  .dm .proof-grid { max-width: 640px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
   .dm .pg {
     background: linear-gradient(180deg, rgba(154, 93, 255, 0.04), rgba(154, 93, 255, 0.1) 50%, rgba(154, 93, 255, 0.04)), var(--card);
     border: 1px solid var(--card-border);
@@ -581,8 +581,11 @@ const faqs = [
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: lining-nums;
   }
+  /* Letter suffixes (B, M, K, +) render taller than the digits in some
+     system fonts; scale them to digit height. */
+  .dm .pg-num .u { font-size: 0.9em; }
   .dm .pg p { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.45; }
   @media (max-width: 560px) {
     .dm .proof-grid { gap: 8px; }
@@ -637,9 +640,9 @@ const faqs = [
   @media (min-width: 721px) {
     /* Guarantee line fits on two lines. */
     .dm .guarantee { max-width: 62ch; }
-    /* More room above "How it works" so it clears the section edge. */
+    /* "How it works" spacing: clear of the section edge, not a void. */
     .dm .how {
-      padding-top: 80px;
+      padding-top: 24px;
       /* Centre the glow inside the section so it fades in instead of
          starting as a hard line at the section's top edge. */
       background: radial-gradient(closest-side at 50% 50%, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0));
