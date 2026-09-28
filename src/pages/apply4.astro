@@ -102,10 +102,10 @@ const faqs = [
         <div class="proof-card">
           <img
             class="shot-img"
-            src="/images/apply4/lily-baker-growth.webp"
-            alt="Dr. Lily Baker's Instagram profile at 151K followers, with a growth chart from 90K to 150K followers in under 90 days and 12M views"
+            src="/images/apply4/lily-baker-before-after.webp"
+            alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
             width="900"
-            height="890"
+            height="950"
             decoding="async"
           />
           <div class="shot" role="img" aria-label="Placeholder for viral reel insights screenshot">
@@ -175,7 +175,7 @@ const faqs = [
     </section>
 
     <!-- 5. HOW IT WORKS -->
-    <section class="glow" style="padding-top:8px">
+    <section class="glow how">
       <div class="wrap">
         <p class="kicker">How it works</p>
         <h2>From your first call to your first post</h2>
@@ -196,10 +196,10 @@ const faqs = [
           <article class="tile">
             <img
               class="thumb-img"
-              src="/images/apply4/lily-baker-growth-wide.webp"
-              alt="Dr. Lily Baker's Instagram growth: 90K to 150K followers in under 90 days"
+              src="/images/apply4/lily-baker-before-after-wide.webp"
+              alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
               width="1280"
-              height="720"
+              height="800"
               loading="lazy"
               decoding="async"
             />
@@ -210,11 +210,15 @@ const faqs = [
             </div>
           </article>
           <article class="tile">
-            <!-- Testimonial video loads only on tap (brief). -->
-            <button class="thumb video-btn" type="button" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial">
-              <img src="/images/campaign-proof/11-dr-sonia-chopra.webp" alt="" loading="lazy" decoding="async" />
-              <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 5v14l12-7z" /></svg></span>
-            </button>
+            <img
+              class="thumb-img"
+              src="/images/apply4/sonia-chopra-before-after.webp"
+              alt="Dr. Sonia Chopra's Instagram profile before (19K followers) and after (31.1K followers)"
+              width="1280"
+              height="800"
+              loading="lazy"
+              decoding="async"
+            />
             <div class="tile-body">
               <div class="who">Dr. Sonia Chopra · Endodontist</div>
               <div class="big">Following up about 50% in under 6 months</div>
@@ -627,6 +631,36 @@ const faqs = [
     .dm .tiles, .dm .steps { grid-template-columns: 1fr; }
     .dm .form-card { padding: 22px; }
     .dm .grid { grid-template-columns: 1fr; }
+  }
+  /* Desktop-only tweaks (owner feedback 2026-09-28). */
+  .dm .how { padding-top: 8px; }
+  @media (min-width: 721px) {
+    /* Guarantee line fits on two lines. */
+    .dm .guarantee { max-width: 62ch; }
+    /* More room above "How it works" so it clears the section edge. */
+    .dm .how {
+      padding-top: 80px;
+      /* Centre the glow inside the section so it fades in instead of
+         starting as a hard line at the section's top edge. */
+      background: radial-gradient(closest-side at 50% 50%, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0));
+    }
+  }
+  @media (min-width: 960px) {
+    /* Lily's proof card: same content, larger once the page is wide
+       enough to hold the fixed columns (below ~960px they'd crush the text). */
+    .dm .proof-card {
+      max-width: 860px;
+      grid-template-columns: 300px 170px 1fr;
+      gap: 20px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .dm .proof-card .shot { font-size: 13px; }
+    .dm .proof-card .shot small { font-size: 12px; }
+    .dm .proof-text { gap: 10px; padding-right: 10px; }
+    .dm .proof-text .who { font-size: 13px; }
+    .dm .proof-text .big { font-size: 26px; line-height: 1.25; }
+    .dm .proof-text p { font-size: 16px; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .dm .btn { transition: transform 0.15s ease; }
