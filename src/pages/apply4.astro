@@ -8,9 +8,13 @@
    matched /apply3 instead; that was superseded.
 
    Differences from the mockup, all deliberate:
-     - The mockup's demo form is replaced by the live iClosed "Doctor Strategy
-       Call" event (same questions, disqualifies "Under $2,000" a month). Its
-       booking fires `Lead` through the IClosedEmbed pixel bridge.
+     - The form works in two steps, like viralcoach.com/cpy/book2: our own
+       form (mockup fields; Specialty is a choice so it matches iClosed), then
+       the iClosed "Doctor Strategy Call" calendar with every answer passed as
+       URL parameters (iclosedName/Email/Phone + question identifiers) and
+       iClosed's "Pre-qualified form skipping" on, so the doctor only picks a
+       time. "Under $2,000" is turned away on our page. Meta `Lead` fires on
+       submit (brief), not on booking.
      - Real assets replace placeholders where we have them: Lily's profile
        image, her growth image in the results tile, Sonia's Wistia video.
      - The yellow "mockup" bar and demo submit handler are dropped; the SMS
@@ -20,10 +24,15 @@
    Every class lives under .dm so none of this leaks into shared styles.
 =========================================================================== */
 import Layout from "../layouts/Layout.astro";
-import IClosedEmbed from "../components/IClosedEmbed.astro";
 
 // iClosed "Doctor Strategy Call" event (disqualifies "Under $2,000" a month).
-const ICLOSED_PREFIX = "synchrosocial/doctor-strategy-call";
+const ICLOSED_URL = "https://app.iclosed.io/e/synchrosocial/doctor-strategy-call";
+
+// Answer text must match the iClosed event's options EXACTLY: they are passed
+// to iClosed as URL parameters and matched as strings.
+const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
+const investments = ["Under $2,000", "$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
+const starts = ["Now", "Within 30 days", "Within 90 days", "Next quarter"];
 
 const guaranteeLead = "If we don't hit the monthly follower target we set for you in your first 3 months,";
 const guaranteeBold = "we keep working for free until we do.";
@@ -114,14 +123,35 @@ const faqs = [
 
         <div id="apply" class="form-card">
           <h2>See If You Qualify</h2>
-          <div class="form-embed">
-            <IClosedEmbed
-              linkPrefix={ICLOSED_PREFIX}
-              title="Doctor Strategy Call"
-              height="620px"
-              card={false}
-              resize={false}
-            />
+          <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
+               answers prefilled, so the doctor only picks a time. -->
+          <form class="apply-form" data-step="1" novalidate>
+            <div class="grid">
+              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
+              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+              <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required /></div>
+              <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" required /></div></div>
+              <div class="field full"><span class="q">Specialty</span>
+                <div class="chips">{specialties.map((v) => <label><input type="radio" name="specialty" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">How much are you ready to invest monthly in growing your audience?</span>
+                <div class="chips">{investments.map((v) => <label><input type="radio" name="investment" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">When can you start?</span>
+                <div class="chips">{starts.map((v) => <label><input type="radio" name="start" value={v} required />{v}</label>)}</div>
+              </div>
+            </div>
+            <p class="form-error" role="alert" hidden></p>
+            <div class="submit">
+              <button class="btn" type="submit">Submit application</button>
+            </div>
+          </form>
+          <div class="step-dq" hidden>
+            <p>Thanks for applying. Our program starts at $2,000 a month, so we're not the right fit right now.</p>
+          </div>
+          <div class="step-cal" hidden>
+            <p class="note">Last step: pick a time for your strategy call.</p>
+            <div class="form-embed"></div>
           </div>
           <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
                See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
@@ -244,7 +274,94 @@ const faqs = [
   </div>
 </Layout>
 
-<script is:inline>
+<script is:inline define:vars={{ ICLOSED_URL }}>
+  (function () {
+    var form = document.querySelector(".dm .apply-form");
+    if (!form) return;
+    var card = form.closest(".form-card");
+    var err = form.querySelector(".form-error");
+
+    // iClosed skips its own form only when email/phone are valid, so send
+    // phone in international format. Bare 10-digit numbers are assumed US.
+    function normPhone(v) {
+      var d = v.replace(/[^\d+]/g, "");
+      if (d.charAt(0) === "+") return d;
+      if (d.length === 10) return "+1" + d;
+      if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+      return d.length >= 8 ? "+" + d : "";
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = new FormData(form);
+      var v = {};
+      ["name", "email", "phone", "instagram", "specialty", "investment", "start"].forEach(function (k) {
+        v[k] = String(f.get(k) || "").trim();
+      });
+      v.instagram = v.instagram.replace(/^@+/, "");
+      v.phone = normPhone(v.phone);
+      var missing = Object.keys(v).filter(function (k) { return !v[k]; });
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
+      if (missing.length || !emailOk) {
+        err.textContent = !emailOk && v.email
+          ? "Please enter a valid email."
+          : missing.indexOf("phone") > -1 && f.get("phone")
+            ? "Please enter your phone number with country code, e.g. +1 555 123 4567."
+            : "Please fill in every field.";
+        err.hidden = false;
+        return;
+      }
+      err.hidden = true;
+
+      // Brief: fire the Meta pixel Lead event when the form is submitted.
+      if (typeof window.fbq === "function") {
+        fbq("track", "Lead", { content_name: "doctor_offer" });
+      }
+
+      if (v.investment === "Under $2,000") {
+        form.hidden = true;
+        card.querySelector(".step-dq").hidden = false;
+        return;
+      }
+
+      // iClosed expects %20 for spaces (encodeURIComponent), not "+".
+      var q = [
+        ["iclosedName", v.name],
+        ["iclosedEmail", v.email],
+        ["iclosedPhone", v.phone],
+        // Identifiers set on the iClosed event's questions.
+        ["specialty", v.specialty],
+        ["instagram", v.instagram],
+        ["investment", v.investment],
+        ["start-date", v.start],
+      ];
+      // Carry ad attribution through, as IClosedCapture does on other pages.
+      new URLSearchParams(location.search).forEach(function (val, key) {
+        if (/^utm_|^fbclid$|^test-pixel$/.test(key)) q.push([key, val]);
+      });
+      var url = ICLOSED_URL + "?" + q.map(function (kv) {
+        return encodeURIComponent(kv[0]) + "=" + encodeURIComponent(kv[1]);
+      }).join("&");
+
+      var slot = card.querySelector(".form-embed");
+      var w = document.createElement("div");
+      w.className = "iclosed-widget";
+      w.setAttribute("data-url", url);
+      w.setAttribute("title", "Doctor Strategy Call");
+      w.style.cssText = "width:100%;height:680px;";
+      slot.appendChild(w);
+      var sc = document.createElement("script");
+      sc.src = "https://app.iclosed.io/assets/widget.js";
+      sc.async = true;
+      slot.appendChild(sc);
+
+      form.hidden = true;
+      card.querySelector("h2").textContent = "Pick a Time";
+      card.querySelector(".step-cal").hidden = false;
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  })();
+
   document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var f = document.createElement("iframe");
@@ -360,6 +477,31 @@ const faqs = [
   }
   .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
   .dm .form-embed { border-radius: 12px; overflow: hidden; }
+  .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
+  .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dm .field { display: flex; flex-direction: column; gap: 7px; }
+  .dm .full { grid-column: 1 / -1; }
+  .dm .field label, .dm .q { font-size: 14px; font-weight: 600; }
+  .dm input[type="text"], .dm input[type="email"], .dm input[type="tel"] {
+    background: #0a0a0a; border: 1px solid var(--border); color: var(--ink); border-radius: 10px;
+    padding: 12px 14px; font: inherit; font-size: 15px; width: 100%;
+  }
+  .dm input::placeholder { color: var(--ink-faint); }
+  .dm input:focus-visible { outline: 2px solid var(--p); outline-offset: 1px; }
+  .dm .handle { position: relative; }
+  .dm .handle span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
+  .dm .handle input { padding-left: 30px; }
+  .dm .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dm .chips label {
+    position: relative; font-weight: 500; font-size: 14px; border: 1.5px solid var(--border);
+    background: rgba(154, 93, 255, 0.05); border-radius: 999px; padding: 8px 15px; cursor: pointer; color: var(--ink-dim);
+  }
+  .dm .chips input { position: absolute; opacity: 0; pointer-events: none; }
+  .dm .chips label:has(input:checked) { border-color: var(--p); color: var(--ink); background: rgba(154, 93, 255, 0.14); }
+  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-light); }
+  .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .dm .form-error { margin: 18px 0 0; color: #ff9b9b; font-size: 14px; text-align: center; }
+  .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
   .dm .legal { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); text-align: center; }
   .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
@@ -478,8 +620,8 @@ const faqs = [
   @media (max-width: 720px) {
     .dm section { padding-block: 52px; }
     .dm .tiles, .dm .steps { grid-template-columns: 1fr; }
-    .dm .form-card {
-    scroll-margin-top: 16px; padding: 22px; }
+    .dm .form-card { padding: 22px; }
+    .dm .grid { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .dm .btn { transition: transform 0.15s ease; }
