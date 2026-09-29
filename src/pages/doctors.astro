@@ -1,6 +1,6 @@
 ---
 /* ===========================================================================
-   /apply4 — doctor offer page for cold Meta ads.
+   /doctors (was /apply4, which redirects here) — doctor offer page for cold Meta ads.
 
    Owner decision 2026-09-28: the page matches the brief's MOCKUP ("Doctor
    Offer Page", the artifact Kasper sent) as closely as possible: colors,
@@ -104,16 +104,16 @@ const faqs = [
       <div class="wrap">
         <div class="proof-card">
           <img
-            class="shot-img" data-zoom
+            class="shot-img"
             src="/images/apply4/lily-baker-before-after.webp"
-            alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
+            alt="Dr. Lily Baker's Instagram profile in May 2026 (63.9K followers) and September 2026 (151K followers)"
             width="900"
             height="950"
             decoding="async"
           />
           <img
             class="shot-img"
-            data-zoom
+           
             src="/images/apply4/lily-baker-insights.webp"
             alt="Dr. Lily Baker's Instagram insights, Jul 8 to Sep 27: 10,651,859 views, +60,944 net followers, +68,339 follows"
             width="900"
@@ -122,16 +122,16 @@ const faqs = [
           />
           <div class="proof-text">
             <div class="who">Dr. Lily Baker · Chiropractor</div>
-            <div class="big">60K New Followers in Under 90 Days</div>
+            <div class="big">60,000 new followers in under 90 days</div>
             <p>
-              Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new
+              Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new
               followers alone.
             </p>
           </div>
         </div>
 
         <div id="apply" class="form-card">
-          <h2>See If You Qualify</h2>
+          <h2>Book A Growth Consultation</h2>
           <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
                answers prefilled, so the doctor only picks a time. -->
           <form class="apply-form" data-step="1" novalidate>
@@ -183,16 +183,18 @@ const faqs = [
       </div>
     </section>
 
-    <!-- 5. HOW IT WORKS -->
+    <!-- 5. HOW IT WORKS (copy from Kasper's review, 2026-09-29) -->
     <section class="glow how">
       <div class="wrap">
         <p class="kicker">How it works</p>
         <h2>From your first call to your first post</h2>
         <div class="steps">
-          <div class="step"><div class="n">1</div><h3>We set your target</h3><p>On a strategy call we review your account and set your monthly follower target.</p></div>
-          <div class="step"><div class="n">2</div><h3>We film you</h3><p>2-3 hours a month, with the strategy and scripts we create and you approve.</p></div>
-          <div class="step"><div class="n">3</div><h3>We edit and post</h3><p>Your first post goes live 2 to 3 weeks after you start, with weekly reports on every video.</p></div>
+          <div class="step"><div class="n">1</div><h3>We set your target</h3><p>On a strategy call we review your account, your specialty and your content, and set your monthly follower target.</p></div>
+          <div class="step"><div class="n">2</div><h3>We build your content plan</h3><p>Every 4 weeks you get a content strategy and calendar with hooks and ideas for every platform we post on. We create the scripts, you approve them, and we brief and book a vetted local videographer if you need one.</p></div>
+          <div class="step"><div class="n">3</div><h3>We film you</h3><p>2-3 hours, once every 4 weeks. You show up and talk, and we handle the rest.</p></div>
+          <div class="step"><div class="n">4</div><h3>We edit and post</h3><p>You get 15 edited short-form videos with thumbnails every 4 weeks. We post every video across your platforms, watch which ones bring in followers, and make more of those. You get a weekly report on every video.</p></div>
         </div>
+        <p class="first-post">Your first post goes live 2 to 3 weeks after you start.</p>
       </div>
     </section>
 
@@ -204,30 +206,30 @@ const faqs = [
         <div class="tiles">
           <article class="tile">
             <img
-              class="thumb-img" data-zoom
+              class="thumb-img"
               src="/images/apply4/lily-baker-before-after-wide.webp"
-              alt="Dr. Lily Baker's Instagram profile before (63.9K followers) and after (151K followers)"
-              width="1280"
+              alt="Dr. Lily Baker's Instagram profile in May 2026 (63.9K followers) and September 2026 (151K followers)"
+              width="800"
               height="800"
               loading="lazy"
               decoding="async"
             />
             <div class="tile-body">
               <div class="who">Dr. Lily Baker · Chiropractor</div>
-              <div class="big">60K New Followers in Under 90 Days</div>
-              <p>Grew from 90K to 150K followers with 12M views. One reel brought in over 17,000 new followers alone.</p>
+              <div class="big">60,000 new followers in under 90 days</div>
+              <p>Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new followers alone.</p>
             </div>
           </article>
           <article class="tile">
-            <img
-              class="thumb-img" data-zoom
-              src="/images/apply4/sonia-chopra-before-after.webp"
-              alt="Dr. Sonia Chopra's Instagram profile before (19K followers) and after (31.1K followers)"
-              width="1280"
-              height="800"
-              loading="lazy"
-              decoding="async"
-            />
+            <div class="thumb video-slot">
+              <iframe
+                src="https://fast.wistia.net/embed/iframe/vr83s40k0b?seo=false&videoFoam=false"
+                title="Dr. Sonia Chopra's testimonial"
+                allow="autoplay; fullscreen"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
             <div class="tile-body">
               <div class="who">Dr. Sonia Chopra · Endodontist</div>
               <div class="big">Following up about 50% in under 6 months</div>
@@ -236,7 +238,7 @@ const faqs = [
           </article>
           <article class="tile">
             <img
-              class="thumb-img" data-zoom
+              class="thumb-img"
               src="/images/apply4/rocco-piazza-featured.webp"
               alt="Dr. Rocco Piazza as a guest on one @theplasticsurgerychannel video: 615.8K views, 32.7K likes"
               width="1280"
@@ -252,17 +254,7 @@ const faqs = [
           </article>
         </div>
         <div class="quotes">
-        <figure class="quote">
-          <!-- Verbatim from Lily in her Slack channel, 2026-07-12. -->
-          <blockquote>
-            <p>“The first reel went so good!!!! Amazing job you guys. 500,000 views 🎉🎉”</p>
-          </blockquote>
-          <figcaption class="by">
-            <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
-            Dr. Lily Baker · Chiropractor
-          </figcaption>
-        </figure>
-        <figure class="quote">
+                <figure class="quote">
           <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
           <blockquote>
             <p>“Overall I am SO IMPRESSED by you guys. All the videos are amazing and you make me look so good! And your captions sound exactly like me.”</p>
@@ -309,10 +301,6 @@ const faqs = [
       </div>
     </section>
 
-    <dialog class="lightbox" aria-label="Image preview">
-      <button class="lb-close" type="button" aria-label="Close">×</button>
-      <img alt="" />
-    </dialog>
 
     <footer>© Synchro Social</footer>
   </div>
@@ -419,32 +407,6 @@ const faqs = [
     });
   });
 
-  // Proof images: hover hint + click/tap to view full screen.
-  (function () {
-    var lb = document.querySelector(".dm .lightbox");
-    if (!lb || typeof lb.showModal !== "function") return;
-    var big = lb.querySelector("img");
-    document.querySelectorAll(".dm img[data-zoom]").forEach(function (img) {
-      var wrap = document.createElement("button");
-      wrap.type = "button";
-      wrap.className = "zoom";
-      wrap.setAttribute("aria-label", "View full screen: " + (img.alt || "image"));
-      img.parentNode.insertBefore(wrap, img);
-      wrap.appendChild(img);
-      var icon = document.createElement("span");
-      icon.className = "zoom-icon";
-      icon.setAttribute("aria-hidden", "true");
-      icon.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>';
-      wrap.appendChild(icon);
-      wrap.addEventListener("click", function () {
-        big.src = img.currentSrc || img.src;
-        big.alt = img.alt;
-        lb.showModal();
-      });
-    });
-    lb.addEventListener("click", function () { lb.close(); });
-  })();
-
   document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var f = document.createElement("iframe");
@@ -463,7 +425,7 @@ const faqs = [
      reference site doctorsofcontent.com: Inter, brand blue #178af6 (deep
      #0070e0, soft #e8f2fe), #f7f8fa surfaces, #e5e8ee borders, near-black
      #0a0a1a text, uppercase tracked buttons. Corners are deliberately
-     subtle (4 to 8px) on every box and button. Scoped under .dm. */
+     very subtle (2 to 4px) on every box and button. Scoped under .dm. */
   body.dm-body {
     margin: 0;
     background-color: #fff;
@@ -488,9 +450,9 @@ const faqs = [
     --p-soft: #e8f2fe;
     --glow: radial-gradient(900px 480px at 50% -10%, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0));
     --need: #ffcf6b;
-    --r-sm: 4px;
-    --r: 6px;
-    --r-lg: 8px;
+    --r-sm: 2px;
+    --r: 3px;
+    --r-lg: 4px;
     --shadow: 0 10px 30px rgba(10, 14, 31, 0.07), 0 2px 6px rgba(10, 14, 31, 0.04);
     --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
@@ -637,7 +599,7 @@ const faqs = [
   .dm .proof-text .big { font-size: 20px; }
   .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
   .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
-  .dm .quotes { max-width: 860px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .dm .quotes { max-width: 560px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr; gap: 18px; }
   @media (max-width: 720px) { .dm .quotes { grid-template-columns: 1fr; } }
   .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--surface); border: 1px solid var(--card-border); border-left: 3px solid var(--p); border-radius: var(--r-lg); padding: 28px; }
   .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
@@ -681,32 +643,9 @@ const faqs = [
     .dm .pg p { font-size: 12.5px; }
   }
 
-  /* zoomable proof images */
-  .dm .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; border-radius: inherit; }
-  .dm .proof-card .zoom { border-radius: var(--r-sm); }
-  .dm .zoom img { transition: transform 0.35s ease, filter 0.35s ease; }
-  .dm .zoom-icon {
-    position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: var(--r);
-    display: grid; place-items: center; background: rgba(10, 14, 31, 0.78);
-    opacity: 0.9; transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
-  }
-  .dm .zoom-icon svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-  @media (hover: hover) {
-    .dm .zoom-icon { opacity: 0; transform: scale(0.9); }
-    .dm .zoom:hover img { transform: scale(1.03); filter: brightness(1.08); }
-    .dm .zoom:hover .zoom-icon { opacity: 1; transform: scale(1); background: var(--p); }
-  }
-  .dm .zoom:focus-visible { outline: 2px solid var(--p); outline-offset: 2px; }
-  .dm .lightbox { position: fixed; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 0; border: 0; background: transparent; max-width: 96vw; max-height: 92vh; overflow: visible; cursor: zoom-out; }
-  .dm .lightbox::backdrop { background: rgba(10, 14, 31, 0.85); }
-  .dm .lightbox img { display: block; max-width: 96vw; max-height: 92vh; width: auto; height: auto; border-radius: var(--r-sm); }
-  .dm .lb-close {
-    position: fixed; top: 14px; right: 16px; width: 44px; height: 44px; border-radius: var(--r); border: 0;
-    background: #fff; color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
-  }
-
   /* steps */
-  .dm .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+  .dm .steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 36px; max-width: 860px; margin-inline: auto; }
+  .dm .first-post { margin: 26px 0 0; font-weight: 600; color: var(--ink); }
   .dm .step { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 26px 22px; box-shadow: var(--shadow); }
   .dm .step .n { width: 34px; height: 34px; border-radius: var(--r); background: var(--p); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; margin: 0 auto 14px; }
   .dm .step p { margin: 8px 0 0; color: var(--ink-dim); font-size: 15px; }
@@ -714,8 +653,10 @@ const faqs = [
   /* results */
   .dm .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; text-align: left; }
   .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); }
-  .dm .thumb { aspect-ratio: 16 / 10; width: 100%; background: #fff; display: grid; place-items: center; }
-  .dm .thumb-img { display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; }
+  .dm .thumb { aspect-ratio: 1 / 1; width: 100%; background: #fff; display: grid; place-items: center; }
+  .dm .video-slot { background: #0a0a1a; }
+  .dm .video-slot iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .dm .thumb-img { display: block; width: 100%; aspect-ratio: 1 / 1; height: auto; object-fit: contain; background: #fff; }
   .dm .video-btn { position: relative; padding: 0; border: 0; cursor: pointer; overflow: hidden; }
   .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dm .video-frame { border: 0; display: block; }
@@ -783,8 +724,10 @@ const faqs = [
   }
   @media (max-width: 560px) {
     .dm .hero { padding-block: 32px 28px; }
+    .dm .brand img { width: 120px; }
     .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
-    .dm h1 { font-size: 28px; line-height: 1.12; }
+    .dm h1 { font-size: 32px; line-height: 1.1; }
+    .dm h1 .hl { display: block; font-size: 1.4em; line-height: 1.1; margin-block: 4px; }
     .dm .sub { font-size: 15px; line-height: 1.5; margin-top: 18px; }
     .dm .cta { margin-top: 24px; gap: 12px; }
     .dm .btn { font-size: 13px; padding: 16px 28px; }
