@@ -93,7 +93,7 @@ const faqs = [
           post, and bring you followers who want what you offer.
         </p>
         <div class="cta">
-          <a class="btn" href="#apply">See If You Qualify</a>
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
           <p class="guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
         </div>
       </div>
@@ -303,7 +303,7 @@ const faqs = [
       <div class="wrap">
         <h2>Doctors: <span class="hl">3,000 to 5,000 new followers a month</span>, <em>guaranteed.</em></h2>
         <div class="cta">
-          <a class="btn" href="#apply">See If You Qualify</a>
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
           <p class="guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
         </div>
       </div>
@@ -408,6 +408,16 @@ const faqs = [
       card.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   })();
+
+  // "#apply" buttons: scroll to the form without adding "#apply" to the URL.
+  document.querySelectorAll('.dm a[href="#apply"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var t = document.getElementById("apply");
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
 
   // Proof images: hover hint + click/tap to view full screen.
   (function () {
