@@ -264,6 +264,14 @@ const faqs = [
             Dr. Lily Baker · Chiropractor
           </figcaption>
         </figure>
+        <figure class="quote">
+          <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
+               Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
+          <blockquote>
+            <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
+          </blockquote>
+          <figcaption class="by">Dr. Rocco Piazza · Plastic Surgeon</figcaption>
+        </figure>
         </div>
         <p class="disclaimer">
           These are outcomes from clients who followed our process as built. Growth depends on
@@ -599,7 +607,7 @@ const faqs = [
   .dm .proof-text .big { font-size: 20px; }
   .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
   .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
-  .dm .quotes { max-width: 560px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .dm .quotes { max-width: 860px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 720px) { .dm .quotes { grid-template-columns: 1fr; } }
   .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--surface); border: 1px solid var(--card-border); border-left: 3px solid var(--p); border-radius: var(--r-lg); padding: 28px; }
   .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
@@ -700,21 +708,20 @@ const faqs = [
     }
   }
   @media (min-width: 960px) {
-    /* Lily's proof card: same content, larger once the page is wide
-       enough to hold the fixed columns (below ~960px they'd crush the text). */
+    /* Lily's proof card (owner pick 2026-09-29, "option B"): the two
+       screenshots side by side at nearly double the size, text centred
+       underneath. Phone keeps its own layout. */
     .dm .proof-card {
-      max-width: 860px;
-      grid-template-columns: 280px 240px 1fr;
-      gap: 20px;
-      padding: 20px;
+      max-width: 1100px;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      padding: 28px;
       margin-bottom: 28px;
     }
-    .dm .proof-card .shot { font-size: 13px; }
-    .dm .proof-card .shot small { font-size: 12px; }
-    .dm .proof-text { gap: 10px; padding-right: 10px; }
+    .dm .proof-text { grid-column: 1 / -1; align-items: center; text-align: center; gap: 10px; padding-right: 0; }
     .dm .proof-text .who { font-size: 13px; }
-    .dm .proof-text .big { font-size: 26px; line-height: 1.25; }
-    .dm .proof-text p { font-size: 16px; }
+    .dm .proof-text .big { font-size: 32px; line-height: 1.25; }
+    .dm .proof-text p { font-size: 18px; max-width: 720px; }
   }
   /* Phone: lighter hero so the headline, sub and guarantee don't crowd
      the first screen (owner feedback 2026-09-28). */
