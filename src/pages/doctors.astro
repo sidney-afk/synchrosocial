@@ -199,7 +199,7 @@ const faqs = [
     </section>
 
     <!-- 6. RESULTS -->
-    <section style="padding-top:0">
+    <section class="results" style="padding-top:0">
       <div class="wrap">
         <p class="kicker">Doctor results</p>
         <h2>Doctors we've grown</h2>
@@ -270,7 +270,10 @@ const faqs = [
           <blockquote>
             <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
           </blockquote>
-          <figcaption class="by">Dr. Rocco Piazza · Plastic Surgeon</figcaption>
+          <figcaption class="by">
+            <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+            Dr. Rocco Piazza · Plastic Surgeon
+          </figcaption>
         </figure>
         </div>
         <p class="disclaimer">
@@ -659,6 +662,12 @@ const faqs = [
   .dm .step p { margin: 8px 0 0; color: var(--ink-dim); font-size: 15px; }
 
   /* results */
+  /* Desktop only: the results row uses the empty side space, so the three
+     tiles (and their images) are bigger. Phone and tablet are unchanged. */
+  @media (min-width: 1100px) {
+    .dm .results .wrap { max-width: 1240px; }
+    .dm .results .tiles { gap: 24px; }
+  }
   .dm .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; text-align: left; }
   .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); }
   .dm .thumb { aspect-ratio: 1 / 1; width: 100%; background: #fff; display: grid; place-items: center; }
