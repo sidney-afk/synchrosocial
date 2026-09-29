@@ -534,10 +534,10 @@ const faqs = [
     border: 0;
     cursor: pointer;
     box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28);
-    transition: background-color 0.2s ease, transform 0.15s ease;
+    transition: background-color 0.2s ease;
   }
-  .dm .btn:hover { background: var(--p-deep); transform: translateY(-1px); }
-  .dm .btn:focus-visible { outline: 3px solid var(--p-light); outline-offset: 3px; }
+  .dm .btn:hover { background: var(--p-deep); }
+  .dm .btn:focus-visible { outline: 3px solid var(--p-deep); outline-offset: 3px; }
   .dm .guarantee { font-size: 15px; color: var(--ink-2); max-width: 46ch; margin: 0; }
   .dm .guarantee b { color: var(--ink); font-weight: 600; }
   .dm .need { display: inline-block; border: 1px dashed var(--need); color: #9a6b00; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: var(--r-sm); background: rgba(255, 207, 107, 0.15); }
@@ -581,7 +581,7 @@ const faqs = [
   .dm .chips label:hover { border-color: var(--p-light); }
   .dm .chips input { position: absolute; opacity: 0; pointer-events: none; }
   .dm .chips label:has(input:checked) { border-color: var(--p); color: var(--p-deep); background: var(--p-soft); }
-  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-light); }
+  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-deep); outline-offset: 2px; }
   .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
   .dm .form-error { margin: 18px 0 0; color: #c62828; font-size: 14px; text-align: center; }
   .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
@@ -767,6 +767,10 @@ const faqs = [
   }
   /* Phone: lighter hero so the headline, sub and guarantee don't crowd
      the first screen (owner feedback 2026-09-28). */
+  @media (prefers-reduced-motion: no-preference) {
+    .dm .btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+    .dm .btn:hover { transform: translateY(-1px); }
+  }
   @media (max-width: 560px) {
     .dm .hero { padding-block: 32px 28px; }
     .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
