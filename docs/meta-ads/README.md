@@ -673,3 +673,5 @@ both phone and email (§9.5), so halve it before quoting it as people.
   Wrote README (this file), SETUP_RUNBOOK.md, RESEARCH.md. All pushed to
   `claude/meta-ads-infrastructure-w47kkb`. Not done: n8n router fix (needs
   go-ahead), everything in §7 manual checklists.
+
+| 2026-09-29 | Added `/apply4-thank-you` (white and blue clone of `/thank-you` for the doctor offer). It fires `Schedule` (`content_name: doctor_offer`), not `Lead`, because `/apply4` already fires `Lead` at form submit. Set the iClosed "Doctor Strategy Call" redirect to this URL in iClosed. | Avoids double-counting Lead; keeps the purple `/thank-you` untouched for the other funnels |

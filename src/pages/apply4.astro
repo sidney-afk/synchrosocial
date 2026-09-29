@@ -409,6 +409,16 @@ const faqs = [
     });
   })();
 
+  // "#apply" buttons: scroll to the form without adding "#apply" to the URL.
+  document.querySelectorAll('.dm a[href="#apply"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var t = document.getElementById("apply");
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
   // Proof images: hover hint + click/tap to view full screen.
   (function () {
     var lb = document.querySelector(".dm .lightbox");
