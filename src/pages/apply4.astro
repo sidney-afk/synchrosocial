@@ -21,6 +21,9 @@
        consent text from the other apply pages sits under the form.
      - The FAQ price answer stays off the page (owner).
 
+   Design: white and blue with subtle rounded corners (owner decision
+   2026-09-29), modelled on doctorsofcontent.com. See the style block.
+
    Every class lives under .dm so none of this leaks into shared styles.
 =========================================================================== */
 import Layout from "../layouts/Layout.astro";
@@ -74,7 +77,7 @@ const faqs = [
   metaEvent={{ name: "ViewContent", params: { content_name: "doctor_offer" } }}
 >
   <div class="dm">
-    <div class="brand"><img src="/images/logo-updated.png" alt="Synchro Social" width="170" height="36" /></div>
+    <div class="brand"><img src="/images/apply4/logo-dark.png" alt="Synchro Social" width="170" height="36" /></div>
 
     <!-- 1. TOP -->
     <section class="hero">
@@ -446,33 +449,40 @@ const faqs = [
 </script>
 
 <style is:global>
-  /* Ported 1:1 from the mockup's stylesheet, scoped under .dm. */
+  /* White and blue design (owner decision 2026-09-29), taken from the
+     reference site doctorsofcontent.com: Inter, brand blue #178af6 (deep
+     #0070e0, soft #e8f2fe), #f7f8fa surfaces, #e5e8ee borders, near-black
+     #0a0a1a text, uppercase tracked buttons. Corners are deliberately
+     subtle (4 to 8px) on every box and button. Scoped under .dm. */
   body.dm-body {
     margin: 0;
-    background-color: #000;
+    background-color: #fff;
     background-image:
-      radial-gradient(1100px 560px at 50% 0, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0)),
-      linear-gradient(180deg, #070312 0px, #0e0620 520px, #1b0b38 950px, #0e0620 1400px, #000 1900px);
+      radial-gradient(1100px 520px at 50% 0, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0)),
+      linear-gradient(180deg, #fff 0px, #f3f8ff 700px, #e8f2fe 1000px, #f3f8ff 1400px, #fff 1900px);
     background-repeat: no-repeat;
   }
   .dm {
-    color-scheme: dark;
-    --black: #000000;
-    --card: #121212;
-    --card-border: rgba(154, 93, 255, 0.14);
-    --border: rgba(154, 93, 255, 0.16);
-    --ink: #f4f1fa;
-    --ink-dim: rgba(244, 241, 250, 0.62);
-    --ink-faint: rgba(244, 241, 250, 0.38);
-    --p: #9a5dff;
-    --p-light: #d8c4ff;
-    --p-deep: #5f1fae;
-    --p-mid: #8331e8;
-    --grad: linear-gradient(180deg, #d8c4ff, #8331e8 55%, #5f1fae);
-    --grad-soft: linear-gradient(180deg, #f0e8ff, #c9a6ff 55%, #9a5dff);
-    --glow: radial-gradient(900px 480px at 50% -10%, rgba(131, 49, 232, 0.14), rgba(0, 0, 0, 0));
+    color-scheme: light;
+    --card: #fff;
+    --surface: #f7f8fa;
+    --card-border: #e5e8ee;
+    --border: #d3d9e3;
+    --ink: #0a0a1a;
+    --ink-2: #3d4557;
+    --ink-dim: #5b6478;
+    --ink-faint: #7b869a;
+    --p: #178af6;
+    --p-light: #8cc4fb;
+    --p-deep: #0070e0;
+    --p-soft: #e8f2fe;
+    --glow: radial-gradient(900px 480px at 50% -10%, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0));
     --need: #ffcf6b;
-    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --r-sm: 4px;
+    --r: 6px;
+    --r-lg: 8px;
+    --shadow: 0 10px 30px rgba(10, 14, 31, 0.07), 0 2px 6px rgba(10, 14, 31, 0.04);
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--ink);
     font-family: var(--font);
     font-size: 16px;
@@ -493,43 +503,44 @@ const faqs = [
   .dm .kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--p); margin: 0 0 18px; }
   .dm .hero .kicker { color: var(--ink); letter-spacing: 0.04em; font-size: 16px; }
   .dm h1, .dm h2, .dm h3 { margin: 0; text-wrap: balance; font-weight: 700; }
-  .dm h1 { font-size: clamp(30px, 6vw, 72px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 800; }
+  .dm h1 { font-size: clamp(30px, 6vw, 72px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
   .dm h1 .line { display: block; white-space: nowrap; }
   @media (max-width: 700px) { .dm h1 .line { white-space: normal; } }
   .dm .hero .wrap { max-width: 1200px; }
   .dm .hl {
-    background: var(--grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-decoration: underline 3px var(--p-light);
-    -webkit-text-decoration: underline 3px var(--p-light);
+    color: var(--p);
+    text-decoration: underline 3px rgba(23, 138, 246, 0.35);
+    -webkit-text-decoration: underline 3px rgba(23, 138, 246, 0.35);
     text-underline-offset: 6px;
   }
   .dm h2 { font-size: clamp(26px, 4vw, 38px); line-height: 1.15; letter-spacing: -0.02em; }
   .dm h3 { font-size: 18px; }
-  .dm .sub { font-size: 18px; color: rgba(244, 241, 250, 0.9); max-width: 640px; margin: 28px auto 0; }
+  .dm .sub { font-size: 18px; color: var(--ink-2); max-width: 640px; margin: 28px auto 0; }
 
   .dm .hero { padding-block: 48px 36px; }
   .dm .cta { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 32px; }
   .dm .btn {
     display: inline-block;
-    background: var(--grad);
+    background: var(--p);
     color: #fff;
     font-family: inherit;
-    font-weight: 700;
-    font-size: 16px;
-    padding: 16px 36px;
-    border-radius: 999px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 18px 34px;
+    border-radius: var(--r);
     text-decoration: none;
     border: 0;
     cursor: pointer;
-    box-shadow: 0 10px 30px rgba(131, 49, 232, 0.35);
+    box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28);
+    transition: background-color 0.2s ease;
   }
-  .dm .btn:focus-visible { outline: 3px solid var(--p-light); outline-offset: 3px; }
-  .dm .guarantee { font-size: 15px; color: rgba(244, 241, 250, 0.9); max-width: 46ch; margin: 0; }
+  .dm .btn:hover { background: var(--p-deep); }
+  .dm .btn:focus-visible { outline: 3px solid var(--p-deep); outline-offset: 3px; }
+  .dm .guarantee { font-size: 15px; color: var(--ink-2); max-width: 46ch; margin: 0; }
   .dm .guarantee b { color: var(--ink); font-weight: 600; }
-  .dm .need { display: inline-block; border: 1px dashed var(--need); color: var(--need); font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 6px; background: rgba(255, 207, 107, 0.07); }
+  .dm .need { display: inline-block; border: 1px dashed var(--need); color: #9a6b00; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: var(--r-sm); background: rgba(255, 207, 107, 0.15); }
 
   .dm .apply { padding-top: 8px; }
 
@@ -538,46 +549,47 @@ const faqs = [
     scroll-margin-top: 16px;
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
+    border-radius: var(--r-lg);
     padding: 34px;
     max-width: 640px;
     margin: 0 auto;
     text-align: left;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow);
   }
   .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
-  .dm .form-embed { border-radius: 12px; overflow: hidden; }
+  .dm .form-embed { border-radius: var(--r); overflow: hidden; }
   .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
   .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .dm .field { display: flex; flex-direction: column; gap: 7px; }
   .dm .full { grid-column: 1 / -1; }
   .dm .field label, .dm .q { font-size: 14px; font-weight: 600; }
   .dm input[type="text"], .dm input[type="email"], .dm input[type="tel"] {
-    background: #0a0a0a; border: 1px solid var(--border); color: var(--ink); border-radius: 10px;
+    background: #fff; border: 1px solid var(--border); color: var(--ink); border-radius: var(--r);
     padding: 12px 14px; font: inherit; font-size: 15px; width: 100%;
   }
   .dm input::placeholder { color: var(--ink-faint); }
-  .dm input:focus-visible { outline: 2px solid var(--p); outline-offset: 1px; }
+  .dm input:focus-visible { outline: 2px solid var(--p); outline-offset: 1px; border-color: var(--p); }
   .dm .handle { position: relative; }
   .dm .handle span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
   .dm .handle input { padding-left: 30px; }
   .dm .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .dm .chips label {
     position: relative; font-weight: 500; font-size: 14px; border: 1.5px solid var(--border);
-    background: rgba(154, 93, 255, 0.05); border-radius: 999px; padding: 8px 15px; cursor: pointer; color: var(--ink-dim);
+    background: #fff; border-radius: var(--r); padding: 8px 15px; cursor: pointer; color: var(--ink-dim);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
+  .dm .chips label:hover { border-color: var(--p-light); }
   .dm .chips input { position: absolute; opacity: 0; pointer-events: none; }
-  .dm .chips label:has(input:checked) { border-color: var(--p); color: var(--ink); background: rgba(154, 93, 255, 0.14); }
-  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-light); }
+  .dm .chips label:has(input:checked) { border-color: var(--p); color: var(--p-deep); background: var(--p-soft); }
+  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-deep); outline-offset: 2px; }
   .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .dm .form-error { margin: 18px 0 0; color: #ff9b9b; font-size: 14px; text-align: center; }
+  .dm .form-error { margin: 18px 0 0; color: #c62828; font-size: 14px; text-align: center; }
   .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
   .dm .step-dq .dq-title { color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
   .dm .legal { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); text-align: center; }
   .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
-  /* proof card above form: the mockup's two 120px slots, first one widened
-     so Lily's near-square image stays readable. */
+  /* proof card above form */
   .dm .proof-card {
     max-width: 640px;
     margin: 0 auto 22px;
@@ -587,16 +599,17 @@ const faqs = [
     align-items: center;
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
+    border-radius: var(--r-lg);
     padding: 14px;
     text-align: left;
+    box-shadow: var(--shadow);
   }
-  .dm .shot-img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  .dm .shot-img { display: block; width: 100%; height: auto; border-radius: var(--r-sm); }
   .dm .shot {
     aspect-ratio: 9 / 16;
-    border-radius: 10px;
+    border-radius: var(--r-sm);
     border: 1px dashed var(--need);
-    background: rgba(255, 207, 107, 0.05);
+    background: rgba(255, 207, 107, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -605,7 +618,7 @@ const faqs = [
     padding: 8px;
     text-align: center;
     font-size: 11.5px;
-    color: var(--need);
+    color: #9a6b00;
     font-weight: 600;
   }
   .dm .proof-card .shot { aspect-ratio: auto; align-self: stretch; }
@@ -616,7 +629,7 @@ const faqs = [
   .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
   .dm .quotes { max-width: 860px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 720px) { .dm .quotes { grid-template-columns: 1fr; } }
-  .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 28px; }
+  .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--surface); border: 1px solid var(--card-border); border-left: 3px solid var(--p); border-radius: var(--r-lg); padding: 28px; }
   .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
   .dm .quote .by { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--ink-dim); }
   .dm .quote blockquote { margin: 0; }
@@ -629,23 +642,21 @@ const faqs = [
   /* proof grid under form */
   .dm .proof-grid { max-width: 640px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
   .dm .pg {
-    background: linear-gradient(180deg, rgba(154, 93, 255, 0.04), rgba(154, 93, 255, 0.1) 50%, rgba(154, 93, 255, 0.04)), var(--card);
+    background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 12px;
+    border-top: 3px solid var(--p);
+    border-radius: var(--r-lg);
     padding: 22px 24px;
-    box-shadow: 0 20px 60px -2.5px rgba(0, 0, 0, 0.4);
+    box-shadow: var(--shadow);
   }
-  .dm .pg-label { font-size: 20px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; }
+  .dm .pg-label { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
   .dm .pg-num {
     font-size: 40px;
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.1;
     margin: 8px 0 6px;
-    background: var(--grad-soft);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--p);
     font-variant-numeric: lining-nums;
   }
   /* Letter suffixes (B, M, K, +) render taller than the digits in some
@@ -656,50 +667,50 @@ const faqs = [
     .dm .proof-grid { gap: 8px; }
     .dm .pg { padding: 14px 12px; }
     .dm .pg-num { font-size: 26px; }
-    .dm .pg-label { font-size: 14px; }
+    .dm .pg-label { font-size: 11px; letter-spacing: 0.06em; }
     .dm .pg p { font-size: 12.5px; }
   }
 
   /* zoomable proof images */
   .dm .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; overflow: hidden; border-radius: inherit; }
-  .dm .proof-card .zoom { border-radius: 10px; }
+  .dm .proof-card .zoom { border-radius: var(--r-sm); }
   .dm .zoom img { transition: transform 0.35s ease, filter 0.35s ease; }
   .dm .zoom-icon {
-    position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: 50%;
-    display: grid; place-items: center; background: rgba(10, 10, 10, 0.7); border: 1px solid var(--border);
-    opacity: 0.85; transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+    position: absolute; right: 10px; bottom: 10px; width: 36px; height: 36px; border-radius: var(--r);
+    display: grid; place-items: center; background: rgba(10, 14, 31, 0.78);
+    opacity: 0.9; transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
   }
   .dm .zoom-icon svg { width: 16px; height: 16px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   @media (hover: hover) {
     .dm .zoom-icon { opacity: 0; transform: scale(0.9); }
     .dm .zoom:hover img { transform: scale(1.03); filter: brightness(1.08); }
-    .dm .zoom:hover .zoom-icon { opacity: 1; transform: scale(1); background: var(--p-mid); }
+    .dm .zoom:hover .zoom-icon { opacity: 1; transform: scale(1); background: var(--p); }
   }
-  .dm .zoom:focus-visible { outline: 2px solid var(--p-light); outline-offset: 2px; }
+  .dm .zoom:focus-visible { outline: 2px solid var(--p); outline-offset: 2px; }
   .dm .lightbox { position: fixed; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: 0; border: 0; background: transparent; max-width: 96vw; max-height: 92vh; overflow: visible; cursor: zoom-out; }
-  .dm .lightbox::backdrop { background: rgba(0, 0, 0, 0.88); }
-  .dm .lightbox img { display: block; max-width: 96vw; max-height: 92vh; width: auto; height: auto; border-radius: 12px; }
+  .dm .lightbox::backdrop { background: rgba(10, 14, 31, 0.85); }
+  .dm .lightbox img { display: block; max-width: 96vw; max-height: 92vh; width: auto; height: auto; border-radius: var(--r-sm); }
   .dm .lb-close {
-    position: fixed; top: 14px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border);
-    background: rgba(18, 18, 18, 0.9); color: #fff; font-size: 26px; line-height: 1; cursor: pointer;
+    position: fixed; top: 14px; right: 16px; width: 44px; height: 44px; border-radius: var(--r); border: 0;
+    background: #fff; color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
   }
 
   /* steps */
   .dm .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
-  .dm .step { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 26px 22px; }
-  .dm .step .n { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--p); color: var(--p-light); font-weight: 700; font-size: 14px; display: grid; place-items: center; margin: 0 auto 14px; }
+  .dm .step { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 26px 22px; box-shadow: var(--shadow); }
+  .dm .step .n { width: 34px; height: 34px; border-radius: var(--r); background: var(--p); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; margin: 0 auto 14px; }
   .dm .step p { margin: 8px 0 0; color: var(--ink-dim); font-size: 15px; }
 
   /* results */
   .dm .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; text-align: left; }
-  .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
-  .dm .thumb { aspect-ratio: 16 / 10; width: 100%; background: radial-gradient(90% 90% at 50% 0%, #2a1850, #0b0b0b); display: grid; place-items: center; }
+  .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+  .dm .thumb { aspect-ratio: 16 / 10; width: 100%; background: #fff; display: grid; place-items: center; }
   .dm .thumb-img { display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; }
   .dm .video-btn { position: relative; padding: 0; border: 0; cursor: pointer; overflow: hidden; }
   .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dm .video-frame { border: 0; display: block; }
-  .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
-  .dm .play svg { width: 18px; height: 18px; fill: #0a0a0a; margin-left: 2px; }
+  .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .dm .play svg { width: 18px; height: 18px; fill: #0a0a1a; margin-left: 2px; }
   .dm .tile-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 8px; }
   .dm .who { font-size: 12px; color: var(--p); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
   .dm .big { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
@@ -707,15 +718,15 @@ const faqs = [
   .dm .disclaimer { color: var(--ink-faint); font-size: 13px; margin: 22px auto 0; max-width: 70ch; }
 
   /* faq */
-  .dm .faq { margin-top: 28px; text-align: left; border-top: 1px solid var(--border); }
-  .dm details { border-bottom: 1px solid var(--border); padding-block: 18px; }
+  .dm .faq { margin-top: 28px; text-align: left; border-top: 1px solid var(--card-border); }
+  .dm details { border-bottom: 1px solid var(--card-border); padding-block: 18px; }
   .dm summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
   .dm summary::-webkit-details-marker { display: none; }
   .dm summary::after { content: "+"; color: var(--p); font-size: 22px; line-height: 1; }
   .dm details[open] summary::after { content: "−"; }
   .dm details p { margin: 10px 0 0; color: var(--ink-dim); }
 
-  .dm .final { border-top: 1px solid var(--border); }
+  .dm .final { border-top: 1px solid var(--card-border); }
   .dm footer { padding-block: 28px; color: var(--ink-faint); font-size: 13px; }
 
   @media (max-width: 720px) {
@@ -729,12 +740,12 @@ const faqs = [
   @media (min-width: 721px) {
     /* Guarantee line fits on two lines. */
     .dm .guarantee { max-width: 62ch; }
-    /* "How it works" spacing: clear of the section edge, not a void. */
+    /* "How it works" spacing: clear of the section edge, not a void.
+       The glow is centred inside the section so it fades in instead of
+       starting as a hard line at the section's top edge. */
     .dm .how {
       padding-top: 24px;
-      /* Centre the glow inside the section so it fades in instead of
-         starting as a hard line at the section's top edge. */
-      background: radial-gradient(closest-side at 50% 50%, rgba(131, 49, 232, 0.16), rgba(0, 0, 0, 0));
+      background: radial-gradient(closest-side at 50% 50%, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0));
     }
   }
   @media (min-width: 960px) {
@@ -756,20 +767,20 @@ const faqs = [
   }
   /* Phone: lighter hero so the headline, sub and guarantee don't crowd
      the first screen (owner feedback 2026-09-28). */
+  @media (prefers-reduced-motion: no-preference) {
+    .dm .btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+    .dm .btn:hover { transform: translateY(-1px); }
+  }
   @media (max-width: 560px) {
     .dm .hero { padding-block: 32px 28px; }
     .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
     .dm h1 { font-size: 28px; line-height: 1.12; }
     .dm .sub { font-size: 15px; line-height: 1.5; margin-top: 18px; }
     .dm .cta { margin-top: 24px; gap: 12px; }
-    .dm .btn { font-size: 15px; padding: 14px 30px; }
+    .dm .btn { font-size: 13px; padding: 16px 28px; }
     .dm .guarantee { font-size: 13px; line-height: 1.5; }
     .dm .final h2 { font-size: 24px; }
     /* Gap under the stat cards matches the 22px gap above them. */
     .dm .apply { padding-bottom: 22px; }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .dm .btn { transition: transform 0.15s ease; }
-    .dm .btn:hover { transform: translateY(-1px); }
   }
 </style>
