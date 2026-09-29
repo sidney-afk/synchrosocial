@@ -675,3 +675,5 @@ both phone and email (§9.5), so halve it before quoting it as people.
   go-ahead), everything in §7 manual checklists.
 
 | 2026-09-29 | Added `/apply4-thank-you` (white and blue clone of `/thank-you` for the doctor offer). It fires `Schedule` (`content_name: doctor_offer`), not `Lead`, because `/apply4` already fires `Lead` at form submit. Set the iClosed "Doctor Strategy Call" redirect to this URL in iClosed. | Avoids double-counting Lead; keeps the purple `/thank-you` untouched for the other funnels |
+
+| 2026-09-29 | The doctor page moved from `/apply4` to `/doctors` (`/apply4` redirects there, without query strings). The thank-you page stays at `/apply4-thank-you`. Pixel events unchanged (`ViewContent`/`Lead` with `content_name: doctor_offer`). | Kasper's request; point ads at `/doctors` |

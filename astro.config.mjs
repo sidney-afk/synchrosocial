@@ -16,6 +16,8 @@ export default defineConfig({
     // link or QR code can still point at them.
     '/danny_vsl': '/apply2',
     '/baya_vsl': '/apply3',
+    // The doctor offer page was /apply4 while it was built; it is /doctors now.
+    '/apply4': '/doctors',
   },
   vite: {
     plugins: [tailwindcss()],
