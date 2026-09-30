@@ -14,7 +14,7 @@
        URL parameters (iclosedName/Email/Phone + question identifiers) and
        iClosed's "Pre-qualified form skipping" on, so the doctor only picks a
        time. "Under $2,000" is turned away on our page. Meta `Lead` fires on
-       submit (brief), not on booking.
+       submit for everyone except "Under $2,000", not on booking.
      - Real assets replace placeholders where we have them: Lily's profile
        image, her growth image in the results tile, Sonia's Wistia video.
      - The yellow "mockup" bar and demo submit handler are dropped; the SMS
@@ -353,17 +353,17 @@ const faqs = [
       }
       err.hidden = true;
 
-      // Brief: fire the Meta pixel Lead event when the form is submitted.
-      if (typeof window.fbq === "function") {
-        fbq("track", "Lead", { content_name: "doctor_offer" });
-      }
-
       // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
       if (v.investment === "Under $2,000") {
         form.hidden = true;
         card.querySelector("h2").hidden = true;
         card.querySelector(".step-dq").hidden = false;
         return;
+      }
+
+      // Meta Lead fires only for people who are NOT "Under $2,000".
+      if (typeof window.fbq === "function") {
+        fbq("track", "Lead", { content_name: "doctor_offer" });
       }
 
       // iClosed expects %20 for spaces (encodeURIComponent), not "+".
