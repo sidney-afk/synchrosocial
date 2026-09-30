@@ -58,12 +58,12 @@ committed**), `iclosed-call-booked`, `twilio-inbound-sms` (no auth).
 | Workflow | Version | Last saved |
 | --- | --- | --- |
 | Capture | `6210da40` | 2026-09-30 21:17 |
-| Dispatch | `ebbe48f8` | 2026-09-30 21:17 |
+| Dispatch | `ca93c4bf` | 2026-09-30 22:00 |
 | Doctors Partial Lead Capture | `9f4d6a8b` | 2026-09-30 21:30 |
 | Call Booked (iClosed) | `078c0ce4` | 2026-09-30 21:17 |
 | Normal Sales — Booking Handler | `4b7d65f6` | 2026-08-27 |
 | Inbound SMS Relay | `78ebaf58` | 2026-08-27 |
-| Heartbeat | `f56bafce` | 2026-09-11 |
+| Heartbeat | `d5310994` | 2026-09-30 22:00 |
 
 If a workflow's saved time is later than the one above, this folder may be stale
 for that workflow. Re-read it and update the doc in the same change.
@@ -411,8 +411,8 @@ Design choices worth remembering:
 | 1 | **SMS consent and the public opt-in page** | Sidney | The recovery text does not check consent, and `/sms-opt-in` says no marketing texts are sent. `TWILIO_RUNBOOK.md` §3. |
 | 2 | **Toll-free number verification, Advanced Opt-Out, balance** | Sidney | Live in the Twilio console; not checked from this repo. |
 | 3 | **Doctors partial capture: source not in any repo** | Sidney | The `doctors-partial-capture` edge function and the `/doctors` code that calls it are not in `synchrosocial` or `client-analytics` as of 2026-09-30. Commit them, or this intake cannot be reviewed or rebuilt. |
-| 4 | **Heartbeat will false-alarm on doctors partial leads** | whoever owns n8n | Alarm 3 ("closed without the text") treats `sms_sent_at` as unset unless it parses as a date. Doctors partial rows carry `n/a-no-sms-consent`, so any such lead that has a phone, once emailed and closed, is reported as a missed text. Alarm 3 has no 24 hour window, so it repeats every morning. |
-| 5 | **Slack wording for doctors partial leads** | whoever owns n8n | The "Recovery email sent" DM says the text was "already sent earlier" whenever a phone exists and nothing is queued. For a doctors partial lead no text was ever sent. |
+| 4 | ~~Heartbeat false-alarms on doctors partial leads~~ **FIXED 2026-09-30** | done | Alarm 3 now ignores rows whose `sms_sent_at` starts with `n/a`. |
+| 5 | ~~Slack wording for doctors partial leads~~ **FIXED 2026-09-30** | done | The "Recovery email sent" DM now says "not sent, no text consent (email-only lead)" for those rows. |
 | 6 | **Stale notes inside n8n** | whoever owns n8n | Dispatch's `Every Hour` node note and code comments still say "10 min" and "144 runs a day". It runs hourly (24 a day). Cosmetic. |
 | 7 | **Dispatch gating** | planned | `client-analytics/docs/plans/2026-09-30-n8n-exit-phase-2.md` step C plans to run Dispatch only when a row is due, behind a replay test that proves every due message still sends. Update this doc when that lands. |
 | 8 | **Doctors partial lead to HubSpot** | Sidney | A doctors partial lead has no HubSpot contact until Dispatch creates one when it sends the email. Fine for the gate (no contact means not booked), worth knowing if you look for them in HubSpot sooner. |
