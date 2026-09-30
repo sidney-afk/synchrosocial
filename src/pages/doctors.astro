@@ -246,6 +246,25 @@ const faqs = [
             />
           </article>
         </div>
+        <h3 class="more-title">More Client Results Across Other Fields</h3>
+        <div class="more">
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-danny-before.webp" alt="Danny Morel's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-danny-after.webp" alt="Danny Morel's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-baya-before.webp" alt="Baya Voce's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-baya-after.webp" alt="Baya Voce's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-lucas-before.webp" alt="Lucas Salame's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-lucas-after.webp" alt="Lucas Salame's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-oliver-before.webp" alt="Oliver Nino's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-oliver-after.webp" alt="Oliver Nino's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+        </div>
         <div class="quotes">
                 <figure class="quote">
           <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
@@ -663,6 +682,13 @@ const faqs = [
   .dm .case p { margin: 14px 0 0; color: var(--ink-dim); font-size: 17px; line-height: 1.6; }
   .dm .case-media { display: block; width: 100%; height: auto; margin-top: 22px; border: 1px solid var(--card-border); border-radius: var(--r); background: #fff; }
   .dm .case-video { aspect-ratio: 16 / 9; }
+  .dm .more-title { margin: 56px 0 0; font-size: clamp(22px, 3.4vw, 30px); font-weight: 700; letter-spacing: -0.02em; text-align: center; }
+  .dm .more { display: grid; gap: 16px; margin: 24px auto 0; max-width: 880px; }
+  .dm .more-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); }
+  .dm .more-pair figure { margin: 0; }
+  .dm .more-pair figcaption { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--p); margin-bottom: 8px; }
+  .dm .more-pair img { display: block; width: 100%; height: auto; border: 1px solid var(--card-border); border-radius: var(--r); background: #fff; }
+  @media (max-width: 560px) { .dm .more-pair { grid-template-columns: 1fr; padding: 12px; } }
   .dm .br-sm { display: none; }
   @media (max-width: 560px) {
     .dm .br-sm { display: inline; }
