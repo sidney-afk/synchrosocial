@@ -12,9 +12,9 @@
 > `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`.
 >
 > **n8n is the source of truth.** This folder describes the live workflows; it
-> does not contain them. The four old importable workflow drafts in `n8n/`
-> (`01-…` to `04-…`) are **obsolete**: they no longer match what runs and must not
-> be imported. They are due to be deleted. To see what is really wired, open the
+> does not contain them. The four old importable workflow drafts
+> (`01-…` to `04-…`) were **obsolete and have been deleted** (2026-09-30). Only
+> `n8n/test-date-logic.js` remains. To see what is really wired, open the
 > workflow in n8n, not this file.
 
 **Status 2026-09-30: LIVE, email and text.** Capture records abandoned bookings.
@@ -499,7 +499,7 @@ Nothing above blocks the email path.
 - **2026-09-30.** `/doctors` partial capture (email only) and the `/doctors` link in
   the doctors recovery email added. This folder rewritten to match the live
   workflows; the old Twilio setup log retired, and the four old workflow drafts
-  marked obsolete.
+  deleted.
 
 ---
 
