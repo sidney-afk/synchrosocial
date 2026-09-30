@@ -135,6 +135,8 @@ const faqs = [
           <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
                answers prefilled, so the doctor only picks a time. -->
           <form class="apply-form" data-step="1" novalidate>
+            <!-- Honeypot for the partial-lead capture script below: real visitors never see or fill it. -->
+            <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
             <div class="grid">
               <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
               <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
@@ -337,6 +339,53 @@ const faqs = [
       return d.length >= 8 ? "+" + d : "";
     }
 
+    // Partial-lead capture. A doctor who has typed a valid email and picked a
+    // qualifying monthly investment but leaves before pressing Submit would
+    // otherwise be lost: nothing reaches iClosed until step 2. We send what they
+    // have to the doctors-partial-capture edge function, which arms an EMAIL-ONLY
+    // recovery follow-up in n8n (never a text: SMS consent is on the submit
+    // button). Fires on "change" (a field committed or a radio picked), never on
+    // each keystroke, so half-typed addresses are never sent. No pixel events.
+    var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
+    var QUALIFYING = ["$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
+    var submitted = false;
+    var partialSentFor = "";
+    function maybeSendPartial() {
+      if (submitted) return;
+      var f = new FormData(form);
+      var email = String(f.get("email") || "").trim();
+      var investment = String(f.get("investment") || "");
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
+      if (QUALIFYING.indexOf(investment) === -1) return;
+      if (email.toLowerCase() === partialSentFor) return;
+      partialSentFor = email.toLowerCase();
+      var qs = new URLSearchParams(location.search);
+      var body = {
+        name: String(f.get("name") || "").trim(),
+        email: email,
+        phone: normPhone(String(f.get("phone") || "").trim()),
+        instagram: String(f.get("instagram") || "").trim().replace(/^@+/, ""),
+        specialty: String(f.get("specialty") || ""),
+        investment: investment,
+        start: String(f.get("start") || ""),
+        website: String(f.get("website") || ""),
+        referrer: document.referrer || "",
+      };
+      try { body.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (err2) {}
+      ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
+        if (qs.get(k)) body[k] = qs.get(k);
+      });
+      try {
+        fetch(PARTIAL_URL, {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).catch(function () {});
+      } catch (err3) {}
+    }
+    form.addEventListener("change", function () { setTimeout(maybeSendPartial, 800); });
+
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var f = new FormData(form);
@@ -358,6 +407,7 @@ const faqs = [
         return;
       }
       err.hidden = true;
+      submitted = true; // a real submit: stop the partial-lead capture above
 
       // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
       if (v.investment === "Under $2,000") {
