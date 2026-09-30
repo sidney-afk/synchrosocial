@@ -10,9 +10,11 @@
    booking to https://synchrosocial.com/apply4-thank-you (iClosed settings,
    not code).
 
-   Tracking: /apply4 already fires `Lead` when the doctor submits the form, so
-   this page fires `Schedule` (a booked call) instead, to avoid counting Lead
-   twice. See docs/meta-ads/README.md.
+   Tracking: this page fires NO pixel event. /doctors fires `Lead` at form
+   submit (except "Under $2,000"), and the server-side CAPI workflow (n8n
+   "Sales - Booked Call to Meta CAPI") sends `Schedule` for the doctor
+   strategy call, so a browser `Schedule` here would double-count. See
+   docs/meta-ads/README.md.
 =========================================================================== */
 import Layout from "../layouts/Layout.astro";
 import VideoEmbed from "../components/VideoEmbed.astro";
@@ -57,26 +59,6 @@ const year = new Date().getFullYear();
   description="Two quick steps to confirm your call with Synchro Social."
   bodyClass="ty-body"
 >
-  <script is:inline>
-    /* Booked-call conversion. /apply4 already fired Lead at form submit, so
-       this fires Schedule. Reuses the stored booking ID if there is one so
-       Meta can dedupe; direct visits overcount slightly (accepted). */
-    (function () {
-      if (typeof window.fbq !== "function") return;
-      var eid = null;
-      try {
-        var stored = JSON.parse(sessionStorage.getItem("ss_booked_eid") || "null");
-        if (stored && Date.now() - stored.at < 3600000) eid = stored.eid;
-      } catch (err) {}
-      if (!eid) {
-        eid =
-          window.crypto && crypto.randomUUID
-            ? crypto.randomUUID()
-            : String(Date.now()) + "-" + Math.random().toString(36).slice(2);
-      }
-      fbq("track", "Schedule", { content_name: "doctor_offer" }, { eventID: "schedule-" + eid });
-    })();
-  </script>
 
   <div class="ty">
     <header class="hero">
