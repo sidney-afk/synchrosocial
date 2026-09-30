@@ -416,10 +416,12 @@ Current open items:
 8. **Paid-source tagging is half-built.** `Sales — Booking Recovery Capture`
    writes `ad_attribution` (`utm_source/medium/campaign/content`, `fbclid`,
    referrer, calendar, `captured_at`) and `booking_recovery` onto the HubSpot
-   contact — but only for leads who **abandoned**. Leads who actually book
-   still get no campaign/source fields, so checklist item "Add/confirm
-   HubSpot properties for paid source, campaign, lead quality, CAC" is
-   partially, not fully, addressed.
+   contact. Since 2026-08-20 that covers every lead on an acquisition calendar
+   that has an email (abandoned, booked and disqualified), not just abandoners;
+   phone-only leads are skipped because HubSpot keys on email. So checklist item
+   "Add/confirm HubSpot properties for paid source, campaign, lead quality, CAC"
+   is addressed for leads with an email, not for phone-only leads. See
+   `booking-recovery/HUBSPOT_SCHEMA.md` §4 and §5.
 
 Historical items from PR #27 handoff:
 
