@@ -26,7 +26,7 @@ the booking workflows. Replies to texts are relayed to Kasper on Telegram. A dai
 heartbeat DMs Sidney and raises alarms.
 
 Since 2026-09-30 a second intake exists: `/doctors` visitors who fill step 1 but
-do not submit are armed for **email only**.
+do not submit are armed for email, and for a text too when the page sent `sms_consent=yes` (the step-1 form shows the SMS consent line under the phone field since 2026-10-01).
 
 The recovery text is live without an SMS consent check. That is an open owner
 decision, written up in `TWILIO_RUNBOOK.md` §3. Read it before changing anything
@@ -38,7 +38,7 @@ about texting.
 | --- | --- | --- |
 | `Sales — Booking Recovery Capture (iClosed)` | `31DnMJLU3YM89py1` | Receives iClosed "Contact by status" webhooks. Arms abandoned leads, suppresses booked and disqualified ones, mirrors every acquisition-calendar lead to HubSpot. No send nodes. |
 | `Sales — Booking Recovery Dispatch` | `nQ4vnZ8bmG3E3Lor` | Hourly. Picks due rows, runs the booked checks, sends E1 (Gmail) and S1 (Twilio), stamps the row, mirrors to HubSpot, alerts Sidney (Slack) and Kasper (Telegram). |
-| `Sales — Doctors Partial Lead Capture` | `8nq6jGbpmCDZxnQz` | Receives a `/doctors` step-1 lead from the `doctors-partial-capture` edge function. Arms an email-only row. |
+| `Sales — Doctors Partial Lead Capture` | `8nq6jGbpmCDZxnQz` | Receives a `/doctors` step-1 lead from the `doctors-partial-capture` edge function. Arms an email row, plus a text when `sms_consent=yes` is sent. |
 | `Sales — Call Booked (iClosed)` | `xoPqojySDriQ8Mzh` | Existing booking router. AI funnel confirmation email and text; hands the normal and doctors funnels on. |
 | `Normal Sales — Booking Handler` | `ghpbQQJizAnR6p2b` | Normal and doctors funnel confirmation email, nurture and confirmation text. |
 | `Sales — Inbound SMS Relay` | `m6T2atZGGXKlDqfw` | Twilio inbound webhook to Kasper on Telegram. |
@@ -198,7 +198,7 @@ flowchart TD
   CAP --> DT[("n8n Data Table<br/>booking_recovery")]
   CAP -->|"contact + attribution"| HS[("HubSpot")]
 
-  LP -->|"/doctors step 1, not submitted<br/>edge function"| DOC["Doctors Partial Capture<br/>(email only)"]
+  LP -->|"/doctors step 1, not submitted<br/>edge function"| DOC["Doctors Partial Capture<br/>(email, + SMS if consent flag)"]
   DOC --> DT
 
   DISP["Dispatch<br/>hourly"] --> DT

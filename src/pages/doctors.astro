@@ -142,6 +142,15 @@ const faqs = [
               <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
               <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required /></div>
               <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" required /></div></div>
+              <p class="sms-consent full">
+                By entering your phone number you agree to receive text messages from Synchro
+                Social about your application and call, including a reminder if you don't finish
+                booking. Message frequency varies. Message and data rates may apply. Reply STOP to
+                opt out, HELP for help. See our
+                <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+                and
+                <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>.
+              </p>
               <div class="field full"><span class="q">Specialty</span>
                 <div class="chips">{specialties.map((v) => <label><input type="radio" name="specialty" value={v} required />{v}</label>)}</div>
               </div>
@@ -342,10 +351,12 @@ const faqs = [
     // Partial-lead capture. A doctor who has typed a valid email and picked a
     // qualifying monthly investment but leaves before pressing Submit would
     // otherwise be lost: nothing reaches iClosed until step 2. We send what they
-    // have to the doctors-partial-capture edge function, which arms an EMAIL-ONLY
-    // recovery follow-up in n8n (never a text: SMS consent is on the submit
-    // button). Fires on "change" (a field committed or a radio picked), never on
-    // each keystroke, so half-typed addresses are never sent. No pixel events.
+    // have to the doctors-partial-capture edge function, which arms a recovery
+    // follow-up in n8n: email, plus a text because the step-1 form shows an SMS
+    // consent line directly under the phone field (sms_consent below records
+    // that it was shown; n8n sends no text without it). Fires on "change" (a
+    // field committed or a radio picked), never on each keystroke, so half-typed
+    // addresses are never sent. No pixel events.
     var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
     var QUALIFYING = ["$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
     var submitted = false;
@@ -370,6 +381,7 @@ const faqs = [
         start: String(f.get("start") || ""),
         website: String(f.get("website") || ""),
         referrer: document.referrer || "",
+        sms_consent: document.querySelector(".sms-consent") ? "yes" : "",
       };
       try { body.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (err2) {}
       ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
@@ -624,6 +636,8 @@ const faqs = [
   .dm .step-dq .dq-title { color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
   .dm .legal { margin: 16px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); text-align: center; }
   .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .dm .sms-consent { grid-column: 1 / -1; margin: -4px 0 0; font-size: 12px; line-height: 1.55; color: var(--ink-faint); }
+  .dm .sms-consent a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
   /* proof card above form */
   .dm .proof-card {
