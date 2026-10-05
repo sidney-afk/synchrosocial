@@ -430,6 +430,31 @@ const faqs = [
         fbq("track", "Lead", { content_name: "doctor_offer" });
       }
 
+      // Tell n8n they pressed Submit: it sends the booking link by email (and by text
+      // with consent, 08:00-18:00 their time) right away and moves the recovery nudge
+      // to 30 minutes out. Same relay as the partial capture; submitted=yes routes it.
+      try {
+        var sub = {
+          name: v.name, email: v.email, phone: v.phone, instagram: v.instagram,
+          specialty: v.specialty, investment: v.investment, start: v.start,
+          website: String(f.get("website") || ""),
+          referrer: document.referrer || "",
+          sms_consent: document.querySelector(".sms-consent") ? "yes" : "",
+          submitted: "yes",
+        };
+        try { sub.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (err4) {}
+        var sq = new URLSearchParams(location.search);
+        ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
+          if (sq.get(k)) sub[k] = sq.get(k);
+        });
+        fetch(PARTIAL_URL, {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sub),
+        }).catch(function () {});
+      } catch (err5) {}
+
       // iClosed expects %20 for spaces (encodeURIComponent), not "+".
       var q = [
         ["iclosedName", v.name],
