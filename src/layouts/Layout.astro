@@ -10,6 +10,9 @@ interface Props {
   /** Extra Meta Pixel event to fire on this page (besides PageView),
       e.g. { name: "Schedule" } on /thank-you. See docs/meta-ads/. */
   metaEvent?: { name: string; params?: Record<string, string | number> };
+  /** Skip the render-blocking Google Fonts stylesheet (Poppins + Outfit) and the
+      Caveat preload. For pages that only use the self-hosted Inter, e.g. /doctors. */
+  lightFonts?: boolean;
 }
 
 const {
@@ -17,6 +20,7 @@ const {
   description = "We help impact-driven coaches and thought leaders share their journey on social media. Grow exceptionally, but with intention.",
   bodyClass = "bg-white",
   metaEvent = null,
+  lightFonts = false,
 } = Astro.props;
 ---
 
@@ -34,7 +38,7 @@ const {
     <link rel="preload" href="/fonts/inter-tight-700.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/caveat-700.woff2" as="font" type="font/woff2" crossorigin />
+    {!lightFonts && <link rel="preload" href="/fonts/caveat-700.woff2" as="font" type="font/woff2" crossorigin />}
 
     <!-- Open Graph / social preview -->
     <meta property="og:type" content="website" />
@@ -46,12 +50,16 @@ const {
     <!-- Inter / Inter Tight / Caveat are self-hosted (see global.css @font-face,
          exact woff2 from the reference). Poppins + Outfit stay on Google Fonts
          for the classic / AI funnel pages. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
-      rel="stylesheet"
-    />
+    {!lightFonts && (
+      <>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+          rel="stylesheet"
+        />
+      </>
+    )}
 
     <MetaPixel event={metaEvent?.name} params={metaEvent?.params} />
   </head>
