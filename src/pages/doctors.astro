@@ -223,6 +223,7 @@ const faqs = [
             <div class="case-stat">60,000 new followers in under 90 days</div>
             <p>Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new followers alone.</p>
             <button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
+              <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
             </button>
@@ -232,6 +233,7 @@ const faqs = [
             <div class="case-stat">Followers up about 50% in under 6 months</div>
             <p>One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p>
             <button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
+              <img src="/images/doctors-videos/sonia-chopra.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
             </button>
@@ -785,6 +787,9 @@ const faqs = [
   .dm button.case-video .play { width: 64px; height: 64px; }
   .dm button.case-video .play svg { width: 26px; height: 26px; }
   .dm button.case-video .vb-label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .dm button.case-video::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.22); }
+  .dm button.case-video .play, .dm button.case-video .vb-label { position: relative; z-index: 1; }
+  .dm button.case-video .vb-label { text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); }
   .dm button.case-video:focus-visible { outline: 3px solid var(--p); outline-offset: 2px; }
   .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dm .video-frame { border: 0; display: block; }
