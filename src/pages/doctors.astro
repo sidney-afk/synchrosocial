@@ -75,6 +75,7 @@ const faqs = [
   description="We film you for 2-3 hours a month, edit and post, and bring you followers who want what you offer. Guaranteed."
   bodyClass="dm-body"
   metaEvent={{ name: "ViewContent", params: { content_name: "doctor_offer" } }}
+  lightFonts
 >
   <div class="dm">
     <div class="brand"><img src="/images/apply4/logo-dark.png" alt="Synchro Social" width="170" height="36" /></div>
@@ -109,6 +110,7 @@ const faqs = [
             alt="Dr. Lily Baker's Instagram profile in May 2026 (63.9K followers) and September 2026 (151K followers)"
             width="900"
             height="950"
+            loading="lazy"
             decoding="async"
           />
           <img
@@ -118,6 +120,7 @@ const faqs = [
             alt="Dr. Lily Baker's Instagram insights, Jul 8 to Sep 27: 10,651,859 views, +60,944 net followers, +68,339 follows"
             width="900"
             height="900"
+            loading="lazy"
             decoding="async"
           />
           <div class="proof-text">
@@ -219,27 +222,19 @@ const faqs = [
             <div class="case-name">Dr. Lily Baker | Chiropractor</div>
             <div class="case-stat">60,000 new followers in under 90 days</div>
             <p>Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new followers alone.</p>
-            <iframe
-              class="case-media case-video"
-              src="https://fast.wistia.net/embed/iframe/t7vak3h3m9?seo=false&videoFoam=false"
-              title="Dr. Lily Baker's testimonial"
-              allow="autoplay; fullscreen"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
+            <button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
+              <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="vb-label">Tap to play</span>
+            </button>
           </article>
           <article class="case">
             <div class="case-name">Dr. Sonia Chopra | Endodontist</div>
             <div class="case-stat">Followers up about 50% in under 6 months</div>
             <p>One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p>
-            <iframe
-              class="case-media case-video"
-              src="https://fast.wistia.net/embed/iframe/vr83s40k0b?seo=false&videoFoam=false"
-              title="Dr. Sonia Chopra's testimonial"
-              allow="autoplay; fullscreen"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
+            <button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
+              <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="vb-label">Tap to play</span>
+            </button>
           </article>
         </div>
         <div class="cta">
@@ -410,11 +405,12 @@ const faqs = [
       var missing = Object.keys(v).filter(function (k) { return !v[k]; });
       var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
       if (missing.length || !emailOk) {
+        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "your monthly investment", start: "when you can start" };
         err.textContent = !emailOk && v.email
           ? "Please enter a valid email."
           : missing.indexOf("phone") > -1 && f.get("phone")
             ? "Please enter your phone number with country code, e.g. +1 555 123 4567."
-            : "Please fill in every field.";
+            : "Please fill in: " + missing.map(function (k) { return labels[k]; }).join(", ") + ".";
         err.hidden = false;
         return;
       }
@@ -490,7 +486,7 @@ const faqs = [
       f.allow = "autoplay; fullscreen";
       f.allowFullscreen = true;
       f.title = btn.getAttribute("aria-label");
-      f.className = "thumb video-frame";
+      f.className = btn.classList.contains("case-video") ? "case-media case-video video-frame" : "thumb video-frame";
       btn.replaceWith(f);
     });
   });
@@ -759,6 +755,12 @@ const faqs = [
   .dm .video-slot iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; display: block; border-radius: var(--r-sm); }
   .dm .thumb-img { display: block; width: 100%; aspect-ratio: 1 / 1; height: auto; object-fit: contain; background: #fff; }
   .dm .video-btn { position: relative; padding: 0; border: 0; cursor: pointer; overflow: hidden; }
+  /* Tap-to-play facade for the case-study videos: no Wistia request until tapped. */
+  .dm button.case-video { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #0a0a1a 0%, #14335f 100%); color: #fff; font: inherit; }
+  .dm button.case-video .play { width: 64px; height: 64px; }
+  .dm button.case-video .play svg { width: 26px; height: 26px; }
+  .dm button.case-video .vb-label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .dm button.case-video:focus-visible { outline: 3px solid var(--p); outline-offset: 2px; }
   .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .dm .video-frame { border: 0; display: block; }
   .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
