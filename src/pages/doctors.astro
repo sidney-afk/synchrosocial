@@ -28,6 +28,10 @@
 =========================================================================== */
 import Layout from "../layouts/Layout.astro";
 
+// Microsoft Clarity project ID (the short code in Clarity > Settings > Setup).
+// Empty = Clarity is not loaded. See docs/meta-ads/README.md, 2026-10-07.
+const CLARITY_ID = "";
+
 // iClosed "Doctor Strategy Call" event (disqualifies "Under $2,000" a month).
 const ICLOSED_URL = "https://app.iclosed.io/e/synchrosocial/doctor-strategy-call";
 
@@ -137,7 +141,7 @@ const faqs = [
           <h2>Book A Growth Consultation</h2>
           <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
                answers prefilled, so the doctor only picks a time. -->
-          <form class="apply-form" data-step="1" novalidate>
+          <form class="apply-form" data-step="1" data-clarity-mask="True" novalidate>
             <!-- Honeypot for the partial-lead capture script below: real visitors never see or fill it. -->
             <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
             <div class="grid">
@@ -421,6 +425,7 @@ const faqs = [
 
       // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
       if (v.investment === "Under $2,000") {
+        if (typeof window.clarity === "function") clarity("event", "form_under_2000");
         form.hidden = true;
         card.querySelector("h2").hidden = true;
         card.querySelector(".step-dq").hidden = false;
@@ -431,6 +436,7 @@ const faqs = [
       if (typeof window.fbq === "function") {
         fbq("track", "Lead", { content_name: "doctor_offer" });
       }
+      if (typeof window.clarity === "function") clarity("event", "form_qualified_submit");
 
       // Tell n8n they pressed Submit: it sends the booking link by email (and by text
       // with consent, 08:00-18:00 their time) right away and moves the recovery nudge
@@ -517,6 +523,39 @@ const faqs = [
       btn.replaceWith(f);
     });
   });
+</script>
+
+<script is:inline define:vars={{ CLARITY_ID }}>
+  // Microsoft Clarity (free): scroll depth, clicks and where visitors leave.
+  // Does nothing until CLARITY_ID (top of this file) is filled in. Loads after
+  // the page has finished loading so it never competes with the first paint.
+  // The form is masked (data-clarity-mask on the <form>), so nothing typed or
+  // picked in it is recorded. The events below carry no personal details.
+  (function () {
+    if (!CLARITY_ID) return;
+    window.addEventListener("load", function () {
+      (function (c, l, a, r, i, t, y) {
+        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+        t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", CLARITY_ID);
+
+      var form = document.querySelector(".dm .apply-form");
+      if (form) {
+        var started = false;
+        form.addEventListener("focusin", function () {
+          if (started) return;
+          started = true;
+          clarity("event", "form_started");
+        });
+      }
+      // The videos play inside Wistia's frame, which Clarity cannot see into,
+      // so count the tap on our play button instead.
+      document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () { clarity("event", "video_play"); });
+      });
+    });
+  })();
 </script>
 
 <style is:global>
