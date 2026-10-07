@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import MetaPixel from "../components/MetaPixel.astro";
+import { GLASSDOOR_URL } from "../data/org.js";
 
 interface Props {
   title?: string;
@@ -60,6 +61,16 @@ const {
         />
       </>
     )}
+
+    <!-- Organization structured data: tells search engines which external
+         profiles belong to us. Add new profiles to sameAs. -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Synchro Social",
+      url: "https://synchrosocial.com",
+      sameAs: [GLASSDOOR_URL],
+    })} />
 
     <MetaPixel event={metaEvent?.name} params={metaEvent?.params} />
   </head>
