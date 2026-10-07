@@ -16,11 +16,12 @@ const linkColor =
   <div class="mx-auto max-w-5xl px-6 py-12 text-center">
     <Logo tone={tone} href="/" class="mx-auto" />
 
-    <div class={`mt-6 flex items-center justify-center gap-6 text-sm font-medium text-muted`}>
+    <div class={`mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 whitespace-nowrap text-sm font-medium text-muted sm:gap-x-6`}>
       <a href="/privacypolicy" class={linkColor}>Privacy Policy</a>
       <span class="text-black/15">|</span>
       <a href="/terms-conditions" class={linkColor}>Terms of Service</a>
-      <span class="text-black/15">|</span>
+      <span class="text-black/15 max-sm:hidden">|</span>
+      <span class="basis-full sm:hidden" aria-hidden="true"></span>
       <a href={GLASSDOOR_URL} target="_blank" rel="noopener" class={linkColor}>Glassdoor</a>
     </div>
 
