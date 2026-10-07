@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import { GLASSDOOR_URL } from "../data/org.js";
 
 // Shared footer: logo, legal links, and the required disclaimer.
 interface Props {
@@ -19,6 +20,8 @@ const linkColor =
       <a href="/privacypolicy" class={linkColor}>Privacy Policy</a>
       <span class="text-black/15">|</span>
       <a href="/terms-conditions" class={linkColor}>Terms of Service</a>
+      <span class="text-black/15">|</span>
+      <a href={GLASSDOOR_URL} target="_blank" rel="noopener" class={linkColor}>Glassdoor</a>
     </div>
 
     <p class="mx-auto mt-6 max-w-3xl text-[0.7rem] leading-relaxed text-muted/70">

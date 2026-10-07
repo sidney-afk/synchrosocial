@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { GLASSDOOR_URL } from "../data/org.js";
 import SiteNav from "../components/SiteNav.astro";
 import IClosedLiftWidget from "../components/IClosedLiftWidget.astro";
 import ApplyButton from "../components/ApplyButton.astro";
@@ -185,6 +186,7 @@ const footerCols = [
     items: [
       { label: "Privacy Policy", href: "/privacypolicy" },
       { label: "Terms of Service", href: "/terms-conditions" },
+      { label: "Glassdoor", href: GLASSDOOR_URL, external: true },
     ],
   },
   {
@@ -678,6 +680,8 @@ const compactCount = (s: string) =>
                 {col.items.map((it) => (
                   <a
                     href={it.href}
+                    target={it.external ? "_blank" : undefined}
+                    rel={it.external ? "noopener" : undefined}
                     class="text-base leading-[150%] text-[#c4c4c4] transition hover:text-white"
                   >
                     {it.label}
