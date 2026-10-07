@@ -533,27 +533,29 @@ const faqs = [
   // picked in it is recorded. The events below carry no personal details.
   (function () {
     if (!CLARITY_ID) return;
+    // Queue and listeners are set up at once so an early tap is not lost;
+    // only the download of Clarity's own script waits for the load event.
+    window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
     window.addEventListener("load", function () {
-      (function (c, l, a, r, i, t, y) {
-        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
-        t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-      })(window, document, "clarity", "script", CLARITY_ID);
+      var t = document.createElement("script");
+      t.async = true;
+      t.src = "https://www.clarity.ms/tag/" + CLARITY_ID;
+      document.head.appendChild(t);
+    });
 
-      var form = document.querySelector(".dm .apply-form");
-      if (form) {
-        var started = false;
-        form.addEventListener("focusin", function () {
-          if (started) return;
-          started = true;
-          clarity("event", "form_started");
-        });
-      }
-      // The videos play inside Wistia's frame, which Clarity cannot see into,
-      // so count the tap on our play button instead.
-      document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () { clarity("event", "video_play"); });
+    var form = document.querySelector(".dm .apply-form");
+    if (form) {
+      var started = false;
+      form.addEventListener("focusin", function () {
+        if (started) return;
+        started = true;
+        clarity("event", "form_started");
       });
+    }
+    // The videos play inside Wistia's frame, which Clarity cannot see into,
+    // so count the tap on our play button instead.
+    document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () { clarity("event", "video_play"); });
     });
   })();
 </script>
