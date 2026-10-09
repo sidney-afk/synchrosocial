@@ -432,8 +432,11 @@ const faqs = [
         return;
       }
 
-      // Meta Lead fires only for people who are NOT "Under $2,000".
-      if (typeof window.fbq === "function") {
+      // Meta Lead fires only for people who are NOT "Under $2,000", and never for test
+      // traffic: a ?utm_source=test visit already has a do-nothing fbq (MetaPixel.astro),
+      // and a sidney.laruel+anything@gmail.com email is skipped here.
+      var isTestEmail = typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(v.email);
+      if (typeof window.fbq === "function" && !isTestEmail) {
         fbq("track", "Lead", { content_name: "doctor_offer" });
       }
       if (typeof window.clarity === "function") clarity("event", "form_qualified_submit");

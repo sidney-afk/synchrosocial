@@ -28,8 +28,33 @@ const { event = null, params = {} } = Astro.props;
   is:inline
   define:vars={{ pixelId: META_PIXEL_ID, evt: event, evtParams: params }}
 >
+  /* TEST TRAFFIC NEVER REACHES META. A visit is a test when utm_source is the
+     word "test" (test, test1, my-test ...) or it was flagged earlier in this
+     browser session. The flag is kept in sessionStorage so a test visit stays
+     a test on the next page it reaches (the iClosed redirect, for one).
+     For a test we install a do-nothing fbq and never load Meta's script, so
+     no PageView, Lead or any other event leaves the browser. The /doctors form
+     also calls window.__metaIsTestEmail() on submit to cover the second signal,
+     a sidney.laruel+anything@gmail.com address. Keep the two patterns in step
+     with the "Sales - Booked Call to Meta CAPI" n8n workflow. */
+  var TEST_SOURCE = /(^|[^a-z0-9])test([^a-z0-9]|$)/i;
+  var TEST_EMAIL = /^sidney\.laruel\+[^@\s]+@gmail\.com$/i;
+  var isTestVisit = false;
+  try {
+    isTestVisit = TEST_SOURCE.test(new URLSearchParams(location.search).get("utm_source") || "");
+  } catch (e) {}
+  try {
+    if (isTestVisit) sessionStorage.setItem("mp_test_visit", "1");
+    else if (sessionStorage.getItem("mp_test_visit") === "1") isTestVisit = true;
+  } catch (e) {}
+  window.__metaIsTest = function () { return isTestVisit; };
+  window.__metaIsTestEmail = function (email) { return TEST_EMAIL.test(String(email || "").trim()); };
+
   /* Meta Pixel base code (official snippet). */
-  !(function (f, b, e, v, n, t, s) {
+  if (isTestVisit) {
+    window.fbq = function () {};
+  } else {
+  (function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
     n = f.fbq = function () {
       n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
@@ -45,11 +70,12 @@ const { event = null, params = {} } = Astro.props;
     s = b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t, s);
   })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+  }
 
   fbq("init", pixelId);
   fbq("track", "PageView");
 
-  if (evt) {
+  if (evt && !isTestVisit) {
     // Random UUID as eventID → lets a server-side Conversions API resend the
     // same event without double counting (Meta dedupes on event name + ID).
     var eventID =
