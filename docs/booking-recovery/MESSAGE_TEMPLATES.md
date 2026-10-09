@@ -52,7 +52,83 @@ on the form's submit button, which they never pressed.
 
 ---
 
-## E1: unfinished booking, email
+## Current wording for doctor and coach leads (live since 2026-10-09)
+
+Owner-approved human-sounding follow-ups. They apply to calendars
+`doctor-strategy-call` and `social-media-consultation` only. Every other calendar
+(for example `ai-intro-call`) still gets the previous wording below.
+
+The link is the lead's own iClosed page, with `?fu=<code>` added so a booking that
+came from a follow-up can be told apart later (`rt` recovery text, `re` recovery
+email, `st` instant text, `se` instant email). `{{work}}` is `practice` for doctors
+and `business` for coach leads. With no usable first name the greeting is `Hey,` /
+`Hi,`.
+
+**Recovery text (form started, not booked)** from `Sales — Booking Recovery Dispatch`:
+
+```
+Hey {{first_name}}, it's Kasper from Synchro Social. Just got your application. Is there anything I should know about your {{work}} before we talk?
+
+If it's easier, you can grab a time here: {{link}}
+
+Oh, and if you'd rather not get texts from me, just reply STOP.
+```
+
+**Recovery email**, subject `your application`:
+
+```
+Hi {{first_name}},
+
+Kasper here from Synchro Social. I saw your application come through, but it looks like you didn't get to pick a time.
+
+Is there anything I should know about your {{work}} before we talk? You can grab any slot that suits you here: {{link}}
+```
+
+**Instant text (right after the /doctors form is submitted)** from `Sales — Doctors Instant Booking Link` (doctors only):
+
+```
+Hey {{first_name}}, it's Kasper from Synchro Social. Just got your application, thank you. Here's the link to pick a time for our call: {{link}}
+
+Oh, and if you'd rather not get texts from me, just reply STOP.
+```
+
+**Instant email**, subject `your application`:
+
+```
+Hi {{first_name}},
+
+Kasper here from Synchro Social. Thanks for applying, I have your details.
+
+You can pick a time for our call here: {{link}}
+
+If you have any questions first, just reply to this email.
+```
+
+Email format: built like the nurture emails (formatted HTML, each paragraph one
+block that wraps by itself), no header logo, then the nurture footer (small logo and
+"Kasper + The Synchro Social Team", synchrosocial.com). There is no separate
+"Kasper" line above the footer. Sender name `Kasper from Synchro Social`, address
+`hello@synchrosocial.com`, reply-to `kasper@synchrosocial.com`. Test leads still get
+`[TEST - internal, please ignore] ` in front of the text only.
+
+Text length: recovery text is 3 SMS segments (2 with no first name), instant text
+is 2.
+
+### How to restore the previous wording
+
+Both workflows keep their earlier versions in n8n version history. Restore the
+version named before "Human wording" in each:
+
+- `Sales — Booking Recovery Dispatch` (`nQ4vnZ8bmG3E3Lor`): active version before
+  the change was `a5613786-11dc-40b0-a78e-6e3f82070112`.
+- `Sales — Doctors Instant Booking Link` (`cM3G9REliKpwicnR`): active version before
+  the change was `135a17d8-a362-4486-84d4-6f81c7e09c29`.
+
+The previous wording is also kept in full in the sections below.
+
+---
+
+## E1: unfinished booking, email (previous wording, still used for other calendars)
 
 **From:** `Synchro Social` (shared `hello@synchrosocial.com` mailbox)
 **Reply-To:** `kasper@synchrosocial.com`
@@ -86,7 +162,7 @@ Left as is on purpose.
 
 ---
 
-## S1: unfinished booking, SMS
+## S1: unfinished booking, SMS (previous wording, still used for other calendars)
 
 Sent from the account's toll-free number (see `TWILIO_RUNBOOK.md`).
 
@@ -257,3 +333,34 @@ practice: every email has a real `Reply-To: kasper@synchrosocial.com`, and the
 **Send cap and stale rows.** At most 5 leads per run, and rows armed before
 `ACTIVATED_AFTER` (2026-08-14 23:30 UTC) are never chased. A defect that slips
 through is bounded to a handful of messages an hour rather than a blast.
+
+---
+
+## Previous instant wording for /doctors (replaced 2026-10-09, kept to restore)
+
+Sent by `Sales — Doctors Instant Booking Link`.
+
+Email, HTML with logo header and the nurture signature block, sender name
+`Synchro Social`. Subject: `{{first_name}}, here is the link to book your strategy call`
+(no name: `Here is the link to book your strategy call`).
+
+```
+Hi {{first_name}},
+
+This is Kasper from Synchro Social. Thanks for applying - I have your details.
+
+If you have not picked a time for your social media strategy call yet, or the calendar did not load for you, you can book it here whenever it suits you:
+
+[Pick a time for your strategy call] -> https://app.iclosed.io/e/synchrosocial/doctor-strategy-call
+
+Just reply to this email if you have any questions first.
+
+With gratitude,
+Kasper
+```
+
+Text:
+
+```
+Hi {{first_name or "there"}}, it's Kasper from Synchro Social. Thanks for applying! If you haven't picked a time for your strategy call yet, you can book here: https://app.iclosed.io/e/synchrosocial/doctor-strategy-call Reply STOP to opt out.
+```
