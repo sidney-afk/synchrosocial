@@ -13,8 +13,8 @@
        the iClosed "Doctor Strategy Call" calendar with every answer passed as
        URL parameters (iclosedName/Email/Phone + question identifiers) and
        iClosed's "Pre-qualified form skipping" on, so the doctor only picks a
-       time. "Under $2,000" is turned away on our page. Meta `Lead` fires on
-       submit for everyone except "Under $2,000", not on booking.
+       time. "Not right now" (the $3,000 a month question) is turned away on our
+       page. Meta `Lead` fires on submit for everyone except "Not right now", not on booking.
      - Real assets replace placeholders where we have them: Lily's profile
        image, her growth image in the results tile, Sonia's Wistia video.
      - The yellow "mockup" bar and demo submit handler are dropped; the SMS
@@ -32,13 +32,19 @@ import Layout from "../layouts/Layout.astro";
 // Empty = Clarity is not loaded. See docs/meta-ads/README.md, 2026-10-07.
 const CLARITY_ID = "yu1mplpp22";
 
-// iClosed "Doctor Strategy Call" event (disqualifies "Under $2,000" a month).
-const ICLOSED_URL = "https://app.iclosed.io/e/synchrosocial/doctor-strategy-call";
+// iClosed "Doctor Strategy Call" event (its own rule disqualifies "Not right now").
+// PUBLIC_DOCTORS_ICLOSED_URL exists only so a test build can point at a copy of the event;
+// the production build never sets it.
+const ICLOSED_URL = import.meta.env.PUBLIC_DOCTORS_ICLOSED_URL || "https://app.iclosed.io/e/synchrosocial/doctor-strategy-call";
+// The Identifier of the doctor event's price question in iClosed (Settings > Objects & Fields).
+// It is the URL parameter name that pre-fills the answer. Must match iClosed exactly.
+const PRICE_KEY = "within-reach";
+const PRICE_QUESTION = "Our service starts at $3,000 a month. Is that within reach for you right now?";
 
 // Answer text must match the iClosed event's options EXACTLY: they are passed
 // to iClosed as URL parameters and matched as strings.
 const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
-const investments = ["Under $2,000", "$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
+const investments = ["Yes", "Yes, but I'd like to talk it through first", "Not right now"];
 const starts = ["Now", "Within 30 days", "Within 90 days", "Next quarter"];
 
 const guaranteeLead = "If we don't hit the monthly follower target we set for you in your first 3 months,";
@@ -161,7 +167,7 @@ const faqs = [
               <div class="field full"><span class="q">Specialty</span>
                 <div class="chips">{specialties.map((v) => <label><input type="radio" name="specialty" value={v} required />{v}</label>)}</div>
               </div>
-              <div class="field full"><span class="q">How much are you ready to invest monthly in growing your audience?</span>
+              <div class="field full"><span class="q">{PRICE_QUESTION}</span>
                 <div class="chips">{investments.map((v) => <label><input type="radio" name="investment" value={v} required />{v}</label>)}</div>
               </div>
               <div class="field full"><span class="q">When can you start?</span>
@@ -332,7 +338,7 @@ const faqs = [
   </div>
 </Layout>
 
-<script is:inline define:vars={{ ICLOSED_URL }}>
+<script is:inline define:vars={{ ICLOSED_URL, PRICE_KEY }}>
   (function () {
     var form = document.querySelector(".dm .apply-form");
     if (!form) return;
@@ -359,7 +365,7 @@ const faqs = [
     // field committed or a radio picked), never on each keystroke, so half-typed
     // addresses are never sent. No pixel events.
     var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
-    var QUALIFYING = ["$2,000 to $3,000", "$3,000 to $5,000", "$5,000+"];
+    var QUALIFYING = ["Yes", "Yes, but I'd like to talk it through first"];
     var submitted = false;
     var partialSentFor = "";
     function maybeSendPartial() {
@@ -411,7 +417,7 @@ const faqs = [
       var missing = Object.keys(v).filter(function (k) { return !v[k]; });
       var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
       if (missing.length || !emailOk) {
-        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "your monthly investment", start: "when you can start" };
+        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "whether $3,000 a month is within reach", start: "when you can start" };
         err.textContent = !emailOk && v.email
           ? "Please enter a valid email."
           : missing.indexOf("phone") > -1 && f.get("phone")
@@ -423,16 +429,16 @@ const faqs = [
       err.hidden = true;
       submitted = true; // a real submit: stop the partial-lead capture above
 
-      // Under $2,000: a neutral thank-you, no calendar, never reaches iClosed.
-      if (v.investment === "Under $2,000") {
-        if (typeof window.clarity === "function") clarity("event", "form_under_2000");
+      // Not right now: a neutral thank-you, no calendar, never reaches iClosed.
+      if (v.investment === "Not right now") {
+        if (typeof window.clarity === "function") clarity("event", "form_not_right_now");
         form.hidden = true;
         card.querySelector("h2").hidden = true;
         card.querySelector(".step-dq").hidden = false;
         return;
       }
 
-      // Meta Lead fires only for people who are NOT "Under $2,000", and never for test
+      // Meta Lead fires only for people who are NOT "Not right now", and never for test
       // traffic: a ?utm_source=test visit already has a do-nothing fbq (MetaPixel.astro),
       // and a sidney.laruel+anything@gmail.com email is skipped here.
       var isTestEmail = typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(v.email);
@@ -475,7 +481,7 @@ const faqs = [
         // the "For The Apply Page" event, so do not rename them in iClosed).
         ["specialty", v.specialty],
         ["instagram-handle-eg-yourhandle", v.instagram],
-        ["how-much-are-you-ready-to-invest-per-month", v.investment],
+        [PRICE_KEY, v.investment],
         ["when-do-you-want-to-start", v.start],
       ];
       // Carry ad attribution through, as IClosedCapture does on other pages.

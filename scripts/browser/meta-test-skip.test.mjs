@@ -7,7 +7,7 @@ const require = createRequire(import.meta.url);
 const { chromium } = require("/opt/node-tools/node_modules/playwright");
 
 const BASE = process.env.BASE || "http://localhost:4399";
-const QUALIFYING = "$3,000 to $5,000"; // an answer the live page accepts today
+const QUALIFYING = "Yes"; // an answer the page treats as qualified
 let failures = 0;
 const ok = (cond, msg) => { console.log((cond ? "PASS " : "FAIL ") + msg); if (!cond) failures++; };
 
@@ -49,7 +49,7 @@ async function visit(browser, { query, email, label }) {
   return { metaRequests, calls, calendar, relayBodies };
 }
 
-const browser = await chromium.launch({ headless: true, executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: ["--no-sandbox"] });
+const browser = await chromium.launch({ headless: true, executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: ["--no-sandbox", "--ignore-certificate-errors"], proxy: process.env.PW_PROXY ? { server: process.env.PW_PROXY } : undefined });
 
 let r = await visit(browser, { query: "?utm_source=facebook&utm_medium=paid", email: "real.person@example.com", label: "REAL visit" });
 ok(r.metaRequests.some((u) => u.includes("fbevents.js")), "real visit loads the Meta script");
