@@ -355,33 +355,40 @@ const faqs = [
       return d.length >= 8 ? "+" + d : "";
     }
 
-    // Partial-lead capture. A doctor who has typed a valid email and picked a
-    // qualifying monthly investment but leaves before pressing Submit would
-    // otherwise be lost: nothing reaches iClosed until step 2. We send what they
-    // have to the doctors-partial-capture edge function, which arms a recovery
-    // follow-up in n8n: email, plus a text because the step-1 form shows an SMS
-    // consent line directly under the phone field (sms_consent below records
-    // that it was shown; n8n sends no text without it). Fires on "change" (a
-    // field committed or a radio picked), never on each keystroke, so half-typed
-    // addresses are never sent. No pixel events.
+    // Partial-lead capture. A doctor who has typed a valid email but leaves before
+    // pressing Submit would otherwise be lost: nothing reaches iClosed until step 2.
+    // As soon as the email is valid we send what they have to the
+    // doctors-partial-capture edge function, which arms a recovery follow-up in n8n:
+    // an email, plus a text when a phone number was typed (the step-1 form shows an
+    // SMS consent line directly under the phone field, so sms_consent below records
+    // that it was shown; n8n sends no text without it AND a valid phone).
+    // It is sent again when the phone number or the $3,000 answer changes, so n8n
+    // updates the one saved row instead of adding a second. Answering "Not right now"
+    // is sent too: n8n cancels any follow-up already armed and arms nothing.
+    // Fires on "change" (a field committed or a radio picked), never on each
+    // keystroke, so half-typed addresses are never sent. Sends go one at a time, in
+    // order. No pixel events.
     var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
-    var QUALIFYING = ["Yes", "Yes, but I'd like to talk it through first"];
     var submitted = false;
-    var partialSentFor = "";
-    function maybeSendPartial() {
-      if (submitted) return;
+    var partialSent = "";   // email|phone|answer last sent: an unchanged form is never re-sent
+    var partialQueue = Promise.resolve();
+    var partialTimer = null;
+    function maybeSendPartial(force) {
+      if (submitted && !force) return;
       var f = new FormData(form);
       var email = String(f.get("email") || "").trim();
       var investment = String(f.get("investment") || "");
+      var phone = normPhone(String(f.get("phone") || "").trim());
+      if (phone.replace(/\D/g, "").length < 10) phone = ""; // a half-typed number is not a number: no text to it
       if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
-      if (QUALIFYING.indexOf(investment) === -1) return;
-      if (email.toLowerCase() === partialSentFor) return;
-      partialSentFor = email.toLowerCase();
+      var sig = email.toLowerCase() + "|" + phone + "|" + investment;
+      if (sig === partialSent) return;
+      partialSent = sig;
       var qs = new URLSearchParams(location.search);
       var body = {
         name: String(f.get("name") || "").trim(),
         email: email,
-        phone: normPhone(String(f.get("phone") || "").trim()),
+        phone: phone,
         instagram: String(f.get("instagram") || "").trim().replace(/^@+/, ""),
         specialty: String(f.get("specialty") || ""),
         investment: investment,
@@ -394,16 +401,20 @@ const faqs = [
       ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
         if (qs.get(k)) body[k] = qs.get(k);
       });
-      try {
-        fetch(PARTIAL_URL, {
+      partialQueue = partialQueue.then(function () {
+        return fetch(PARTIAL_URL, {
           method: "POST",
           keepalive: true,
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
-        }).catch(function () {});
-      } catch (err3) {}
+        }).then(function (res) { if (!res.ok && partialSent === sig) partialSent = ""; })
+          .catch(function () { if (partialSent === sig) partialSent = ""; });
+      });
     }
-    form.addEventListener("change", function () { setTimeout(maybeSendPartial, 800); });
+    form.addEventListener("change", function () {
+      clearTimeout(partialTimer);
+      partialTimer = setTimeout(maybeSendPartial, 800);
+    });
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -431,6 +442,8 @@ const faqs = [
 
       // Not right now: a neutral thank-you, no calendar, never reaches iClosed.
       if (v.investment === "Not right now") {
+        clearTimeout(partialTimer);
+        maybeSendPartial(true); // cancels any follow-up already armed (a no-op if already sent)
         if (typeof window.clarity === "function") clarity("event", "form_not_right_now");
         form.hidden = true;
         card.querySelector("h2").hidden = true;

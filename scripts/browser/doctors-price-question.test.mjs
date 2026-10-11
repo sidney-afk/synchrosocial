@@ -54,7 +54,7 @@ for (const a of ANSWERS) {
   ok(JSON.stringify(r.labels) === JSON.stringify(ANSWERS), `the three answers, in order, nothing else`);
   if (a === "Not right now") {
     ok(r.thanks && !r.calendar, "turned away: thank-you shown, no calendar");
-    ok(r.relay.length === 0, "turned away: nothing sent to the follow-up relay (no row, no text, no email)");
+    ok(r.relay.length === 1 && r.relay[0].investment === "Not right now" && !r.relay[0].submitted, "turned away: only the cancel notice goes to the follow-up relay (n8n arms nothing and cancels any follow-up already armed); no booking-link send");
     ok(r.widget === "", "turned away: iClosed widget never created");
     ok(r.meta.length === 0, "turned away: nothing to Meta (test visit)");
   } else {
