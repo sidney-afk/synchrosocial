@@ -40,8 +40,10 @@ const browser = await chromium.launch({ headless: true, executablePath: "/opt/pw
   await fill(page, 'input[name="email"]', EMAIL); await settle(page);
   ok(relay.length === 1, "valid email alone: sent once");
   ok(relay[0]?.email === EMAIL && !relay[0].phone && !relay[0].investment && !relay[0].submitted, "payload: email, no phone, no answer, not a submit");
+  await settle(page);
+  ok(relay.length === 1, "nothing changed: not re-sent");
   await fill(page, 'input[name="instagram"]', "x"); await settle(page);
-  ok(relay.length === 1, "an unrelated field changing does not re-send");
+  ok(relay.length === 2 && relay[1].instagram === "x", "any other change re-sends, so n8n pushes the follow-up back (still on the form)");
   ok(meta.length === 0, "nothing reached Meta (test visit)");
   await ctx.close(); }
 
@@ -65,7 +67,7 @@ const browser = await chromium.launch({ headless: true, executablePath: "/opt/pw
   await fill(page, 'input[name="instagram"]', "x"); await page.check('input[name="specialty"][value="Other"]', { force: true });
   await page.check('input[name="start"][value="Now"]', { force: true });
   await page.click('button[type="submit"]'); await page.waitForTimeout(600);
-  ok(relay.length === 2, "pressing Submit on 'Not right now' sends nothing more (already cancelled), no booking-link send");
+  ok(relay.slice(1).every((r) => r.investment === "Not right now" && !r.submitted), "pressing Submit on 'Not right now' sends only more cancels (repeat-safe), never a booking-link send");
   ok(await page.evaluate(() => !document.querySelector(".step-dq").hidden), "thank-you shown, no calendar");
   await ctx.close(); }
 
@@ -110,6 +112,13 @@ const browser = await chromium.launch({ headless: true, executablePath: "/opt/pw
   await page.waitForTimeout(1500);
   ok(relay.filter((x) => !x.submitted).length === 1, "nothing is sent as 'unfinished' after Submit");
   ok(meta.length === 0, "nothing reached Meta (test visit)");
+  await ctx.close(); }
+
+{ console.log("--- 6. a mistyped email is corrected");
+  const { ctx, page, relay } = await open(browser);
+  await fill(page, 'input[name="name"]', "Early Test"); await fill(page, 'input[name="email"]', "sidney.laruel+early1@gmail.con"); await settle(page);
+  await fill(page, 'input[name="email"]', EMAIL); await settle(page);
+  ok(relay.length === 3 && relay[0].email.endsWith(".con") && relay[1].email.endsWith(".con") && relay[1].investment === "Not right now" && relay[2].email === EMAIL, "typo sent, then cancelled, then the corrected email sent");
   await ctx.close(); }
 
 await browser.close();

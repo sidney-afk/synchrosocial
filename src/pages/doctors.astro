@@ -362,15 +362,17 @@ const faqs = [
     // an email, plus a text when a phone number was typed (the step-1 form shows an
     // SMS consent line directly under the phone field, so sms_consent below records
     // that it was shown; n8n sends no text without it AND a valid phone).
-    // It is sent again when the phone number or the $3,000 answer changes, so n8n
-    // updates the one saved row instead of adding a second. Answering "Not right now"
+    // It is sent again whenever anything on the form changes (phone, answers, ...), so n8n
+    // updates the one saved row instead of adding a second, and moves the first follow-up
+    // back: it is due 20 minutes after the LAST change. Answering "Not right now"
     // is sent too: n8n cancels any follow-up already armed and arms nothing.
     // Fires on "change" (a field committed or a radio picked), never on each
     // keystroke, so half-typed addresses are never sent. Sends go one at a time, in
     // order. No pixel events.
     var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
     var submitted = false;
-    var partialSent = "";   // email|phone|answer last sent: an unchanged form is never re-sent
+    var partialSent = "";   // the form as last sent: an unchanged form is never re-sent
+    var partialEmail = "";  // the email a follow-up was last armed for
     var partialQueue = Promise.resolve();
     var partialTimer = null;
     function maybeSendPartial(force) {
@@ -381,9 +383,6 @@ const faqs = [
       var phone = normPhone(String(f.get("phone") || "").trim());
       if (phone.replace(/\D/g, "").length < 10) phone = ""; // a half-typed number is not a number: no text to it
       if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
-      var sig = email.toLowerCase() + "|" + phone + "|" + investment;
-      if (sig === partialSent) return;
-      partialSent = sig;
       var qs = new URLSearchParams(location.search);
       var body = {
         name: String(f.get("name") || "").trim(),
@@ -401,6 +400,18 @@ const faqs = [
       ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
         if (qs.get(k)) body[k] = qs.get(k);
       });
+      var sig = JSON.stringify(body);
+      if (sig === partialSent) return;
+      partialSent = sig;
+      // The visitor changed the address (a typo fixed): cancel the follow-up armed for the old one.
+      if (partialEmail && partialEmail !== email.toLowerCase()) {
+        var gone = { email: partialEmail, investment: "Not right now" };
+        if (qs.get("utm_source")) gone.utm_source = qs.get("utm_source");
+        partialQueue = partialQueue.then(function () {
+          return fetch(PARTIAL_URL, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify(gone) }).catch(function () {});
+        });
+      }
+      partialEmail = email.toLowerCase();
       partialQueue = partialQueue.then(function () {
         return fetch(PARTIAL_URL, {
           method: "POST",
