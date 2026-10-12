@@ -641,3 +641,13 @@ html:has(body.v2)::-webkit-scrollbar-thumb {
     border-radius: 5px;
   }
 }
+
+@media (max-width: 350px) {
+  .home-page .site-nav-actions {
+    gap: 12px;
+  }
+
+  .home-page .site-nav-cta {
+    min-width: 120px;
+  }
+}
