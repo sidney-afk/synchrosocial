@@ -1,7 +1,6 @@
 # /doctors: save an unfinished form as soon as the email is valid
 
-**DO NOT MERGE before Tuesday 13 October 2026, 9:33 am Costa Rica time, and not before Kasper approves.**
-Merging this pull request deploys the page to the live site.
+**LIVE 2026-10-12** (owner moved go-live up from Tuesday 13 October). n8n went live first, this page change after.
 
 ## What changes
 | Before | After |
@@ -17,12 +16,14 @@ Merging this pull request deploys the page to the live site.
 - Supabase `doctors-partial-capture`: not changed (passes every field through).
 
 ## Go-live order
-1. Publish the n8n draft first. It is safe with the old page too.
-2. Merge this pull request.
+1. Publish the sender wording change (`nQ4vnZ8bmG3E3Lor`, version `5bdeec03`), then the capture workflow (`8nq6jGbpmCDZxnQz`, version `b7f8eb47`). Both are safe with the old page.
+2. One real test lead texted to the owner's phone and confirmed.
+3. Merge this pull request.
 
 ## Undo
 - Page: revert the merge commit.
-- n8n: restore version `0aa042b8` ("Accept the $3,000 question answers") from Version history.
+- n8n capture: restore version `0aa042b8` ("Accept the $3,000 question answers") from Version history.
+- n8n sender: restore version `2a92756f` ("Human wording for doctor and coach follow-ups (all leads)").
 
 ## Decisions to know about
 - Timer (owner decision 2026-10-11): the first follow-up is due 20 minutes after the visitor's LAST change to the form. Every save (any field changing) pushes the due time back. n8n starts the sender 21 minutes after every save, so the last save finds its row due; earlier ones find it not due and do nothing. Cost: about one short n8n run per save. The hourly sender stays as the safety net. Submit moves the row out as before.
@@ -34,12 +35,12 @@ Merging this pull request deploys the page to the live site.
 ## Tests
 `scripts/browser/doctors-early-capture.test.mjs` (page, fully mocked, nothing leaves the machine); `doctors-price-question.test.mjs` updated for the cancel notice.
 
-## Wording (NOT changed, proposal only)
+## Wording (LIVE in the sender since 2026-10-12, version `5bdeec03`)
 The sender (`Sales - Booking Recovery Dispatch`) says this to a doctor lead today, whether or not they submitted:
 - Email, subject "your application": "Hi NAME, Kasper here from Synchro Social. I saw your application come through, but it looks like you didn't get to pick a time. Is there anything I should know about your practice before we talk? You can grab any slot that suits you here: <iClosed link>?fu=re  Kasper"
 - Text: "Hey NAME, it's Kasper from Synchro Social. Just got your application. Is there anything I should know about your practice before we talk? If it's easier, you can grab a time here: <iClosed link>?fu=rt  Oh, and if you'd rather not get texts from me, just reply STOP."
 
-For someone who left before submitting both are wrong ("application", "pick a time"). Proposal for those leads only (a doctors partial row whose `raw` has no `instant_sent_at`); submitters keep the text above:
+For someone who left before submitting both are wrong ("application", "pick a time"). Used for those leads only (wording as approved, with "You can finish it here" instead of "pick up where you left off") (a doctors partial row whose `raw` has no `instant_sent_at`); submitters keep the text above:
 - Email, subject "finish your application": "Hi NAME, Kasper here from Synchro Social. You started an application on our doctors page but didn't get to finish it. Is there anything I should know about your practice? You can pick up where you left off here: https://synchrosocial.com/doctors?fu=ue  Kasper"
 - Text: "Hey NAME, it's Kasper from Synchro Social. Looks like you started applying but didn't get to finish. You can pick up where you left off here: https://synchrosocial.com/doctors?fu=ut  Oh, and if you'd rather not get texts from me, just reply STOP."
 
