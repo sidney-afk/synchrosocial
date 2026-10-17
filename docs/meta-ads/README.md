@@ -133,7 +133,8 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 
 | Event | Where it fires | How |
 | --- | --- | --- |
-| `PageView` | every page | base pixel (`MetaPixel.astro` in `Layout.astro`; manual snippet in `public/ai-invite/*.html`) |
+| `PageView` | every page | `MetaPixel.astro` in `Layout.astro`, sent through `window.__metaTrack` with a fresh `eventID` (since 2026-10-17; before that it had no ID). Manual snippet in `public/ai-invite/*.html` (no ID). |
+| `DoctorEmailEntered` (custom, param `content_name` = `doctor_offer`) | `/doctors`, the first time a valid email is typed in the form (field committed), BEFORE Submit; once per browser session | Added 2026-10-17 (Ads supervisor): `Lead` fires only at Submit, the same moment as the booking, so Meta had about 2 a week to learn from. Never fires for test traffic or the owner's test email. Carries no email or other contact detail. **An intent signal, not a lead**: never report it as leads; if it is used to optimise, build a custom conversion on it. |
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
 | `ViewContent` (content_name `danny_vsl` / `baya_vsl` / `success_stories`) | `/apply2`, `/apply3`, `/success-stories` | `metaEvent` prop on `Layout`. **The content_name deliberately does NOT match the URL**: the pages were renamed `/danny_vsl`→`/apply2` and `/baya_vsl`→`/apply3` on 2026-08-28, but the param kept its client-named value so Ads Manager still shows which client's page fired — `apply2`/`apply3` would be unreadable in reporting. Renaming the param would also break continuity with data already collected. Leave it. |
 | `ViewContent` (content_name `doctor_offer`) | `/doctors` (was `/apply4`) | `metaEvent` prop on `Layout`. Doctor offer page for cold Meta ads (brief 2026-09-27). |
@@ -147,6 +148,21 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | `QuizCompleted` (custom, param `quiz_result`) | `/quiz/take`, on reaching the result screen | `GrowthBottleneckQuiz.astro`, fresh `eventID`. Deliberately its own event, not a reuse of `Schedule`/`Lead` — those mark the call-booking moment specifically; conflating them would corrupt that signal (see §15.1 drift risk in `client-analytics/docs/CLIENT_LIFECYCLE_MAP.md`). If the quiz completion is ever promoted to an ad-optimization event, build a dedicated custom conversion on `QuizCompleted`, not on `Schedule`/`Lead`. |
 
 Rules:
+- **Every site event goes through `window.__metaTrack(name, params, opts)`** (defined in
+  `MetaPixel.astro`) where possible: it fires the pixel with an `eventID` and, when
+  `CAPI_RELAY_URL` is set, posts the same event (same ID, full page URL, `fbc`, `fbp`)
+  to our Conversions API relay. Currently used by `PageView`, the page's `metaEvent`
+  (`ViewContent`), `DoctorEmailEntered` and the `/doctors` `Lead`. The booking `Lead`
+  (bridge + thank-you pages), `QuizStarted`/`QuizCompleted` and `VslApplyClick` still call
+  `fbq` directly (unchanged).
+- **`fbc`/`fbp` are written before the first event** (`_fbc` built from `?fbclid=` as
+  `fb.1.<ms>.<fbclid>` when missing or from an older click; `_fbp` created when missing;
+  both 90-day first-party cookies, `fbc` also kept in `sessionStorage` for the visit).
+- **Visits that never reach Meta:** `utm_source` containing the word `test`, or exactly
+  `referral` or `outbound_dm` (case-insensitive), or the owner's test email. The flag
+  sticks for the browser session. Applies to `MetaPixel.astro`, the three
+  `public/ai-invite/*.html` pages and the relay. Not covered from the site: iClosed's own
+  native pixel inside its booking iframe (see §9).
 - **Schedule and Lead no longer mark the same moment.** `Lead` = every booking
   (browser). `Schedule` = qualified bookings only (server/CAPI). Optimize
   campaigns on **`Schedule`**; use `Lead` for audiences and as a volume read.
@@ -231,6 +247,10 @@ Rules:
 | 2026-08-20 | Migrate the payment processor **Stripe → Commas** (commas.com / FanBasis API) | Owner decision, already taking payments. Blocks the Phase 3 CRM feedback loop until a Commas receiver exists. |
 | 2026-08-20 | Optimize on **`Qualified`**, not `Call booked` | `Qualified` = booked *and* passed the disqualification bar (which screens out prospects who cannot afford the offer). Buying `Call booked` would buy bookings that get disqualified on the call. Custom conversion `2110443739684279`. |
 | 2026-08-20 | Keep **both** Stripe and Commas selectable per deal, rather than cutting over | Kasper picks the processor on the Sales Intake tab alongside the billing type. A hard cutover would strand in-flight Stripe subscriptions and remove a fallback while Commas is unproven. |
+| 2026-10-17 | New custom event **`DoctorEmailEntered`** on `/doctors` (valid email typed, before Submit), not a standard event | Ads supervisor: Meta saw 2 `Lead` and 2 `Schedule` in a week, all at the same moment. A custom name keeps it apart from `Lead` (booking/submit) in reporting; a standard name such as `Contact` or `CompleteRegistration` would mix intent into a conversion. Named like `QuizStarted`/`VslApplyClick`. |
+| 2026-10-17 | `utm_source=referral` and `utm_source=outbound_dm` visits send **no Meta events at all**, same mechanism as test traffic | Owner rule via Ads supervisor: these are our own referral and DM links, not ad traffic; counting them would teach Meta the wrong people and grow audiences with non-ad visitors. Exact match only, so `referral_partner` still counts. |
+| 2026-10-17 | The site writes `_fbc` (from `fbclid`) and `_fbp` itself before the pixel loads, and gives `PageView` an `eventID` | So the first `PageView`/`ViewContent` already carry both ids and a server copy can be deduplicated. Meta's script reuses existing cookies, so there is one id per visitor, not two. |
+| 2026-10-17 | Our own Conversions API relay (`docs/edge-functions/meta-capi-relay/`) is written and tested but **left switched off** (`CAPI_RELAY_URL` empty, function not deployed) | It needs a fresh CAPI token in Supabase secrets, which only Sidney can create. Also, the scripted check found Meta's own server path is already on for this pixel: `fbevents.js` posts every event to a Meta-hosted endpoint (`...ecs.us-east-2.on.aws/events`, from the dataset's `openbridge` config) with the same `event_id`, full page URL, `fbp` and click id. So page views already reach Meta server-side; the relay is a fallback if Events Manager shows that path is not counted. |
 
 ## 7. What remains (the checklist)
 
@@ -367,6 +387,27 @@ Sidney walked the dataset UI with Claude; current state of
 
 Current open items:
 
+0. **(2026-10-17) Meta reports every event as `https://synchrosocial.com/` with no path.**
+   The site is not the cause: the scripted check (`scripts/browser/meta-events.test.mjs`)
+   shows the browser sends the full URL (`dl=.../doctors/?utm_source=...`) on every event,
+   and Meta's own server copy carries it too (`website_context.location`). The dataset
+   stats API's URL breakdown still shows only the domain for all of 10 to 17 Oct. Most
+   likely Meta is trimming URLs for this domain under its health/wellness data limits
+   ("core setup": URL paths and query strings and custom parameters are dropped for
+   restricted categories; the doctor offer would qualify). This would also explain the
+   tiny "WARM, Website visitors 180d" audience if it filters on URL. **Check:** Events
+   Manager > dataset > Overview/Settings for a restricted-data or "core setup" notice, and
+   the audience's rule. If confirmed, nothing in the code can bring paths back; separate
+   pages by event (`ViewContent` `content_name`, which may also be stripped) or by a
+   domain review request in Meta. Do not try to smuggle the path into other fields.
+0b. **iClosed's own pixel still fires inside its booking iframe** for test, referral and
+   outbound_dm visits: the site cannot switch it off. Proposal (not done): pass
+   `test-pixel=true` into the iClosed URL for those visits so iClosed sends them as Test
+   Events only. The n8n `Schedule` path is covered by the proposed workflow change
+   (PR for 2026-10-17).
+0c. **`/apply4` redirects to `/doctors` without the query string**, so an old ad link to
+   `/apply4?fbclid=...` loses the click id. Point every ad at `/doctors`.
+
 1. **Final embedded-flow proof:** CAPI is proven directly and through iClosed
    test mode. Still run one test at `/apply?test-pixel=true` so the actual
    website embed path carries iClosed's test flag and shows Server rows in Meta
@@ -470,6 +511,22 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-10-17 (Pixelfix: page URL, fbc/fbp, `DoctorEmailEntered`, excluded sources)** —
+  Brief from the Ads supervisor after reading pixel 4309835332571875 for 10 to 16 Oct: only
+  2 `Lead` a week on `/doctors`, `fbc` on 15 to 18% of `PageView`/`ViewContent`, every event
+  at the bare domain, a 20-person website audience. Changes: `MetaPixel.astro` now writes
+  `_fbc` (from `fbclid`) and `_fbp` before the pixel loads, sends `PageView` and the page
+  event through a new `window.__metaTrack` helper with an `eventID`, and skips Meta for
+  `utm_source` = referral / outbound_dm as well as test (also in the three `ai-invite`
+  pages). `/doctors` fires the new custom `DoctorEmailEntered` once a valid email is typed,
+  and its `Lead` now has an `eventID`. Wrote and unit-tested a Conversions API relay
+  (`docs/edge-functions/meta-capi-relay/`), left off. Found that Meta's own server path is
+  already live on this pixel and that the browser already sends full URLs (so the bare
+  domain in Meta is Meta-side, §9 item 0). Proofs: `scripts/browser/meta-events.test.mjs`
+  (Meta's real script, every request caught locally, nothing sent) and
+  `scripts/meta-capi-relay.test.mjs`. Proposed (not applied) a fix for the n8n CAPI
+  workflow's hard-coded `/apply` URL; see the PR.
 
 - **2026-08-31 (`/application-status` — a disqualification-redirect candidate page)** —
   Added a static page matching the VSL pages' visual system, carrying the

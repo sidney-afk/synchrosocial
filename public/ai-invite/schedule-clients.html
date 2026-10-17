@@ -12,6 +12,12 @@
 <link rel="stylesheet" href="schedule.css" />
 <!-- Meta Pixel (dataset "Synchro Social Data") — see docs/meta-ads/ -->
 <script>
+/* No Meta event for test, referral or outbound_dm visits (same rule as
+   src/components/MetaPixel.astro, which also keeps the flag for the session). */
+(function(){var u='',k=false;try{u=new URLSearchParams(location.search).get('utm_source')||'';}catch(e){}
+k=/(^|[^a-z0-9])test([^a-z0-9]|$)/i.test(u)||/^(referral|outbound_dm)$/i.test(u.trim());
+try{if(k)sessionStorage.setItem('mp_test_visit','1');else if(sessionStorage.getItem('mp_test_visit')==='1')k=true;}catch(e){}
+if(k){window.fbq=function(){};return;}
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
 n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
@@ -19,6 +25,7 @@ t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
 document,'script','https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '4309835332571875');
 fbq('track', 'PageView');
+})();
 </script>
 <noscript><img height="1" width="1" style="display:none"
 src="https://www.facebook.com/tr?id=4309835332571875&ev=PageView&noscript=1"
