@@ -15,6 +15,7 @@
        iClosed's "Pre-qualified form skipping" on, so the doctor only picks a
        time. "Not right now" (the $3,000 a month question) is turned away on our
        page. Meta `Lead` fires on submit for everyone except "Not right now", not on booking.
+       Meta `DoctorEmailEntered` (custom) fires earlier, once a valid email is typed.
      - Real assets replace placeholders where we have them: Lily's profile
        image, her growth image in the results tile, Sonia's Wistia video.
      - The yellow "mockup" bar and demo submit handler are dropped; the SMS
@@ -368,7 +369,7 @@ const faqs = [
     // is sent too: n8n cancels any follow-up already armed and arms nothing.
     // Fires on "change" (a field committed or a radio picked), never on each
     // keystroke, so half-typed addresses are never sent. Sends go one at a time, in
-    // order. No pixel events.
+    // order. No pixel events here (DoctorEmailEntered is sent separately, below).
     var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
     var submitted = false;
     var partialSent = "";   // the form as last sent: an unchanged form is never re-sent
@@ -425,7 +426,26 @@ const faqs = [
     form.addEventListener("change", function () {
       clearTimeout(partialTimer);
       partialTimer = setTimeout(maybeSendPartial, 800);
+      maybeSendEmailEvent();
     });
+
+    // Meta DoctorEmailEntered: the visitor has typed a valid email, before Submit.
+    // An earlier signal than Lead (which only fires on Submit, the same moment as the
+    // booking), so Meta has more to learn from. Once per browser session, never for
+    // test traffic (a test visit has a do-nothing fbq; a test email is skipped here).
+    // Only content_name is sent: never the email itself.
+    var emailEventSent = false;
+    try { emailEventSent = sessionStorage.getItem("mp_doctor_email") === "1"; } catch (e1) {}
+    function maybeSendEmailEvent() {
+      if (emailEventSent || submitted) return;
+      var email = String(new FormData(form).get("email") || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
+      if (typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(email)) return;
+      if (typeof window.__metaTrack !== "function") return;
+      emailEventSent = true;
+      try { sessionStorage.setItem("mp_doctor_email", "1"); } catch (e2) {}
+      window.__metaTrack("DoctorEmailEntered", { content_name: "doctor_offer" }, { custom: true });
+    }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -466,8 +486,9 @@ const faqs = [
       // traffic: a ?utm_source=test visit already has a do-nothing fbq (MetaPixel.astro),
       // and a sidney.laruel+anything@gmail.com email is skipped here.
       var isTestEmail = typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(v.email);
-      if (typeof window.fbq === "function" && !isTestEmail) {
-        fbq("track", "Lead", { content_name: "doctor_offer" });
+      if (!isTestEmail) {
+        if (typeof window.__metaTrack === "function") window.__metaTrack("Lead", { content_name: "doctor_offer" });
+        else if (typeof window.fbq === "function") fbq("track", "Lead", { content_name: "doctor_offer" });
       }
       if (typeof window.clarity === "function") clarity("event", "form_qualified_submit");
 
