@@ -138,7 +138,7 @@ captured (as a JSON blob on the HubSpot contact — §6 decisions).
 | `ViewContent` (content_name `apply` / `call` / `quiz`) | `/apply`, `/call`, `/quiz` | `metaEvent` prop on `Layout` |
 | `ViewContent` (content_name `danny_vsl` / `baya_vsl` / `success_stories`) | `/apply2`, `/apply3`, `/success-stories` | `metaEvent` prop on `Layout`. **The content_name deliberately does NOT match the URL**: the pages were renamed `/danny_vsl`→`/apply2` and `/baya_vsl`→`/apply3` on 2026-08-28, but the param kept its client-named value so Ads Manager still shows which client's page fired — `apply2`/`apply3` would be unreadable in reporting. Renaming the param would also break continuity with data already collected. Leave it. |
 | `ViewContent` (content_name `doctor_offer`) | `/doctors` (was `/apply4`) | `metaEvent` prop on `Layout`. Doctor offer page for cold Meta ads (brief 2026-09-27). |
-| `Schedule` (doctor offer) | server-side only, via CAPI (NOT the browser) | n8n "Sales - Booked Call to Meta CAPI" sends it for the doctor-strategy-call calendar. `/apply4-thank-you` (where iClosed "Doctor Strategy Call" redirects after booking) fires NO pixel event; a browser `Schedule` there would double-count. Changed 2026-09-30. |
+| `Schedule` (doctor offer) | server-side only, via CAPI (NOT the browser) | n8n "Sales - Booked Call to Meta CAPI" sends it for the doctor-strategy-call calendar. Since 2026-10-17 17:56 UTC (version `69044008`, before `f120ace1`) its `event_source_url` follows the calendar: doctor-strategy-call -> `/doctors`, social-media-consultation -> `/apply`, ai-intro-call -> `/ai` (it used to say `/apply` for every booking), and a booking whose `utm_source` is exactly `referral` or `outbound_dm` is skipped like test traffic. `/apply4-thank-you` (where iClosed "Doctor Strategy Call" redirects after booking) fires NO pixel event; a browser `Schedule` there would double-count. Changed 2026-09-30. |
 | `Lead` (param `content_name` = `doctor_offer`) | `/doctors`, on submit of the page's own step-1 form | Brief: "Fire the Meta pixel Lead event when the form is submitted." Fires for every completed application EXCEPT "Not right now" on the $3,000 question (turned away on the page, no `Lead`; was "Under $2,000" until 2026-10-09; changed 2026-09-30). /doctors does NOT load the `IClosedEmbed` bridge (its iClosed calendar is injected after the form), so the booking itself fires no browser `Lead`; iClosed's native integration and the server-side `Schedule` still apply. **Different meaning from `Lead` on the other apply pages (booking)**; filter by `content_name` in reporting. |
 | ~~`iclosed_potential` / `iclosed_qualified` / `iclosed_disqualified`~~ (custom, REMOVED 2026-08-17) | — | Used to fire from the postMessage bridge in `IClosedEmbed.astro`. Duplicated iClosed's own native Meta integration, which already fires `Potential`/`Qualified`/`Disqualified` (capitalized) browser+server, deduped by `event_id`. Removed after confirming via Meta Ads Manager that no custom conversion or audience depended on the lowercase names. Use the native capitalized events for any mid-funnel retargeting/fallback need. |
 | **`Lead`** ← every booking | booking moment (bridge) AND `/thank-you` / `/quiz/thank-you` (fallback) | bridge fires on `iclosed.call_scheduled` with a fresh `eventID`, stores it in `sessionStorage.ss_booked_eid`; the thank-you page re-fires with the SAME ID (Meta dedupes on event name + ID, 48h) or a fresh ID if the bridge missed. `Lead` uses `"lead-"+eventID`. Fires for **all** bookings, qualified or not. |
@@ -251,6 +251,9 @@ Rules:
 | 2026-10-17 | `utm_source=referral` and `utm_source=outbound_dm` visits send **no Meta events at all**, same mechanism as test traffic | Owner rule via Ads supervisor: these are our own referral and DM links, not ad traffic; counting them would teach Meta the wrong people and grow audiences with non-ad visitors. Exact match only, so `referral_partner` still counts. |
 | 2026-10-17 | The site writes `_fbc` (from `fbclid`) and `_fbp` itself before the pixel loads, and gives `PageView` an `eventID` | So the first `PageView`/`ViewContent` already carry both ids and a server copy can be deduplicated. Meta's script reuses existing cookies, so there is one id per visitor, not two. |
 | 2026-10-17 | Our own Conversions API relay (`docs/edge-functions/meta-capi-relay/`) is written and tested but **left switched off** (`CAPI_RELAY_URL` empty, function not deployed) | It needs a fresh CAPI token in Supabase secrets, which only Sidney can create. Also, the scripted check found Meta's own server path is already on for this pixel: `fbevents.js` posts every event to a Meta-hosted endpoint (`...ecs.us-east-2.on.aws/events`, from the dataset's `openbridge` config) with the same `event_id`, full page URL, `fbp` and click id. So page views already reach Meta server-side; the relay is a fallback if Events Manager shows that path is not counted. |
+
+| 2026-10-17 | n8n "Sales - Booked Call to Meta CAPI" (`s8lsPpKqWYhscLPV`) sends the real page per calendar and skips `referral` / `outbound_dm` bookings (published 17:56 UTC, version `69044008`; before `f120ace1`; logged in client-analytics `docs/ops/N8N_EDIT_LOG.md`) | Owner's go. Every `Schedule` said `/apply`, so Meta could not tell a doctor booking from a coach booking; referral and DM bookings would have taught Meta that our own contacts were ad results. |
+| 2026-10-17 | Events Manager checked (Ads supervisor): **Core setup is Off** and the dataset category is **None** | So the bare-domain URLs in Meta's stats (§9 item 0) are not caused by core setup. Nothing to turn off. |
 
 ## 7. What remains (the checklist)
 
@@ -397,7 +400,15 @@ Current open items:
    restricted categories; the doctor offer would qualify). This would also explain the
    tiny "WARM, Website visitors 180d" audience if it filters on URL. **Check:** Events
    Manager > dataset > Overview/Settings for a restricted-data or "core setup" notice, and
-   the audience's rule. If confirmed, nothing in the code can bring paths back; separate
+   the audience's rule. **Checked 2026-10-17 (Ads supervisor, Events Manager > Settings):
+   Core setup: Off; dataset category: None; Diagnostics: no active errors (one earlier
+   "confirm domains" notice, no longer detected).** So core setup is not the cause. The
+   "WARM, Website visitors 180d" audience rule is all visitors (`url i_contains ""`), not a
+   URL filter, so the trimming does not explain its small size either; that is more likely
+   the low match rate before Pixelfix (fbc on 15 to 18% of page views). The bare domain may
+   simply be how the dataset stats API groups its `url` breakdown; to confirm, open one
+   recent event in Events Manager > Test events or the event's detail and read its URL.
+   If URLs really are trimmed, nothing in the code can bring paths back; separate
    pages by event (`ViewContent` `content_name`, which may also be stripped) or by a
    domain review request in Meta. Do not try to smuggle the path into other fields.
 0b. **iClosed's own pixel still fires inside its booking iframe** for test, referral and
@@ -511,6 +522,14 @@ Note for reporting: `Potential` fires **twice** per lead when the form takes
 both phone and email (§9.5), so halve it before quoting it as people.
 
 ## 10. Session log
+
+- **2026-10-17 (Ads supervisor: docs for Pixelfix's n8n part and the Events Manager check)** —
+  Event map and decisions log updated for the n8n `Schedule` change (real page per calendar,
+  referral/outbound_dm skipped; version `69044008`). Events Manager read in the browser:
+  Core setup Off, category None, no active diagnostics; the website-visitors audience rule is
+  all visitors. Still to confirm over the next days: real `Schedule` events from
+  doctor-strategy-call show `/doctors` (the Ads supervisor checks after the next booking and
+  writes the result in `supervisor/inbox/syncview.md`).
 
 - **2026-10-17 (Pixelfix: page URL, fbc/fbp, `DoctorEmailEntered`, excluded sources)** —
   Brief from the Ads supervisor after reading pixel 4309835332571875 for 10 to 16 Oct: only
