@@ -172,7 +172,7 @@ const faqs = [
     </section>
 
     <!-- 6. RESULTS -->
-    <section id="results" class="results sec" style="scroll-margin-top:16px">
+    <section id="results" class="results sec sec-dark" style="scroll-margin-top:16px">
       <div class="wrap">
         <p class="kicker">Our results</p>
         <h2>Clients we've grown</h2>
@@ -219,7 +219,8 @@ const faqs = [
         <div class="cases">
           <article class="case">
             <div class="case-name">Dr. Lily Baker | Chiropractor</div>
-            <div class="case-stat">In her own words</div>
+            <div class="case-stat">60,000 new followers in under 90 days</div>
+            <p>Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new followers alone.</p>
             <button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
               <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
@@ -257,26 +258,27 @@ const faqs = [
           </div>
         </div>
         <div class="quotes">
-        <figure class="quote">
-          <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
-               Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
-          <blockquote>
-            <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
-          </blockquote>
-          <figcaption class="by">
-            <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
-            Dr. Rocco Piazza · Plastic Surgeon
-          </figcaption>
-        </figure>
+          <figure class="quote">
+            <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
+                 Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
+            <blockquote>
+              <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
+            </blockquote>
+            <figcaption class="by">
+              <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+              Dr. Rocco Piazza · Plastic Surgeon
+            </figcaption>
+          </figure>
         </div>
         <p class="disclaimer">
           These are outcomes from clients who followed our process as built. Growth depends on
           execution and platform algorithms, and results vary by effort and market.
         </p>
+        <div class="cta">
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
+        </div>
       </div>
     </section>
-
-    <div class="wrap"><div class="cta sec-cta"><a class="btn" href="#apply">Book A Growth Consultation</a></div></div>
 
     <!-- 4b. KASPER: who you deal with (copy approved by Sidney 2026-10-21; Kasper confirmed the cadence) -->
     <section id="who" class="kasper sec">
@@ -293,13 +295,14 @@ const faqs = [
           <a class="pg" href="#results"><div class="pg-label">Growth</div><div class="pg-num">8<span class="u">M+</span></div><p>Followers grown across platforms</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
           <a class="pg" href="#results"><div class="pg-label">Leads</div><div class="pg-num">150<span class="u">K+</span></div><p>Over 150,000 leads generated for clients</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
         </div>
+        <div class="cta">
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
+        </div>
       </div>
     </section>
 
-    <div class="wrap"><div class="cta sec-cta"><a class="btn" href="#apply">Book A Growth Consultation</a></div></div>
-
     <!-- 5. HOW IT WORKS (copy from Kasper's review, 2026-09-29) -->
-    <section id="how" class="glow how sec">
+    <section id="how" class="how sec sec-dark">
       <div class="wrap">
         <p class="kicker">How it works</p>
         <h2>From your first call to your first post</h2>
@@ -310,10 +313,11 @@ const faqs = [
           <div class="step"><div class="n">4</div><div class="st"><h3>We edit, test and post</h3><p>We post your videos on your profile, and make several versions of each one with different openings to show to people who don't follow you yet. We track which versions bring in the most new followers and make more of what works. You get a weekly report on what grew.</p></div></div>
         </div>
         <p class="first-post">Your first post goes live 2 to 3 weeks after you start.</p>
+        <div class="cta">
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
+        </div>
       </div>
     </section>
-
-    <div class="wrap"><div class="cta sec-cta"><a class="btn" href="#apply">Book A Growth Consultation</a></div></div>
 
     <!-- 7. FAQ -->
     <section id="faq" class="sec" style="scroll-margin-top:16px">
@@ -334,7 +338,7 @@ const faqs = [
     </section>
 
     <!-- 8. REPEAT -->
-    <section class="final glow">
+    <section class="final sec sec-dark">
       <div class="wrap">
         <h2>Get <span class="hl">3,000 to 5,000 followers a month</span> who want what you've built. <em>Guaranteed.</em></h2>
         <div class="cta">
@@ -720,12 +724,22 @@ const faqs = [
 
   .dm .hero { padding-block: 32px 24px; }
   .dm p.hero-guarantee { margin: 20px auto 0; }
-  .dm .jump { display: flex; justify-content: center; gap: 8px; margin: 20px auto 0; flex-wrap: wrap; }
-  .dm .jump a { padding: 10px 12px; min-height: 44px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; color: var(--p-deep); background: var(--p-soft); border-radius: var(--r); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .dm .sec { border-top: 1px solid var(--card-border); margin-top: 8px; padding-top: 56px; }
-  .dm .results .proof-card { margin-top: 28px; }
-  .dm .sec-cta { margin: 0 0 8px; }
-  .dm .kasper.sec { padding-bottom: 8px; }
+  .dm .jump { display: flex; justify-content: center; gap: 12px; margin: 28px auto 0; max-width: 680px; }
+  .dm .jump a { flex: 1 1 0; min-height: 60px; padding: 14px 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; background: var(--p); border-radius: var(--r); text-decoration: none; box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .jump a:active { background: var(--p-deep); }
+  .dm section.sec { padding-block: 72px; scroll-margin-top: 0; }
+  .dm .sec .cta { margin-top: 44px; }
+  .dm section.sec-dark { background: #0a2a52; color: #fff; }
+  @media (max-width: 720px) { .dm section.sec { padding-block: 52px; } }
+  .dm .sec-dark .kicker { color: var(--p-light); }
+  .dm .sec-dark h2, .dm .sec-dark .more-title, .dm .sec-dark .first-post { color: #fff; }
+  .dm .sec-dark .disclaimer, .dm .sec-dark .guarantee { color: rgba(255, 255, 255, 0.72); }
+  .dm .sec-dark .guarantee b { color: #fff; }
+  .dm .sec-dark .hl { color: var(--p-light); text-decoration-color: rgba(140, 196, 251, 0.5); -webkit-text-decoration-color: rgba(140, 196, 251, 0.5); }
+  .dm .sec-dark em { color: #fff; }
+  .dm .sec-dark .kasper-card, .dm .sec-dark .case, .dm .sec-dark .more-pair, .dm .sec-dark .proof-card, .dm .sec-dark .quote, .dm .sec-dark .step, .dm .sec-dark .pg { color: var(--ink); }
+  .dm .sec-dark .btn { background: #fff; color: var(--p-deep); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .dm .results .proof-card { margin-top: 32px; }
   .dm .proof-line { display: block; width: fit-content; margin: 18px auto 26px; padding: 12px 18px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--p-deep); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .dm .proof-line:active { background: var(--p-soft); border-radius: var(--r); }
   .dm summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
@@ -850,7 +864,7 @@ const faqs = [
   .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
   .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
   .dm .quotes { max-width: 520px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr; gap: 18px; }
-  .dm .quote-inline { max-width: 640px; margin: 0 auto 22px; }
+  .dm .quote.quote-inline { max-width: 640px; margin: 22px auto 40px; }
   .dm .quote .approve { margin: 10px 0 0; font-size: 14px; color: var(--ink-dim); text-align: center; }
   .dm .kasper { padding: 0 0 8px; }
   .dm .kasper-card { max-width: 640px; margin: 0 auto 22px; display: grid; grid-template-columns: 140px 1fr; gap: 22px; align-items: center; text-align: left; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
