@@ -110,10 +110,17 @@ const faqs = [
     <section class="hero">
       <div class="wrap">
         <p class="kicker"><span class="grad">For doctors who teach</span>: courses, programs, memberships</p>
-        <h1>
+        <h1 class="h1-wide">
           <span class="line">Get <span class="num">3,000 to 5,000</span> followers</span>
           <span class="line">a month <span class="ul">who want</span></span>
           <span class="line"><span class="ul">what you've built.</span></span>
+        </h1>
+        <!-- Phone twin of the headline: same words, own markup so each step can have its own size. Only one of the two is ever shown. -->
+        <h1 class="h1-phone">
+          <span class="h-get">Get</span>
+          <span class="h-num num">3,000 to 5,000</span>
+          <span class="h-fol">followers a month</span>
+          <span class="h-cl ul">who want what you've built.</span>
         </h1>
         <p class="sub">
           You give me 20 minutes a week and one filming day a month. I handle the rest, with my team.
@@ -134,10 +141,10 @@ const faqs = [
             <!-- Honeypot for the partial-lead capture script below: real visitors never see or fill it. -->
             <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
             <div class="grid">
-              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
-              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
-              <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required /></div>
-              <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" required /></div></div>
+              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" autocapitalize="words" enterkeyhint="next" required /></div>
+              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" required /></div>
+              <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" enterkeyhint="next" placeholder="+1 555 123 4567" required /></div>
+              <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" required /></div></div>
               <p class="sms-consent full">
                 By entering your phone number you agree to texts from Synchro Social about your
                 application and call, including a reminder if you don't finish booking. Message
@@ -196,6 +203,7 @@ const faqs = [
           <a class="pg" href="#results"><div class="pg-label">Growth</div><div class="pg-num">8<span class="u">M+</span></div><p>Followers grown across platforms</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
           <a class="pg" href="#results"><div class="pg-label">Leads</div><div class="pg-num">150<span class="u">K+</span></div><p>Over 150,000 leads generated for my clients</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
         </div>
+        <a class="pg-all" href="#results">See the results <span aria-hidden="true">&darr;</span></a>
         <div class="cta">
           <a class="btn" href="#apply">Let's get on a call</a>
         </div>
@@ -658,6 +666,17 @@ const faqs = [
         btn.setAttribute("aria-disabled", "true");
       }, { once: true });
     });
+  })();
+</script>
+
+<script is:inline>
+  // Phone: note when a form field has the keyboard open, so the top menu bar can get out of the way (CSS only acts at phone widths).
+  (function () {
+    var f = document.querySelector(".apply-form");
+    if (!f) return;
+    var root = document.documentElement;
+    f.addEventListener("focusin", function (e) { if (e.target.matches("input")) root.classList.add("kb-open"); });
+    f.addEventListener("focusout", function () { root.classList.remove("kb-open"); });
   })();
 </script>
 
@@ -1185,4 +1204,69 @@ const faqs = [
     .dm .results .mid-cta, .dm .results .floatvids, .dm .results .quotes, .dm .results .quotes + .cta, .dm .results .more-grp { margin-top: 40px; }
   }
   .dm .ig { display: block; font-size: 0.86em; font-weight: 500; letter-spacing: 0; text-transform: none; opacity: 0.7; }
+
+  /* ===== Phone only (560px and narrower), 22 Oct 2026. Nothing above 560px is touched. =====
+     Headline: number first, stepping down. Form: edge to edge, 16px type (no zoom on focus),
+     big two-up answer buttons. Kasper: photo beside the name, one row per number. */
+  .dm .pg-all { display: none; }
+  .dm h1.h1-phone { display: none; }
+  @media (max-width: 560px) {
+    .dm .wrap { padding-inline: 16px; }
+    /* menu bar: out of sight means out of sight (its pink glow used to leak at the top), and gone while typing */
+    .dm .stickybar:not(.on) { visibility: hidden; box-shadow: none; transition: transform 0.25s ease, visibility 0s linear 0.25s; }
+    .dm .stickybar.on { visibility: visible; }
+    .kb-open .dm .stickybar { display: none; }
+
+    /* headline: the phone twin replaces the wide one */
+    .dm .h1-wide { display: none; }
+    .dm h1.h1-phone { display: block; line-height: 1.12; letter-spacing: -0.03em; }
+    .dm h1 .h-get { display: block; font-size: min(5.6vw, 26px); }
+    .dm h1 .h-num { display: block; font-size: min(12vw, 56px); letter-spacing: -0.035em; line-height: 1.05; }
+    .dm h1 .h-fol { display: block; font-size: min(8.2vw, 38px); }
+    .dm h1 .h-cl { display: inline; font-size: min(6.4vw, 30px); text-decoration-thickness: 3px; text-underline-offset: 6px; white-space: nowrap; }
+    .dm .sub { max-width: none; }
+
+    /* form: full width, no card */
+    .dm .apply .wrap { padding-inline: 0; }
+    .dm .form-card { max-width: none; margin: 0; border-width: 1px 0; border-radius: 0; box-shadow: none; padding: 0 16px 28px; }
+    .dm .form-card h2 { margin: 0 -16px 16px; border-radius: 0; padding: 22px 16px; font-size: 23px; }
+    .dm .form-card .form-note { margin: 0 0 20px; font-size: 15.5px; }
+    .dm .grid { gap: 16px; }
+    .dm .field label, .dm .q { font-size: 15px; }
+    .dm input[type="text"], .dm input[type="email"], .dm input[type="tel"] { font-size: 16px; padding: 16px 14px; min-height: 54px; }
+    .dm .handle input { padding-left: 32px; }
+    .dm .field { scroll-margin-top: 20px; }
+    .dm .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .dm .chips label { min-height: 52px; font-size: 16px; padding: 10px 14px; }
+    .dm .chips label:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .dm .grid > .field.full:last-of-type .chips { grid-template-columns: 1fr; }
+    .dm .sms-consent, .dm .legal { font-size: 12px; }
+    .dm .submit { margin-top: 24px; }
+    .dm .form-card button.btn { width: 100%; }
+
+    /* all call buttons: full width, easy to hit */
+    .dm .cta .btn { display: block; width: 100%; max-width: 420px; text-align: center; }
+
+    /* Kasper */
+    .dm .kasper-card { grid-template-columns: 84px 1fr; gap: 12px 14px; text-align: left; align-items: center; margin-bottom: 18px; }
+    .dm .kasper .kasper-img { width: 84px; height: 84px; margin: 0; }
+    .dm .kasper-text { display: contents; }
+    .dm .kasper-text h2 { grid-column: 2; font-size: 21px; line-height: 1.2; margin: 0; }
+    .dm .kasper-text p { grid-column: 1 / -1; font-size: 16px; line-height: 1.55; }
+    .dm .kasper .proof-grid { grid-template-columns: 1fr; gap: 0; margin-top: 6px; border-top: 1px solid var(--card-border); }
+    .dm .kasper .pg { display: grid; grid-template-columns: 118px 1fr; grid-template-areas: "num label" "num text"; column-gap: 14px; align-items: center; text-align: left; padding: 14px 0; border-top: 0; border-bottom: 1px solid var(--card-border); }
+    .dm .kasper .pg-num { grid-area: num; font-size: 34px; margin: 0; }
+    .dm .kasper .pg-label { grid-area: label; font-size: 15px; letter-spacing: 0; text-transform: none; font-weight: 700; color: var(--ink); align-self: end; }
+    .dm .kasper .pg p { grid-area: text; font-size: 14px; align-self: start; }
+    .dm .kasper .pg-hint { display: none; }
+    .dm .pg-all { display: block; margin: 4px auto 0; padding: 14px; font-size: 15px; font-weight: 600; color: var(--p-deep); text-decoration: none; }
+
+    /* results: doctor lines stack and centre */
+    .dm .rstats em { flex-direction: column; text-align: center; gap: 8px; }
+    .dm .rstats em > span { text-align: center; }
+    .dm .results .quote.quote-inline { padding: 22px 18px; }
+
+    /* FAQ: bigger taps */
+    .dm summary { font-size: 17px; min-height: 44px; align-items: center; }
+  }
 </style>
