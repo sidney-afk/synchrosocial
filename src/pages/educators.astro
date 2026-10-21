@@ -109,9 +109,9 @@ const faqs = [
       <div class="wrap">
         <p class="kicker">For doctors who teach: courses, programs, memberships</p>
         <h1>
-          <span class="line">Get <span class="hl">3,000 to 5,000</span> followers</span>
-          <span class="line">a month who want</span>
-          <span class="line">what you've built.</span>
+          <span class="line">Get 3,000 to 5,000 followers</span>
+          <span class="line">a month <span class="hl">who want</span></span>
+          <span class="line"><span class="hl">what you've built.</span></span>
         </h1>
         <p class="sub">
           One filming day a month. We plan, script, edit and post, in your voice.
@@ -184,8 +184,8 @@ const faqs = [
         <h2>Clients we've grown</h2>
         <h3 class="grp">Doctors we work with</h3>
         <div class="rstats">
-          <div><b>60,000</b><span>new followers in under 90 days</span><em>Dr. Lily Baker · Chiropractor</em></div>
-          <div><b>+50%</b><span>followers in under 6 months</span><em>Dr. Sonia Chopra · Endodontist</em></div>
+          <div><b>60,000</b><span>new followers in under 90 days</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Lily Baker · Chiropractor</em></div>
+          <div><b>+50%</b><span>followers in under 6 months</span><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Sonia Chopra · Endodontist</em></div>
         </div>
         <div class="floatshots">
           <img
@@ -1055,7 +1055,6 @@ const faqs = [
     .dm .brand img { width: 120px; }
     .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
     .dm h1 { font-size: 32px; line-height: 1.1; }
-    .dm h1 .hl { display: block; font-size: 1.4em; line-height: 1.1; margin-block: 4px; }
     .dm .sub { font-size: 15px; line-height: 1.5; margin-top: 14px; }
     .dm .cta { margin-top: 24px; gap: 12px; }
     .dm .btn { font-size: 13px; padding: 16px 28px; }
@@ -1069,7 +1068,7 @@ const faqs = [
   .dm .kasper .kasper-card { padding: 0 0 8px; }
   .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
   .dm .kasper .proof-grid { margin-top: 26px; }
-  .dm .hero .kicker { color: #0a2a52; font-weight: 800; }
+  .dm .hero .kicker { color: #fff; font-weight: 700; display: inline-block; padding: 10px 22px; border-radius: 3px; background: linear-gradient(120deg, #1d6fe8 0%, #4a4fd8 55%, #7a45d6 100%); box-shadow: 0 8px 22px rgba(74, 79, 216, 0.28); }
   .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
   .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
   @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } }
@@ -1104,4 +1103,6 @@ const faqs = [
   .dm .results .quotes { max-width: 640px; margin-top: 26px; }
   .dm .results .quote.quote-inline { margin-bottom: 36px; }
   @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
+  .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; }
+  .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
 </style>
