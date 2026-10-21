@@ -107,11 +107,11 @@ const faqs = [
     <!-- 1. TOP: headline, then the form straight away -->
     <section class="hero">
       <div class="wrap">
-        <p class="kicker">For doctors who teach: courses, programs, memberships</p>
+        <p class="kicker"><span class="grad">For doctors who teach</span>: courses, programs, memberships</p>
         <h1>
-          <span class="line">Get 3,000 to 5,000 followers</span>
-          <span class="line">a month <span class="hl">who want</span></span>
-          <span class="line"><span class="hl">what you've built.</span></span>
+          <span class="line">Get <span class="num">3,000 to 5,000</span> followers</span>
+          <span class="line">a month <span class="ul">who want</span></span>
+          <span class="line"><span class="ul">what you've built.</span></span>
         </h1>
         <p class="sub">
           One filming day a month. We plan, script, edit and post, in your voice.
@@ -1068,7 +1068,10 @@ const faqs = [
   .dm .kasper .kasper-card { padding: 0 0 8px; }
   .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
   .dm .kasper .proof-grid { margin-top: 26px; }
-  .dm .hero .kicker { color: #fff; font-weight: 700; display: inline-block; padding: 10px 22px; border-radius: 3px; background: linear-gradient(120deg, #1d6fe8 0%, #4a4fd8 55%, #7a45d6 100%); box-shadow: 0 8px 22px rgba(74, 79, 216, 0.28); }
+  .dm .hero .kicker { color: var(--ink); font-weight: 700; }
+  .dm .kicker .grad { background: linear-gradient(100deg, #1d6fe8 0%, #5a4fe0 55%, #8a45d6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+  .dm h1 .num { color: var(--p); }
+  .dm h1 .ul { text-decoration: underline 4px var(--p); -webkit-text-decoration: underline 4px var(--p); text-underline-offset: 8px; text-decoration-skip-ink: none; }
   .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
   .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
   @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } }
