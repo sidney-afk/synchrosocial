@@ -746,16 +746,6 @@ const faqs = [
   .dm .sec-dark em { color: #fff; }
   .dm .sec-dark .kasper-card, .dm .sec-dark .case, .dm .sec-dark .more-pair, .dm .sec-dark .proof-card, .dm .sec-dark .quote, .dm .sec-dark .step, .dm .sec-dark .pg { color: var(--ink); }
   .dm .sec-dark .btn { background: #fff; color: var(--p-deep); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
-  .dm .kasper-card, .dm .kasper .pg { border: 0; box-shadow: none; background: transparent; }
-  .dm .kasper-card { padding: 0 0 8px; }
-  .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
-  .dm .kasper .proof-grid { margin-top: 26px; }
-  .dm .hero .kicker { color: #0a2a52; font-weight: 800; }
-  .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
-  .dm .btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
-  @media (max-width: 560px) { .dm .btn { font-size: 15px; padding: 20px 24px; } .dm .form-card h2 { margin: -22px -22px 20px; } }
-  .dm .apply-form .btn, .dm .form-card .btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
-  .dm .proof-card .shot-img { transform-origin: center; }
   .dm .results .proof-card { margin-top: 32px; }
   .dm .proof-line { display: block; width: fit-content; margin: 18px auto 26px; padding: 12px 18px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--p-deep); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .dm .proof-line:active { background: var(--p-soft); border-radius: var(--r); }
@@ -1067,4 +1057,15 @@ const faqs = [
     /* Gap under the stat cards matches the 22px gap above them. */
     .dm .apply { padding-bottom: 22px; }
   }
+  /* overrides, kept last so they win over the base rules above */
+  .dm .kasper .kasper-card, .dm .kasper .pg { border: 0; box-shadow: none; background: transparent; }
+  .dm .kasper .kasper-card { padding: 0 0 8px; }
+  .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
+  .dm .kasper .proof-grid { margin-top: 26px; }
+  .dm .hero .kicker { color: #0a2a52; font-weight: 800; }
+  .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
+  @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } .dm .form-card h2 { margin: -22px -22px 20px; } }
+  .dm .form-card button.btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
+    .dm .sec-dark a.btn { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
 </style>
