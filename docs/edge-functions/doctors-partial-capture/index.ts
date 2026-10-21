@@ -4,6 +4,9 @@
 // was not changed. One edit only: the shared secret on the N8N_SECRET line is replaced with
 // a placeholder because this repo is public. Everything else is as deployed, apart from line
 // endings (the deployed file uses Windows CRLF, this copy uses LF).
+// UNDEPLOYED CHANGE (21 Oct 2026): "page" and "fit" were added to FIELDS below for the /educators
+// page. Version 11 does NOT forward them yet, so this copy is ahead of production until the function
+// is redeployed with that change. Remove this note once it is live.
 // See ./README.md.
 
 // Supabase Edge Function: doctors-partial-capture
