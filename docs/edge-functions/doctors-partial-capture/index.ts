@@ -82,7 +82,7 @@ Deno.serve(async (req: Request) => {
   const FIELDS = [
     "name", "email", "phone", "instagram", "specialty", "investment", "start", "timezone",
     "utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid", "referrer", "website",
-    "sms_consent", "submitted",
+    "sms_consent", "submitted", "page", "fit",
   ];
   const out: Record<string, string> = {};
   for (const f of FIELDS) {
