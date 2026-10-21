@@ -59,7 +59,7 @@ const faqs = [
   { q: "What do I need to do?", a: "One filming day a month. We tell you exactly what to say." },
   {
     q: "How much of my time does this take?",
-    a: "About 20 minutes a week to give feedback on your filming plans, and one filming day a month. We handle everything else.",
+    a: "About 20 minutes a week to give feedback on your filming plans, and one filming day a month, more or less. We handle the rest.",
   },
   {
     q: "How does the guarantee work?",
@@ -71,7 +71,7 @@ const faqs = [
   },
   {
     q: "Will it sound like me?",
-    a: "Yes. We write your scripts and captions in your voice, and you approve every post before it goes live.",
+    a: "That is the point. We study how you talk first, and nothing is filmed until you approve it.",
   },
   {
     q: "What about patient privacy?",
@@ -108,7 +108,7 @@ const faqs = [
         <a href="#who">Who we are</a>
         <a href="#how">How it works</a>
         <a href="#faq">Questions</a>
-        <a class="sb-btn" href="#apply">Book a call</a>
+        <a class="sb-btn" href="#apply"><span class="sb-long">Book my call with Kasper</span><span class="sb-short">Book my call</span></a>
       </div>
     </nav>
 
@@ -257,7 +257,7 @@ const faqs = [
           </figure>
         </div>
         <div class="cta mid-cta">
-          <a class="btn" href="#apply">Book A Growth Consultation</a>
+          <a class="btn" href="#apply">Book my call with Kasper</a>
         </div>
         <h3 class="grp more-grp">More client results across other fields</h3>
         <div class="more">
@@ -283,7 +283,7 @@ const faqs = [
           execution and platform algorithms, and results vary by effort and market.
         </p>
         <div class="cta">
-          <a class="btn" href="#apply">Book A Growth Consultation</a>
+          <a class="btn" href="#apply">Book my call with Kasper</a>
         </div>
       </div>
     </section>
@@ -304,7 +304,7 @@ const faqs = [
           <a class="pg" href="#results"><div class="pg-label">Leads</div><div class="pg-num">150<span class="u">K+</span></div><p>Over 150,000 leads generated for clients</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
         </div>
         <div class="cta">
-          <a class="btn" href="#apply">Book A Growth Consultation</a>
+          <a class="btn" href="#apply">Book my call with Kasper</a>
         </div>
       </div>
     </section>
@@ -322,7 +322,7 @@ const faqs = [
         </div>
         <p class="first-post">Your first post goes live 2 to 3 weeks after you start.</p>
         <div class="cta">
-          <a class="btn" href="#apply">Book A Growth Consultation</a>
+          <a class="btn" href="#apply">Book my call with Kasper</a>
         </div>
       </div>
     </section>
@@ -350,7 +350,7 @@ const faqs = [
       <div class="wrap">
         <h2>Get <span class="hl">3,000 to 5,000 followers a month</span> who want what you've built. <em>Guaranteed.</em></h2>
         <div class="cta">
-          <a class="btn" href="#apply">Book A Growth Consultation</a>
+          <a class="btn" href="#apply">Book my call with Kasper</a>
           <p class="guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
         </div>
       </div>
@@ -1102,7 +1102,7 @@ const faqs = [
   .dm .sb-in a:active { background: var(--p-soft); }
   .dm .sb-in a.sb-btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin-left: 10px; letter-spacing: 0.02em; }
   @media (max-width: 640px) { .dm .sb-in { gap: 0; padding: 6px 6px; } .dm .sb-in a { padding: 9px 5px; font-size: 12.5px; } .dm .sb-in a.sb-btn { margin-left: 4px; } .dm .sb-in a.sb-btn { font-size: 12.5px; padding: 9px 10px; } }
-  @media (max-width: 380px) { .dm .sb-in a { font-size: 11.5px; padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; } }
+  @media (max-width: 380px) { .dm .sb-in { padding: 6px 2px; } .dm .sb-in a { font-size: 11.5px; padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; } }
   .dm .grp { font-size: clamp(22px, 3.4vw, 30px); letter-spacing: -0.02em; margin: 44px 0 0; color: #fff; }
   .dm .more-grp { margin-top: 64px; }
   .dm .rstats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 860px; margin: 28px auto 0; }
@@ -1128,4 +1128,7 @@ const faqs = [
   .dm .timeline li { font-size: 16px; color: var(--ink-2); padding-left: 16px; border-left: 3px solid var(--p); }
   .dm .timeline b { color: var(--ink); }
   .dm .form-card .form-note { margin: -8px 0 22px; font-size: 15px; }
+  @media (max-width: 640px) { .dm .sb-in a { padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; margin-left: 2px; } }
+  .dm .sb-short { display: none; }
+  @media (max-width: 860px) { .dm .sb-long { display: none; } .dm .sb-short { display: inline; } }
 </style>
