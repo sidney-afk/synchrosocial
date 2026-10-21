@@ -1,0 +1,1163 @@
+---
+/* ===========================================================================
+   /doctors-who-teach (was /educators until 21 Oct 2026; /educators redirects here): test landing page for the new "doctors who teach" ads (21 Oct 2026).
+
+   A copy of /doctors with its own data, so the two pages can be compared. Built
+   from the same script, so the form, the "Not right now" rule, the unfinished-form
+   save, the DoctorEmailEntered event, click ids and Clarity events behave the same.
+   What is different, all deliberate:
+     - Hidden from search (Layout noindex).
+     - Own calendar (educator-strategy-call) and own Meta content_name
+       (educator_offer), so Meta and Clarity can tell the pages apart.
+     - The unfinished-form save and the submit tell n8n which page they came from
+       (page = "educators"); n8n picks the calendar and the recovery link from it.
+     - "When can you start?" is replaced by "Which fits you?" (iClosed identifier
+       which-fits-you, sent as "fit" to the save).
+     - Form first, right under the headline, with a "proof is below" line (only 25%
+       of mobile visits reached the form on /doctors).
+     - Taps react in the frame they happen: bigger answer buttons, a loud selected
+       state, no slow scroll (Clarity dead clicks on /doctors were slow or silent
+       reactions, not broken buttons).
+   The wording is still the /doctors wording: Sidney writes the educator copy after
+   seeing this layout. Every class lives under .dm so nothing leaks into shared styles.
+=========================================================================== */
+import Layout from "../layouts/Layout.astro";
+
+// Microsoft Clarity project ID (the short code in Clarity > Settings > Setup).
+// Empty = Clarity is not loaded. See docs/meta-ads/README.md, 2026-10-07.
+const CLARITY_ID = "yu1mplpp22";
+
+// iClosed "Educator Strategy Call" event (a copy of the doctor event; its own rule disqualifies "Not right now").
+// PUBLIC_EDUCATORS_ICLOSED_URL exists only so a test build can point at a copy of the event;
+// the production build never sets it.
+const ICLOSED_URL = import.meta.env.PUBLIC_EDUCATORS_ICLOSED_URL || "https://app.iclosed.io/e/synchrosocial/educator-strategy-call";
+// Which page this is: sent with every unfinished-form save so n8n picks the right calendar.
+const PAGE = "educators";
+// Meta content_name for every event this page sends.
+const OFFER = "educator_offer";
+// The Identifier of the "Which fits you?" question in iClosed (URL parameter that pre-fills it).
+const FIT_KEY = "which-fits-you";
+// The Identifier of the doctor event's price question in iClosed (Settings > Objects & Fields).
+// It is the URL parameter name that pre-fills the answer. Must match iClosed exactly.
+const PRICE_KEY = "within-reach";
+const PRICE_QUESTION = "Our service starts at $3,000 a month. Is that within reach for you right now?";
+
+// Answer text must match the iClosed event's options EXACTLY: they are passed
+// to iClosed as URL parameters and matched as strings.
+const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
+const investments = ["Yes", "Not right now"];
+const fits = ["My own practice + a course or program", "My own practice", "I work for someone else", "Other"];
+
+
+const faqs = [
+  {
+    q: "What do you do?",
+    a: "We film a month of short videos with you in one shoot, show different versions to people who don't follow you yet, and post across your platforms, making more of what brings in new followers.",
+  },
+  { q: "What do I need to do?", a: "One filming day a month. We tell you exactly what to say." },
+  {
+    q: "How much of my time does this take?",
+    a: "About 20 minutes a week to give feedback on your filming plans, and one filming day a month, more or less. We handle the rest.",
+  },
+  {
+    q: "Does this work for my specialty?",
+    a: "Yes. The same system works across specialties. No skits or trends you're not comfortable with.",
+  },
+  {
+    q: "Will it sound like me?",
+    a: "That is the point. We study how you talk first, and nothing is filmed until you approve it.",
+  },
+  {
+    q: "What about patient privacy?",
+    a: "We follow platform health-content guidelines and never show patients or patient information. You approve every post before it goes live.",
+  },
+  {
+    q: "When will I see results?",
+    a: "Your first post goes live 2 to 3 weeks after you start. Month one tests a wide range of angles. From month two, we double down on what's working.",
+  },
+  {
+    // Owner: no price on the page. The mockup left this answer open.
+    q: "What does it cost?",
+    a: "I go over pricing with you on our call.",
+  },
+];
+---
+
+<Layout
+  title="Doctors Who Sell a Course, Program or Membership: 3,000 to 5,000 Followers a Month | Synchro Social"
+  description="One filming day a month. We plan, script, edit and post, and bring you followers who want what you've built."
+  bodyClass="dm-body"
+  metaEvent={{ name: "ViewContent", params: { content_name: OFFER } }}
+  lightFonts
+  noindex
+>
+  <div class="dm">
+    <div class="brand"><img src="/images/apply4/logo-dark.png" alt="Synchro Social" width="170" height="36" /></div>
+
+
+    <!-- Sticky navigation: appears once the form has scrolled out of view -->
+    <nav class="stickybar" id="stickybar" aria-label="Jump to a section" hidden>
+      <div class="sb-in">
+        <a href="#results">Results</a>
+        <a href="#who">Who we are</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">Questions</a>
+        <a class="sb-btn" href="#apply"><span class="sb-long">Let's get on a call</span><span class="sb-short">Let's talk</span></a>
+      </div>
+    </nav>
+
+    <!-- 1. TOP: headline, then the form straight away -->
+    <section class="hero">
+      <div class="wrap">
+        <p class="kicker"><span class="grad">For doctors who teach</span>: courses, programs, memberships</p>
+        <h1>
+          <span class="line">Get <span class="num">3,000 to 5,000</span> followers</span>
+          <span class="line">a month <span class="ul">who want</span></span>
+          <span class="line"><span class="ul">what you've built.</span></span>
+        </h1>
+        <p class="sub">
+          You give me 20 minutes a week and one filming day a month. I handle the rest, with my team.
+        </p>
+        <p class="guarantee hero-guarantee">Scripts, filming, editing and Instagram posting, all done for you.</p>
+      </div>
+    </section>
+
+    <!-- 2. FORM FIRST, then the proof -->
+    <section class="apply">
+      <div class="wrap">
+        <div id="apply" class="form-card">
+          <h2>Tell me what you've built</h2>
+          <p class="note form-note">I'll look at your account and map out the strategy to grow it.</p>
+          <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
+               answers prefilled, so the doctor only picks a time. -->
+          <form class="apply-form" data-step="1" data-clarity-mask="True" novalidate>
+            <!-- Honeypot for the partial-lead capture script below: real visitors never see or fill it. -->
+            <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+            <div class="grid">
+              <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name" required /></div>
+              <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+              <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required /></div>
+              <div class="field"><label for="f-ig">Instagram handle</label><div class="handle"><span>@</span><input id="f-ig" name="instagram" type="text" placeholder="yourhandle" required /></div></div>
+              <p class="sms-consent full">
+                By entering your phone number you agree to texts from Synchro Social about your
+                application and call, including a reminder if you don't finish booking. Message
+                frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.
+                <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy</a> ·
+                <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>
+              </p>
+              <div class="field full"><span class="q">Specialty</span>
+                <div class="chips">{specialties.map((v) => <label><input type="radio" name="specialty" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">{PRICE_QUESTION}</span>
+                <div class="chips">{investments.map((v) => <label><input type="radio" name="investment" value={v} required />{v}</label>)}</div>
+              </div>
+              <div class="field full"><span class="q">Which fits you?</span>
+                <div class="chips">{fits.map((v) => <label><input type="radio" name="fit" value={v} required />{v}</label>)}</div>
+              </div>
+            </div>
+            <p class="form-error" role="alert" hidden></p>
+            <div class="submit">
+              <button class="btn" type="submit">Let's get on a call</button>
+              <p class="note fit-note">If we're not a fit, I'll tell you.</p>
+            </div>
+          </form>
+          <div class="step-dq" hidden>
+            <p class="dq-title">Thanks for applying!</p>
+            <p>We've received your application and our team will review it.</p>
+          </div>
+          <div class="step-cal" hidden>
+            <p class="note" id="cal-note">Last step: pick a time for our call.</p>
+            <div class="form-embed"></div>
+          </div>
+          <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
+               See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
+          <p class="legal">
+            By booking a call you agree to texts from Synchro Social about your call (about one
+            per booking). Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help.
+            <a href="/privacypolicy" target="_blank" rel="noopener noreferrer">Privacy</a> ·
+            <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4b. KASPER: who you deal with (copy approved by Sidney 2026-10-21; Kasper confirmed the cadence) -->
+    <section id="who" class="kasper sec">
+      <div class="wrap">
+        <div class="kasper-card">
+          <img class="kasper-img" src="/images/apply4/kasper-founder.webp" alt="Kasper, founder of Synchro Social, speaking at an event" width="512" height="512" loading="lazy" decoding="async" />
+          <div class="kasper-text">
+            <h2>I'm Kasper, the founder of Synchro Social.</h2>
+            <p>You and I talk on a call every two weeks, and I'm in your Slack channel every day. When you have a question, an idea or a worry, you reach me. I give every client my personal attention.</p>
+          </div>
+        </div>
+        <div class="proof-grid">
+          <a class="pg" href="#results"><div class="pg-label">Reach</div><div class="pg-num">1.2<span class="u">B+</span></div><p>Views generated for my clients</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
+          <a class="pg" href="#results"><div class="pg-label">Growth</div><div class="pg-num">8<span class="u">M+</span></div><p>Followers grown across platforms</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
+          <a class="pg" href="#results"><div class="pg-label">Leads</div><div class="pg-num">150<span class="u">K+</span></div><p>Over 150,000 leads generated for my clients</p><span class="pg-hint">See the results <span aria-hidden="true">&darr;</span></span></a>
+        </div>
+        <div class="cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. RESULTS -->
+    <section id="results" class="results sec sec-dark" style="scroll-margin-top:56px">
+      <div class="wrap">
+        <p class="kicker">Our results</p>
+        <h2>Doctors I've worked with</h2>
+        <div class="rstats">
+          <div><b>60,000</b><span>new followers in under 90 days</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Lily Baker · Chiropractor</em></div>
+          <div><b>+50%</b><span>followers in under 6 months</span><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Sonia Chopra · Endodontist</em></div>
+        </div>
+        <div class="floatshots">
+          <img
+            class="shot-img"
+            src="/images/apply4/lily-baker-before-after.webp"
+            alt="Dr. Lily Baker's Instagram profile in May 2026 (63.9K followers) and September 2026 (151K followers)"
+            width="900"
+            height="950"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            class="shot-img"
+            src="/images/apply4/lily-baker-insights.webp"
+            alt="Dr. Lily Baker's Instagram insights, Jul 8 to Sep 27: 10,651,859 views, +60,944 net followers, +68,339 follows"
+            width="900"
+            height="900"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <figure class="quote quote-inline">
+          <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
+          <blockquote>
+            <p>“Overall I am SO IMPRESSED by you guys. All the videos are amazing and you make me look so good! And your captions sound exactly like me.”</p>
+          </blockquote>
+          <figcaption class="by">
+            <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+            Dr. Lily Baker · Chiropractor
+          </figcaption>
+        </figure>
+        <div class="cta mid-cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+        <div class="floatvids">
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
+              <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
+              <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="vb-label">Tap to play</span>
+            </button><p>Dr. Lily Baker, in her own words</p></div>
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
+              <img src="/images/doctors-videos/sonia-chopra.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
+              <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="vb-label">Tap to play</span>
+            </button><p>Dr. Sonia Chopra: one post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p></div>
+        </div>
+        <div class="quotes">
+          <figure class="quote">
+            <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
+                 Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
+            <blockquote>
+              <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
+            </blockquote>
+            <figcaption class="by">
+              <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+              Dr. Rocco Piazza · Plastic Surgeon
+            </figcaption>
+          </figure>
+        </div>
+        <div class="cta mid-cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+        <h3 class="grp more-grp">More results from my clients in other fields</h3>
+        <div class="more">
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-danny-before.webp" width="1400" height="572" alt="Danny Morel's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-danny-after.webp" width="1400" height="556" alt="Danny Morel's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-baya-before.webp" width="1400" height="470" alt="Baya Voce's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-baya-after.webp" width="1400" height="585" alt="Baya Voce's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-lucas-before.webp" width="1400" height="668" alt="Lucas Salame's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-lucas-after.webp" width="1400" height="620" alt="Lucas Salame's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+          <div class="more-pair">
+            <figure><figcaption>Before</figcaption><img src="/images/apply4/more-oliver-before.webp" width="1400" height="545" alt="Oliver Nino's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
+            <figure><figcaption>After</figcaption><img src="/images/apply4/more-oliver-after.webp" width="1400" height="470" alt="Oliver Nino's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
+          </div>
+        </div>
+        <p class="disclaimer">
+          These are outcomes from clients who followed our process as built. Growth depends on
+          execution and platform algorithms, and results vary by effort and market.
+        </p>
+        <div class="cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 5. HOW IT WORKS (copy from Kasper's review, 2026-09-29) -->
+    <section id="how" class="how sec sec-dark">
+      <div class="wrap">
+        <p class="kicker">How it works</p>
+        <h2>From your first call to your first post</h2>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><div class="st"><h3>I map out your growth</h3><p>On our first call I look at your account and map out your growth strategy.</p></div></div>
+          <div class="step"><div class="n">2</div><div class="st"><h3>I build your content plan</h3><p>Every 4 weeks you get a content strategy with hooks and ideas for every platform we post on. I write the scripts, you approve them, and we brief and book a vetted local videographer if you need one.</p></div></div>
+          <div class="step"><div class="n">3</div><div class="st"><h3>We film a month of content</h3><p>One filming day a month. You show up and talk, and we handle the rest.</p></div></div>
+          <div class="step"><div class="n">4</div><div class="st"><h3>My team edits, tests and posts</h3><p>My team posts your videos on your profile, and makes several versions of each one with different openings to show to people who don't follow you yet. We track which versions bring in the most new followers and make more of what works. You get a weekly report on what grew.</p></div></div>
+        </div>
+        <p class="first-post">Your first post goes live 2 to 3 weeks after you start.</p>
+        <div class="cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. FAQ -->
+    <section id="faq" class="sec" style="scroll-margin-top:16px">
+      <div class="wrap narrow">
+        <p class="kicker">Questions</p>
+        <h2>What doctors ask us</h2>
+        <div class="faq">
+          {
+            faqs.map((f, i) => (
+              <details open={i === 0}>
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. REPEAT -->
+    <section class="final sec sec-dark">
+      <div class="wrap">
+        <h2>Get <span class="hl">3,000 to 5,000 followers a month</span> who want what you've built.</h2>
+        <div class="cta">
+          <a class="btn" href="#apply">Let's get on a call</a>
+        </div>
+      </div>
+    </section>
+
+
+    <script is:inline>
+  (function () {
+    var bar = document.getElementById("stickybar");
+    var form = document.getElementById("apply");
+    if (!bar || !form || !("IntersectionObserver" in window)) return;
+    bar.hidden = false;
+    var io = new IntersectionObserver(function (es) {
+      var e = es[0];
+      // shown once the form has scrolled up out of view (not while it is below the screen)
+      bar.classList.toggle("on", !e.isIntersecting && e.boundingClientRect.top < 0);
+    });
+    io.observe(form);
+  })();
+</script>
+    <footer>© Synchro Social</footer>
+  </div>
+</Layout>
+
+<script is:inline define:vars={{ ICLOSED_URL, PRICE_KEY, FIT_KEY, PAGE, OFFER }}>
+  (function () {
+    var form = document.querySelector(".dm .apply-form");
+    if (!form) return;
+    var card = form.closest(".form-card");
+    var err = form.querySelector(".form-error");
+
+    // iClosed skips its own form only when email/phone are valid, so send
+    // phone in international format. Bare 10-digit numbers are assumed US.
+    function normPhone(v) {
+      var d = v.replace(/[^\d+]/g, "");
+      if (d.charAt(0) === "+") return d;
+      if (d.length === 10) return "+1" + d;
+      if (d.length === 11 && d.charAt(0) === "1") return "+" + d;
+      return d.length >= 8 ? "+" + d : "";
+    }
+
+    // Partial-lead capture. A doctor who has typed a valid email but leaves before
+    // pressing Submit would otherwise be lost: nothing reaches iClosed until step 2.
+    // As soon as the email is valid we send what they have to the
+    // doctors-partial-capture edge function (shared with /doctors; "page" says which), which arms a recovery follow-up in n8n:
+    // an email, plus a text when a phone number was typed (the step-1 form shows an
+    // SMS consent line directly under the phone field, so sms_consent below records
+    // that it was shown; n8n sends no text without it AND a valid phone).
+    // It is sent again whenever anything on the form changes (phone, answers, ...), so n8n
+    // updates the one saved row instead of adding a second, and moves the first follow-up
+    // back: it is due 20 minutes after the LAST change. Answering "Not right now"
+    // is sent too: n8n cancels any follow-up already armed and arms nothing.
+    // Fires on "change" (a field committed or a radio picked), never on each
+    // keystroke, so half-typed addresses are never sent. Sends go one at a time, in
+    // order. No pixel events here (DoctorEmailEntered is sent separately, below).
+    var PARTIAL_URL = "https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/doctors-partial-capture";
+    var submitted = false;
+    var partialSent = "";   // the form as last sent: an unchanged form is never re-sent
+    var partialEmail = "";  // the email a follow-up was last armed for
+    var partialQueue = Promise.resolve();
+    var partialTimer = null;
+    function maybeSendPartial(force) {
+      if (submitted && !force) return;
+      var f = new FormData(form);
+      var email = String(f.get("email") || "").trim();
+      var investment = String(f.get("investment") || "");
+      var phone = normPhone(String(f.get("phone") || "").trim());
+      if (phone.replace(/\D/g, "").length < 10) phone = ""; // a half-typed number is not a number: no text to it
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
+      var qs = new URLSearchParams(location.search);
+      var body = {
+        name: String(f.get("name") || "").trim(),
+        email: email,
+        phone: phone,
+        instagram: String(f.get("instagram") || "").trim().replace(/^@+/, ""),
+        specialty: String(f.get("specialty") || ""),
+        investment: investment,
+        fit: String(f.get("fit") || ""),
+        page: PAGE,
+        website: String(f.get("website") || ""),
+        referrer: document.referrer || "",
+        sms_consent: document.querySelector(".sms-consent") ? "yes" : "",
+      };
+      try { body.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (err2) {}
+      ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
+        if (qs.get(k)) body[k] = qs.get(k);
+      });
+      var sig = JSON.stringify(body);
+      if (sig === partialSent) return;
+      partialSent = sig;
+      // The visitor changed the address (a typo fixed): cancel the follow-up armed for the old one.
+      if (partialEmail && partialEmail !== email.toLowerCase()) {
+        var gone = { email: partialEmail, investment: "Not right now" };
+        if (qs.get("utm_source")) gone.utm_source = qs.get("utm_source");
+        partialQueue = partialQueue.then(function () {
+          return fetch(PARTIAL_URL, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json" }, body: JSON.stringify(gone) }).catch(function () {});
+        });
+      }
+      partialEmail = email.toLowerCase();
+      partialQueue = partialQueue.then(function () {
+        return fetch(PARTIAL_URL, {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).then(function (res) { if (!res.ok && partialSent === sig) partialSent = ""; })
+          .catch(function () { if (partialSent === sig) partialSent = ""; });
+      });
+    }
+    form.addEventListener("change", function () {
+      clearTimeout(partialTimer);
+      partialTimer = setTimeout(maybeSendPartial, 800);
+      maybeSendEmailEvent();
+    });
+
+    // Meta DoctorEmailEntered: the visitor has typed a valid email, before Submit.
+    // An earlier signal than Lead (which only fires on Submit, the same moment as the
+    // booking), so Meta has more to learn from. Once per browser session, never for
+    // test traffic (a test visit has a do-nothing fbq; a test email is skipped here).
+    // Only content_name is sent: never the email itself.
+    var emailEventSent = false;
+    try { emailEventSent = sessionStorage.getItem("mp_educator_email") === "1"; } catch (e1) {}
+    function maybeSendEmailEvent() {
+      if (emailEventSent || submitted) return;
+      var email = String(new FormData(form).get("email") || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
+      if (typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(email)) return;
+      if (typeof window.__metaTrack !== "function") return;
+      emailEventSent = true;
+      try { sessionStorage.setItem("mp_educator_email", "1"); } catch (e2) {}
+      window.__metaTrack("DoctorEmailEntered", { content_name: OFFER }, { custom: true });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = new FormData(form);
+      var v = {};
+      ["name", "email", "phone", "instagram", "specialty", "investment", "fit"].forEach(function (k) {
+        v[k] = String(f.get(k) || "").trim();
+      });
+      v.instagram = v.instagram.replace(/^@+/, "");
+      v.phone = normPhone(v.phone);
+      var missing = Object.keys(v).filter(function (k) { return !v[k]; });
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
+      if (missing.length || !emailOk) {
+        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "whether $3,000 a month is within reach", fit: "which fits you" };
+        err.textContent = !emailOk && v.email
+          ? "Please enter a valid email."
+          : missing.indexOf("phone") > -1 && f.get("phone")
+            ? "Please enter your phone number with country code, e.g. +1 555 123 4567."
+            : "Please fill in: " + missing.map(function (k) { return labels[k]; }).join(", ") + ".";
+        err.hidden = false;
+        return;
+      }
+      err.hidden = true;
+      submitted = true; // a real submit: stop the partial-lead capture above
+
+      // Not right now: a neutral thank-you, no calendar, never reaches iClosed.
+      if (v.investment === "Not right now") {
+        clearTimeout(partialTimer);
+        maybeSendPartial(true); // cancels any follow-up already armed (a no-op if already sent)
+        if (typeof window.clarity === "function") clarity("event", "form_not_right_now");
+        form.hidden = true;
+        card.querySelector("h2").hidden = true;
+        card.querySelector(".step-dq").hidden = false;
+        return;
+      }
+
+      // Meta Lead fires only for people who are NOT "Not right now", and never for test
+      // traffic: a ?utm_source=test visit already has a do-nothing fbq (MetaPixel.astro),
+      // and a sidney.laruel+anything@gmail.com email is skipped here.
+      var isTestEmail = typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(v.email);
+      if (!isTestEmail) {
+        if (typeof window.__metaTrack === "function") window.__metaTrack("Lead", { content_name: OFFER });
+        else if (typeof window.fbq === "function") fbq("track", "Lead", { content_name: OFFER });
+      }
+      if (typeof window.clarity === "function") clarity("event", "form_qualified_submit");
+
+      // Tell n8n they pressed Submit: it sends the booking link by email (and by text
+      // with consent, 08:00-18:00 their time) right away and moves the recovery nudge
+      // to 30 minutes out. Same relay as the partial capture; submitted=yes routes it.
+      try {
+        var sub = {
+          name: v.name, email: v.email, phone: v.phone, instagram: v.instagram,
+          specialty: v.specialty, investment: v.investment, fit: v.fit, page: PAGE,
+          website: String(f.get("website") || ""),
+          referrer: document.referrer || "",
+          sms_consent: document.querySelector(".sms-consent") ? "yes" : "",
+          submitted: "yes",
+        };
+        try { sub.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (err4) {}
+        var sq = new URLSearchParams(location.search);
+        ["utm_source", "utm_medium", "utm_campaign", "utm_content", "fbclid"].forEach(function (k) {
+          if (sq.get(k)) sub[k] = sq.get(k);
+        });
+        fetch(PARTIAL_URL, {
+          method: "POST",
+          keepalive: true,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sub),
+        }).catch(function () {});
+      } catch (err5) {}
+
+      // iClosed expects %20 for spaces (encodeURIComponent), not "+".
+      var q = [
+        ["iclosedName", v.name],
+        ["iclosedEmail", v.email],
+        ["iclosedPhone", v.phone],
+        // The iClosed questions' own Identifiers (auto-generated; shared with
+        // the "For The Apply Page" event, so do not rename them in iClosed).
+        ["specialty", v.specialty],
+        ["instagram-handle-eg-yourhandle", v.instagram],
+        [PRICE_KEY, v.investment],
+        [FIT_KEY, v.fit],
+      ];
+      // Carry ad attribution through, as IClosedCapture does on other pages.
+      new URLSearchParams(location.search).forEach(function (val, key) {
+        if (/^utm_|^fbclid$|^test-pixel$/.test(key)) q.push([key, val]);
+      });
+      var url = ICLOSED_URL + "?" + q.map(function (kv) {
+        return encodeURIComponent(kv[0]) + "=" + encodeURIComponent(kv[1]);
+      }).join("&");
+
+      var slot = card.querySelector(".form-embed");
+      var w = document.createElement("div");
+      w.className = "iclosed-widget";
+      w.setAttribute("data-url", url);
+      w.setAttribute("title", "Educator Strategy Call");
+      w.style.cssText = "width:100%;height:680px;";
+      slot.appendChild(w);
+      var sc = document.createElement("script");
+      sc.src = "https://app.iclosed.io/assets/widget.js";
+      sc.async = true;
+      slot.appendChild(sc);
+
+      form.hidden = true;
+      card.querySelector("h2").textContent = "Pick a Time";
+      var first = String(v.name || "").trim().split(/\s+/)[0];
+      var calNote = document.getElementById("cal-note");
+      if (calNote && first) calNote.textContent = "Thanks, " + first + ". Last step: pick a time for our call.";
+      card.querySelector(".step-cal").hidden = false;
+      card.scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  })();
+
+  // "#apply" buttons: jump to the form at once (no slow smooth scroll: it read as "nothing
+  // happened" in Clarity), without adding "#apply" to the URL.
+  document.querySelectorAll('.dm a[href="#apply"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var t = document.getElementById("apply");
+      if (!t) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  });
+
+  // Proof line and cards under the form: jump down to "Clients we've grown". The href
+  // is a real in-page link, so it still works if this script has not run.
+  document.querySelectorAll('.dm a[href="#results"]').forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      var t = document.getElementById("results");
+      if (!t || !t.scrollIntoView) return;
+      e.preventDefault();
+      t.scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  });
+
+  // Answer buttons: a tap on one that is already selected used to change nothing and was
+  // counted as a dead click. Give every tap a visible pulse, selected or not.
+  document.querySelectorAll(".dm .chips label").forEach(function (l) {
+    l.addEventListener("click", function () {
+      l.classList.remove("tapped");
+      void l.offsetWidth;
+      l.classList.add("tapped");
+    });
+  });
+  // An (empty) touch listener makes iOS apply :active styles at once.
+  document.addEventListener("touchstart", function () {}, { passive: true });
+
+  // Videos: connect to Wistia just before the videos scroll into view, and on tap
+  // load the player on top of the thumbnail inside the same 16:9 box, so nothing
+  // shifts and the thumbnail stays until the player is ready.
+  (function () {
+    var warmed = false;
+    function warm() {
+      if (warmed) return;
+      warmed = true;
+      ["https://fast.wistia.net", "https://fast.wistia.com", "https://embed-ssl.wistia.com"].forEach(function (h) {
+        var l = document.createElement("link");
+        l.rel = "preconnect";
+        l.href = h;
+        l.crossOrigin = "anonymous";
+        document.head.appendChild(l);
+      });
+    }
+    var vids = document.querySelector(".dm .floatvids");
+    if (vids && "IntersectionObserver" in window) {
+      new IntersectionObserver(function (e, o) { if (e[0].isIntersecting) { warm(); o.disconnect(); } }, { rootMargin: "1200px 0px" }).observe(vids);
+    }
+    document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
+      btn.addEventListener("pointerenter", warm, { once: true });
+      btn.addEventListener("touchstart", warm, { once: true, passive: true });
+      btn.addEventListener("click", function () {
+        warm();
+        var f = document.createElement("iframe");
+        f.src = "https://fast.wistia.net/embed/iframe/" + btn.dataset.wistia + "?autoPlay=true&seo=false&playerColor=178af6";
+        f.allow = "autoplay; fullscreen";
+        f.allowFullscreen = true;
+        f.title = btn.getAttribute("aria-label");
+        f.className = "video-overlay";
+        f.addEventListener("load", function () { btn.classList.add("is-playing"); });
+        btn.appendChild(f);
+        btn.setAttribute("aria-disabled", "true");
+      }, { once: true });
+    });
+  })();
+</script>
+
+<script is:inline define:vars={{ CLARITY_ID }}>
+  // Microsoft Clarity (free): scroll depth, clicks and where visitors leave.
+  // Does nothing until CLARITY_ID (top of this file) is filled in. Loads after
+  // the page has finished loading so it never competes with the first paint.
+  // The form is masked (data-clarity-mask on the <form>), so nothing typed or
+  // picked in it is recorded. The events below carry no personal details.
+  (function () {
+    if (!CLARITY_ID) return;
+    // Queue and listeners are set up at once so an early tap is not lost;
+    // only the download of Clarity's own script waits for the load event.
+    window.clarity = window.clarity || function () { (window.clarity.q = window.clarity.q || []).push(arguments); };
+    window.addEventListener("load", function () {
+      var t = document.createElement("script");
+      t.async = true;
+      t.src = "https://www.clarity.ms/tag/" + CLARITY_ID;
+      document.head.appendChild(t);
+    });
+
+    var form = document.querySelector(".dm .apply-form");
+    if (form) {
+      var started = false;
+      form.addEventListener("focusin", function () {
+        if (started) return;
+        started = true;
+        clarity("event", "form_started");
+      });
+    }
+    // The videos play inside Wistia's frame, which Clarity cannot see into,
+    // so count the tap on our play button instead.
+    document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () { clarity("event", "video_play"); });
+    });
+  })();
+</script>
+
+<style is:global>
+  /* White and blue design (owner decision 2026-09-29), taken from the
+     reference site doctorsofcontent.com: Inter, brand blue #178af6 (deep
+     #0070e0, soft #e8f2fe), #f7f8fa surfaces, #e5e8ee borders, near-black
+     #0a0a1a text, uppercase tracked buttons. Corners are deliberately
+     very subtle (2 to 4px) on every box and button. Scoped under .dm. */
+  body.dm-body {
+    margin: 0;
+    background-color: #fff;
+    background-image:
+      radial-gradient(1100px 520px at 50% 0, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0)),
+      linear-gradient(180deg, #fff 0px, #f3f8ff 700px, #e8f2fe 1000px, #f3f8ff 1400px, #fff 1900px);
+    background-repeat: no-repeat;
+  }
+  .dm {
+    color-scheme: light;
+    --card: #fff;
+    --surface: #f7f8fa;
+    --card-border: #e5e8ee;
+    --border: #d3d9e3;
+    --ink: #0a0a1a;
+    --ink-2: #3d4557;
+    --ink-dim: #5b6478;
+    --ink-faint: #7b869a;
+    --p: #178af6;
+    --p-light: #8cc4fb;
+    --p-deep: #0070e0;
+    --p-soft: #e8f2fe;
+    --glow: radial-gradient(900px 480px at 50% -10%, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0));
+    --need: #ffcf6b;
+    --r-sm: 2px;
+    --r: 3px;
+    --r-lg: 4px;
+    --shadow: 0 10px 30px rgba(10, 14, 31, 0.07), 0 2px 6px rgba(10, 14, 31, 0.04);
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.011em;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+  }
+  .dm * { box-sizing: border-box; }
+  .dm .wrap { max-width: 980px; margin: 0 auto; padding-inline: 20px; }
+  .dm .narrow { max-width: 720px; }
+
+  .dm .brand { padding-block: 28px 0; display: flex; justify-content: center; }
+  .dm .brand img { width: 170px; height: auto; }
+
+  .dm section { padding-block: 72px; }
+  .dm .glow { background: var(--glow); }
+  .dm .kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--p); margin: 0 0 18px; }
+  .dm .hero .kicker { color: var(--ink); letter-spacing: 0.04em; font-size: 16px; }
+  .dm h1, .dm h2, .dm h3 { margin: 0; text-wrap: balance; font-weight: 700; }
+  .dm h1 { font-size: clamp(30px, 6vw, 72px); line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; }
+  .dm h1 .line { display: block; white-space: nowrap; }
+  @media (max-width: 700px) { .dm h1 .line { white-space: normal; } }
+  .dm .hero .wrap { max-width: 1200px; }
+  .dm .hl {
+    color: var(--p);
+    text-decoration: underline 3px rgba(23, 138, 246, 0.35);
+    -webkit-text-decoration: underline 3px rgba(23, 138, 246, 0.35);
+    text-underline-offset: 6px;
+  }
+  .dm h2 { font-size: clamp(26px, 4vw, 38px); line-height: 1.15; letter-spacing: -0.02em; }
+  .dm h3 { font-size: 18px; }
+  .dm .sub { font-size: 18px; color: var(--ink-2); max-width: 640px; margin: 28px auto 0; }
+
+  .dm .hero { padding-block: 32px 24px; }
+  .dm p.hero-guarantee { margin: 20px auto 0; }
+  .dm .jump { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 40px auto 0; max-width: 760px; background: #fff; border: 1px solid var(--card-border); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+  .dm .jump a { padding: 20px 12px 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink); text-decoration: none; border-top: 4px solid var(--p); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .jump a + a { border-left: 1px solid var(--card-border); }
+  .dm .jump a b { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .jump a small { font-size: 14px; color: var(--p-deep); font-weight: 600; }
+  .dm .jump a small::after { content: " \2193"; }
+  .dm .jump a:active { background: var(--p-soft); }
+  @media (max-width: 560px) { .dm .jump a b { font-size: 16px; } .dm .jump a small { font-size: 12.5px; } .dm .jump a { padding: 16px 6px 14px; } }
+  .dm section.sec { padding-block: 72px; scroll-margin-top: 0; }
+  .dm .sec .cta { margin-top: 44px; }
+  .dm section.sec-dark { background: #0a2a52; color: #fff; }
+  @media (max-width: 720px) { .dm section.sec { padding-block: 52px; } }
+  .dm .sec-dark .kicker { color: var(--p-light); }
+  .dm .sec-dark h2, .dm .sec-dark .more-title, .dm .sec-dark .first-post { color: #fff; }
+  .dm .sec-dark .disclaimer, .dm .sec-dark .guarantee { color: rgba(255, 255, 255, 0.72); }
+  .dm .sec-dark .guarantee b { color: #fff; }
+  .dm .sec-dark .hl { color: var(--p-light); text-decoration-color: rgba(140, 196, 251, 0.5); -webkit-text-decoration-color: rgba(140, 196, 251, 0.5); }
+  .dm .sec-dark em { color: #fff; }
+  .dm .sec-dark .kasper-card, .dm .sec-dark .case, .dm .sec-dark .more-pair, .dm .sec-dark .proof-card, .dm .sec-dark .quote, .dm .sec-dark .step, .dm .sec-dark .pg { color: var(--ink); }
+  .dm .sec-dark .btn { background: #fff; color: var(--p-deep); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .dm .results .proof-card { margin-top: 32px; }
+  .dm .proof-line { display: block; width: fit-content; margin: 18px auto 26px; padding: 12px 18px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--p-deep); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .proof-line:active { background: var(--p-soft); border-radius: var(--r); }
+  .dm summary { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .video-btn { touch-action: manipulation; }
+  .dm .cta { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 32px; }
+  .dm .btn {
+    display: inline-block;
+    background: var(--p);
+    color: #fff;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 18px 34px;
+    border-radius: var(--r);
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28);
+    transition: background-color 0.2s ease;
+  }
+  .dm .btn:active { background: var(--p-deep); transform: scale(0.98); }
+  .dm .btn:hover { background: var(--p-deep); }
+  .dm .btn:focus-visible { outline: 3px solid var(--p-deep); outline-offset: 3px; }
+  .dm .guarantee { font-size: 15px; color: var(--ink-2); max-width: 46ch; margin: 0; }
+  .dm .guarantee b { color: var(--ink); font-weight: 600; }
+  .dm .need { display: inline-block; border: 1px dashed var(--need); color: #9a6b00; font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: var(--r-sm); background: rgba(255, 207, 107, 0.15); }
+
+  .dm .apply { padding-top: 0; }
+
+  /* form */
+  .dm .form-card {
+    scroll-margin-top: 16px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--r-lg);
+    padding: 34px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: left;
+    box-shadow: var(--shadow);
+  }
+  .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
+  .dm .form-embed { border-radius: var(--r); overflow: hidden; }
+  .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
+  .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .dm .field { display: flex; flex-direction: column; gap: 7px; }
+  .dm .full { grid-column: 1 / -1; }
+  .dm .field label, .dm .q { font-size: 14px; font-weight: 600; }
+  .dm input[type="text"], .dm input[type="email"], .dm input[type="tel"] {
+    background: #fff; border: 1px solid var(--border); color: var(--ink); border-radius: var(--r);
+    padding: 12px 14px; font: inherit; font-size: 15px; width: 100%;
+  }
+  .dm input::placeholder { color: var(--ink-faint); }
+  .dm input:focus-visible { outline: 2px solid var(--p); outline-offset: 1px; border-color: var(--p); }
+  .dm .handle { position: relative; }
+  .dm .handle span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
+  .dm .handle input { padding-left: 30px; }
+  .dm .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .dm .chips label {
+    position: relative; display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; font-size: 15px;
+    border: 1.5px solid var(--border); background: #fff; border-radius: var(--r); padding: 10px 16px; cursor: pointer;
+    color: var(--ink-dim); touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+  .dm .chips label:hover { border-color: var(--p-light); }
+  .dm .chips label:active { background: var(--p-soft); border-color: var(--p); transform: scale(0.97); }
+  .dm .chips input { position: absolute; opacity: 0; pointer-events: none; }
+  /* Selected: unmistakable at a glance (solid fill, check mark), not a faint tint. */
+  .dm .chips label:has(input:checked) { border-color: var(--p-deep); color: #fff; background: var(--p); font-weight: 600; }
+  .dm .chips label:has(input:checked)::before { content: "\2713"; margin-right: 7px; font-weight: 700; }
+  .dm .chips label.tapped { animation: dm-pulse 0.28s ease-out; }
+  @keyframes dm-pulse { 0% { transform: scale(0.95); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+  .dm .chips label:has(input:focus-visible) { outline: 2px solid var(--p-deep); outline-offset: 2px; }
+  .dm .submit { margin-top: 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .dm .form-error { margin: 18px 0 0; color: #c62828; font-size: 14px; text-align: center; }
+  .dm .step-dq p { margin: 0; text-align: center; color: var(--ink-dim); font-size: 16px; }
+  .dm .step-dq .dq-title { color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .dm .legal { margin: 12px 0 0; font-size: 11px; line-height: 1.45; color: var(--ink-faint); text-align: center; }
+  .dm .legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .dm .sms-consent { grid-column: 1 / -1; margin: -4px 0 0; font-size: 11px; line-height: 1.45; color: var(--ink-faint); }
+  .dm .sms-consent a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* proof card above form */
+  .dm .proof-card {
+    max-width: 640px;
+    margin: 0 auto 22px;
+    display: grid;
+    grid-template-columns: 200px 120px 1fr;
+    gap: 14px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--r-lg);
+    padding: 14px;
+    text-align: left;
+    box-shadow: var(--shadow);
+  }
+  .dm .shot-img { display: block; width: 100%; height: auto; border-radius: var(--r-sm); }
+  .dm .shot {
+    aspect-ratio: 9 / 16;
+    border-radius: var(--r-sm);
+    border: 1px dashed var(--need);
+    background: rgba(255, 207, 107, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    text-align: center;
+    font-size: 11.5px;
+    color: #9a6b00;
+    font-weight: 600;
+  }
+  .dm .proof-card .shot { aspect-ratio: auto; align-self: stretch; }
+  .dm .shot small { font-weight: 500; color: var(--ink-faint); font-size: 11px; }
+  .dm .proof-text { display: flex; flex-direction: column; gap: 6px; padding-right: 6px; }
+  .dm .proof-text .big { font-size: 20px; }
+  .dm .proof-text p { margin: 0; color: var(--ink-dim); font-size: 14.5px; }
+  .dm .tile .shot { aspect-ratio: 16 / 10; border-radius: 0; border: 0; border-bottom: 1px dashed var(--need); }
+  .dm .quotes { max-width: 520px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .dm .quote.quote-inline { max-width: 640px; margin: 22px auto 40px; }
+  .dm .quote .approve { margin: 10px 0 0; font-size: 14px; color: var(--ink-dim); text-align: center; }
+  .dm .kasper { padding: 0 0 8px; }
+  .dm .kasper-card { max-width: 640px; margin: 0 auto 22px; display: grid; grid-template-columns: 140px 1fr; gap: 22px; align-items: center; text-align: left; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 18px; box-shadow: var(--shadow); }
+  .dm .kasper-img { display: block; width: 140px; height: 140px; object-fit: cover; border-radius: var(--r-sm); }
+  .dm .kasper-text h2 { font-size: 22px; line-height: 1.25; margin: 0 0 8px; }
+  .dm .kasper-text p { margin: 0; color: var(--ink-dim); font-size: 15.5px; line-height: 1.55; }
+  @media (max-width: 560px) { .dm .kasper-card { grid-template-columns: 1fr; text-align: center; } .dm .kasper-img { margin: 0 auto; } }
+  .dm .quote { margin: 0; display: flex; flex-direction: column; justify-content: space-between; background: var(--surface); border: 1px solid var(--card-border); border-left: 3px solid var(--p); border-radius: var(--r-lg); padding: 28px; }
+  .dm .quote p { margin: 0; font-size: 18px; line-height: 1.5; }
+  .dm .quote .by { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--ink-dim); }
+  .dm .quote blockquote { margin: 0; }
+  .dm .quote .ph-img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+  @media (max-width: 560px) {
+    .dm .proof-card { grid-template-columns: 1fr 1fr; }
+    .dm .proof-text { grid-column: 1 / -1; }
+  }
+
+  /* proof grid under form */
+  .dm .proof-grid { max-width: 640px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
+  .dm .pg {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-top: 3px solid var(--p);
+    border-radius: var(--r-lg);
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .dm .pg-label { font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-dim); }
+  .dm .pg-num {
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 8px 0 6px;
+    color: var(--p);
+    font-variant-numeric: lining-nums;
+  }
+  /* Letter suffixes (B, M, K, +) render taller than the digits in some
+     system fonts; scale them to digit height. */
+  .dm .pg-num .u { font-size: 0.9em; }
+  .dm .pg p { margin: 0; color: var(--ink-dim); font-size: 14px; line-height: 1.45; }
+  /* Tap hint: the cards scroll down to "Clients we've grown". */
+  .dm .pg-hint { display: block; margin-top: 10px; font-size: 14px; font-weight: 600; line-height: 1.3; color: var(--p-deep); }
+  .dm .pg:active { background: var(--p-soft); }
+  .dm .pg:focus-visible { outline: 3px solid var(--p-deep); outline-offset: 3px; }
+  @media (max-width: 560px) {
+    .dm .proof-grid { gap: 8px; }
+    .dm .pg { padding: 14px 12px; }
+    .dm .pg-num { font-size: 26px; }
+    .dm .pg-label { font-size: 11px; letter-spacing: 0.06em; }
+    .dm .pg p { font-size: 12.5px; }
+    .dm .pg-hint { font-size: 14px; margin-top: 8px; }
+  }
+
+  /* steps */
+  .dm .steps { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 36px auto 0; max-width: 760px; }
+  .dm .first-post { margin: 26px 0 0; font-weight: 600; color: var(--ink); }
+  .dm .step { display: grid; grid-template-columns: 34px 1fr; gap: 16px; align-items: start; text-align: left; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow); }
+  .dm .step .n { width: 34px; height: 34px; border-radius: var(--r); background: var(--p); color: #fff; font-weight: 700; font-size: 14px; display: grid; place-items: center; margin: 2px 0 0; }
+  .dm .step p { margin: 6px 0 0; color: var(--ink-dim); font-size: 15px; }
+
+  /* results */
+  /* results: one full-width block per doctor, like /apply2 */
+  .dm .cases { display: grid; gap: 22px; margin: 36px auto 0; max-width: 880px; text-align: left; }
+  .dm .case { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 32px; box-shadow: var(--shadow); }
+  .dm .case-name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .case-stat { margin-top: 10px; font-size: clamp(26px, 4vw, 38px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; color: var(--p); }
+  .dm .case p { margin: 14px 0 0; color: var(--ink-dim); font-size: 17px; line-height: 1.6; }
+  .dm .case-media { display: block; width: 100%; height: auto; margin-top: 22px; border: 1px solid var(--card-border); border-radius: var(--r); background: #fff; }
+  .dm .case-video { aspect-ratio: 16 / 9; }
+  .dm .more-title { margin: 56px 0 0; font-size: clamp(22px, 3.4vw, 30px); font-weight: 700; letter-spacing: -0.02em; text-align: center; }
+  .dm .more { display: grid; gap: 16px; margin: 24px auto 0; max-width: 880px; }
+  .dm .more-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); padding: 16px; box-shadow: var(--shadow); }
+  .dm .more-pair figure { margin: 0; }
+  .dm .more-pair figcaption { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--p); margin-bottom: 8px; }
+  .dm .more-pair img { display: block; width: 100%; height: auto; border: 1px solid var(--card-border); border-radius: var(--r); background: #fff; }
+  @media (max-width: 560px) { .dm .more-pair { grid-template-columns: 1fr; padding: 12px; } }
+  .dm .br-sm { display: none; }
+  @media (max-width: 560px) {
+    .dm .br-sm { display: inline; }
+    .dm .case { padding: 20px; }
+    .dm .case-name { font-size: 19px; }
+    .dm .case p { font-size: 15.5px; }
+    .dm .step { padding: 18px; }
+  }
+  .dm .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; text-align: left; }
+  .dm .tile { background: var(--card); border: 1px solid var(--card-border); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; box-shadow: var(--shadow); }
+  .dm .thumb { aspect-ratio: 1 / 1; width: 100%; background: #fff; display: grid; place-items: center; }
+  .dm .video-slot { background: #fff; }
+  .dm .video-slot iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0; display: block; border-radius: var(--r-sm); }
+  .dm .thumb-img { display: block; width: 100%; aspect-ratio: 1 / 1; height: auto; object-fit: contain; background: #fff; }
+  .dm .video-btn { position: relative; padding: 0; border: 0; cursor: pointer; overflow: hidden; }
+  /* Tap-to-play facade for the case-study videos: no Wistia request until tapped. */
+  .dm button.case-video { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #0a0a1a 0%, #14335f 100%); color: #fff; font: inherit; }
+  .dm button.case-video .play { width: 64px; height: 64px; }
+  .dm button.case-video .play svg { width: 26px; height: 26px; }
+  .dm button.case-video .vb-label { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .dm button.case-video::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.22); }
+  .dm button.case-video .play, .dm button.case-video .vb-label { position: relative; z-index: 1; }
+  .dm button.case-video .vb-label { text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6); }
+  .dm button.case-video:focus-visible { outline: 3px solid var(--p); outline-offset: 2px; }
+  .dm .video-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dm .video-frame { border: 0; display: block; }
+  .dm .video-btn .video-overlay { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; background: #000; }
+  .dm .video-btn .video-overlay { opacity: 0; transition: opacity 0.15s; }
+  .dm .video-btn.is-playing .video-overlay { opacity: 1; }
+  .dm .video-btn.is-playing { cursor: default; }
+  .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
+  .dm .play svg { width: 18px; height: 18px; fill: #0a0a1a; margin-left: 2px; }
+  .dm .tile-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+  .dm .who { font-size: 12px; color: var(--p); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  .dm .big { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .tile p { margin: 0; color: var(--ink-dim); font-size: 15px; }
+  .dm .disclaimer { color: var(--ink-faint); font-size: 13px; margin: 22px auto 0; max-width: 70ch; }
+
+  /* faq */
+  .dm .faq { margin-top: 28px; text-align: left; border-top: 1px solid var(--card-border); }
+  .dm details { border-bottom: 1px solid var(--card-border); padding-block: 18px; }
+  .dm summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  .dm summary::-webkit-details-marker { display: none; }
+  .dm summary::after { content: "+"; color: var(--p); font-size: 22px; line-height: 1; }
+  .dm details[open] summary::after { content: "−"; }
+  .dm details p { margin: 10px 0 0; color: var(--ink-dim); }
+
+  .dm .final { border-top: 1px solid var(--card-border); }
+  .dm footer { padding-block: 28px; color: var(--ink-faint); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    .dm section { padding-block: 52px; }
+    .dm .tiles, .dm .steps { grid-template-columns: 1fr; }
+    .dm .form-card { padding: 22px; }
+    .dm .grid { grid-template-columns: 1fr; }
+  }
+  /* Desktop-only tweaks (owner feedback 2026-09-28). */
+  .dm .how { padding-top: 40px; }
+  @media (min-width: 721px) {
+    /* Guarantee line fits on two lines. */
+    .dm .guarantee { max-width: 62ch; }
+    /* "How it works" spacing: clear of the section edge, not a void.
+       The glow is centred inside the section so it fades in instead of
+       starting as a hard line at the section's top edge. */
+    .dm .how {
+      padding-top: 24px;
+      background: radial-gradient(closest-side at 50% 50%, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0));
+    }
+  }
+  @media (min-width: 960px) {
+    /* Lily's proof card: same content, larger once the page is wide
+       enough to hold the fixed columns (below ~960px they'd crush the text). */
+    .dm .proof-card {
+      max-width: 1040px;
+      grid-template-columns: 1.15fr 1fr 0.9fr;
+      gap: 20px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .dm .proof-card .shot { font-size: 13px; }
+    .dm .proof-card .shot small { font-size: 12px; }
+    .dm .proof-text { gap: 10px; padding-right: 10px; }
+    .dm .proof-text .who { font-size: 13px; }
+    .dm .proof-text .big { font-size: 26px; line-height: 1.25; }
+    .dm .proof-text p { font-size: 16px; }
+  }
+  /* Phone: lighter hero so the headline, sub and guarantee don't crowd
+     the first screen (owner feedback 2026-09-28). */
+  @media (prefers-reduced-motion: no-preference) {
+    .dm .btn { transition: background-color 0.2s ease, transform 0.15s ease; }
+    .dm .btn:hover { transform: translateY(-1px); }
+  }
+  @media (max-width: 560px) {
+    .dm .hero { padding-block: 22px 18px; }
+    .dm .brand img { width: 120px; }
+    .dm .hero .kicker { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .dm h1 { font-size: 32px; line-height: 1.1; }
+    .dm .sub { font-size: 15px; line-height: 1.5; margin-top: 14px; }
+    .dm .cta { margin-top: 24px; gap: 12px; }
+    .dm .btn { font-size: 13px; padding: 16px 28px; }
+    .dm .guarantee { font-size: 13px; line-height: 1.5; }
+    .dm .final h2 { font-size: 24px; }
+    /* Gap under the stat cards matches the 22px gap above them. */
+    .dm .apply { padding-bottom: 22px; }
+  }
+  /* overrides, kept last so they win over the base rules above */
+  .dm .kasper .kasper-card, .dm .kasper .pg { border: 0; box-shadow: none; background: transparent; }
+  .dm .kasper .kasper-card { padding: 0 0 8px; }
+  .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
+  .dm .kasper .proof-grid { margin-top: 26px; }
+  .dm .hero .kicker { color: var(--ink); font-weight: 700; }
+  .dm .kicker .grad { background: linear-gradient(100deg, #1d6fe8 0%, #5a4fe0 55%, #8a45d6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+  .dm h1 .num { color: var(--p); }
+  .dm h1 .ul { text-decoration: underline 4px var(--p); -webkit-text-decoration: underline 4px var(--p); text-underline-offset: 8px; text-decoration-skip-ink: none; }
+  .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
+  @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } }
+  @media (max-width: 720px) { .dm .form-card h2 { margin: -22px -22px 20px; } }
+  .dm .form-card button.btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
+    .dm .sec-dark a.btn { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+  .dm .stickybar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: #fff; box-shadow: 0 6px 20px rgba(10, 42, 82, 0.18); transform: translateY(-110%); transition: transform 0.25s ease; }
+  .dm .stickybar:not([hidden]) { display: block; }
+  .dm .stickybar.on { transform: translateY(0); }
+  .dm .sb-in { max-width: 980px; margin: 0 auto; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .dm .sb-in a { padding: 10px 14px; font-size: 15px; font-weight: 700; color: var(--ink); text-decoration: none; white-space: nowrap; border-radius: var(--r); }
+  .dm .sb-in a:active { background: var(--p-soft); }
+  .dm .sb-in a.sb-btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin-left: 10px; letter-spacing: 0.02em; }
+  @media (max-width: 640px) { .dm .sb-in { gap: 0; padding: 6px 6px; } .dm .sb-in a { padding: 9px 5px; font-size: 12.5px; } .dm .sb-in a.sb-btn { margin-left: 4px; } .dm .sb-in a.sb-btn { font-size: 12.5px; padding: 9px 10px; } }
+  @media (max-width: 380px) { .dm .sb-in { padding: 6px 2px; } .dm .sb-in a { font-size: 11.5px; padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; } }
+  .dm .grp { font-size: clamp(22px, 3.4vw, 30px); letter-spacing: -0.02em; margin: 44px 0 0; color: #fff; }
+  .dm .more-grp { margin-top: 64px; }
+  .dm .rstats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 860px; margin: 28px auto 0; }
+  .dm .rstats b { display: block; font-size: clamp(44px, 7vw, 72px); line-height: 1; letter-spacing: -0.03em; color: #fff; }
+  .dm .rstats span { display: block; margin-top: 8px; font-size: 18px; font-weight: 600; color: #fff; }
+  .dm .rstats em { display: block; margin-top: 4px; font-style: normal; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--p-light); }
+  .dm .floatshots { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; max-width: 1040px; margin: 38px auto 0; align-items: center; }
+  .dm .floatshots img { width: 100%; height: auto; display: block; border-radius: var(--r); background: #fff; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); }
+  .dm .shotcap { max-width: 640px; margin: 16px auto 0; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+  .dm .floatvids { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 1040px; margin: 8px auto 0; align-items: start; }
+  .dm .floatvids .video-btn { margin: 0; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); border: 0; }
+  .dm .floatvids p { margin: 12px 0 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
+  .dm .results .more { max-width: 1040px; }
+  .dm .results .more-pair { background: transparent; border: 0; box-shadow: none; padding: 0; }
+  .dm .results .more-pair img { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); border: 0; }
+  .dm .results .more-pair figcaption { color: var(--p-light); }
+  .dm .results .quotes { max-width: 640px; margin-top: 26px; }
+  .dm .results .quote.quote-inline { margin-bottom: 36px; }
+  @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
+  .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; }
+  .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
+  .dm p.hero-guarantee { text-wrap: balance; }
+  .dm .fit-note { margin: 10px 0 0; text-align: center; }
+  .dm .timeline { list-style: none; margin: 22px auto 0; padding: 0; display: grid; gap: 6px; max-width: 520px; text-align: left; }
+  .dm .timeline li { font-size: 16px; color: var(--ink-2); padding-left: 16px; border-left: 3px solid var(--p); }
+  .dm .timeline b { color: var(--ink); }
+  .dm .form-card .form-note { margin: -8px 0 22px; font-size: 15px; }
+  @media (max-width: 640px) { .dm .sb-in a { padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; margin-left: 2px; } }
+  .dm .sb-short { display: none; }
+  @media (max-width: 860px) { .dm .sb-long { display: none; } .dm .sb-short { display: inline; } }
+  /* Call buttons: one pink that stands out on white, light blue and dark blue. */
+  .dm a.btn, .dm button.btn, .dm .sec-dark a.btn, .dm .form-card button.btn, .dm .sb-in a.sb-btn { background: #d6339a; color: #fff; box-shadow: 0 10px 26px rgba(214, 51, 154, 0.45); }
+  .dm a.btn:hover, .dm button.btn:hover, .dm .sec-dark a.btn:hover, .dm .form-card button.btn:hover, .dm .sb-in a.sb-btn:hover,
+  .dm a.btn:active, .dm button.btn:active, .dm .sec-dark a.btn:active, .dm .form-card button.btn:active, .dm .sb-in a.sb-btn:active { background: #b52a82; color: #fff; }
+  .dm a.btn:focus-visible, .dm button.btn:focus-visible { outline-color: #fff; box-shadow: 0 0 0 3px #d6339a; }
+</style>
