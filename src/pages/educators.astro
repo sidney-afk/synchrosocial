@@ -1155,4 +1155,9 @@ const faqs = [
   @media (max-width: 640px) { .dm .sb-in a { padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; margin-left: 2px; } }
   .dm .sb-short { display: none; }
   @media (max-width: 860px) { .dm .sb-long { display: none; } .dm .sb-short { display: inline; } }
+  /* Call buttons: one pink that stands out on white, light blue and dark blue. */
+  .dm a.btn, .dm button.btn, .dm .sec-dark a.btn, .dm .form-card button.btn, .dm .sb-in a.sb-btn { background: #d6339a; color: #fff; box-shadow: 0 10px 26px rgba(214, 51, 154, 0.45); }
+  .dm a.btn:hover, .dm button.btn:hover, .dm .sec-dark a.btn:hover, .dm .form-card button.btn:hover, .dm .sb-in a.sb-btn:hover,
+  .dm a.btn:active, .dm button.btn:active, .dm .sec-dark a.btn:active, .dm .form-card button.btn:active, .dm .sb-in a.sb-btn:active { background: #b52a82; color: #fff; }
+  .dm a.btn:focus-visible, .dm button.btn:focus-visible { outline-color: #fff; box-shadow: 0 0 0 3px #d6339a; }
 </style>
