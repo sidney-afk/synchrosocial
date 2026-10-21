@@ -14,6 +14,8 @@ interface Props {
   /** Skip the render-blocking Google Fonts stylesheet (Poppins + Outfit) and the
       Caveat preload. For pages that only use the self-hosted Inter, e.g. /doctors. */
   lightFonts?: boolean;
+  /** Hide the page from search engines (test pages such as /educators). */
+  noindex?: boolean;
 }
 
 const {
@@ -22,6 +24,7 @@ const {
   bodyClass = "bg-white",
   metaEvent = null,
   lightFonts = false,
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -32,6 +35,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/images/logo.png" />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="facebook-domain-verification" content="dblhsbm0xnlcnxb395nwdz9q4gvabc" />
     <title>{title}</title>
     <meta name="description" content={description} />
