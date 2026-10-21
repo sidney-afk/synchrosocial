@@ -45,7 +45,7 @@ const PRICE_QUESTION = "Our service starts at $3,000 a month. Is that within rea
 // Answer text must match the iClosed event's options EXACTLY: they are passed
 // to iClosed as URL parameters and matched as strings.
 const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
-const investments = ["Yes", "Yes, but I'd like to talk it through first", "Not right now"];
+const investments = ["Yes", "Not right now"];
 const fits = ["My own practice + a course or program", "My own practice", "I work for someone else", "Other"];
 
 const guaranteeLead = "If we don't hit the monthly follower target we set for you in your first 3 months,";
@@ -91,6 +91,18 @@ const faqs = [
 >
   <div class="dm">
     <div class="brand"><img src="/images/apply4/logo-dark.png" alt="Synchro Social" width="170" height="36" /></div>
+
+
+    <!-- Sticky navigation: appears once the form has scrolled out of view -->
+    <nav class="stickybar" id="stickybar" aria-label="Jump to a section" hidden>
+      <div class="sb-in">
+        <a href="#results">Results</a>
+        <a href="#who">Who we are</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">Questions</a>
+        <a class="sb-btn" href="#apply">Book a call</a>
+      </div>
+    </nav>
 
     <!-- 1. TOP: headline, then the form straight away -->
     <section class="hero">
@@ -142,7 +154,7 @@ const faqs = [
             </div>
             <p class="form-error" role="alert" hidden></p>
             <div class="submit">
-              <button class="btn" type="submit">Submit application</button>
+              <button class="btn" type="submit">Pick my call time</button>
             </div>
           </form>
           <div class="step-dq" hidden>
@@ -162,21 +174,20 @@ const faqs = [
             <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">Terms</a>
           </p>
         </div>
-
-        <nav class="jump" aria-label="Jump to a section">
-          <a href="#who">Who we are</a>
-          <a href="#how">How it works</a>
-          <a href="#faq">Questions</a>
-        </nav>
       </div>
     </section>
 
     <!-- 6. RESULTS -->
-    <section id="results" class="results sec sec-dark" style="scroll-margin-top:16px">
+    <section id="results" class="results sec sec-dark" style="scroll-margin-top:56px">
       <div class="wrap">
         <p class="kicker">Our results</p>
         <h2>Clients we've grown</h2>
-        <div class="proof-card">
+        <h3 class="grp">Doctors we work with</h3>
+        <div class="rstats">
+          <div><b>60,000</b><span>new followers in under 90 days</span><em>Dr. Lily Baker · Chiropractor</em></div>
+          <div><b>+50%</b><span>followers in under 6 months</span><em>Dr. Sonia Chopra · Endodontist</em></div>
+        </div>
+        <div class="floatshots">
           <img
             class="shot-img"
             src="/images/apply4/lily-baker-before-after.webp"
@@ -195,16 +206,8 @@ const faqs = [
             loading="lazy"
             decoding="async"
           />
-          <div class="proof-text">
-            <div class="who">Dr. Lily Baker · Chiropractor</div>
-            <div class="big">60,000 new followers in under 90 days</div>
-            <p>
-              Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new
-              followers alone.
-            </p>
-          </div>
         </div>
-
+        <p class="shotcap">Dr. Lily Baker's Instagram, May to September 2026: 63.9K to 151K followers, over 10 million views. One reel brought in over 17,000 new followers alone.</p>
         <figure class="quote quote-inline">
           <!-- Verbatim from Lily in her Slack channel, 2026-07-15. -->
           <blockquote>
@@ -214,31 +217,36 @@ const faqs = [
             <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
             Dr. Lily Baker · Chiropractor
           </figcaption>
-          <p class="approve">You approve every post before it goes live.</p>
         </figure>
-        <div class="cases">
-          <article class="case">
-            <div class="case-name">Dr. Lily Baker | Chiropractor</div>
-            <div class="case-stat">60,000 new followers in under 90 days</div>
-            <p>Grew from 90K to 150K followers with over 10 million views. One reel brought in over 17,000 new followers alone.</p>
-            <button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
+        <div class="floatvids">
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
               <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
-            </button>
-          </article>
-          <article class="case">
-            <div class="case-name">Dr. Sonia Chopra | Endodontist</div>
-            <div class="case-stat">Followers up about 50% in under 6 months</div>
-            <p>One post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p>
-            <button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
+            </button><p>Dr. Lily Baker, in her own words</p></div>
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
               <img src="/images/doctors-videos/sonia-chopra.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
-            </button>
-          </article>
+            </button><p>Dr. Sonia Chopra: one post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p></div>
         </div>
-        <h3 class="more-title">More Client Results Across Other Fields</h3>
+        <div class="quotes">
+          <figure class="quote">
+            <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
+                 Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
+            <blockquote>
+              <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
+            </blockquote>
+            <figcaption class="by">
+              <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
+              Dr. Rocco Piazza · Plastic Surgeon
+            </figcaption>
+          </figure>
+        </div>
+        <div class="cta mid-cta">
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
+        </div>
+        <h3 class="grp more-grp">More client results across other fields</h3>
         <div class="more">
           <div class="more-pair">
             <figure><figcaption>Before</figcaption><img src="/images/apply4/more-danny-before.webp" width="1400" height="572" alt="Danny Morel's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
@@ -256,19 +264,6 @@ const faqs = [
             <figure><figcaption>Before</figcaption><img src="/images/apply4/more-oliver-before.webp" width="1400" height="545" alt="Oliver Nino's Instagram profile before working with us" loading="lazy" decoding="async" /></figure>
             <figure><figcaption>After</figcaption><img src="/images/apply4/more-oliver-after.webp" width="1400" height="470" alt="Oliver Nino's Instagram profile after working with us" loading="lazy" decoding="async" /></figure>
           </div>
-        </div>
-        <div class="quotes">
-          <figure class="quote">
-            <!-- DRAFT wording chosen by the owner 2026-09-29, written for Dr. Piazza.
-                 Not yet confirmed by him: get his OK on this exact text before it runs in ads. -->
-            <blockquote>
-              <p>“Patients now walk into my office and tell me they found me on social. That's a big part of why they're here.”</p>
-            </blockquote>
-            <figcaption class="by">
-              <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
-              Dr. Rocco Piazza · Plastic Surgeon
-            </figcaption>
-          </figure>
         </div>
         <p class="disclaimer">
           These are outcomes from clients who followed our process as built. Growth depends on
@@ -349,6 +344,20 @@ const faqs = [
     </section>
 
 
+    <script is:inline>
+  (function () {
+    var bar = document.getElementById("stickybar");
+    var form = document.getElementById("apply");
+    if (!bar || !form || !("IntersectionObserver" in window)) return;
+    bar.hidden = false;
+    var io = new IntersectionObserver(function (es) {
+      var e = es[0];
+      // shown once the form has scrolled up out of view (not while it is below the screen)
+      bar.classList.toggle("on", !e.isIntersecting && e.boundingClientRect.top < 0);
+    });
+    io.observe(form);
+  })();
+</script>
     <footer>© Synchro Social</footer>
   </div>
 </Layout>
@@ -724,9 +733,14 @@ const faqs = [
 
   .dm .hero { padding-block: 32px 24px; }
   .dm p.hero-guarantee { margin: 20px auto 0; }
-  .dm .jump { display: flex; justify-content: center; gap: 12px; margin: 28px auto 0; max-width: 680px; }
-  .dm .jump a { flex: 1 1 0; min-height: 60px; padding: 14px 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; background: var(--p); border-radius: var(--r); text-decoration: none; box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .dm .jump a:active { background: var(--p-deep); }
+  .dm .jump { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 40px auto 0; max-width: 760px; background: #fff; border: 1px solid var(--card-border); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+  .dm .jump a { padding: 20px 12px 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink); text-decoration: none; border-top: 4px solid var(--p); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .jump a + a { border-left: 1px solid var(--card-border); }
+  .dm .jump a b { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .jump a small { font-size: 14px; color: var(--p-deep); font-weight: 600; }
+  .dm .jump a small::after { content: " \2193"; }
+  .dm .jump a:active { background: var(--p-soft); }
+  @media (max-width: 560px) { .dm .jump a b { font-size: 16px; } .dm .jump a small { font-size: 12.5px; } .dm .jump a { padding: 16px 6px 14px; } }
   .dm section.sec { padding-block: 72px; scroll-margin-top: 0; }
   .dm .sec .cta { margin-top: 44px; }
   .dm section.sec-dark { background: #0a2a52; color: #fff; }
@@ -1017,8 +1031,8 @@ const faqs = [
     /* Lily's proof card: same content, larger once the page is wide
        enough to hold the fixed columns (below ~960px they'd crush the text). */
     .dm .proof-card {
-      max-width: 860px;
-      grid-template-columns: 280px 240px 1fr;
+      max-width: 1040px;
+      grid-template-columns: 1.15fr 1fr 0.9fr;
       gap: 20px;
       padding: 20px;
       margin-bottom: 28px;
@@ -1050,4 +1064,44 @@ const faqs = [
     /* Gap under the stat cards matches the 22px gap above them. */
     .dm .apply { padding-bottom: 22px; }
   }
+  /* overrides, kept last so they win over the base rules above */
+  .dm .kasper .kasper-card, .dm .kasper .pg { border: 0; box-shadow: none; background: transparent; }
+  .dm .kasper .kasper-card { padding: 0 0 8px; }
+  .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
+  .dm .kasper .proof-grid { margin-top: 26px; }
+  .dm .hero .kicker { color: #0a2a52; font-weight: 800; }
+  .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
+  @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } }
+  @media (max-width: 720px) { .dm .form-card h2 { margin: -22px -22px 20px; } }
+  .dm .form-card button.btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
+    .dm .sec-dark a.btn { box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+  .dm .stickybar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: #fff; box-shadow: 0 6px 20px rgba(10, 42, 82, 0.18); transform: translateY(-110%); transition: transform 0.25s ease; }
+  .dm .stickybar:not([hidden]) { display: block; }
+  .dm .stickybar.on { transform: translateY(0); }
+  .dm .sb-in { max-width: 980px; margin: 0 auto; padding: 8px 12px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .dm .sb-in a { padding: 10px 14px; font-size: 15px; font-weight: 700; color: var(--ink); text-decoration: none; white-space: nowrap; border-radius: var(--r); }
+  .dm .sb-in a:active { background: var(--p-soft); }
+  .dm .sb-in a.sb-btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin-left: 10px; letter-spacing: 0.02em; }
+  @media (max-width: 640px) { .dm .sb-in { gap: 0; padding: 6px 6px; } .dm .sb-in a { padding: 9px 5px; font-size: 12.5px; } .dm .sb-in a.sb-btn { margin-left: 4px; } .dm .sb-in a.sb-btn { font-size: 12.5px; padding: 9px 10px; } }
+  @media (max-width: 380px) { .dm .sb-in a { font-size: 11.5px; padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; } }
+  .dm .grp { font-size: clamp(22px, 3.4vw, 30px); letter-spacing: -0.02em; margin: 44px 0 0; color: #fff; }
+  .dm .more-grp { margin-top: 64px; }
+  .dm .rstats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 860px; margin: 28px auto 0; }
+  .dm .rstats b { display: block; font-size: clamp(44px, 7vw, 72px); line-height: 1; letter-spacing: -0.03em; color: #fff; }
+  .dm .rstats span { display: block; margin-top: 8px; font-size: 18px; font-weight: 600; color: #fff; }
+  .dm .rstats em { display: block; margin-top: 4px; font-style: normal; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--p-light); }
+  .dm .floatshots { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; max-width: 1040px; margin: 38px auto 0; align-items: center; }
+  .dm .floatshots img { width: 100%; height: auto; display: block; border-radius: var(--r); background: #fff; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); }
+  .dm .shotcap { max-width: 640px; margin: 16px auto 0; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
+  .dm .floatvids { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; max-width: 1040px; margin: 8px auto 0; align-items: start; }
+  .dm .floatvids .video-btn { margin: 0; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); border: 0; }
+  .dm .floatvids p { margin: 12px 0 0; font-size: 15px; color: rgba(255, 255, 255, 0.82); }
+  .dm .results .more { max-width: 1040px; }
+  .dm .results .more-pair { background: transparent; border: 0; box-shadow: none; padding: 0; }
+  .dm .results .more-pair img { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); border: 0; }
+  .dm .results .more-pair figcaption { color: var(--p-light); }
+  .dm .results .quotes { max-width: 640px; margin-top: 26px; }
+  .dm .results .quote.quote-inline { margin-bottom: 36px; }
+  @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
 </style>
