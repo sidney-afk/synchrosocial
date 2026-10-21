@@ -11,8 +11,8 @@
        (educator_offer), so Meta and Clarity can tell the pages apart.
      - The unfinished-form save and the submit tell n8n which page they came from
        (page = "educators"); n8n picks the calendar and the recovery link from it.
-     - "When can you start?" is replaced by "Which fits you?" (iClosed identifier
-       which-fits-you, sent as "fit" to the save).
+     - "When can you start?" is replaced by "Where are you today?" (iClosed identifier
+       where-are-you-today, sent as "fit" to the save).
      - Form first, right under the headline, with a "proof is below" line (only 25%
        of mobile visits reached the form on /doctors).
      - Taps react in the frame they happen: bigger answer buttons, a loud selected
@@ -35,8 +35,8 @@ const ICLOSED_URL = import.meta.env.PUBLIC_EDUCATORS_ICLOSED_URL || "https://app
 const PAGE = "educators";
 // Meta content_name for every event this page sends.
 const OFFER = "educator_offer";
-// The Identifier of the "Which fits you?" question in iClosed (URL parameter that pre-fills it).
-const FIT_KEY = "which-fits-you";
+// The Identifier of the "Where are you today?" question in iClosed (URL parameter that pre-fills it).
+const FIT_KEY = "where-are-you-today";
 // The Identifier of the doctor event's price question in iClosed (Settings > Objects & Fields).
 // It is the URL parameter name that pre-fills the answer. Must match iClosed exactly.
 const PRICE_KEY = "within-reach";
@@ -46,7 +46,7 @@ const PRICE_QUESTION = "Our service starts at $3,000 a month. Is that within rea
 // to iClosed as URL parameters and matched as strings.
 const specialties = ["Physician", "Dentist", "Chiropractor", "Surgeon", "Other"];
 const investments = ["Yes", "Not right now"];
-const fits = ["My own practice + a course or program", "My own practice", "I work for someone else", "Other"];
+const fits = ["I sell a course, program or membership", "I'm building one", "I want to start one", "Something else"];
 
 
 const faqs = [
@@ -158,7 +158,7 @@ const faqs = [
               <div class="field full"><span class="q">{PRICE_QUESTION}</span>
                 <div class="chips">{investments.map((v) => <label><input type="radio" name="investment" value={v} required />{v}</label>)}</div>
               </div>
-              <div class="field full"><span class="q">Which fits you?</span>
+              <div class="field full"><span class="q">Where are you today?</span>
                 <div class="chips">{fits.map((v) => <label><input type="radio" name="fit" value={v} required />{v}</label>)}</div>
               </div>
             </div>
@@ -495,7 +495,7 @@ const faqs = [
       var missing = Object.keys(v).filter(function (k) { return !v[k]; });
       var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
       if (missing.length || !emailOk) {
-        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "whether $3,000 a month is within reach", fit: "which fits you" };
+        var labels = { name: "your name", email: "your email", phone: "your phone number", instagram: "your Instagram handle", specialty: "your specialty", investment: "whether $3,000 a month is within reach", fit: "where you are today" };
         err.textContent = !emailOk && v.email
           ? "Please enter a valid email."
           : missing.indexOf("phone") > -1 && f.get("phone")
