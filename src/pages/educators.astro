@@ -58,12 +58,20 @@ const faqs = [
   },
   { q: "What do I need to do?", a: "One filming day a month. We tell you exactly what to say." },
   {
+    q: "How much of my time does this take?",
+    a: "About 20 minutes a week to give feedback on your filming plans, and one filming day a month. We handle everything else.",
+  },
+  {
     q: "How does the guarantee work?",
     a: "On your strategy call we set your monthly follower target based on your account. If we don't hit it in your first 3 months, we keep working for free until we do.",
   },
   {
     q: "Does this work for my specialty?",
     a: "Yes. The same system works across specialties. No skits or trends you're not comfortable with.",
+  },
+  {
+    q: "Will it sound like me?",
+    a: "Yes. We write your scripts and captions in your voice, and you approve every post before it goes live.",
   },
   {
     q: "What about patient privacy?",
@@ -116,6 +124,10 @@ const faqs = [
         <p class="sub">
           One filming day a month. We plan, script, edit and post, in your voice.
         </p>
+        <ul class="timeline">
+          <li><b>20 min a week</b> to give feedback on your filming plans</li>
+          <li><b>1 day a month</b> to film. We handle everything else</li>
+        </ul>
         <p class="guarantee hero-guarantee">{guaranteeLead} <b>{guaranteeBold}</b></p>
       </div>
     </section>
@@ -124,7 +136,8 @@ const faqs = [
     <section class="apply">
       <div class="wrap">
         <div id="apply" class="form-card">
-          <h2>Book A Growth Consultation</h2>
+          <h2>Tell Kasper what you've built</h2>
+          <p class="note form-note">Kasper will look at your account and map out the strategy to grow it.</p>
           <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
                answers prefilled, so the doctor only picks a time. -->
           <form class="apply-form" data-step="1" data-clarity-mask="True" novalidate>
@@ -154,7 +167,7 @@ const faqs = [
             </div>
             <p class="form-error" role="alert" hidden></p>
             <div class="submit">
-              <button class="btn" type="submit">Pick my call time</button>
+              <button class="btn" type="submit">Book my call with Kasper</button>
             </div>
           </form>
           <div class="step-dq" hidden>
@@ -162,7 +175,7 @@ const faqs = [
             <p>We've received your application and our team will review it.</p>
           </div>
           <div class="step-cal" hidden>
-            <p class="note">Last step: pick a time for your strategy call.</p>
+            <p class="note" id="cal-note">Last step: pick a time to talk with Kasper.</p>
             <div class="form-embed"></div>
           </div>
           <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
@@ -575,6 +588,9 @@ const faqs = [
 
       form.hidden = true;
       card.querySelector("h2").textContent = "Pick a Time";
+      var first = String(v.name || "").trim().split(/\s+/)[0];
+      var calNote = document.getElementById("cal-note");
+      if (calNote && first) calNote.textContent = "Thanks, " + first + ". Last step: pick a time to talk with Kasper.";
       card.querySelector(".step-cal").hidden = false;
       card.scrollIntoView({ behavior: "auto", block: "start" });
     });
@@ -1108,4 +1124,8 @@ const faqs = [
   @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
   .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; }
   .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
+  .dm .timeline { list-style: none; margin: 22px auto 0; padding: 0; display: grid; gap: 6px; max-width: 520px; text-align: left; }
+  .dm .timeline li { font-size: 16px; color: var(--ink-2); padding-left: 16px; border-left: 3px solid var(--p); }
+  .dm .timeline b { color: var(--ink); }
+  .dm .form-card .form-note { margin: -8px 0 22px; font-size: 15px; }
 </style>
