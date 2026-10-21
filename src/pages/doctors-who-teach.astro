@@ -208,8 +208,8 @@ const faqs = [
         <p class="kicker">Our results</p>
         <h2>Doctors I've worked with</h2>
         <div class="rstats">
-          <div><b>60,000</b><span>new followers in under 90 days</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Lily Baker · Chiropractor</em></div>
-          <div><b>+50%</b><span>followers in under 6 months</span><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" />Dr. Sonia Chopra · Endodontist</em></div>
+          <div><b>60,000</b><span>new followers in under 90 days</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Lily Baker · Chiropractor <span class="ig">@theopenposturedoc</span></span></em></div>
+          <div><b>+50%</b><span>followers in under 6 months</span><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Sonia Chopra · Endodontist <span class="ig">@drsoniachopra</span></span></em></div>
         </div>
         <div class="floatshots">
           <img
@@ -238,7 +238,7 @@ const faqs = [
           </blockquote>
           <figcaption class="by">
             <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
-            Dr. Lily Baker · Chiropractor
+            <span>Dr. Lily Baker · Chiropractor <span class="ig">@theopenposturedoc</span></span>
           </figcaption>
         </figure>
         <div class="cta mid-cta">
@@ -249,12 +249,12 @@ const faqs = [
               <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
-            </button><p>Dr. Lily Baker, in her own words</p></div>
+            </button><p>Dr. Lily Baker (@theopenposturedoc), in her own words</p></div>
           <div><button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
               <img src="/images/doctors-videos/sonia-chopra.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
-            </button><p>Dr. Sonia Chopra: one post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p></div>
+            </button><p>Dr. Sonia Chopra (@drsoniachopra): one post pulled 1,500 comments, and the account now brings in thousands of qualified leads.</p></div>
         </div>
         <div class="quotes">
           <figure class="quote">
@@ -265,7 +265,7 @@ const faqs = [
             </blockquote>
             <figcaption class="by">
               <img class="ph-img" src="/images/apply4/rocco-piazza-avatar.webp" alt="" width="36" height="36" loading="lazy" />
-              Dr. Rocco Piazza · Plastic Surgeon
+              <span>Dr. Rocco Piazza · Plastic Surgeon <span class="ig">@roccopiazzamd</span></span>
             </figcaption>
           </figure>
         </div>
@@ -1144,7 +1144,7 @@ const faqs = [
   .dm .results .quotes { max-width: 640px; margin-top: 26px; }
   .dm .results .quote.quote-inline { margin-bottom: 36px; }
   @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
-  .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; }
+  .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; text-align: left; }
   .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
   .dm p.hero-guarantee { text-wrap: balance; }
   .dm .fit-note { margin: 10px 0 0; text-align: center; }
@@ -1172,4 +1172,17 @@ const faqs = [
   .dm .results .quotes .quote .by { color: rgba(255, 255, 255, 0.6); margin-top: 12px; }
   .dm .results .quotes + .cta { margin-top: 56px; }
   .dm .results .more-grp { margin-top: 56px; }
+  /* One spacing rhythm: 60px above and below every section (44px on phones), 48px between blocks inside a section.
+     The light form section carries the gap to the Kasper block, which therefore adds none of its own. */
+  .dm section.sec { padding-block: 60px; }
+  .dm section.apply { padding-bottom: 60px; }
+  .dm section.kasper.sec { padding-top: 0; }
+  .dm .results .mid-cta, .dm .results .floatvids, .dm .results .quotes, .dm .results .quotes + .cta, .dm .results .more-grp { margin-top: 48px; }
+  @media (max-width: 720px) {
+    .dm section.sec { padding-block: 44px; }
+    .dm section.apply { padding-bottom: 44px; }
+    .dm section.kasper.sec { padding-top: 0; }
+    .dm .results .mid-cta, .dm .results .floatvids, .dm .results .quotes, .dm .results .quotes + .cta, .dm .results .more-grp { margin-top: 40px; }
+  }
+  .dm .ig { display: block; font-size: 0.86em; font-weight: 500; letter-spacing: 0; text-transform: none; opacity: 0.7; }
 </style>
