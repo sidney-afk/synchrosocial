@@ -142,7 +142,7 @@ const faqs = [
             </div>
             <p class="form-error" role="alert" hidden></p>
             <div class="submit">
-              <button class="btn" type="submit">Submit application</button>
+              <button class="btn" type="submit">Schedule my call</button>
             </div>
           </form>
           <div class="step-dq" hidden>
@@ -164,9 +164,9 @@ const faqs = [
         </div>
 
         <nav class="jump" aria-label="Jump to a section">
-          <a href="#who">Who we are</a>
-          <a href="#how">How it works</a>
-          <a href="#faq">Questions</a>
+          <a href="#who"><b>Who we are</b><small>Meet Kasper</small></a>
+          <a href="#how"><b>How it works</b><small>Four simple steps</small></a>
+          <a href="#faq"><b>Questions</b><small>Honest answers</small></a>
         </nav>
       </div>
     </section>
@@ -214,7 +214,6 @@ const faqs = [
             <img class="ph-img" src="/images/apply4/lily-baker-avatar.webp" alt="" width="36" height="36" loading="lazy" />
             Dr. Lily Baker · Chiropractor
           </figcaption>
-          <p class="approve">You approve every post before it goes live.</p>
         </figure>
         <div class="cases">
           <article class="case">
@@ -237,6 +236,9 @@ const faqs = [
               <span class="vb-label">Tap to play</span>
             </button>
           </article>
+        </div>
+        <div class="cta mid-cta">
+          <a class="btn" href="#apply">Book A Growth Consultation</a>
         </div>
         <h3 class="more-title">More Client Results Across Other Fields</h3>
         <div class="more">
@@ -724,9 +726,14 @@ const faqs = [
 
   .dm .hero { padding-block: 32px 24px; }
   .dm p.hero-guarantee { margin: 20px auto 0; }
-  .dm .jump { display: flex; justify-content: center; gap: 12px; margin: 28px auto 0; max-width: 680px; }
-  .dm .jump a { flex: 1 1 0; min-height: 60px; padding: 14px 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; background: var(--p); border-radius: var(--r); text-decoration: none; box-shadow: 0 8px 22px rgba(23, 138, 246, 0.28); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-  .dm .jump a:active { background: var(--p-deep); }
+  .dm .jump { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 40px auto 0; max-width: 760px; background: #fff; border: 1px solid var(--card-border); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+  .dm .jump a { padding: 20px 12px 18px; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink); text-decoration: none; border-top: 4px solid var(--p); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .dm .jump a + a { border-left: 1px solid var(--card-border); }
+  .dm .jump a b { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .dm .jump a small { font-size: 14px; color: var(--p-deep); font-weight: 600; }
+  .dm .jump a small::after { content: " \2193"; }
+  .dm .jump a:active { background: var(--p-soft); }
+  @media (max-width: 560px) { .dm .jump a b { font-size: 16px; } .dm .jump a small { font-size: 12.5px; } .dm .jump a { padding: 16px 6px 14px; } }
   .dm section.sec { padding-block: 72px; scroll-margin-top: 0; }
   .dm .sec .cta { margin-top: 44px; }
   .dm section.sec-dark { background: #0a2a52; color: #fff; }
@@ -739,6 +746,16 @@ const faqs = [
   .dm .sec-dark em { color: #fff; }
   .dm .sec-dark .kasper-card, .dm .sec-dark .case, .dm .sec-dark .more-pair, .dm .sec-dark .proof-card, .dm .sec-dark .quote, .dm .sec-dark .step, .dm .sec-dark .pg { color: var(--ink); }
   .dm .sec-dark .btn { background: #fff; color: var(--p-deep); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25); }
+  .dm .kasper-card, .dm .kasper .pg { border: 0; box-shadow: none; background: transparent; }
+  .dm .kasper-card { padding: 0 0 8px; }
+  .dm .kasper .pg { border-top: 3px solid var(--p); border-radius: 0; background: transparent; }
+  .dm .kasper .proof-grid { margin-top: 26px; }
+  .dm .hero .kicker { color: #0a2a52; font-weight: 800; }
+  .dm .form-card h2 { background: linear-gradient(135deg, #1e9bff, #0a5fd6); color: #fff; margin: -34px -34px 26px; padding: 22px 20px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  .dm .btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
+  @media (max-width: 560px) { .dm .btn { font-size: 15px; padding: 20px 24px; } .dm .form-card h2 { margin: -22px -22px 20px; } }
+  .dm .apply-form .btn, .dm .form-card .btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
+  .dm .proof-card .shot-img { transform-origin: center; }
   .dm .results .proof-card { margin-top: 32px; }
   .dm .proof-line { display: block; width: fit-content; margin: 18px auto 26px; padding: 12px 18px; min-height: 44px; font-size: 15px; font-weight: 600; color: var(--p-deep); text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .dm .proof-line:active { background: var(--p-soft); border-radius: var(--r); }
@@ -1017,8 +1034,8 @@ const faqs = [
     /* Lily's proof card: same content, larger once the page is wide
        enough to hold the fixed columns (below ~960px they'd crush the text). */
     .dm .proof-card {
-      max-width: 860px;
-      grid-template-columns: 280px 240px 1fr;
+      max-width: 1040px;
+      grid-template-columns: 1.15fr 1fr 0.9fr;
       gap: 20px;
       padding: 20px;
       margin-bottom: 28px;
