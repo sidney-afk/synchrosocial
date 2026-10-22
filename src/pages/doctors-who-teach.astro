@@ -166,7 +166,6 @@ const faqs = [
             <p class="form-error" role="alert" hidden></p>
             <div class="submit">
               <button class="btn" type="submit">Let's get on a call</button>
-              <p class="note fit-note">If we're not a fit, I'll tell you.</p>
             </div>
           </form>
           <div class="step-dq" hidden>
@@ -1166,7 +1165,6 @@ const faqs = [
   .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; text-align: left; }
   .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
   .dm p.hero-guarantee { text-wrap: balance; }
-  .dm .fit-note { margin: 10px 0 0; text-align: center; }
   .dm .timeline { list-style: none; margin: 22px auto 0; padding: 0; display: grid; gap: 6px; max-width: 520px; text-align: left; }
   .dm .timeline li { font-size: 16px; color: var(--ink-2); padding-left: 16px; border-left: 3px solid var(--p); }
   .dm .timeline b { color: var(--ink); }
@@ -1282,7 +1280,7 @@ const faqs = [
     .dm .kasper-text p { grid-column: 1 / -1; font-size: 16px; line-height: 1.55; }
     .dm .kasper .proof-grid { grid-template-columns: 1fr; gap: 0; margin-top: 6px; border-top: 1px solid var(--card-border); }
     .dm .kasper .pg { display: grid; grid-template-columns: 118px 1fr; grid-template-areas: "num label" "num text"; column-gap: 14px; align-items: center; text-align: left; padding: 14px 0; border-top: 0; border-bottom: 1px solid var(--card-border); }
-    .dm .kasper .pg-num { grid-area: num; font-size: 34px; margin: 0; }
+    .dm .kasper .pg-num { grid-area: num; font-size: 34px; margin: 0; justify-self: center; text-align: center; }
     .dm .kasper .pg-label { grid-area: label; font-size: 15px; letter-spacing: 0; text-transform: none; font-weight: 700; color: var(--ink); align-self: end; }
     .dm .kasper .pg p { grid-area: text; font-size: 14px; align-self: start; }
     .dm .kasper .pg-hint { display: none; }
