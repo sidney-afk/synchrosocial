@@ -1148,7 +1148,8 @@ const faqs = [
   .dm .kicker .grad { background: linear-gradient(100deg, #1d6fe8 0%, #5a4fe0 55%, #8a45d6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
   .dm h1 .num { color: var(--p); }
   .dm h1 .ul { text-decoration: underline 4px var(--p); -webkit-text-decoration: underline 4px var(--p); text-underline-offset: 8px; text-decoration-skip-ink: none; }
-  .dm .form-card h2 { background: none; color: #d6339a; margin: 0 0 26px; padding: 0; }
+  .dm .form-card h2 { background: linear-gradient(180deg, #d6339a 0%, #d6339a 34%, #7a4be0 72%, #1e9bff 100%); color: #fff; margin: -34px -34px 26px; padding: 26px 20px 30px; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+  @media (max-width: 720px) { .dm .form-card h2 { margin: -22px -22px 20px; } }
   .dm a.btn, .dm button.btn { font-size: 16px; padding: 22px 44px; box-shadow: 0 12px 28px rgba(23, 138, 246, 0.35); }
   @media (max-width: 560px) { .dm a.btn, .dm button.btn { font-size: 15px; padding: 20px 24px; } }
   .dm .form-card button.btn { background: linear-gradient(135deg, #1e9bff, #0a5fd6); }
@@ -1259,8 +1260,8 @@ const faqs = [
     .dm .apply .wrap { padding-inline: 0; }
     .dm .form-card { max-width: none; margin: 0; border-width: 1px 0; border-radius: 0; box-shadow: none; padding: 0 16px 28px; }
     /* the whole form sits on the blue of the banner */
-    .dm .form-card { background: linear-gradient(160deg, #1e9bff, #0a5fd6); color: #fff; padding: 28px 16px 26px; border-width: 0; }
-    .dm .form-card h2 { background: none; color: #ff5cbd; margin: 0 0 22px; padding: 0; font-size: 24px; line-height: 1.2; }
+    .dm .form-card { background: linear-gradient(180deg, #d6339a 0, #d6339a 96px, #7a4be0 170px, rgba(30, 155, 255, 0) 300px), linear-gradient(160deg, #1e9bff, #0a5fd6); color: #fff; padding: 28px 16px 26px; border-width: 0; }
+    .dm .form-card h2 { background: none; color: #fff; margin: 0 0 22px; padding: 0; font-size: 24px; line-height: 1.2; }
     .dm .form-card .note, .dm .form-card .step-dq p, .dm .form-card .step-dq .dq-title { color: #fff; }
     .dm .field label, .dm .q { color: #fff; }
     .dm input:focus-visible { outline-color: #fff; }
