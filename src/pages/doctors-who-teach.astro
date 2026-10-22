@@ -501,6 +501,13 @@ const faqs = [
             ? "Please enter your phone number with country code, e.g. +1 555 123 4567."
             : "Please fill in: " + missing.map(function (k) { return labels[k]; }).join(", ") + ".";
         err.hidden = false;
+        // On a phone the message sits under the button, off screen: bring the first thing to fix into view.
+        if (window.matchMedia("(max-width: 560px)").matches) {
+          var firstBad = missing.length ? missing[0] : "email";
+          var bad = form.querySelector('[name="' + firstBad + '"]');
+          var spot = bad && (bad.closest(".field") || bad);
+          if (spot) spot.scrollIntoView({ behavior: "auto", block: "center" });
+        }
         return;
       }
       err.hidden = true;
@@ -591,6 +598,20 @@ const faqs = [
       if (calNote && first) calNote.textContent = "Thanks, " + first + ". Last step: pick a time for our call.";
       card.querySelector(".step-cal").hidden = false;
       card.scrollIntoView({ behavior: "auto", block: "start" });
+
+      // iClosed scrolls the page down by itself about 5 seconds after it loads, which hides the
+      // "Pick a Time" heading. For 10 seconds, until the person touches, scrolls or types, keep
+      // the top of the card in view.
+      if (window.matchMedia("(max-width: 560px)").matches) {
+        var touched = false;
+        var mark = function () { touched = true; };
+        ["touchstart", "wheel", "keydown", "mousedown"].forEach(function (n) { window.addEventListener(n, mark, { passive: true, once: true }); });
+        var guard = setInterval(function () {
+          if (touched) { clearInterval(guard); return; }
+          if (card.getBoundingClientRect().top < -2) card.scrollIntoView({ behavior: "auto", block: "start" });
+        }, 120);
+        setTimeout(function () { clearInterval(guard); }, 10000);
+      }
     });
   })();
 
@@ -1213,6 +1234,7 @@ const faqs = [
     .dm .stickybar:not(.on) { visibility: hidden; box-shadow: none; transition: transform 0.25s ease, visibility 0s linear 0.25s; }
     .dm .stickybar.on { visibility: visible; }
     .kb-open .dm .stickybar { display: none; }
+    .dm .sb-in a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 
     /* top: more air around the headline, one two-sentence paragraph instead of two small texts */
     .dm .hero { padding-top: 34px; }
