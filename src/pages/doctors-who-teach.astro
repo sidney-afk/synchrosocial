@@ -755,8 +755,25 @@ const faqs = [
       document.head.appendChild(t);
     });
 
+    // Tags so Clarity can filter (22 Oct 2026): "traffic" is "test" for our own visits (the same
+    // rules that keep them out of Meta: a test link, or a sidney.laruel+... email typed in the
+    // form), else "real"; "ad" is the ad name from the link (utm_content). No personal details.
+    try {
+      var cq = new URLSearchParams(location.search);
+      var isTestVisit = typeof window.__metaIsTest === "function" && window.__metaIsTest();
+      clarity("set", "traffic", isTestVisit ? "test" : "real");
+      var adName = String(cq.get("utm_content") || "").trim();
+      if (adName) clarity("set", "ad", adName.slice(0, 100));
+    } catch (e) {}
+
     var form = document.querySelector(".dm .apply-form");
     if (form) {
+      form.addEventListener("change", function () {
+        var em = form.querySelector('[name="email"]');
+        if (em && typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(em.value)) {
+          clarity("set", "traffic", "test");
+        }
+      });
       var started = false;
       form.addEventListener("focusin", function () {
         if (started) return;
