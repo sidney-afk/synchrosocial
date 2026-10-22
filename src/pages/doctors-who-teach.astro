@@ -595,19 +595,6 @@ const faqs = [
       card.querySelector(".step-cal").hidden = false;
       card.scrollIntoView({ behavior: "auto", block: "start" });
 
-      // iClosed scrolls the page down by itself about 5 seconds after it loads, which hides the
-      // "Pick a Time" heading. For 10 seconds, until the person touches, scrolls or types, keep
-      // the top of the card in view.
-      if (window.matchMedia("(max-width: 560px)").matches) {
-        var touched = false;
-        var mark = function () { touched = true; };
-        ["touchstart", "wheel", "keydown", "mousedown"].forEach(function (n) { window.addEventListener(n, mark, { passive: true, once: true }); });
-        var guard = setInterval(function () {
-          if (touched) { clearInterval(guard); return; }
-          if (card.getBoundingClientRect().top < -2) card.scrollIntoView({ behavior: "auto", block: "start" });
-        }, 120);
-        setTimeout(function () { clearInterval(guard); }, 10000);
-      }
     });
   })();
 
