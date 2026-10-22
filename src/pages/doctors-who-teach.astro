@@ -246,12 +246,12 @@ const faqs = [
           <a class="btn" href="#apply">Let's get on a call</a>
         </div>
         <div class="floatvids">
-          <div><button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" aria-label="Play Dr. Lily Baker's testimonial video">
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="t7vak3h3m9" data-mp4="https://embed-ssl.wistia.com/deliveries/35a63f8de7bbe6e3f1aaeba436483d4a2f849934.bin" aria-label="Play Dr. Lily Baker's testimonial video">
               <img src="/images/doctors-videos/lily-baker.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
             </button><p>Dr. Lily Baker (@theopenposturedoc), in her own words</p></div>
-          <div><button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" aria-label="Play Dr. Sonia Chopra's testimonial video">
+          <div><button type="button" class="video-btn case-media case-video" data-wistia="vr83s40k0b" data-mp4="https://embed-ssl.wistia.com/deliveries/af82a06c36abe314aeeb0a4a7b99839f39743f5b.bin" aria-label="Play Dr. Sonia Chopra's testimonial video">
               <img src="/images/doctors-videos/sonia-chopra.jpg" alt="" width="800" height="450" loading="lazy" decoding="async" />
               <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
               <span class="vb-label">Tap to play</span>
@@ -675,6 +675,29 @@ const faqs = [
       btn.addEventListener("touchstart", warm, { once: true, passive: true });
       btn.addEventListener("click", function () {
         warm();
+        // Phones: the phone's own standard player, which starts fast and has the usual controls.
+        if (btn.dataset.mp4 && window.matchMedia("(max-width: 560px)").matches) {
+          var v = document.createElement("video");
+          v.src = btn.dataset.mp4;
+          v.controls = true;
+          v.autoplay = true;
+          v.playsInline = true;
+          v.setAttribute("playsinline", "");
+          v.setAttribute("webkit-playsinline", "");
+          v.preload = "auto";
+          v.poster = btn.querySelector("img").getAttribute("src");
+          v.title = btn.getAttribute("aria-label");
+          v.className = "video-native";
+          function mark(name) { if (typeof window.clarity === "function") clarity("event", name); }
+          v.addEventListener("playing", function () { v.style.opacity = "1"; }, { once: true });
+          v.addEventListener("playing", function () { mark("video_playing"); }, { once: true });
+          v.addEventListener("ended", function () { mark("video_finished"); }, { once: true });
+          btn.parentNode.style.position = "relative";
+          btn.parentNode.appendChild(v);
+          btn.setAttribute("aria-disabled", "true");
+          var pr = v.play(); if (pr && pr.catch) pr.catch(function () { v.style.opacity = "1"; });
+          return;
+        }
         var f = document.createElement("iframe");
         f.src = "https://fast.wistia.net/embed/iframe/" + btn.dataset.wistia + "?autoPlay=true&seo=false&playerColor=178af6";
         f.allow = "autoplay; fullscreen";
@@ -1064,6 +1087,7 @@ const faqs = [
   .dm .video-btn .video-overlay { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 3; background: #000; }
   .dm .video-btn .video-overlay { opacity: 0; transition: opacity 0.15s; }
   .dm .video-btn.is-playing .video-overlay { opacity: 1; }
+  .dm .video-native { position: absolute; top: 0; left: 0; width: 100%; aspect-ratio: 16 / 9; z-index: 5; background: #000; opacity: 0; transition: opacity 0.15s; display: block; border-radius: inherit; }
   .dm .video-btn.is-playing { cursor: default; }
   .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
   .dm .play svg { width: 18px; height: 18px; fill: #0a0a1a; margin-left: 2px; }
