@@ -169,7 +169,7 @@ const faqs = [
           </div>
           <div class="step-cal" hidden>
             <p class="note" id="cal-note">Last step: pick a time for our call.</p>
-            <div class="form-embed"></div>
+            <div class="form-embed"><p class="cal-loading">Loading the calendar…</p></div>
           </div>
           <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
                See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
@@ -676,6 +676,11 @@ const faqs = [
       btn.addEventListener("touchstart", warm, { once: true, passive: true });
       btn.addEventListener("click", function () {
         warm();
+        // React in the same frame as the tap: the video itself can take a moment to start.
+        btn.classList.add("is-loading");
+        var lab = btn.querySelector(".vb-label");
+        if (lab) lab.textContent = "Loading…";
+        function loaded() { btn.classList.remove("is-loading"); }
         // Phones: the phone's own standard player, which starts fast and has the usual controls.
         if (btn.dataset.mp4 && window.matchMedia("(max-width: 560px)").matches) {
           var v = document.createElement("video");
@@ -690,13 +695,14 @@ const faqs = [
           v.title = btn.getAttribute("aria-label");
           v.className = "video-native";
           function mark(name) { if (typeof window.clarity === "function") clarity("event", name); }
-          v.addEventListener("playing", function () { v.style.opacity = "1"; }, { once: true });
+          v.addEventListener("playing", function () { v.style.opacity = "1"; loaded(); }, { once: true });
+          v.addEventListener("error", function () { v.style.opacity = "1"; loaded(); }, { once: true });
           v.addEventListener("playing", function () { mark("video_playing"); }, { once: true });
           v.addEventListener("ended", function () { mark("video_finished"); }, { once: true });
           btn.parentNode.style.position = "relative";
           btn.parentNode.appendChild(v);
           btn.setAttribute("aria-disabled", "true");
-          var pr = v.play(); if (pr && pr.catch) pr.catch(function () { v.style.opacity = "1"; });
+          var pr = v.play(); if (pr && pr.catch) pr.catch(function () { v.style.opacity = "1"; loaded(); });
           return;
         }
         var f = document.createElement("iframe");
@@ -705,7 +711,7 @@ const faqs = [
         f.allowFullscreen = true;
         f.title = btn.getAttribute("aria-label");
         f.className = "video-overlay";
-        f.addEventListener("load", function () { btn.classList.add("is-playing"); });
+        f.addEventListener("load", function () { btn.classList.add("is-playing"); loaded(); });
         btn.appendChild(f);
         btn.setAttribute("aria-disabled", "true");
       }, { once: true });
@@ -720,6 +726,16 @@ const faqs = [
     if (!f) return;
     var root = document.documentElement;
     f.addEventListener("focusin", function (e) { if (e.target.matches("input")) root.classList.add("kb-open"); });
+    // Start fetching the calendar's own files while the person is still filling in the form,
+    // so the calendar appears sooner after the last tap.
+    var warmCal = function () {
+      f.removeEventListener("focusin", warmCal);
+      var l = document.createElement("link");
+      l.rel = "preconnect"; l.href = "https://app.iclosed.io"; l.crossOrigin = "anonymous";
+      document.head.appendChild(l);
+      try { fetch("https://app.iclosed.io/assets/widget.js", { mode: "no-cors" }).catch(function () {}); } catch (e) {}
+    };
+    f.addEventListener("focusin", warmCal);
     f.addEventListener("focusout", function () { root.classList.remove("kb-open"); });
   })();
 </script>
@@ -897,7 +913,8 @@ const faqs = [
     box-shadow: var(--shadow);
   }
   .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
-  .dm .form-embed { border-radius: var(--r); overflow: hidden; }
+  .dm .form-embed { border-radius: var(--r); overflow: hidden; position: relative; }
+  .dm .cal-loading { margin: 0; padding: 24px 0; text-align: center; color: var(--ink-dim); font-size: 15px; position: absolute; inset: 0 0 auto 0; }
   .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
   .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .dm .field { display: flex; flex-direction: column; gap: 7px; }
@@ -1090,6 +1107,12 @@ const faqs = [
   .dm .video-btn.is-playing .video-overlay { opacity: 1; }
   .dm .video-native { position: absolute; top: 0; left: 0; width: 100%; aspect-ratio: 16 / 9; z-index: 5; background: #000; opacity: 0; transition: opacity 0.15s; display: block; border-radius: inherit; }
   .dm .video-btn.is-playing { cursor: default; }
+  /* Tap feedback while the video starts: darker picture, spinning ring in place of the arrow. */
+  .dm .video-btn.is-loading::after { background: rgba(0, 0, 0, 0.55); }
+  .dm .video-btn.is-loading .play svg { display: none; }
+  .dm .video-btn.is-loading .play { background: transparent; border: 4px solid rgba(255, 255, 255, 0.35); border-top-color: #fff; box-sizing: border-box; animation: dm-spin 0.8s linear infinite; }
+  @keyframes dm-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .dm .video-btn.is-loading .play { animation: none; border-top-color: rgba(255, 255, 255, 0.35); } }
   .dm .play { position: relative; width: 46px; height: 46px; border-radius: 50%; background: #fff; display: grid; place-items: center; }
   .dm .play svg { width: 18px; height: 18px; fill: #0a0a1a; margin-left: 2px; }
   .dm .tile-body { padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 8px; }
