@@ -134,7 +134,7 @@ const faqs = [
     <section class="apply">
       <div class="wrap">
         <div id="apply" class="form-card">
-          <h2>Tell me what you've built, or what you want to build.</h2>
+          <h2><span class="t-wide">Tell me what you've built, or what you want to build.</span><span class="t-phone">Let's talk about what you've built, or want to build.</span></h2>
           <p class="note form-note">I'll look at your account and map out the strategy to grow it.</p>
           <!-- Step 1: our own form (mockup). Step 2: iClosed calendar with the
                answers prefilled, so the doctor only picks a time. -->
@@ -1208,6 +1208,7 @@ const faqs = [
      big two-up answer buttons. Kasper: photo beside the name, one row per number. */
   .dm .pg-all { display: none; }
   .dm .sub-phone { display: none; }
+  .dm .t-phone { display: none; }
   .dm h1.h1-phone { display: none; }
   @media (max-width: 560px) {
     .dm .wrap { padding-inline: 16px; }
@@ -1220,7 +1221,9 @@ const faqs = [
     .dm .hero { padding-top: 34px; }
     .dm .hero .kicker { margin-bottom: 30px; }
     .dm .sub { display: none; }
-    .dm .sub.sub-phone { display: block; margin: 31px auto 0; padding: 0; font-size: 18px; font-weight: 400; line-height: 1.5; color: #1f2740; letter-spacing: -0.015em; }
+    .dm .t-wide { display: none; }
+    .dm .t-phone { display: inline; }
+    .dm .sub.sub-phone { display: block; margin: 38px auto 0; padding: 0; font-size: 18px; font-weight: 400; line-height: 1.5; color: #1f2740; letter-spacing: -0.015em; }
     .dm .sub-phone span { display: block; }
     .dm .hero-guarantee { display: none; }
     .dm .hero { padding-bottom: 30px; }
