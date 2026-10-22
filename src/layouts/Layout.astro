@@ -16,6 +16,7 @@ interface Props {
   lightFonts?: boolean;
   /** Hide the page from search engines (test pages such as /doctors-who-teach). */
   noindex?: boolean;
+  tabIcon?: string;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   metaEvent = null,
   lightFonts = false,
   noindex = false,
+  tabIcon = "/images/logo.png",
 } = Astro.props;
 ---
 
@@ -33,7 +35,7 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" type="image/png" href={tabIcon} />
     <meta name="generator" content={Astro.generator} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="facebook-domain-verification" content="dblhsbm0xnlcnxb395nwdz9q4gvabc" />
