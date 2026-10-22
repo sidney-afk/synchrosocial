@@ -112,15 +112,16 @@ const faqs = [
         <p class="kicker"><span class="grad">For doctors who sell or want to sell:</span><br />a course, a program or a membership.</p>
         <h1 class="h1-wide">
           <span class="line">Get <span class="num">3,000 to 5,000</span> followers</span>
-          <span class="line">a month <span class="ul">who want</span></span>
-          <span class="line"><span class="ul">what you teach.</span></span>
+          <span class="line"><span class="ul">who want what you teach</span>,</span>
+          <span class="line">every month.</span>
         </h1>
         <!-- Phone twin of the headline: same words, own markup so each step can have its own size. Only one of the two is ever shown. -->
         <h1 class="h1-phone">
           <span class="h-get">Get</span>
           <span class="h-num num">3,000 to 5,000</span>
-          <span class="h-fol">followers a month</span>
-          <span class="h-cl ul">who want what you teach.</span>
+          <span class="h-fol">followers</span>
+          <span class="h-cl-wrap"><span class="h-cl ul">who want what you teach</span>,</span>
+          <span class="h-mo">every month.</span>
         </h1>
         <p class="sub sub-phone"><span>One filming day a month.</span> <span>From scripts to posting.</span> <span>From followers to loyal members.</span></p>
       </div>
@@ -343,7 +344,7 @@ const faqs = [
     <!-- 8. REPEAT -->
     <section class="final sec sec-dark">
       <div class="wrap">
-        <h2>Get <span class="hl">3,000 to 5,000 followers a month</span> who want what you've built.</h2>
+        <h2>Get <span class="hl">3,000 to 5,000 followers</span> who want what you've built, every month.</h2>
         <div class="cta">
           <a class="btn" href="#apply">Let's get on a call</a>
         </div>
@@ -1251,6 +1252,8 @@ const faqs = [
     .dm h1 .h-num { display: block; font-size: min(12vw, 56px); letter-spacing: -0.035em; line-height: 1.05; }
     .dm h1 .h-fol { display: block; font-size: min(8.2vw, 38px); }
     .dm h1 .h-cl { display: inline; font-size: min(6.4vw, 30px); text-decoration-thickness: 3px; text-underline-offset: 6px; white-space: nowrap; }
+    .dm h1 .h-cl-wrap { display: block; font-size: min(6.4vw, 30px); margin-top: 4px; white-space: nowrap; }
+    .dm h1 .h-mo { display: block; font-size: min(6.4vw, 30px); margin-top: 4px; }
     .dm .sub { max-width: none; }
 
     /* form: full width, no card */
