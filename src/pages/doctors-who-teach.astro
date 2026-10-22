@@ -386,6 +386,15 @@ const faqs = [
       return d.length >= 8 ? "+" + d : "";
     }
 
+    // iClosed shows its own question form instead of the calendar when it thinks the number is
+    // invalid, so refuse an implausible number here and ask again. US/Canada: 10 digits, area code
+    // and exchange not starting with 0 or 1. Elsewhere: 8 to 15 digits after the country code.
+    function phoneOk(p) {
+      if (!p) return false;
+      if (/^\+1/.test(p)) return /^\+1[2-9]\d{2}[2-9]\d{6}$/.test(p);
+      return /^\+[2-9]\d{7,14}$/.test(p);
+    }
+
     // Partial-lead capture. A doctor who has typed a valid email but leaves before
     // pressing Submit would otherwise be lost: nothing reaches iClosed until step 2.
     // As soon as the email is valid we send what they have to the
@@ -487,6 +496,7 @@ const faqs = [
       });
       v.instagram = v.instagram.replace(/^@+/, "");
       v.phone = normPhone(v.phone);
+      if (!phoneOk(v.phone)) v.phone = "";
       var missing = Object.keys(v).filter(function (k) { return !v[k]; });
       var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email);
       if (missing.length || !emailOk) {
