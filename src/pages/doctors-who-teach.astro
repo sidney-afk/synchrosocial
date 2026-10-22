@@ -659,6 +659,12 @@ const faqs = [
         l.crossOrigin = "anonymous";
         document.head.appendChild(l);
       });
+      // Also download the player's own files ahead of the tap, so the tap only has to start the video.
+      var urls = ["https://fast.wistia.net/assets/external/E-v1.js"];
+      document.querySelectorAll(".dm .video-btn").forEach(function (b) {
+        urls.push("https://fast.wistia.net/embed/iframe/" + b.dataset.wistia, "https://fast.wistia.com/embed/medias/" + b.dataset.wistia + ".json");
+      });
+      urls.forEach(function (u) { try { fetch(u, { mode: "no-cors" }).catch(function () {}); } catch (e) {} });
     }
     var vids = document.querySelector(".dm .floatvids");
     if (vids && "IntersectionObserver" in window) {
