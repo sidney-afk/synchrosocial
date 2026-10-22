@@ -15,8 +15,13 @@ The Synchro Social website, rebuilt from Framer into clean, maintainable code.
 npm install      # first time only (takes a few minutes)
 npm run dev      # start the dev server → http://localhost:4321
 npm run build    # produce the static site in dist/
+npm run check:links # check built same-site links after a build
 npm run preview  # preview the built site
 ```
+
+The link check runs before the Pages artifact is uploaded. It checks static
+same-site `href` and `src` paths and HTML anchors in `dist/`. It does not visit
+external destinations or follow links assembled by browser JavaScript.
 
 ---
 
