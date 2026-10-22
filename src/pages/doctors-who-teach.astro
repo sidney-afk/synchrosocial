@@ -1255,23 +1255,14 @@ const faqs = [
     /* form: full width, no card */
     .dm .apply .wrap { padding-inline: 0; }
     .dm .form-card { max-width: none; margin: 0; border-width: 1px 0; border-radius: 0; box-shadow: none; padding: 0 16px 28px; }
-    /* the whole form sits on the blue of the banner */
-    .dm .form-card { background: linear-gradient(180deg, #d6339a 0, #d6339a 96px, #7a4be0 170px, rgba(30, 155, 255, 0) 300px), linear-gradient(160deg, #1e9bff, #0a5fd6); color: #fff; padding: 28px 16px 26px; border-width: 0; }
-    .dm .form-card h2 { background: none; color: #fff; margin: 0 0 22px; padding: 0; font-size: 24px; line-height: 1.2; }
-    .dm .form-card .note, .dm .form-card .step-dq p, .dm .form-card .step-dq .dq-title { color: #fff; }
-    .dm .field label, .dm .q { color: #fff; }
-    .dm input:focus-visible { outline-color: #fff; }
-    .dm .chips label { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.75); color: #fff; }
-    .dm .chips label:hover { border-color: #fff; }
-    .dm .chips label:active { background: rgba(255, 255, 255, 0.25); border-color: #fff; }
-    /* round "pick one" circle on the left; selected = white button, filled circle with a check */
-    .dm .chips label { gap: 12px; border-radius: 6px; background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.55); font-weight: 500; }
-    .dm .chips label::before { content: ""; width: 22px; height: 22px; flex: none; box-sizing: border-box; border: 2px solid #fff; border-radius: 50%; margin: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; line-height: 1; }
-    .dm .chips label:has(input:checked) { background: #fff; border-color: #fff; color: #0a2a52; font-weight: 700; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18); }
-    .dm .chips label:has(input:checked)::before { content: "\2713"; margin: 0; background: #0a5fd6; border-color: #0a5fd6; color: #fff; font-weight: 700; }
-    .dm .chips label:has(input:focus-visible) { outline-color: #fff; }
-    .dm .sms-consent, .dm .legal, .dm .sms-consent a, .dm .legal a { color: rgba(255, 255, 255, 0.82); }
-    .dm .form-card .form-error { color: #ffe08a; font-weight: 600; }
+    /* white form with the pink strip on top, the same as desktop */
+    .dm .form-card { background: #fff; color: var(--ink); padding: 0 16px 28px; border-width: 1px 0; border-radius: 0; box-shadow: none; }
+    .dm .form-card h2 { background: linear-gradient(135deg, #ee45ae, #bd2a86); color: #fff; margin: 0 -16px 22px; padding: 24px 16px; border-radius: 0; font-size: 24px; line-height: 1.2; }
+    /* round "pick one" circle on the left; selected = light blue button, filled circle with a check */
+    .dm .chips label { gap: 12px; border-radius: 6px; font-weight: 500; }
+    .dm .chips label::before { content: ""; width: 22px; height: 22px; flex: none; box-sizing: border-box; border: 2px solid #9fb3cf; border-radius: 50%; margin: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; line-height: 1; }
+    .dm .chips label:has(input:checked) { background: #eaf3ff; border-color: #178af6; color: #0a2a52; font-weight: 700; }
+    .dm .chips label:has(input:checked)::before { content: "\2713"; margin: 0; background: #178af6; border-color: #178af6; color: #fff; font-weight: 700; }
     .dm .form-card .form-note { margin: 0 0 20px; font-size: 15.5px; }
     .dm .grid { gap: 16px; }
     .dm .field label, .dm .q { font-size: 15px; }
