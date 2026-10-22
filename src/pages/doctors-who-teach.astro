@@ -169,7 +169,7 @@ const faqs = [
           </div>
           <div class="step-cal" hidden>
             <p class="note" id="cal-note">Last step: pick a time for our call.</p>
-            <div class="form-embed"><p class="cal-loading">Loading the calendar…</p></div>
+            <div class="form-embed"><div class="cal-loading" aria-live="polite"><p>Finding the next open times for your call…</p><div class="cal-skel" aria-hidden="true"><b></b><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
           </div>
           <!-- A2P 10DLC consent disclosure, carried over from /apply2 and /apply3.
                See docs/booking-recovery/TWILIO_RUNBOOK.md before changing. -->
@@ -911,7 +911,11 @@ const faqs = [
   }
   .dm .form-card h2 { font-size: 24px; text-align: center; margin-bottom: 24px; }
   .dm .form-embed { border-radius: var(--r); overflow: hidden; position: relative; }
-  .dm .cal-loading { margin: 0; padding: 24px 0; text-align: center; color: var(--ink-dim); font-size: 15px; position: absolute; inset: 0 0 auto 0; }
+  .dm .cal-loading { position: absolute; inset: 0 0 auto 0; padding: 20px 20px 0; text-align: center; color: var(--ink-dim); font-size: 15px; }
+  .dm .cal-loading p { margin: 0 0 18px; }
+  .dm .cal-skel { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; max-width: 360px; margin: 0 auto; }
+  .dm .cal-skel b { grid-column: 1 / -1; height: 22px; width: 40%; background: #e9edf3; border-radius: 4px; margin-bottom: 8px; }
+  .dm .cal-skel i { aspect-ratio: 1 / 1; background: #eef1f6; border-radius: 8px; }
   .dm .form-card .note { color: var(--ink-dim); font-size: 14px; margin: -12px 0 18px; text-align: center; }
   .dm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .dm .field { display: flex; flex-direction: column; gap: 7px; }
