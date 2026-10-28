@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Sign in to SyncMate</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;background:#f5f5f4;color:#1c1917;margin:0;display:grid;place-items:center;min-height:100vh}
+main{background:#fff;max-width:420px;width:calc(100% - 32px);padding:28px;border-radius:14px;box-shadow:0 2px 12px #0001}
+h1{font-size:20px;margin:0 0 8px}p{margin:0 0 14px;color:#57534e}b{color:#1c1917}
+input[type=password]{width:100%;box-sizing:border-box;padding:10px;font-size:16px;border:1px solid #d6d3d1;border-radius:8px}
+button{margin-top:14px;width:100%;padding:11px;font-size:16px;border:0;border-radius:8px;background:#1c1917;color:#fff;cursor:pointer}
+.err{color:#b91c1c}[hidden]{display:none}
+</style>
+</head>
+<body>
+<!-- SyncMate's OAuth sign-in form. The connector (higgsfield-mcp) checks the
+     request and sends people here; the form posts straight back to it. No
+     tracking scripts on this page: people type their personal pass here. -->
+<main>
+<h1>Sign in to SyncMate</h1>
+<p><b id="app">An app</b> wants to use SyncMate as you. After you sign in you go back to <b id="host"></b>. Only continue if you started this yourself.</p>
+<p class="err" id="err" hidden>That pass was not recognised. Check it and try again.</p>
+<p class="err" id="bad" hidden>This sign-in link is incomplete. Start again from the app.</p>
+<form id="f" method="post" action="https://uzltbbrjidmjwwfakwve.supabase.co/functions/v1/higgsfield-mcp/oauth/authorize">
+<label for="pass">Your personal pass (the part after <code>key=</code> in your SyncMate link)</label>
+<input id="pass" name="pass" type="password" autocomplete="off" required autofocus>
+<button type="submit">Sign in</button>
+</form>
+</main>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var f = document.getElementById("f");
+  ["client_id", "redirect_uri", "state", "code_challenge", "code_challenge_method", "scope", "resource"].forEach(function (k) {
+    var v = q.get(k);
+    if (v === null) return;
+    var i = document.createElement("input");
+    i.type = "hidden"; i.name = k; i.value = v;
+    f.appendChild(i);
+  });
+  document.getElementById("app").textContent = q.get("app") || "An app";
+  document.getElementById("host").textContent = q.get("host") || "the app";
+  if (q.get("error")) document.getElementById("err").hidden = false;
+  if (!q.get("client_id") || !q.get("redirect_uri") || !q.get("code_challenge")) {
+    document.getElementById("bad").hidden = false;
+    f.hidden = true;
+  }
+})();
+</script>
+</body>
+</html>
