@@ -3,8 +3,8 @@
 // Plain JavaScript so the same file runs in Supabase (Deno) and in the Node
 // test (scripts/meta-capi-relay.test.mjs).
 
-export const ALLOWED_EVENTS = ["PageView", "ViewContent", "DoctorEmailEntered", "Lead"];
-export const CUSTOM_EVENTS = ["DoctorEmailEntered"];
+export const ALLOWED_EVENTS = ["PageView", "ViewContent", "DoctorEmailEntered", "DoctorQualified", "Lead"];
+export const CUSTOM_EVENTS = ["DoctorEmailEntered", "DoctorQualified"];
 const ALLOWED_HOSTS = ["synchrosocial.com", "www.synchrosocial.com"];
 // Same rule as src/components/MetaPixel.astro and the n8n CAPI workflow.
 const TEST_SOURCE = /(^|[^a-z0-9])test([^a-z0-9]|$)/i;

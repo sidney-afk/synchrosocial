@@ -469,6 +469,7 @@ const faqs = [
       clearTimeout(partialTimer);
       partialTimer = setTimeout(maybeSendPartial, 800);
       maybeSendEmailEvent();
+      maybeSendQualifiedEvent();
     });
 
     // Meta DoctorEmailEntered: the visitor has typed a valid email, before Submit.
@@ -487,6 +488,26 @@ const faqs = [
       emailEventSent = true;
       try { sessionStorage.setItem("mp_educator_email", "1"); } catch (e2) {}
       window.__metaTrack("DoctorEmailEntered", { content_name: OFFER }, { custom: true });
+    }
+
+    // Meta DoctorQualified: the visitor picked "Yes" on the $3,000-a-month question (the
+    // only answer of $3,000 or more; "Not right now" fires nothing). Same rules as
+    // DoctorEmailEntered: once per browser session, never for test traffic, and only once
+    // a valid email is typed so a sidney.laruel+... address can be skipped (picked "Yes"
+    // first: it fires when the email is committed). Only content_name is sent.
+    var qualifiedEventSent = false;
+    try { qualifiedEventSent = sessionStorage.getItem("mp_educator_qualified") === "1"; } catch (e3) {}
+    function maybeSendQualifiedEvent() {
+      if (qualifiedEventSent) return;
+      var f = new FormData(form);
+      if (String(f.get("investment") || "") !== "Yes") return;
+      var email = String(f.get("email") || "").trim();
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) return;
+      if (typeof window.__metaIsTestEmail === "function" && window.__metaIsTestEmail(email)) return;
+      if (typeof window.__metaTrack !== "function") return;
+      qualifiedEventSent = true;
+      try { sessionStorage.setItem("mp_educator_qualified", "1"); } catch (e4) {}
+      window.__metaTrack("DoctorQualified", { content_name: OFFER }, { custom: true });
     }
 
     form.addEventListener("submit", function (e) {

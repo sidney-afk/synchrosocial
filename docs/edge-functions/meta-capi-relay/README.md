@@ -1,7 +1,7 @@
 # meta-capi-relay (written 2026-10-17, NOT deployed)
 
 Server copy (Conversions API) of the site's early browser events: `PageView`,
-`ViewContent`, `DoctorEmailEntered`, and the /doctors `Lead`. The browser sends
+`ViewContent`, `DoctorEmailEntered`, `DoctorQualified` (/doctors-who-teach), and the /doctors `Lead`. The browser sends
 each event to the pixel and posts the same event here with the same `event_id`,
 the full page URL, `fbc` and `fbp`. This function adds the visitor's IP and
 browser from the request and forwards it to Meta. Meta keeps one of the pair.

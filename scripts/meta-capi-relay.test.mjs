@@ -25,6 +25,8 @@ ok(r.event.custom_data.content_name === "doctor_offer" && !("email" in r.event.c
 
 r = buildEvent({ ...base, event_name: "DoctorEmailEntered" }, req);
 ok(r.ok && r.event.event_name === "DoctorEmailEntered", "DoctorEmailEntered accepted");
+r = buildEvent({ ...base, event_name: "DoctorQualified" }, req);
+ok(r.ok && r.event.event_name === "DoctorQualified", "DoctorQualified accepted");
 for (const s of ["test", "my-test-1", "referral", "outbound_dm", "Outbound_DM"]) {
   r = buildEvent({ ...base, event_source_url: `https://synchrosocial.com/doctors/?utm_source=${s}` }, req);
   ok(!r.ok && r.reason === "excluded_source", `utm_source=${s} is never sent`);
