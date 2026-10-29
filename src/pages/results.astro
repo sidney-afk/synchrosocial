@@ -63,7 +63,19 @@ const newVideos = (who) =>
   [1, 2, 3].map((n) => ({ mp4: `/videos/results/${who}-${n}.mp4`, mp4Poster: `/images/results/${who}-${n}.jpg` }));
 const reelBlocks = [
   ...caseStudies.map((cs) => (cs.name === "Jessica Winterstern" ? { ...cs, videos: newVideos("jessica") } : cs)),
-  { name: "Chelsey Scaffidi", credit: "Matrescence educator and author", period: "", platforms: ["Instagram"], stats: [], videos: newVideos("chelsey") },
+  // Views of her top seven Instagram videos since 25 Feb 2026, as read off her
+  // profile by the owner (29 Oct): 647K, 513K, 340K, 304K, 242K, 180K, 108K.
+  {
+    name: "Chelsey Scaffidi",
+    credit: "Matrescence educator and author",
+    period: "Since Feb 2026",
+    platforms: ["Instagram"],
+    stats: [
+      { value: "2.3M+", label: "Views On Her Top 7 Videos" },
+      { value: "647K", label: "Views On Her Top Video" },
+    ],
+    videos: newVideos("chelsey"),
+  },
 ];
 ---
 
