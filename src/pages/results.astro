@@ -170,7 +170,7 @@ const reelBlocks = [
     eyebrow="Case Studies"
     heading="Just Some Of My Case Studies"
     intro="Ten clients, ten different starting points. Each one tells the story in their own words."
-    cards={[lilyCard, ...allVslCaseStudies]}
+    cards={[lilyCard, ...allVslCaseStudies.filter((c) => c.key === "sonia"), ...allVslCaseStudies.filter((c) => c.key !== "sonia")]}
     columns={2}
   />
 
@@ -340,7 +340,7 @@ const reelBlocks = [
   }
 
   .ss-reel-block:hover {
-    border-color: rgba(154, 93, 255, 0.36);
+    border-color: rgba(23, 138, 246, 0.4);
   }
 
   .ss-reel-block__head {
@@ -439,7 +439,7 @@ const reelBlocks = [
   }
 
   .ss-testimonial:hover {
-    border-color: rgba(154, 93, 255, 0.36);
+    border-color: rgba(23, 138, 246, 0.4);
   }
 
   .ss-testimonial__video {
@@ -553,7 +553,7 @@ const reelBlocks = [
   }
 
   .ss-wall__tile:hover {
-    border-color: rgba(154, 93, 255, 0.36);
+    border-color: rgba(23, 138, 246, 0.4);
   }
 
   .ss-wall__tile img {
@@ -674,7 +674,9 @@ const reelBlocks = [
     background: #fff radial-gradient(1100px 520px at 50% 0, rgba(23, 138, 246, 0.1), rgba(255, 255, 255, 0)) no-repeat;
   }
   body.rs .vslrr__story, body.rs .ss-testimonial__quote { color: #3d4557; }
-  body.rs .vslrr__card:hover, body.rs [class*="ss-"]:hover { background-color: inherit; }
+  body.rs .vslrr__card { transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+  body.rs .vslrr__card:hover { background: #fff; border-color: rgba(23, 138, 246, 0.4); box-shadow: 0 14px 36px rgba(10, 14, 31, 0.09); }
+  body.rs .ss-compare__bar--before { background: #3d4557 !important; color: #fff !important; }
   body.rs .vslrr__card, body.rs .ss-testimonial, body.rs .ss-compare__card, body.rs .ss-wall__tile, body.rs .ss-reel-block { box-shadow: 0 10px 30px rgba(10, 14, 31, 0.06); }
   body.rs .vslbtn { background: #d6339a !important; color: #fff !important; box-shadow: 0 10px 26px rgba(214, 51, 154, 0.45) !important; }
   body.rs .ss-compare__bar--after { background: linear-gradient(135deg, #1e9bff, #0a5fd6) !important; color: #fff !important; }
