@@ -120,9 +120,8 @@ const faqs = [
         </h1>
         <!-- Phone twin of the headline: same words, own markup so each step can have its own size. Only one of the two is ever shown. -->
         <h1 class="h1-phone">
-          <span class="h-get">Get new</span>
-          <span class="h-num num">members</span>
-          <span class="h-sent"><span class="ul h-em">every month</span> from people <span class="num">who don't<br />follow you yet</span>.</span>
+          <span class="h-big">Get new <span class="num">members</span></span>
+          <span class="h-sent2"><span class="ul">every month</span>, from people<br />who don't follow you yet.</span>
         </h1>
         <p class="sub sub-phone"><span>One filming day a month.</span> <span>From scripts to posting.</span> <a class="sub-proof" href="#results">From followers to loyal members.&nbsp;&darr;</a></p>
       </div>
@@ -1347,6 +1346,9 @@ const faqs = [
     .dm h1 .h-num { display: block; font-size: min(12vw, 56px); letter-spacing: -0.035em; line-height: 1.05; }
     .dm h1 .h-sent { display: block; font-size: min(6.6vw, 26px); line-height: 1.2; margin-top: 8px; text-decoration-thickness: 3px; }
     .dm h1 .h-sent .ul { text-decoration-thickness: 4px; text-underline-offset: 6px; }
+    .dm h1 .h-big { display: block; font-size: min(10.6vw, 50px); line-height: 1.05; letter-spacing: -0.035em; white-space: nowrap; }
+    .dm h1 .h-sent2 { display: block; font-size: min(6.4vw, 28px); line-height: 1.25; margin-top: 10px; }
+    .dm h1 .h-sent2 .ul { text-decoration-thickness: 3px; text-underline-offset: 6px; }
     .dm .sub { max-width: none; }
 
     /* form: full width, no card */
