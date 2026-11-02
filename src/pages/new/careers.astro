@@ -1,6 +1,6 @@
 ---
 import Studio from "../../layouts/Studio.astro";
-import { team, GLASSDOOR_EN, LINKEDIN } from "../../data/studio.js";
+import { GLASSDOOR_EN, LINKEDIN } from "../../data/studio.js";
 const look = [
   ["You live in AI tools", "You use Claude every day, ChatGPT too, and you keep up with what is new. We expect you to find faster ways to do the work."],
   ["You build relationships", "For social media managers: clients trust you because you listen, you follow up, and you care how their account is doing."],
@@ -28,10 +28,6 @@ const faqs = [
     <div><b>2022</b><span>in business since</span></div>
     <div><b>1.2B</b><span>views generated for our clients</span></div>
     <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
-  </section>
-  <section class="wrap sec">
-    <div class="sh"><h2>The people you'd work with</h2><p>Fully remote, with people in the US and LATAM.</p></div>
-    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
   </section>
   <section class="wrap sec">
     <h2 class="sh">Who we look for</h2>

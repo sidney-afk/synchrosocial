@@ -2,8 +2,9 @@
 import Studio from "../../layouts/Studio.astro";
 import { caseStudies } from "../../data/caseStudies.js";
 const avatar = { "Baya Voce": "baya-voce", "Danny Morel": "danny-morel", "Morgan Burch": "morgan-burch", "Jessica Winterstern": "jessica-winterstern", "Garrain Jones": "garrain-jones", "Lucas Salame": "lucas-salame" };
-const pairs = [["Baya Voce", "baya"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"]];
+const pairs = [["Baya Voce", "baya"], ["Danny Morel", "danny", "-feed"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"], ["Dr. Lily Baker", "lily", "-s"], ["Dr. Sonia Chopra", "sonia", "-s"]];
 const receipts = [
+  ["/images/apply4/lily-baker-insights.webp", "Dr. Lily Baker: 10.6M views in under three months"],
   ["danny-podcast-chart.webp", "Danny Morel at number one on Apple Podcasts"],
   ["danny-morel-tiktok.webp", "Danny Morel's TikTok at one million followers"],
   ["jessica-growth-chart.webp", "Jessica Winterstern's follower growth"],
@@ -23,21 +24,13 @@ const receipts = [
       <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div></div>
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
-  <section class="wrap sec">
-    <div class="sh"><h2>Doctors</h2><p>Medicine is one of the hardest places to make content work. These accounts did it anyway.</p></div>
-    <div class="dr">
-      <figure><img src="/images/apply4/lily-baker-before-after.webp" alt="Dr. Lily Baker's Instagram profile at 63.9K followers in May 2026 and 151K in September 2026" loading="lazy" /><figcaption><b>Dr. Lily Baker, chiropractor</b>63.9K to 151K followers in about four months</figcaption></figure>
-      <figure><img src="/images/apply4/lily-baker-insights.webp" alt="Dr. Lily Baker's Instagram insights: 10.6M views and 60,944 net new followers between July 8 and September 27" loading="lazy" /><figcaption><b>Dr. Lily Baker, insights</b>10.6M views in under three months</figcaption></figure>
-      <figure><img src="/images/apply4/sonia-chopra-before-after.webp" alt="Dr. Sonia Chopra's account before and after" loading="lazy" /><figcaption><b>Dr. Sonia Chopra, endodontist</b>Around 50% more followers and thousands of qualified leads</figcaption></figure>
-    </div>
-  </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>Before and after</h2><p>The same accounts, before we started and after the work had been running.</p></div>
-    <div class="ba">{pairs.map(([n, k]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
+    <div class="ba">{pairs.map(([n, k, x = ""]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before${x}.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after${x}.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
   </div></section>
   <section class="wrap sec">
     <h2 class="sh">More proof</h2>
-    <div class="rc">{receipts.map(([f, t]) => <figure><img src={`/images/audience-skyrocket/${f}`} alt={t} loading="lazy" /><figcaption>{t}</figcaption></figure>)}</div>
+    <div class="rc">{receipts.map(([f, t]) => <figure><img src={f.startsWith("/") ? f : `/images/audience-skyrocket/${f}`} alt={t} loading="lazy" /><figcaption>{t}</figcaption></figure>)}</div>
   </section>
 </Studio>
 <style is:global>
