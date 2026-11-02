@@ -2,12 +2,16 @@
 export const team = [
   { name: "Kasper", role: "Founder", img: "/images/kasper.jpg" },
   { name: "Sidney", role: "Operations and systems", img: "/images/sidney.jpg" },
-  { name: "Juani", role: "Client success and content operations", img: "/images/team/juani.webp" },
-  { name: "Analia", role: "Content and community strategy", img: "/images/team/analia.webp" },
-  { name: "Rocio", role: "Graphic design", img: "/images/rocio.jpg" },
-  { name: "Laura", role: "Social media", img: "/images/team/laura.webp" },
-  { name: "Sebastian", role: "Social media", img: "/images/team/sebastian.webp" },
-  { name: "Raha", role: "Social media", img: "/images/team/raha.webp" },
+  { name: "Juani", role: "Client success", img: "/images/team/juani.webp" },
+  { name: "Analia", role: "Social media manager", img: "/images/team/analia.webp" },
+  { name: "Laura", role: "Social media manager", img: "/images/team/laura.webp" },
+  { name: "Ludmila", role: "Social media manager", img: "/images/team/ludmila.webp" },
+  { name: "Raha", role: "Social media manager", img: "/images/team/raha.webp" },
+  { name: "Sebastian", role: "Social media manager", img: "/images/team/sebastian.webp" },
+  { name: "Iara", role: "Video editor", img: "/images/team/iara.webp" },
+  { name: "Nahuel", role: "Video editor", img: "/images/team/nahuel.webp" },
+  { name: "Santi", role: "Video editor", img: "/images/team/santi.webp" },
+  { name: "Rocio", role: "Graphic designer", img: "/images/rocio.jpg" },
 ];
 
 // People we've worked with: face, who they are, and the one result we can stand behind.
@@ -41,5 +45,8 @@ export const steps = [
   { img: "monetize-traffic", title: "Turn views into business", body: "Content and simple systems that bring in leads, so growth shows up in your calendar, not only your follower count." },
 ];
 
+export const LINKEDIN = "https://www.linkedin.com/company/synchro-social/";
+export const INSTAGRAM = "https://www.instagram.com/synchrosocial/";
+export const APPLY = "/apply";
 export const GLASSDOOR_EN =
   "https://www.glassdoor.com.ar/Evaluaciones/Synchro-Social-Evaluaciones-E10830564.htm?filter.iso3Language=eng&filter.employmentStatus=REGULAR&filter.employmentStatus=PART_TIME&filter.employmentStatus=CONTRACT&filter.employmentStatus=FREELANCE";
