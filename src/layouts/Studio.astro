@@ -41,7 +41,7 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
 </head>
 <body>
 <header class="nav">
-  <a class="brand" href="/new/"><img src="/images/logo.png" alt="" /><span>Synchro Social</span></a>
+  <a class="brand" href="/new/" aria-label="Synchro Social home"><img class="lt" src="/images/logo-lockup.png" alt="Synchro Social" /><img class="dk" src="/images/logo-lockup-white.png" alt="" /></a>
   <nav aria-label="Main">{links.map(([h, l]) => <a href={`/new/${h}`} aria-current={(page === h || (h === "" && page === "home")) ? "page" : undefined}>{l}</a>)}</nav>
   <div class="right">
     <button class="tg" type="button" aria-label="Switch between light and dark">
