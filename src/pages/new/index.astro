@@ -1,0 +1,48 @@
+---
+import Studio from "../../layouts/Studio.astro";
+import { team, people, reels, steps } from "../../data/studio.js";
+const doors = [
+  { t: "Grow your audience", p: "Strategy, scripts, editing and posting, run by one team.", g: "For clients", h: "/new/clients" },
+  { t: "Work with us", p: "A remote team in the US and LATAM, based in Miami.", g: "See open roles", h: "/new/careers" },
+  { t: "Get to know us", p: "How we started in 2019 and how we work today.", g: "Read our story", h: "/new/about" },
+];
+---
+<Studio title="Synchro Social | A social media studio" description="We plan, film, edit and grow social media for experts, founders and educators. Based in Miami, since 2019." page="home">
+  <section class="wrap hero">
+    <h1>A social media studio for people with something to say.</h1>
+    <div class="hb">
+      <p class="lede">We plan, film, edit and grow social media for experts, founders and educators. Real audiences, built since 2019.</p>
+      <div class="cta"><a class="btn" href="/new/clients">Work with us</a><a class="btn ghost" href="/new/careers">Join the team</a></div>
+    </div>
+  </section>
+  <section class="wrap stats" aria-label="In numbers">
+    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div><b>8M</b><span>followers grown across platforms</span></div>
+    <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
+  </section>
+  <section class="wrap sec">
+    <h2 class="sh">Where would you like to start?</h2>
+    <div class="dl">{doors.map(d => <a class="door" href={d.h}><h3>{d.t}</h3><p>{d.p}</p><span class="go">{d.g}</span></a>)}</div>
+  </section>
+  <section class="wrap sec tight">
+    <div class="sh"><h2>Videos we made</h2><p>Real reels from client accounts, with the views they got.</p></div>
+    <div class="rg">{reels.map(r => <figure class="reel"><img src={`/images/reels/${r.img}.jpg`} alt="" loading="lazy" /><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
+  </section>
+  <section class="band"><div class="wrap sec">
+    <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
+    <ul class="pg">{people.map(c => <li><img src={c.img} alt="" loading="lazy" /><div><b>{c.name}</b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
+  </div></section>
+  <section class="wrap sec">
+    <h2 class="sh">How we work</h2>
+    <ol class="sg">{steps.map(s => <li><img class="lt" src={`/images/process/${s.img}.webp`} alt="" loading="lazy" /><img class="dk" src={`/images/process-dark/${s.img}.webp`} alt="" loading="lazy" /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
+  </section>
+  <section class="band"><div class="wrap sec quote">
+    <blockquote>“I started Synchro because great people with real things to say were invisible online. Our job is to fix that, honestly and with real audiences.”</blockquote>
+    <p class="by"><img src="/images/kasper.jpg" alt="" />Kasper, founder</p>
+    <p class="note">Placeholder words until Kasper writes his own.</p>
+  </div></section>
+  <section class="wrap sec">
+    <div class="sh"><h2>The team</h2><p>Fully remote, with people in the US and LATAM.</p></div>
+    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
+  </section>
+</Studio>
