@@ -1549,4 +1549,14 @@ const faqs = [
     .dm .slide-img { max-height: 300px; width: auto; max-width: 100%; justify-self: center; }
     .dm .slide-fig.chart .bars { height: 150px; }
   }
+  /* Deck layout (2026-11-02 r3): slide number always top left; content spread evenly in the space below */
+  .dm .slide { position: relative; padding-top: 64px; }
+  .dm .slide .slide-n { position: absolute; top: 28px; left: 40px; }
+  .dm .slide.slide-end .slide-n { left: 40px; }
+  @media (max-width: 720px) {
+    .dm .slide { display: flex; flex-direction: column; justify-content: space-evenly; gap: 0; padding: 52px 20px 20px; }
+    .dm .slide .slide-n { top: 20px; left: 20px; }
+    .dm .slide.slide-end { justify-content: center; }
+    .dm .slide.slide-end .slide-n { left: 20px; }
+  }
 </style>
