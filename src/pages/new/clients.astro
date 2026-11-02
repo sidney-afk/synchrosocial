@@ -1,0 +1,62 @@
+---
+import Studio from "../../layouts/Studio.astro";
+import { campaignProof } from "../../data/campaignProof.js";
+import { testimonials } from "../../data/testimonials.js";
+import { steps } from "../../data/studio.js";
+const others = ["Bots, fake followers and ghost views", "No guarantees, empty promises", "Heavy reliance on expensive ad spend", "Generic, one-size-fits-all approaches", "Little or no visibility into results", "Low-quality, outdated content tactics"];
+const us = ["Real, engaged audiences", "Organic reach, without paying for every view", "Content and angles built from real audience data", "Clear reporting you can read in two minutes", "A team that learns your brand and your voice"];
+const faqs = [
+  ["How do I know if I'm a fit?", "We work best with established experts, founders and educators who are ready to invest in a real growth system, not a quick fix. If you have an offer and want consistent content and leads without doing it all yourself, you're likely a fit."],
+  ["What kinds of businesses does this work for?", "Coaches, doctors, authors, course creators, programs, founders, podcasters and educators who want to grow their impact and revenue on social media."],
+  ["What results can I expect?", "Consistent, on-brand content, real follower growth and qualified leads. Results depend on your starting point, your niche and your offer, and we'll tell you honestly on the first call."],
+  ["Which platforms do you work on?", "Mostly Instagram, with plans for TikTok, YouTube and Facebook depending on where your audience lives."],
+  ["Will it work with my type of content?", "Yes. We study your brand and audience first and build content and angles specific to you, in your voice."],
+  ["How long until I see results?", "Most clients build real momentum within the first 90 days."],
+];
+---
+<Studio title="Work with Synchro Social" description="Strategy, scripts, filming plans, editing and posting for experts, founders and educators. 1.2B views generated, 8M followers grown." page="clients">
+  <section class="wrap hero">
+    <h1>Grow an audience that turns into business.</h1>
+    <div class="hb">
+      <p class="lede">Stop worrying about where the next client will come from. We run your social media end to end, so you can stay focused on your work.</p>
+      <div class="cta"><a class="btn" href="#talk">Book a call</a><a class="btn ghost" href="#results">See results</a></div>
+    </div>
+  </section>
+  <section class="wrap stats" aria-label="In numbers">
+    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div><b>8M</b><span>followers grown across platforms</span></div>
+    <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
+  </section>
+  <section class="wrap sec" id="results">
+    <div class="sh"><h2>Real campaigns, real growth</h2><p>From views to leads to revenue. Press play to hear it from them.</p></div>
+    <div class="vg">{campaignProof.map(c => (
+      <div class="vi">
+        <button class="vid wide" data-wistia={c.wistia} aria-label={`Play ${c.name}'s story`}><img src={c.poster} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
+        <h3>{c.name}</h3><small>{c.label.split(" - ")[1]}</small>
+        <ul>{c.results.map(r => <li>{r}</li>)}</ul>
+      </div>))}</div>
+  </section>
+  <section class="band"><div class="wrap sec">
+    <h2 class="sh">How we work</h2>
+    <ol class="sg">{steps.map(s => <li><img class="lt" src={`/images/process/${s.img}.webp`} alt="" loading="lazy" /><img class="dk" src={`/images/process-dark/${s.img}.webp`} alt="" loading="lazy" /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
+  </div></section>
+  <section class="wrap sec">
+    <h2 class="sh">Why we're different</h2>
+    <div class="cmp"><div class="no"><h3>Most agencies</h3><ul>{others.map(o => <li>{o}</li>)}</ul></div><div><h3>Synchro Social</h3><ul>{us.map(o => <li>{o}</li>)}</ul></div></div>
+  </section>
+  <section class="band"><div class="wrap sec">
+    <div class="sh"><h2>In their own words</h2><p>Unscripted, on camera, from people who have been through the whole process.</p></div>
+    <div class="vg">{testimonials.map(t => (
+      <div class="vi"><button class="vid wide" data-wistia={t.wistia} aria-label={`Play ${t.name}'s testimonial`}><img src={`/images/wistia/${t.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
+      <h3>{t.name}</h3><small>{t.shortRole}</small></div>))}</div>
+  </div></section>
+  <section class="wrap sec split">
+    <h2>Questions</h2>
+    <div class="faq">{faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}</div>
+  </section>
+  <section class="band" id="talk"><div class="wrap sec end">
+    <h2>Want this for your brand?</h2>
+    <p>Book a call and we'll tell you honestly whether our process fits what you're building.</p>
+    <div class="cta"><a class="btn" href="/apply">Book a call</a></div>
+  </div></section>
+</Studio>

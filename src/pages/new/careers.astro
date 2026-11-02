@@ -1,0 +1,56 @@
+---
+import Studio from "../../layouts/Studio.astro";
+import { team, GLASSDOOR_EN } from "../../data/studio.js";
+const roles = [
+  { t: "Content Operations Manager", p: "Keep every client's content moving: plans, deadlines, editors and the details in between.", h: "/hiring" },
+  { t: "Social media, editing and design", p: "A hybrid role for 2027: plan posts, edit short videos and make the graphics that go with them.", h: "#apply" },
+];
+const how = [
+  ["Fully remote", "Work from anywhere. The team is spread across the US and LATAM, with our home base in Miami."],
+  ["US Eastern hours", "We work on US Eastern time, so our clients get answers the same day."],
+  ["AI first", "We plan, write and edit with AI tools like Claude, and we teach you how."],
+  ["Real clients, real work", "You'll work on accounts that reach millions of people, not practice projects."],
+];
+const faqs = [
+  ["Is it remote?", "Yes, fully. You work from home, wherever that is."],
+  ["What hours do you work?", "US Eastern time business hours, with some flexibility depending on the role."],
+  ["What does the hiring process look like?", "You apply through the role's page, we review every application, and the people we shortlist get a call with the team."],
+];
+---
+<Studio title="Careers at Synchro Social | Remote jobs" description="Remote jobs in social media, editing, design and operations at Synchro Social, a Miami social media studio with a team across the US and LATAM." page="careers">
+  <section class="wrap hero">
+    <h1>Do the best work of your career, from anywhere.</h1>
+    <div class="hb"><p class="lede">We're a social media studio based in Miami, hiring editors, social media managers, designers and operations people across the US and LATAM.</p><div class="cta"><a class="btn" href="#roles">See open roles</a></div></div>
+  </section>
+  <section class="wrap stats" aria-label="About us">
+    <div><b>2019</b><span>in business since</span></div>
+    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
+  </section>
+  <section class="wrap sec">
+    <div class="sh"><h2>The people you'd work with</h2><p>Fully remote, with people in the US and LATAM.</p></div>
+    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
+  </section>
+  <section class="band"><div class="wrap sec">
+    <h2 class="sh">How we work</h2>
+    <div class="bl">{how.map(([t, p]) => <div><h3>{t}</h3><p>{p}</p></div>)}</div>
+  </div></section>
+  <section class="wrap sec" id="roles">
+    <h2 class="sh">Open roles</h2>
+    <div class="roles">{roles.map(r => <a class="role" href={r.h}><h3>{r.t}</h3><p>{r.p}</p><span class="go link">Apply</span></a>)}</div>
+  </section>
+  <section class="band" id="reviews"><div class="wrap sec end">
+    <h2>Hear it from the team</h2>
+    <p>Read what people who work here say about us on Glassdoor.</p>
+    <div class="cta"><a class="btn ghost" href={GLASSDOOR_EN}>Read our Glassdoor reviews</a></div>
+  </div></section>
+  <section class="wrap sec split">
+    <h2>Questions</h2>
+    <div class="faq">{faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}</div>
+  </section>
+</Studio>
+<style is:global>
+.bl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s6);border-top:1px solid var(--line);padding-top:var(--s4)}
+.bl h3{font-size:26px;margin-bottom:8px}.bl p{color:var(--mute);max-width:46ch}
+@media (max-width:820px){.bl{grid-template-columns:1fr;gap:var(--s4)}}
+</style>

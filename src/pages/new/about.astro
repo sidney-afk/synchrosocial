@@ -1,0 +1,49 @@
+---
+import Studio from "../../layouts/Studio.astro";
+import { team } from "../../data/studio.js";
+const beliefs = [
+  ["Real audiences only", "No bots, no bought followers, no ghost views. If the number is not real, it is worth nothing to you."],
+  ["Research before content", "We study the audience before we write a single hook, so the content is built on what people actually care about."],
+  ["One team that learns your voice", "The same people plan, script, edit and post, so your content sounds like you and gets better every month."],
+  ["Clear, honest reporting", "You always know what is working, what is not, and what we are changing next."],
+];
+---
+<Studio title="About | Synchro Social" description="A social media studio founded in 2019, based in Miami, with a fully remote team in the US and LATAM." page="about">
+  <section class="wrap hero">
+    <h1>We help people with something to say get heard.</h1>
+    <div class="hb"><p class="lede">Synchro Social is a social media studio founded in 2019. We're based in Miami, with a fully remote team in the US and LATAM.</p></div>
+  </section>
+  <section class="wrap sec tight split">
+    <img class="portrait" src="/images/apply4/kasper-founder.webp" alt="Kasper, founder of Synchro Social" />
+    <div>
+      <h2 class="sh">Why Synchro exists</h2>
+      <div class="prose">
+        <p>Placeholder for Kasper's story: why he started Synchro, what he saw that was broken, and what he wanted to build instead. We will write this with him in his own words.</p>
+      </div>
+      <div class="facts" style="margin-top:40px">
+        <div><b>2019</b><span>founded</span></div>
+        <div><b>Miami</b><span>home base</span></div>
+        <div><b>US and LATAM</b><span>fully remote team</span></div>
+        <div><b>AI first</b><span>we plan and edit with AI</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="band"><div class="wrap sec">
+    <h2 class="sh">What we believe</h2>
+    <div class="bl">{beliefs.map(([t, p]) => <div><h3>{t}</h3><p>{p}</p></div>)}</div>
+  </div></section>
+  <section class="wrap sec">
+    <div class="sh"><h2>The team</h2><a class="link" href="/new/careers">We're hiring</a></div>
+    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
+  </section>
+  <section class="wrap stats" aria-label="Recognition" style="margin-bottom:120px">
+    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div><b>8M</b><span>followers grown across platforms</span></div>
+    <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
+  </section>
+</Studio>
+<style is:global>
+.bl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s6);border-top:1px solid var(--line);padding-top:var(--s4)}
+.bl h3{font-size:26px;margin-bottom:8px}.bl p{color:var(--mute);max-width:46ch}
+@media (max-width:820px){.bl{grid-template-columns:1fr;gap:var(--s4)}}
+</style>
