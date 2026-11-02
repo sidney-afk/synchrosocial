@@ -145,3 +145,19 @@ iframe.vid{border:0}
  .quote blockquote{font-size:28px}
  .foot nav{gap:var(--s5);flex-wrap:wrap}
 }
+/* round 2: hero with Kasper, 12-person team, page transitions */
+.hk{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:var(--s5);align-items:center}
+.hk h1{font-size:clamp(42px,5.4vw,80px);max-width:15ch}
+.hk .lede{margin:var(--s3) 0 var(--s4)}
+.hk figure img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:var(--r)}
+.hk figcaption{margin-top:10px;font-size:14px;color:var(--mute)}
+.tm{grid-template-columns:repeat(6,minmax(0,1fr));row-gap:var(--s4)}
+@view-transition{navigation:auto}
+.nav{view-transition-name:nav}
+::view-transition-old(root){animation:sv-out .18s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:sv-in .32s cubic-bezier(.23,1,.32,1) both}
+@keyframes sv-out{to{opacity:0}}
+@keyframes sv-in{from{opacity:0;transform:translateY(10px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@media (max-width:1000px){.tm{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:820px){.hk{grid-template-columns:1fr;gap:var(--s4)}.hk figure img{aspect-ratio:4/3}.tm{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3) var(--s2)}}
