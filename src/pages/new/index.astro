@@ -1,6 +1,6 @@
 ---
 import Studio from "../../layouts/Studio.astro";
-import { team, people, reels, steps } from "../../data/studio.js";
+import { people, reels, steps } from "../../data/studio.js";
 const doors = [
   { t: "Grow your audience", p: "Strategy, scripts, editing and posting, run by one team.", g: "For clients", h: "/new/clients" },
   { t: "Work with us", p: "A remote team in the US and LATAM, based in Miami.", g: "See open roles", h: "/new/careers" },
@@ -28,8 +28,8 @@ const doors = [
     <div class="dl">{doors.map(d => <a class="door" href={d.h}><h3>{d.t}</h3><p>{d.p}</p><span class="go">{d.g}</span></a>)}</div>
   </section>
   <section class="wrap sec tight">
-    <div class="sh"><h2>Videos we made</h2><p>Real reels from client accounts, with the views they got.</p></div>
-    <div class="rg">{reels.map(r => <figure class="reel"><img src={`/images/reels/${r.img}.jpg`} alt="" loading="lazy" /><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
+    <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
+    <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || `/images/wistia/${r.w}.webp`} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
   </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
@@ -40,11 +40,7 @@ const doors = [
     <ol class="sg">{steps.map(s => <li><img class="lt" src={`/images/process/${s.img}.webp`} alt="" loading="lazy" /><img class="dk" src={`/images/process-dark/${s.img}.webp`} alt="" loading="lazy" /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
   </section>
   <section class="band"><div class="wrap sec quote">
-    <blockquote>“I started Synchro because great people with real things to say were invisible online. Our job is to fix that, honestly and with real audiences.”</blockquote>
+    <blockquote>“I kept meeting people who really knew their stuff and nobody online had heard of them. That bugged me. So that's the job: get them seen, by real people, without the fake stuff.”</blockquote>
     <p class="by"><img src="/images/kasper.jpg" alt="" />Kasper, founder</p>
       </div></section>
-  <section class="wrap sec">
-    <div class="sh"><h2>The team</h2><p>Fully remote, with people in the US and LATAM.</p></div>
-    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
-  </section>
 </Studio>

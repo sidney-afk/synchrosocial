@@ -15,7 +15,7 @@ const receipts = [
 <Studio title="Results | Synchro Social" description="Case studies, before and after accounts and the receipts behind 1.2B views and 8M followers." page="results">
   <section class="wrap hero">
     <h1>The receipts behind<br />1.2 billion views.</h1>
-    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts.</p><div class="cta"><a class="btn" href="/apply" target="_blank" rel="noopener">Book a call</a></div></div>
+    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts.</p><div class="cta"><a class="btn" href="/apply" data-vsl-book>Book a call</a></div></div>
   </section>
   {caseStudies.map((c, i) => (
     <section class={i % 2 ? "band" : ""}><div class="wrap sec tight cs">
@@ -24,15 +24,24 @@ const receipts = [
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
   <section class="wrap sec">
-    <div class="sh"><h2>Before and after</h2><p>The same accounts, before we started and after the work had been running.</p></div>
-    <div class="ba">{pairs.map(([n, k]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
+    <div class="sh"><h2>Doctors</h2><p>Medicine is one of the hardest places to make content work. These accounts did it anyway.</p></div>
+    <div class="dr">
+      <figure><img src="/images/apply4/lily-baker-before-after.webp" alt="Dr. Lily Baker's Instagram profile at 63.9K followers in May 2026 and 151K in September 2026" loading="lazy" /><figcaption><b>Dr. Lily Baker, chiropractor</b>63.9K to 151K followers in about four months</figcaption></figure>
+      <figure><img src="/images/apply4/lily-baker-insights.webp" alt="Dr. Lily Baker's Instagram insights: 10.6M views and 60,944 net new followers between July 8 and September 27" loading="lazy" /><figcaption><b>Dr. Lily Baker, insights</b>10.6M views in under three months</figcaption></figure>
+      <figure><img src="/images/apply4/sonia-chopra-before-after.webp" alt="Dr. Sonia Chopra's account before and after" loading="lazy" /><figcaption><b>Dr. Sonia Chopra, endodontist</b>Around 50% more followers and thousands of qualified leads</figcaption></figure>
+    </div>
   </section>
   <section class="band"><div class="wrap sec">
+    <div class="sh"><h2>Before and after</h2><p>The same accounts, before we started and after the work had been running.</p></div>
+    <div class="ba">{pairs.map(([n, k]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
+  </div></section>
+  <section class="wrap sec">
     <h2 class="sh">More proof</h2>
     <div class="rc">{receipts.map(([f, t]) => <figure><img src={`/images/audience-skyrocket/${f}`} alt={t} loading="lazy" /><figcaption>{t}</figcaption></figure>)}</div>
-  </div></section>
+  </section>
 </Studio>
 <style is:global>
+.dr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);align-items:start}.dr img{width:100%;border-radius:var(--r);border:1px solid var(--line)}.dr figcaption{margin-top:12px;color:var(--mute);font-size:15px}.dr b{display:block;color:var(--fg);font-weight:600}@media (max-width:820px){.dr{grid-template-columns:1fr}}
 .who{display:flex;align-items:center;gap:12px;margin-top:10px;color:var(--mute);line-height:1.35}.who img{width:48px;height:48px;border-radius:50%;object-fit:cover}.who small{font-size:14px}
 .kpis{display:flex;gap:var(--s5)}.kpis b{display:block;font:800 40px/1 var(--disp);letter-spacing:-.03em}.kpis span{color:var(--mute);font-size:14px}
 .cs .vg{grid-template-columns:repeat(3,minmax(0,1fr));max-width:820px;margin-left:auto;gap:var(--s3)}.cs .sh{margin-bottom:0}.cs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:var(--s5);align-items:start}.cs .sh{flex-direction:column;align-items:start}.cs .who{display:flex;align-items:center;gap:12px;margin-top:10px;color:var(--mute);line-height:1.35}.who img{width:48px;height:48px;border-radius:50%;object-fit:cover}.who small{font-size:14px}
