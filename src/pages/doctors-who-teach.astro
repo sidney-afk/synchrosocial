@@ -198,15 +198,16 @@ const faqs = [
         </div>
         <div class="deck-nav">
           <button type="button" class="deck-arrow" data-dir="-1" aria-label="Previous slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
-          <div class="deck-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="deck-dots"><button type="button" aria-label="Go to slide 1"><i></i></button><button type="button" aria-label="Go to slide 2"><i></i></button><button type="button" aria-label="Go to slide 3"><i></i></button><button type="button" aria-label="Go to slide 4"><i></i></button><button type="button" aria-label="Go to slide 5"><i></i></button><button type="button" aria-label="Go to slide 6"><i></i></button><button type="button" aria-label="Go to slide 7"><i></i></button><button type="button" aria-label="Go to slide 8"><i></i></button></div>
           <button type="button" class="deck-arrow" data-dir="1" aria-label="Next slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
       </div>
       <script is:inline>
-        (function(){var s=document.getElementById('deck');if(!s)return;var t=s.querySelector('.deck-track'),d=s.querySelectorAll('.deck-dots i'),a=s.querySelectorAll('.deck-arrow');
+        (function(){var s=document.getElementById('deck');if(!s)return;var t=s.querySelector('.deck-track'),d=s.querySelectorAll('.deck-dots button'),a=s.querySelectorAll('.deck-arrow');
         function cur(){return Math.round(t.scrollLeft/t.clientWidth);}
-        function upd(){var c=cur();d.forEach(function(x,i){x.classList.toggle('on',i===c);});a[0].disabled=c===0;a[1].disabled=c===d.length-1;}
+        function upd(){var c=cur();d.forEach(function(x,i){x.classList.toggle('on',i===c);x.setAttribute('aria-current',i===c?'true':'false');});a[0].disabled=c===0;a[1].disabled=c===d.length-1;}
         a.forEach(function(b){b.addEventListener('click',function(){t.scrollTo({left:t.clientWidth*(cur()+Number(b.dataset.dir)),behavior:'smooth'});});});
+        d.forEach(function(x,i){x.addEventListener('click',function(){t.scrollTo({left:t.clientWidth*i,behavior:'smooth'});});});
         t.addEventListener('scroll',function(){window.requestAnimationFrame(upd);},{passive:true});upd();})();
       </script>
     </section>
@@ -1462,9 +1463,12 @@ const faqs = [
   .dm .slide-n { font-size: 13px; font-weight: 600; letter-spacing: .04em; color: #d6339a; }
   .dm .slide-img { width: 100%; max-height: 320px; object-fit: contain; border-radius: 12px; }
   .dm .deck-nav { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 18px; }
-  .dm .deck-dots { display: flex; gap: 8px; }
-  .dm .deck-dots i { width: 7px; height: 7px; border-radius: 50%; background: #cfd5de; transition: background .2s ease, transform .2s ease; }
-  .dm .deck-dots i.on { background: #d6339a; transform: scale(1.25); }
+  .dm .deck-dots { display: flex; gap: 0; }
+  .dm .deck-dots button { display: grid; place-items: center; width: 22px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .dm .deck-dots i { display: block; width: 7px; height: 7px; border-radius: 50%; background: #cfd5de; transition: background .2s ease, transform .2s ease; }
+  .dm .deck-dots button:hover i { background: #a9b1bd; }
+  .dm .deck-dots button.on i { background: #d6339a; transform: scale(1.25); }
+  .dm .deck-dots button:focus-visible { outline: 2px solid #d6339a; outline-offset: -4px; border-radius: 6px; }
   .dm .deck-arrow { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 0; background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(10,20,40,.12); cursor: pointer; transition: color .15s ease, opacity .15s ease; }
   .dm .deck-arrow:disabled { opacity: .35; cursor: default; }
   @media (hover: hover) { .dm .deck-arrow:not(:disabled):hover { color: #d6339a; } }
