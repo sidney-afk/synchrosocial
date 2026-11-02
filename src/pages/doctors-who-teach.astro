@@ -239,9 +239,8 @@ const faqs = [
       <div class="wrap">
         <h2>Doctors I've worked with</h2>
         <div class="rstats">
-          <div><b>0 &rarr; 900+</b><span>members in her new membership, in 10 weeks</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Lily Baker · Chiropractor <span class="ig">@theopenposturedoc</span></span></em></div>
-          <div><b>90,000</b><span>new followers in under 90 days, 17,000 of them from one reel</span><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Lily Baker · Chiropractor <span class="ig">@theopenposturedoc</span></span></em></div>
-          <div><b>+50%</b><span>followers in under 6 months</span><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Sonia Chopra · Endodontist <span class="ig">@drsoniachopra</span></span></em></div>
+          <div class="rdoc"><em><img class="rav" src="/images/apply4/lily-baker-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Lily Baker · Chiropractor <span class="ig">@theopenposturedoc</span></span></em><div class="rnums"><div><b>900+</b><span>members in her new membership, from zero in 10 weeks</span></div><div><b>90,000</b><span>new followers in under 90 days, 17,000 of them from one reel</span></div></div></div>
+          <div class="rdoc"><em><img class="rav" src="/images/apply4/sonia-chopra-avatar.webp" alt="" width="40" height="40" loading="lazy" /><span>Dr. Sonia Chopra · Endodontist <span class="ig">@drsoniachopra</span></span></em><div class="rnums"><div><b>50%</b><span>more followers in under 6 months</span></div></div></div>
         </div>
         <div class="floatshots">
           <img
@@ -1283,10 +1282,13 @@ const faqs = [
   @media (max-width: 380px) { .dm .sb-in { padding: 6px 2px; } .dm .sb-in a { font-size: 11.5px; padding: 9px 4px; } .dm .sb-in a.sb-btn { padding: 9px 8px; } }
   .dm .grp { font-size: clamp(22px, 3.4vw, 30px); letter-spacing: -0.02em; margin: 44px 0 0; color: #fff; }
   .dm .more-grp { margin-top: 64px; }
-  .dm .rstats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 860px; margin: 28px auto 0; }
+  .dm .rstats { display: flex; flex-direction: column; align-items: center; gap: 56px; max-width: 900px; margin: 36px auto 0; text-align: center; }
+  .dm .rdoc { display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; }
+  .dm .rnums { display: flex; justify-content: center; gap: 56px; width: 100%; }
+  .dm .rnums > div { flex: 0 1 380px; }
   .dm .rstats b { display: block; font-size: clamp(44px, 7vw, 72px); line-height: 1; letter-spacing: -0.03em; color: #fff; }
-  .dm .rstats span { display: block; margin-top: 8px; font-size: 18px; font-weight: 600; color: #fff; }
-  .dm .rstats em { display: block; margin-top: 4px; font-style: normal; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--p-light); }
+  .dm .rnums span { display: block; margin-top: 10px; font-size: 18px; font-weight: 600; color: #fff; }
+  .dm .rstats em { font-style: normal; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--p-light); }
   .dm .floatshots { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; max-width: 1040px; margin: 38px auto 0; align-items: center; }
   .dm .floatshots img { width: 100%; height: auto; display: block; border-radius: var(--r); background: #fff; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4); }
   .dm .shotcap { max-width: 640px; margin: 16px auto 0; font-size: 14px; color: rgba(255, 255, 255, 0.75); }
@@ -1299,7 +1301,7 @@ const faqs = [
   .dm .results .more-pair figcaption { color: var(--p-light); }
   .dm .results .quotes { max-width: 640px; margin-top: 26px; }
   .dm .results .quote.quote-inline { margin-bottom: 36px; }
-  @media (max-width: 720px) { .dm .rstats, .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } .dm .rstats { text-align: center; } }
+  @media (max-width: 720px) { .dm .floatshots, .dm .floatvids { grid-template-columns: 1fr; } }
   .dm .rstats em { display: inline-flex; align-items: center; gap: 10px; text-align: left; }
   .dm .rav { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.85); }
   .dm p.hero-guarantee { text-wrap: balance; }
@@ -1419,14 +1421,15 @@ const faqs = [
 
     /* results: doctor lines stack and centre */
     /* results: one block per doctor, no boxes, a thin line between. Who they are first, then the number. */
-    .dm .rstats { grid-template-columns: 1fr; gap: 0; margin-top: 24px; text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.2); }
-    .dm .rstats > div { display: flex; flex-direction: column; padding: 24px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
-    .dm .rstats em { order: -1; display: flex; flex-direction: row; align-items: center; gap: 14px; margin: 0 0 16px; text-align: left; text-transform: none; letter-spacing: 0; font-size: 17px; font-weight: 700; line-height: 1.3; color: #fff; }
-    .dm .rstats em > span { display: block; margin: 0; font-size: 17px; text-align: left; }
+    .dm .rstats { gap: 40px; margin-top: 28px; }
+    .dm .rdoc { gap: 18px; }
+    .dm .rnums { flex-direction: column; gap: 26px; }
+    .dm .rnums > div { flex: none; }
+    .dm .rstats em { text-transform: none; letter-spacing: 0; font-size: 17px; font-weight: 700; line-height: 1.3; color: #fff; }
     .dm .rstats em .ig { font-size: 14px; font-weight: 500; opacity: 0.8; color: var(--p-light); margin-top: 2px; }
     .dm .rav { width: 56px; height: 56px; flex: none; }
-    .dm .rstats b { font-size: 50px; color: #fff; }
-    .dm .rstats > div > span { font-size: 16px; margin-top: 8px; }
+    .dm .rstats b { font-size: 50px; }
+    .dm .rnums span { font-size: 16px; margin-top: 8px; }
     .dm .results .quote.quote-inline { padding: 22px 18px; }
 
     /* FAQ: bigger taps */
