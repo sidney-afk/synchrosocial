@@ -776,14 +776,27 @@ const faqs = [
     // Start fetching the calendar's own files while the person is still filling in the form,
     // so the calendar appears sooner after the last tap.
     var warmCal = function () {
-      f.removeEventListener("focusin", warmCal);
       var l = document.createElement("link");
       l.rel = "preconnect"; l.href = "https://app.iclosed.io"; l.crossOrigin = "anonymous";
       document.head.appendChild(l);
       try { fetch("https://app.iclosed.io/assets/widget.js", { mode: "no-cors" }).catch(function () {}); } catch (e) {}
     };
-    f.addEventListener("focusin", warmCal);
-    f.addEventListener("focusout", function () { root.classList.remove("kb-open"); });
+    // Wait until the person pauses, so this never competes with typing (Instagram's browser can stall).
+    var warmTimer = null;
+    f.addEventListener("focusin", function () {
+      if (warmTimer) return;
+      warmTimer = setTimeout(function () {
+        if ("requestIdleCallback" in window) requestIdleCallback(warmCal, { timeout: 3000 }); else warmCal();
+      }, 2500);
+    });
+    // Moving from one field to the next: keep the menu bar hidden instead of flashing it back,
+    // which made the page jump inside Instagram's browser.
+    f.addEventListener("focusout", function () {
+      setTimeout(function () {
+        var a = document.activeElement;
+        if (!(a && f.contains(a) && a.matches("input, select, textarea"))) root.classList.remove("kb-open");
+      }, 150);
+    });
   })();
 </script>
 
