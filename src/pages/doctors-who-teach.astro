@@ -134,8 +134,8 @@ const faqs = [
           <article class="slide"><div class="slide-text"><span class="slide-n">2 / 8</span><h2>Followers don't pay. Members do.</h2><p>I don't chase views for their own sake. I build an audience of people who want what you teach, then turn them into members.</p></div><figure class="slide-fig chart" aria-label="Dr. Lily Baker's membership: 0 on 22 Aug, 490 on 8 Sep, 856 on 20 Oct, 908 on 31 Oct"><div class="bars"><div style="--h:2%"><b>0</b><i></i><span>22 Aug</span></div><div style="--h:54%"><b>490</b><i></i><span>8 Sep</span></div><div style="--h:94%"><b>856</b><i></i><span>20 Oct</span></div><div class="hi" style="--h:100%"><b>908</b><i></i><span>31 Oct</span></div></div><figcaption><span class="who"><img src="/images/apply4/lily-baker-avatar.webp" alt="" width="28" height="28" />Dr. Lily Baker's membership, 2026</span></figcaption></figure></article>
           <article class="slide"><div class="slide-text"><span class="slide-n">3 / 8</span><span class="who"><img src="/images/apply4/lily-baker-avatar.webp" alt="" width="28" height="28" />Dr. Lily Baker · Chiropractor</span><h2>0 to 900+ members in 10 weeks.</h2><p>Dr. Lily Baker launched her membership on 22 August and passed 900 members by 31 October. Her followers went from 63,900 in May to 151,000 in September, 17,000 of them from one reel.</p></div><img class="slide-img" src="/images/apply4/lily-baker-before-after-deck.webp" alt="Dr. Lily Baker's Instagram profile: 63.9K followers in May 2026, 151K in September 2026" loading="lazy" decoding="async" /></article>
           <article class="slide"><div class="slide-text"><span class="slide-n">4 / 8</span><h2>You give me 20 minutes a week and one filming day a month.</h2><p>I write the scripts, you approve them, you show up and talk. My team edits, tests and posts. Nothing goes out without your yes.</p></div><div class="slide-fig big-nums"><div><b>20</b><span>minutes a week</span></div><div><b>1</b><span>filming day a month</span></div></div></article>
-          <article class="slide"><div class="slide-text"><span class="slide-n">5 / 8</span><h2>You work with me, not a junior account manager.</h2><p>I'm Kasper, the founder. A call every two weeks, and I'm in your Slack every day. Your first post goes live 2 to 3 weeks after you start.</p><a class="btn" href="#apply">Let's get on a call</a></div><img class="slide-img" src="/images/apply4/kasper-lily-call.webp" alt="Kasper on a video call with Dr. Lily Baker" loading="lazy" decoding="async" /></article>
-          <article class="slide"><div class="slide-text"><span class="slide-n">6 / 8</span><h2>How we find what works.</h2><p>Years of growing accounts for doctors, coaches and experts in different fields. I research your market, and my team uses AI tools we built to find and break down what your competitors post. Then we test: several openings of every video, shown to people who don't follow you yet. We keep what brings in followers and make more of it.</p></div><img class="slide-img" src="/images/apply4/lily-baker-insights-deck.webp" alt="Dr. Lily Baker's Instagram insights, Jul 8 to Sep 27: 10,651,859 views" loading="lazy" decoding="async" /></article>
+          <article class="slide"><div class="slide-text"><span class="slide-n">5 / 8</span><h2>You work with me, not a junior account manager.</h2><p>I'm Kasper, the founder. We talk every two weeks, and I'm in your Slack every day.</p><a class="btn" href="#apply">Let's get on a call</a></div><img class="slide-img" src="/images/apply4/kasper-lily-call.webp" alt="Kasper on a video call with Dr. Lily Baker" loading="lazy" decoding="async" /></article>
+          <article class="slide"><div class="slide-text"><span class="slide-n">6 / 8</span><h2>How we find what works.</h2><p>Years of growing accounts in many fields, deep market research, and AI tools we built to study your competitors. Then we test several openings of every video and make more of what works.</p></div><img class="slide-img" src="/images/apply4/lily-baker-insights-deck.webp" alt="Dr. Lily Baker's Instagram insights, Jul 8 to Sep 27: 10,651,859 views" loading="lazy" decoding="async" /></article>
           <article class="slide"><div class="slide-text"><span class="slide-n">7 / 8</span><h2>Who this is for.</h2><p>Doctors who sell a course, a program or a membership, and want it to grow.</p></div><ul class="slide-fig fit-list"><li>You sell a course, a program or a membership, or you're ready to.</li><li>You want it to grow from social media.</li><li>You can give one filming day a month.</li></ul></article>
           <article class="slide slide-end"><div class="slide-text"><span class="slide-n">8 / 8</span><h2>Let's look at your account together.</h2><p>Fill in the short form below. On our call I look at what you've built and map out the strategy to grow it.</p><a class="btn" href="#apply">Let's get on a call <span aria-hidden="true">&darr;</span></a></div></article>
         </div>
@@ -1558,5 +1558,18 @@ const faqs = [
     .dm .slide .slide-n { top: 20px; left: 20px; }
     .dm .slide.slide-end { justify-content: center; }
     .dm .slide.slide-end .slide-n { left: 20px; }
+  }
+  /* Phone r4 (2026-11-02): every item on a slide gets the same space above, between and below */
+  @media (max-width: 720px) {
+    .dm .slide { justify-content: space-evenly; align-items: stretch; text-align: left; row-gap: 12px; }
+    .dm .slide h2, .dm .slide p { text-align: left; }
+    .dm .slide .who { align-self: flex-start; }
+    .dm .slide.slide-end h2, .dm .slide.slide-end p { text-align: center; }
+    .dm .slide .slide-text, .dm .slide .fit-list { display: contents; }
+    .dm .slide .who { margin-bottom: -4px; }
+    .dm .slide .btn { width: 100%; }
+    .dm .big-nums { flex-direction: column; align-items: center; gap: 22px; }
+    .dm .slide.slide-end { justify-content: space-evenly; text-align: center; }
+    .dm .slide.slide-end .btn { align-self: stretch; }
   }
 </style>
