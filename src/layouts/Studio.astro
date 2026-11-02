@@ -1,15 +1,37 @@
 ---
 import "../styles/studio.css";
-import { GLASSDOOR_EN, LINKEDIN, INSTAGRAM, APPLY } from "../data/studio.js";
+import { GLASSDOOR_EN, LINKEDIN, INSTAGRAM, APPLY, SITE_LIVE } from "../data/studio.js";
+import { GLASSDOOR_URL } from "../data/org.js";
 interface Props { title: string; description: string; page: string }
 const { title, description, page } = Astro.props;
+const path = page === "home" ? "/" : `/${page}`;
+const canonical = new URL(path, "https://synchrosocial.com").href;
+const org = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Synchro Social",
+  legalName: "Synchro Social LLC",
+  url: "https://synchrosocial.com/",
+  logo: "https://synchrosocial.com/images/logo.png",
+  foundingDate: "2022",
+  description: "A social media studio for experts, founders and educators: strategy, scripts, editing and posting.",
+  email: "hello@synchrosocial.com",
+  address: { "@type": "PostalAddress", addressLocality: "Miami", addressRegion: "FL", addressCountry: "US" },
+  sameAs: [INSTAGRAM, LINKEDIN, GLASSDOOR_URL],
+};
+const site = { "@context": "https://schema.org", "@type": "WebSite", name: "Synchro Social", url: "https://synchrosocial.com/" };
 const links = [["clients", "Clients"], ["results", "Results"], ["about", "About"], ["careers", "Careers"]];
 ---
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="robots" content="noindex, nofollow" />
+{SITE_LIVE ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex, nofollow" />}
+<meta property="og:type" content="website" /><meta property="og:site_name" content="Synchro Social" />
+<meta property="og:title" content={title} /><meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} /><meta property="og:image" content="https://synchrosocial.com/images/apply4/kasper-founder.webp" />
+<meta name="twitter:card" content="summary_large_image" />
+<script type="application/ld+json" set:html={JSON.stringify(page === "home" ? [org, site] : org)} />
 <title>{title}</title><meta name="description" content={description} />
 <link rel="icon" type="image/png" href="/images/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

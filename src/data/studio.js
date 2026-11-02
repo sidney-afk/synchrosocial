@@ -1,3 +1,8 @@
+// Flip to true on launch day, when these pages move from /new to the root.
+// It turns on search indexing, canonical links and the sitemap entries.
+export const SITE_LIVE = false;
+export const SITE_PAGES = ["", "clients", "results", "about", "careers"];
+
 // Content for the new company site (/new while it is being built).
 export const team = [
   { name: "Kasper", role: "Founder", img: "/images/kasper.jpg" },
