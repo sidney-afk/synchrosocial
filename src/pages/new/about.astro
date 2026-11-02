@@ -1,6 +1,5 @@
 ---
 import Studio from "../../layouts/Studio.astro";
-import { team } from "../../data/studio.js";
 const beliefs = [
   ["Real audiences only", "No bots, no bought followers, no ghost views. If the number is not real, it is worth nothing to you."],
   ["Research before content", "We study the audience before we write a single hook, so the content is built on what people actually care about."],
@@ -16,11 +15,13 @@ const beliefs = [
   <section class="wrap sec tight split">
     <img class="portrait" src="/images/apply4/kasper-founder.webp" alt="Kasper, founder of Synchro Social" />
     <div>
-      <h2 class="sh">Why Synchro exists</h2>
+      <h2 class="sh">Why I started Synchro</h2>
       <div class="prose">
-        <p>Kasper had been working in social media for years when he noticed something that bothered him. The people with the most to teach, coaches, doctors, authors and founders who had spent decades getting good at what they do, were nearly invisible online. Louder accounts with less to say were winning.</p>
-        <p>The problem was never their message. It was that nobody had time to study their audience, turn what they know into videos people actually watch, and show up every single week.</p>
-        <p>So in 2022 he started Synchro Social to do exactly that: one team that learns your voice, does the research, makes the content and measures what matters. No bots, no shortcuts, no vanity numbers.</p>
+        <p>I'd been working in social media for a few years when something started to bug me. The people with the most to teach, coaches, doctors, authors, founders who'd spent twenty years getting good at one thing, were basically invisible online. Meanwhile louder accounts with a lot less to say were everywhere.</p>
+        <p>And it was never their message. They just didn't have the time to figure out who their audience was, turn what they know into videos people actually want to watch, and then keep doing it every single week. Honestly, almost nobody does.</p>
+        <p>So in 2022 I started Synchro Social. The idea was simple: one team that learns how you talk, does the research, makes the content and tells you straight what's working. No bots, no bought followers, no numbers that look good and mean nothing.</p>
+        <p>We're bigger now, and the team is spread across the US and Latin America, but that's still the whole job.</p>
+        <p class="sig">Kasper, founder</p>
       </div>
       <div class="facts" style="margin-top:40px">
         <div><b>2022</b><span>founded</span></div>
@@ -34,10 +35,6 @@ const beliefs = [
     <h2 class="sh">What we believe</h2>
     <div class="bl">{beliefs.map(([t, p]) => <div><h3>{t}</h3><p>{p}</p></div>)}</div>
   </div></section>
-  <section class="wrap sec">
-    <div class="sh"><h2>The team</h2><a class="link" href="/new/careers">We're hiring</a></div>
-    <ul class="tm">{team.map(m => <li><img src={m.img} alt="" loading="lazy" /><b>{m.name}</b><small>{m.role}</small></li>)}</ul>
-  </section>
   <section class="wrap stats" aria-label="Recognition" style="margin-bottom:120px">
     <div><b>1.2B</b><span>views generated for our clients</span></div>
     <div><b>8M</b><span>followers grown across platforms</span></div>
@@ -45,6 +42,7 @@ const beliefs = [
   </section>
 </Studio>
 <style is:global>
+.prose .sig{font-weight:600;color:var(--fg)}
 .bl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s6);border-top:1px solid var(--line);padding-top:var(--s4)}
 .bl h3{font-size:26px;margin-bottom:8px}.bl p{color:var(--mute);max-width:46ch}
 @media (max-width:820px){.bl{grid-template-columns:1fr;gap:var(--s4)}}

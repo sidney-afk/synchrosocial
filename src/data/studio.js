@@ -1,7 +1,7 @@
 // Flip to true on launch day, when these pages move from /new to the root.
 // It turns on search indexing, canonical links and the sitemap entries.
 export const SITE_LIVE = false;
-export const SITE_PAGES = ["", "clients", "results", "about", "careers"];
+export const SITE_PAGES = ["", "clients", "results", "about", "careers", "privacy", "terms"];
 
 // Content for the new company site (/new while it is being built).
 export const team = [
@@ -33,15 +33,26 @@ export const people = [
   { name: "Mastin Kipp", who: "Author and coach", result: "400K+ followers", img: "/images/mastin.jpg" },
   { name: "Kute Blackson", who: "Author and speaker", result: "300K+ followers", img: "/images/kute.jpg" },
   { name: "Stefanos Sifandos", who: "Relationship coach", result: "200K+ followers", img: "/images/stefanos.jpg" },
+  { name: "Dr. Lily Baker", who: "Chiropractor", result: "63.9K to 151K followers", img: "/images/apply4/lily-baker-avatar.webp" },
+  { name: "Dr. Sonia Chopra", who: "Endodontist", result: "1,000s of qualified leads", img: "/images/apply4/sonia-chopra-avatar.webp" },
+  { name: "Edward Mannix", who: "Spiritual coach", result: "700 to 96K+ followers", img: "/images/people/edward-mannix.webp" },
+  { name: "Luke MacNaughton", who: "Sales coach", result: "1.7K to 15K followers", img: "/images/people/luke-macnaughton.webp" },
+  { name: "Amber Rae", who: "Author", result: "USA Today bestseller", img: "/images/clients/amber-rae.jpg" },
 ];
 
 export const reels = [
-  { img: "o1cai14og1", views: "15.4M", handle: "@bayavoce" },
-  { img: "ty1po06ji9", views: "7.7M", handle: "@bayavoce" },
-  { img: "kk7u41d1as", views: "6.9M", handle: "@dannymorel" },
-  { img: "0gn2w3js52", views: "4.9M", handle: "@goodmorgantherapy" },
-  { img: "ua3ljukl3y", views: "4.2M", handle: "@goodmorgantherapy" },
-  { img: "9jdg8z8xh7", views: "2.7M", handle: "@garrain.jones" },
+  { w: "aq1gl2mzjo", views: "16.8M", handle: "@dannymorel" },
+  { w: "o1cai14og1", views: "15.4M", handle: "@bayavoce", src: "/images/reels/o1cai14og1.jpg" },
+  { w: "ke2uv8pkx4", views: "9.2M", handle: "@dannymorel" },
+  { w: "hg7zrcgsmm", views: "7.8M", handle: "@goodmorgantherapy" },
+  { w: "ty1po06ji9", views: "7.7M", handle: "@bayavoce", src: "/images/reels/ty1po06ji9.jpg" },
+  { w: "jljq1r38qm", views: "5.6M", handle: "@goodmorgantherapy" },
+  { w: "9jdg8z8xh7", views: "2.7M", handle: "@garrain.jones" },
+  { w: "oster0f52c", views: "2.2M", handle: "@garrain.jones" },
+  { w: "dnudt15o8k", views: "2.1M", handle: "@thefeminineheart" },
+  { w: "zasud019el", views: "2.0M", handle: "@lucas__salame" },
+  { w: "bbwr4wuqw7", views: "1.2M", handle: "@lucas__salame" },
+  { w: "or58nersqf", views: "1.1M", handle: "@thefeminineheart" },
 ];
 
 export const steps = [
