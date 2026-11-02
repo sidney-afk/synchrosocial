@@ -63,6 +63,6 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
   </nav>
 </footer>
 <script is:inline>document.querySelector('.tg').addEventListener('click',function(){var h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('ss-theme',h.dataset.theme)}catch(e){}});
-document.querySelectorAll('[data-wistia]').forEach(function(b){b.addEventListener('click',function(){var f=document.createElement('iframe');f.src='https://fast.wistia.net/embed/iframe/'+b.dataset.wistia+'?seo=false&videoFoam=true&autoPlay=true';f.allow='autoplay; fullscreen';f.title=b.getAttribute('aria-label')||'Video';f.className=b.className+' playing';b.replaceWith(f)})});</script>
+document.querySelectorAll('[data-wistia],[data-ig]').forEach(function(b){b.addEventListener('click',function(){var f=document.createElement('iframe');f.src=b.dataset.ig?'https://www.instagram.com/reel/'+b.dataset.ig+'/embed/':'https://fast.wistia.net/embed/iframe/'+b.dataset.wistia+'?seo=false&videoFoam=true&autoPlay=true';f.allow='autoplay; fullscreen';f.title=b.getAttribute('aria-label')||'Video';f.className=b.className+' playing';b.replaceWith(f)})});</script>
 </body>
 </html>

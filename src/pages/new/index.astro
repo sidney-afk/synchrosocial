@@ -29,7 +29,7 @@ const doors = [
   </section>
   <section class="wrap sec tight">
     <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
-    <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || `/images/wistia/${r.w}.webp`} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
+    <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} data-ig={r.ig} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || (r.ig ? `/images/ig/${r.ig}.webp` : `/images/wistia/${r.w}.webp`)} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
   </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
