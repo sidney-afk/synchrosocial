@@ -151,7 +151,8 @@ const faqs = [
         function upd(){var c=cur();d.forEach(function(x,i){x.classList.toggle('on',i===c);x.setAttribute('aria-current',i===c?'true':'false');});a[0].disabled=c===0;a[1].disabled=c===d.length-1;}
         a.forEach(function(b){b.addEventListener('click',function(){t.scrollTo({left:t.clientWidth*(cur()+Number(b.dataset.dir)),behavior:'smooth'});});});
         d.forEach(function(x,i){x.addEventListener('click',function(){t.scrollTo({left:t.clientWidth*i,behavior:'smooth'});});});
-        t.addEventListener('scroll',function(){window.requestAnimationFrame(upd);},{passive:true});upd();})();
+        var sl=t.querySelectorAll('.slide'),mq=window.matchMedia('(max-width: 720px)');function fit(){if(!mq.matches){t.style.height='';return;}var c=Math.min(cur(),sl.length-1);t.style.height=sl[c].offsetHeight+'px';}
+        t.addEventListener('scroll',function(){window.requestAnimationFrame(function(){upd();fit();});},{passive:true});window.addEventListener('resize',fit);window.addEventListener('load',fit);upd();fit();})();
       </script>
     </section>
 
@@ -1515,4 +1516,21 @@ const faqs = [
   .dm .slide h2 .nw { white-space: nowrap; display: block; }
   .dm .slide h2 .pk { color: #d6339a; }
   .dm .slide.slide-end { grid-template-columns: 1fr; }
+  /* Phone deck polish (2026-11-02): text first, then the picture; each slide only as tall as its content */
+  @media (max-width: 720px) {
+    .dm .deck-track { align-items: flex-start; transition: height .3s ease; }
+    .dm .slide { text-align: left; gap: 18px; padding: 22px 20px 24px; align-content: start; }
+    .dm .slide .slide-img, .dm .slide .slide-fig { order: 0; }
+    .dm .slide-text { gap: 10px; align-items: flex-start; }
+    .dm .slide-text .who { align-self: flex-start; }
+    .dm .slide .btn { align-self: stretch; text-align: center; }
+    .dm .slide h2 { font-size: 26px; }
+    .dm .slide h2.h-big { font-size: 32px; }
+    .dm .slide p { font-size: 16px; }
+    .dm .slide-img { max-height: none; width: 100%; height: auto; }
+    .dm .slide.slide-end { text-align: center; padding-block: 36px; }
+    .dm .slide.slide-end .slide-text { align-items: center; }
+    .dm .big-nums { justify-content: flex-start; }
+    .dm .fit-list { gap: 12px; }
+  }
 </style>
