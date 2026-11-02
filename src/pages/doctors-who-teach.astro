@@ -1572,4 +1572,13 @@ const faqs = [
     .dm .slide.slide-end { justify-content: space-evenly; text-align: center; }
     .dm .slide.slide-end .btn { align-self: stretch; }
   }
+  /* Phone r5: narrower text on the airy slides; slide 7 bullets kept together */
+  @media (max-width: 720px) {
+    .dm .slide:nth-child(2) p, .dm .slide:nth-child(4) p { max-width: 80%; }
+    .dm .slide.slide-end p { max-width: 78%; align-self: center; }
+    .dm .slide .fit-list { display: flex; flex-direction: column; gap: 14px; }
+    .dm .slide p { text-wrap: pretty; }
+    .dm .slide:nth-child(4) p { max-width: 86%; }
+    .dm .slide.slide-end p { text-wrap: balance; }
+  }
 </style>
