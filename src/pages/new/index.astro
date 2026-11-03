@@ -9,15 +9,10 @@ const doors = [
 ];
 ---
 <Studio title="Synchro Social | Social media studio in Miami" description="We plan, film, edit and grow social media for experts, founders and educators. Based in Miami, since 2022." page="home">
-  <section class="wrap hero">
-    <div class="hk">
-      <div>
-        <h1>A social media studio for people with something to say.</h1>
-        <p class="lede">We plan, film, edit and grow social media for experts, founders and educators. Real audiences, built since 2022.</p>
-        <div class="cta"><a class="btn" href="/new/clients">Work with us</a><a class="btn ghost" href="/new/careers">Join the team</a></div>
-      </div>
-      <figure class="grp"><img src="/images/team-group.webp" width="2048" height="1152" alt="The Synchro Social team standing together on a terrace" /></figure>
-    </div>
+  <section class="wrap hero hb2">
+    <h1>A social media studio for people <span class="pp">with something to say.</span></h1>
+    <div class="hb2-m"><p class="lede">We plan, film, edit and grow social media for experts, founders and educators. Real audiences, built since 2022.</p><div class="cta"><a class="btn" href="/new/clients">Work with us</a><a class="btn ghost" href="/new/careers">Join the team</a></div></div>
+    <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
   <section class="wrap stats" aria-label="In numbers">
     <div><b>1.2B</b><span>views generated for our clients</span></div>
