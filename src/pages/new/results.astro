@@ -3,6 +3,11 @@ import Studio from "../../layouts/Studio.astro";
 import { caseStudies } from "../../data/caseStudies.js";
 const avatar = { "Baya Voce": "baya-voce", "Danny Morel": "danny-morel", "Morgan Burch": "morgan-burch", "Jessica Winterstern": "jessica-winterstern", "Garrain Jones": "garrain-jones", "Lucas Salame": "lucas-salame" };
 const pairs = [["Baya Voce", "baya"], ["Danny Morel", "danny", "-feed"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"], ["Dr. Lily Baker", "lily", "-s"], ["Dr. Sonia Chopra", "sonia", "-s"]];
+const viral = [
+  ["Dr. Amanda Hanson", "Psychologist, @midlife.muse", [["Dde-z33h-da","24.1M"],["Ddz2Vh5hfVY","17.5M"],["DbLM2v_RLDQ","1.8M"]]],
+  ["Luke Cutting", "AI founder, @lukebuildsai", [["DdRp2rqpwHI","3.8M"],["DefDCtfJqLG","2.1M"],["DboZHeqJwYC","1.5M"]]],
+  ["Edward Mannix", "Spiritual teacher, @edwardmannix", [["DURDgR2jp33","3.4M"],["DUs169ejlhE","1.7M"],["DUjGQ3xDvN8","1.2M"]]],
+];
 const receipts = [
   ["/images/apply4/lily-baker-insights.webp", "Dr. Lily Baker: 10.6M views in under three months"],
   ["danny-podcast-chart.webp", "Danny Morel at number one on Apple Podcasts"],
@@ -24,6 +29,10 @@ const receipts = [
       <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div></div>
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
+  <section class="wrap sec">
+    <div class="sh"><h2>More clients, more million-view videos</h2><p>Three videos each, all made by our team. Press play to watch on Instagram.</p></div>
+    {viral.map(([n, who, vids]) => <div class="vr"><div><h3>{n}</h3><small>{who}</small></div><div class="vg">{vids.map(([c, v]) => <div class="vi"><button class="vid" data-ig={`https://www.instagram.com/reel/${c}/embed/`} aria-label={`Play ${n} video, ${v} views`}><img src={`/images/ig/${c}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v} views</span></button></div>)}</div></div>)}
+  </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>Before and after</h2><p>The same accounts, before we started and after the work had been running.</p></div>
     <div class="ba">{pairs.map(([n, k, x = ""]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before${x}.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after${x}.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
@@ -39,6 +48,7 @@ const receipts = [
   </div></section>
 </Studio>
 <style is:global>
+.vr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:var(--s5);align-items:start;padding:var(--s4) 0;border-top:1px solid var(--line)}.vr h3{margin:0 0 6px}.vr small{color:var(--mute);font-size:14px}.vr .vg{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}@media (max-width:820px){.vr{grid-template-columns:1fr;gap:var(--s3)}.vr .vg{gap:8px}}
 .endc{text-align:center}.endc p{color:var(--mute);margin:12px 0 var(--s3)}.endc .cta{justify-content:center}
 .dr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);align-items:start}.dr img{width:100%;border-radius:var(--r);border:1px solid var(--line)}.dr figcaption{margin-top:12px;color:var(--mute);font-size:15px}.dr b{display:block;color:var(--fg);font-weight:600}@media (max-width:820px){.dr{grid-template-columns:1fr}}
 .who{display:flex;align-items:center;gap:12px;margin-top:10px;color:var(--mute);line-height:1.35}.who img{width:48px;height:48px;border-radius:50%;object-fit:cover}.who small{font-size:14px}
