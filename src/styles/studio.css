@@ -205,3 +205,8 @@ html[data-theme=dark] .hw .art{background:#1f1730}html[data-theme=dark] .hw .not
 html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dark] .hb2-s li:nth-child(2) b{color:#c39cfc}html[data-theme=dark] .hb2-s li:nth-child(3) b{color:#b085fa}html[data-theme=dark] .hb2-s li:nth-child(4) b{color:#9d6cf8}html[data-theme=dark] .hb2-s li:nth-child(5) b{color:#8b5cf6}
 .hb2-s .n,.hb2-s .d{color:var(--mute)}.hb2-s .n{font-size:14px}.hb2-s .d{font-size:16px;line-height:1.4}
 @media (max-width:900px){.hb2-s{grid-template-columns:1fr 1fr}}
+
+.vid .vframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .25s ease;background:#000}.vid .vframe.on{opacity:1}
+.vid.loading{cursor:progress}.vid.loading .play{opacity:0}.vposter img{width:100%;height:100%;object-fit:cover}
+.vid.loading::after{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:vsp .8s linear infinite}
+@keyframes vsp{to{transform:rotate(360deg)}}
