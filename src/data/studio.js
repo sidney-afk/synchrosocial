@@ -21,11 +21,11 @@ export const team = [
 
 // People we've worked with: face, who they are, and the one result we can stand behind.
 export const people = [
-  { name: "Danny Morel", who: "Life coach and podcaster", result: "3.5M+ followers, 500M+ views", img: "/images/danny-morel.jpg" },
-  { name: "Baya Voce", who: "Relationship expert", result: "7K to 350K+ followers", img: "/images/baya.jpg" },
-  { name: "Garrain Jones", who: "Coach and speaker", result: "73.2M views in 12 months", img: "/images/garrain.jpg" },
-  { name: "Lucas Salame", who: "Spiritual guide", result: "57K to 140K+ followers", img: "/images/lucas.jpg" },
-  { name: "Jessica Winterstern", who: "Writer and coach", result: "4K to 100K+ followers", img: "/images/jessica.jpg" },
+  { name: "Danny Morel", ig: "dannymorel", who: "Life coach and podcaster", result: "3.5M+ followers, 500M+ views", img: "/images/danny-morel.jpg" },
+  { name: "Baya Voce", ig: "bayavoce", who: "Relationship expert", result: "7K to 350K+ followers", img: "/images/baya.jpg" },
+  { name: "Garrain Jones", ig: "garrain.jones", who: "Coach and speaker", result: "73.2M views in 12 months", img: "/images/garrain.jpg" },
+  { name: "Lucas Salame", ig: "lucas__salame", who: "Spiritual guide", result: "57K to 140K+ followers", img: "/images/lucas.jpg" },
+  { name: "Jessica Winterstern", ig: "thefeminineheart", who: "Writer and coach", result: "4K to 100K+ followers", img: "/images/jessica.jpg" },
   { name: "Daniel Raphael", who: "Spiritual guide", result: "11.4M views on one video", img: "/images/daniel.jpg" },
   { name: "Morgan Burch", who: "Therapist", result: "15M views in 3 months", img: "/images/morgan.jpg" },
   { name: "Alexi Panos", who: "Coach and author", result: "+30K followers in 2 months", img: "/images/alexi.jpg" },
@@ -33,11 +33,11 @@ export const people = [
   { name: "Mastin Kipp", who: "Author and coach", result: "400K+ followers", img: "/images/mastin.jpg" },
   { name: "Kute Blackson", who: "Author and speaker", result: "300K+ followers", img: "/images/kute.jpg" },
   { name: "Stefanos Sifandos", who: "Relationship coach", result: "200K+ followers", img: "/images/stefanos.jpg" },
-  { name: "Dr. Lily Baker", who: "Chiropractor", result: "63.9K to 151K followers", img: "/images/apply4/lily-baker-avatar.webp" },
-  { name: "Dr. Sonia Chopra", who: "Endodontist", result: "1,000s of qualified leads", img: "/images/apply4/sonia-chopra-avatar.webp" },
-  { name: "Edward Mannix", who: "Spiritual coach", result: "700 to 90K+ followers", img: "/images/clients/edward-mannix.jpg" },
-  { name: "Luke Cutting", who: "AI founder", result: "10M+ views in 3 months", img: "/images/clients/luke-cutting.jpg" },
-  { name: "Luke MacNaughton", who: "Sales coach", result: "1.7K to 15K followers", img: "/images/people/luke-macnaughton.webp" },
+  { name: "Dr. Lily Baker", ig: "theopenposturedoc", who: "Chiropractic Physician", result: "+60K followers in under 90 days", img: "/images/apply4/lily-baker-avatar.webp" },
+  { name: "Dr. Sonia Chopra", ig: "drsoniachopra", who: "Endodontist", result: "1,500 comments on one post", img: "/images/apply4/sonia-chopra-avatar.webp" },
+  { name: "Edward Mannix", ig: "edwardmannix", who: "Spiritual coach", result: "700 to 90K+ followers", img: "/images/clients/edward-mannix.jpg" },
+  { name: "Luke Cutting", ig: "lukebuildsai", who: "AI founder", result: "10M+ views in 3 months", img: "/images/clients/luke-cutting.jpg" },
+  { name: "Luke MacNaughton", who: "Sales coach", result: "+10K followers in 1 month", img: "/images/people/luke-macnaughton.webp" },
   { name: "Amber Rae", who: "Author", result: "USA Today bestseller", img: "/images/clients/amber-rae.jpg" },
 ];
 
@@ -73,3 +73,13 @@ export const INSTAGRAM = "https://www.instagram.com/synchrosocial/";
 export const APPLY = "/apply";
 export const GLASSDOOR_EN =
   "https://www.glassdoor.com.ar/Evaluaciones/Synchro-Social-Evaluaciones-E10830564.htm?filter.iso3Language=eng&filter.employmentStatus=REGULAR&filter.employmentStatus=PART_TIME&filter.employmentStatus=CONTRACT&filter.employmentStatus=FREELANCE";
+
+// The eight shown on the home page, in this order. Everyone else lives on /results.
+export const homePeople = ["Danny Morel","Baya Voce","Dr. Lily Baker","Garrain Jones","Dr. Sonia Chopra","Edward Mannix","Jessica Winterstern","Lucas Salame"];
+
+// One line each, word for word from their testimonial videos.
+export const quotes = [
+  { q: "His team is so professional, so kind, so fast.", name: "Alli Schaper", role: "CEO and co-founder of SuperMush", href: "https://www.instagram.com/allischaper/" },
+  { q: "They have an incredible process end to end and they make sure to really understand you, your strengths, your business, and your message.", name: "Sabrina Guler", role: "Founder of Sinclair West", href: "https://www.instagram.com/sabrinamguler/" },
+  { q: "The results have been remarkable. I witnessed significant growth across my social media platforms.", name: "Tu Lam", role: "Founder and CEO of Ronin Tactics", href: "https://www.instagram.com/ronintactics/" },
+];

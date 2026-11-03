@@ -4,7 +4,7 @@ import { caseStudies } from "../../data/caseStudies.js";
 const avatar = { "Baya Voce": "baya-voce", "Danny Morel": "danny-morel", "Morgan Burch": "morgan-burch", "Jessica Winterstern": "jessica-winterstern", "Garrain Jones": "garrain-jones", "Lucas Salame": "lucas-salame" };
 const pairs = [["Baya Voce", "baya"], ["Danny Morel", "danny", "-feed"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"], ["Dr. Lily Baker", "lily", "-s"], ["Dr. Sonia Chopra", "sonia", "-s"]];
 const more = [
-  { name: "Luke Cutting", avatar: "luke-cutting", credit: "@lukebuildsai", period: "3 Months", platforms: ["Instagram"], stats: [{ value: "10M+", label: "Views since he joined" }, { value: "4", label: "Videos over 1M views" }], videos: [{ wistia: "agctps725g", views: "3.8M" }, { wistia: "7ixvu8r8al", views: "2.1M" }, { wistia: "geoxo9j2w2", views: "1.4M" }] },
+  { name: "Luke Cutting", avatar: "luke-cutting", credit: "@lukebuildsai", period: "3 Months", platforms: ["Instagram"], stats: [{ value: "10M+", label: "Views since he joined" }, { value: "4", label: "Videos over 1M views" }, { value: "50K+", label: "Email subscribers in 3 months" }], videos: [{ wistia: "agctps725g", views: "3.8M" }, { wistia: "7ixvu8r8al", views: "2.1M" }, { wistia: "geoxo9j2w2", views: "1.4M" }] },
   { name: "Edward Mannix", avatar: "edward-mannix", credit: "@edwardmannix", period: "11 Months", platforms: ["Instagram"], stats: [{ value: "700 to 90K+", label: "Followers" }, { value: "3.4M", label: "Views on one video" }, { value: "1000s", label: "Organic leads" }], videos: [{ wistia: "6d4n0e79y4", views: "3.4M" }, { wistia: "cc75h2py2y", views: "1.7M" }, { wistia: "wm3fjddgak", views: "1.2M" }] },
 ];
 const allCases = [...caseStudies.map(c => ({ ...c, avatar: avatar[c.name] })), ...more];
@@ -21,7 +21,7 @@ const receipts = [
 <Studio title="Results | Synchro Social" description="Case studies, before and after accounts and the receipts behind 1.2B views and 8M followers." page="results">
   <section class="wrap hero">
     <h1>The receipts behind<br />1.2 billion views.</h1>
-    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts.</p><div class="cta"><a class="btn" href="/apply" data-vsl-book>Book a call</a></div></div>
+    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts.</p><div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div></div>
   </section>
   {allCases.map((c, i) => (
     <section class={i % 2 ? "band" : ""}><div class="wrap sec tight cs">
