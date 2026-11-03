@@ -1,10 +1,14 @@
 ---
 import Studio from "../../layouts/Studio.astro";
 const beliefs = [
-  ["Real audiences only", "No bots, no bought followers, no ghost views. If the number is not real, it is worth nothing to you."],
-  ["Research before content", "We study the audience before we write a single hook, so the content is built on what people actually care about."],
-  ["One team that learns your voice", "The same people plan, script, edit and post, so your content sounds like you and gets better every month."],
-  ["Clear, honest reporting", "You always know what is working, what is not, and what we are changing next."],
+  ["Organic first", "We don't run paid ads to fake momentum. We find what makes your content spread on its own, so growth keeps going after the post.", "What we focus on is how you can, with the type of content you have, go viral organically."],
+  ["Your genius is the content", "We don't hand you a template. We pull out what you know and what makes you, you, and build the videos around that.", "Our work is around how we can extract your genius and what makes you, you."],
+  ["Real audiences only", "No bots, no bought followers, no ghost views. Our main number is followers gained per post, because it shows real people chose to stay.", "Followers per post, that's my number one tracking metric."],
+  ["No shortcuts", "There are quicker tricks out there. They look smart and they hurt the account. We say no to them, even when it would be easier.", "There are some sketchy methods that might seem smart, but they're just not."],
+  ["Honest over hyped", "We don't promise viral videos on a sales call. If something isn't working, we look at the content and tell you straight why.", "It's a content issue. Let's look at the content."],
+  ["The camera is a muscle", "Nobody is great on camera in month one. You get better by showing up, and we coach you through it.", "I want you to feel a little embarrassed when you look at your month one videos when you're on month six."],
+  ["Growth has to pay for itself", "Views are nice. Clients, members and sales are the point. We build the path from a video to your calendar.", "When people come to us, they need to make a return on what they invest."],
+  ["Long-term, not one-off", "We don't do one-time projects. The same team stays with you and gets better every month.", "What we want is long-term clients that we can work with."],
 ];
 ---
 <Studio title="About | Synchro Social" description="A social media studio founded in 2022, based in Miami, with a fully remote team in the US and LATAM." page="about">
@@ -32,8 +36,8 @@ const beliefs = [
     </div>
   </section>
   <section class="band"><div class="wrap sec">
-    <h2 class="sh">What we believe</h2>
-    <div class="bl">{beliefs.map(([t, p]) => <div><h3>{t}</h3><p>{p}</p></div>)}</div>
+    <div class="sh"><h2>What we believe</h2><p>In Kasper's own words, taken from his calls with clients.</p></div>
+    <div class="bl">{beliefs.map(([t, p, q]) => <div><h3>{t}</h3><p>{p}</p><q>{q}</q></div>)}</div>
   </div></section>
   <section class="wrap stats" aria-label="Recognition" style="margin-bottom:120px">
     <div><b>1.2B</b><span>views generated for our clients</span></div>
@@ -44,6 +48,7 @@ const beliefs = [
 <style is:global>
 .prose .sig{font-weight:600;color:var(--fg)}
 .bl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s5) var(--s6);border-top:1px solid var(--line);padding-top:var(--s4)}
+.bl q{display:block;margin-top:12px;font-size:15px;color:var(--fg);font-style:italic;max-width:46ch}.bl q::before{content:"\201C"}.bl q::after{content:"\201D"}
 .bl h3{font-size:26px;margin-bottom:8px}.bl p{color:var(--mute);max-width:46ch}
 @media (max-width:820px){.bl{grid-template-columns:1fr;gap:var(--s4)}}
 </style>

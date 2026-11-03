@@ -3,8 +3,14 @@ import Studio from "../../layouts/Studio.astro";
 import { campaignProof } from "../../data/campaignProof.js";
 import { testimonials } from "../../data/testimonials.js";
 import { steps } from "../../data/studio.js";
-const others = ["Bots, fake followers and ghost views", "No guarantees, empty promises", "Heavy reliance on expensive ad spend", "Generic, one-size-fits-all approaches", "Little or no visibility into results", "Low-quality, outdated content tactics"];
-const us = ["Real, engaged audiences", "Organic reach, without paying for every view", "Content and angles built from real audience data", "Clear reporting you can read in two minutes", "A team that learns your brand and your voice"];
+const diff = [
+  ["Followers", "Bots, bought followers and ghost views", "Real people who watch, comment and buy"],
+  ["Reach", "Pay for every view with ad spend", "Organic reach that keeps working after the post"],
+  ["Ideas", "Copy whatever is trending this week", "Angles built from research on your audience"],
+  ["Content", "One template for every client", "Scripts written in your voice, by a team that knows it"],
+  ["Reporting", "A monthly PDF nobody reads", "Clear numbers you can read in two minutes"],
+  ["Team", "A new account manager every quarter", "The same people, every month, getting better"],
+];
 const faqs = [
   ["How do I know if I'm a fit?", "We work best with established experts, founders and educators who are ready to invest in a real growth system, not a quick fix. If you have an offer and want consistent content and leads without doing it all yourself, you're likely a fit."],
   ["What kinds of businesses does this work for?", "Coaches, doctors, authors, course creators, programs, founders, podcasters and educators who want to grow their impact and revenue on social media."],
@@ -42,7 +48,7 @@ const faqs = [
   </div></section>
   <section class="wrap sec">
     <h2 class="sh">Why we're different</h2>
-    <div class="cmp"><div class="no"><h3>Most agencies</h3><ul>{others.map(o => <li>{o}</li>)}</ul></div><div><h3>Synchro Social</h3><ul>{us.map(o => <li>{o}</li>)}</ul></div></div>
+    <div class="cmp2" role="table"><div class="r hd" role="row"><span role="columnheader"></span><span role="columnheader">Most agencies</span><span role="columnheader">Synchro Social</span></div>{diff.map(([k, a, b]) => <div class="r" role="row"><b role="rowheader">{k}</b><span role="cell" class="no">{a}</span><span role="cell" class="yes"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>{b}</span></div>)}</div>
   </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>In their own words</h2><p>Unscripted, on camera, from people who have been through the whole process.</p></div>
