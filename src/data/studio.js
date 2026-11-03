@@ -41,6 +41,8 @@ export const people = [
 ];
 
 export const reels = [
+  { ig: "Dde-z33h-da", views: "24.1M", handle: "@midlife.muse" },
+  { ig: "Ddz2Vh5hfVY", views: "17.5M", handle: "@midlife.muse" },
   { w: "aq1gl2mzjo", views: "16.8M", handle: "@dannymorel" },
   { w: "o1cai14og1", views: "15.4M", handle: "@bayavoce", src: "/images/reels/o1cai14og1.jpg" },
   { w: "ke2uv8pkx4", views: "9.2M", handle: "@dannymorel" },
@@ -49,14 +51,19 @@ export const reels = [
   { w: "vwma18vfm7", views: "5.9M", handle: "@dannymorel" },
   { w: "jljq1r38qm", views: "5.6M", handle: "@goodmorgantherapy" },
   { ig: "DLAnWbKRpre", views: "5.3M", handle: "@bayavoce" },
+  { ig: "DfDrLWyIP6k", views: "5.0M", handle: "@jennaphillipsballard" },
   { ig: "DURDgR2jp33", views: "3.4M", handle: "@edwardmannix" },
+  { ig: "DXZhh1mDiuM", views: "3.0M", handle: "@nathanhirschaut" },
   { w: "9jdg8z8xh7", views: "2.7M", handle: "@garrain.jones" },
   { ig: "DIt2FR9RNPE", views: "2.7M", handle: "@bayavoce" },
   { ig: "DV8usobDh_x", views: "2.6M", handle: "@bayavoce" },
   { w: "oster0f52c", views: "2.2M", handle: "@garrain.jones" },
   { w: "dnudt15o8k", views: "2.1M", handle: "@thefeminineheart" },
+  { ig: "DP5c-0EjVcI", views: "1.9M", handle: "@luke_macnaughton" },
+  { ig: "DbLM2v_RLDQ", views: "1.8M", handle: "@midlife.muse" },
   { w: "zasud019el", views: "2.0M", handle: "@lucas__salame" },
   { ig: "DUs169ejlhE", views: "1.7M", handle: "@edwardmannix" },
+  { ig: "DQAT3fVktRE", views: "1.2M", handle: "@luke_macnaughton" },
   { w: "bbwr4wuqw7", views: "1.2M", handle: "@lucas__salame" },
   { w: "or58nersqf", views: "1.1M", handle: "@thefeminineheart" },
 ];
