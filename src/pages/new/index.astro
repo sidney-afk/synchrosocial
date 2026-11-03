@@ -1,5 +1,6 @@
 ---
 import Studio from "../../layouts/Studio.astro";
+import StepArt from "../../components/studio/StepArt.astro";
 import { people, reels, steps } from "../../data/studio.js";
 const doors = [
   { t: "Grow your audience", p: "Strategy, scripts, editing and posting, run by one team.", g: "For clients", h: "/new/clients" },
@@ -37,7 +38,7 @@ const doors = [
   </div></section>
   <section class="wrap sec">
     <h2 class="sh">How we work</h2>
-    <ol class="sg">{steps.map(s => <li><img class="lt" src={`/images/process/${s.img}.webp`} alt="" loading="lazy" /><img class="dk" src={`/images/process-dark/${s.img}.webp`} alt="" loading="lazy" /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
+    <ol class="sg">{steps.map((s, i) => <li><StepArt i={i} /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
   </section>
   <section class="band"><div class="wrap sec quote">
     <blockquote>“I kept meeting people who really knew their stuff and nobody online had heard of them. That bugged me. So that's the job: get them seen, by real people, without the fake stuff.”</blockquote>

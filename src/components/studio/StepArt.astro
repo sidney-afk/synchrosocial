@@ -1,0 +1,15 @@
+---
+const { i } = Astro.props;
+const days = ["M","T","W","T","F","S","S"];
+const on = [0, 2, 4, 6];
+const tones = ["#d62976", "#8331e8", "#f08a24", "#2f8ce6"];
+---
+<div class="art" aria-hidden="true">
+  {i === 0 && <div class="a1"><div><span class="num">+38,412</span><span class="pill">▲ 212%</span></div>
+    <svg viewBox="0 0 340 110"><defs><linearGradient id="a1g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d62976" stop-opacity=".22"/><stop offset="1" stop-color="#d62976" stop-opacity="0"/></linearGradient></defs><path d="M0 100 C40 98 60 96 90 90 S150 82 180 66 240 40 270 30 320 10 334 8 V110 H0Z" fill="url(#a1g)"/><path d="M0 100 C40 98 60 96 90 90 S150 82 180 66 240 40 270 30 320 10 334 8" fill="none" stroke="#d62976" stroke-width="3" stroke-linecap="round"/><circle cx="334" cy="8" r="5" fill="#d62976" stroke="var(--card)" stroke-width="2"/></svg></div>}
+  {i === 1 && <div class="a2">{days.map(d => <span>{d}</span>)}{[0,1].map(() => days.map((_, k) => on.includes(k) ? <i style={`--c:${tones[on.indexOf(k)]}`}></i> : <i class="off"></i>))}</div>}
+  {i === 2 && <div class="a3">
+    <div class="n" style="transform:scale(.94);opacity:.7"><span class="ic ig"></span><div><b>Instagram</b><small>412 new comments</small></div></div>
+    <div class="n" style="transform:scale(.97);opacity:.88"><span class="ic cal">31</span><div><b>Calendar</b><small>3 calls booked</small></div></div>
+    <div class="n"><span class="ic pay">$</span><div><b>Payment received</b><small>+$4,500.00</small></div><em>now</em></div></div>}
+</div>
