@@ -858,6 +858,19 @@ const faqs = [
     document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
       btn.addEventListener("click", function () { clarity("event", "video_play"); });
     });
+    // Slide deck under the form: one Clarity event per slide reached (swipes included), so we can
+    // see exactly how many visitors use it and how far they get (deck_slide_2 ... deck_slide_8).
+    var track = document.querySelector("#deck .deck-track");
+    if (track) {
+      var seen = {}, tmr = null;
+      track.addEventListener("scroll", function () {
+        clearTimeout(tmr);
+        tmr = setTimeout(function () {
+          var n = Math.round(track.scrollLeft / track.clientWidth) + 1;
+          if (n > 1 && !seen[n]) { seen[n] = true; clarity("event", "deck_slide_" + n); }
+        }, 200);
+      }, { passive: true });
+    }
   })();
 </script>
 
