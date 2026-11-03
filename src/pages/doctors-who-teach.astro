@@ -1590,4 +1590,9 @@ const faqs = [
     .dm .slide:nth-child(2) p, .dm .slide:nth-child(4) p { align-self: center; text-align: justify; text-align-last: left; }
     .dm .slide.slide-end p { align-self: center; text-align: justify; text-align-last: left; }
   }
+  /* r7: centered titles on slides 2 and 4; wider text block so justified lines keep normal word spacing */
+  @media (max-width: 720px) {
+    .dm .slide:nth-child(2) h2, .dm .slide:nth-child(4) h2 { text-align: center; }
+    .dm .slide:nth-child(2) p, .dm .slide:nth-child(4) p, .dm .slide.slide-end p { max-width: 90%; word-spacing: -0.02em; }
+  }
 </style>
