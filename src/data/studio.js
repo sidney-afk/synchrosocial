@@ -44,9 +44,11 @@ export const people = [
 export const reels = [
   { w: "aq1gl2mzjo", views: "16.8M", handle: "@dannymorel" },
   { w: "o1cai14og1", views: "15.4M", handle: "@bayavoce", src: "/images/reels/o1cai14og1.jpg" },
-  { w: "hg7zrcgsmm", views: "7.8M", handle: "@goodmorgantherapy" },
-  { w: "agctps725g", views: "3.8M", handle: "@lukebuildsai" },
   { w: "ke2uv8pkx4", views: "9.2M", handle: "@dannymorel" },
+  { w: "hg7zrcgsmm", views: "7.8M", handle: "@goodmorgantherapy" },
+  { w: "370zqi103h", views: "1.9M", handle: "@theopenposturedoc" },
+  { w: "qfuvod4lh5", views: "850K", handle: "@drsoniachopra" },
+  { w: "agctps725g", views: "3.8M", handle: "@lukebuildsai" },
   { w: "ty1po06ji9", views: "7.7M", handle: "@bayavoce", src: "/images/reels/ty1po06ji9.jpg" },
   { w: "jljq1r38qm", views: "5.6M", handle: "@goodmorgantherapy" },
   { w: "6d4n0e79y4", views: "3.4M", handle: "@edwardmannix" },
@@ -57,9 +59,7 @@ export const reels = [
   { w: "zasud019el", views: "2.0M", handle: "@lucas__salame" },
   { w: "oster0f52c", views: "2.2M", handle: "@garrain.jones" },
   { w: "cc75h2py2y", views: "1.7M", handle: "@edwardmannix" },
-  { w: "or58nersqf", views: "1.1M", handle: "@thefeminineheart" },
-  { w: "bbwr4wuqw7", views: "1.2M", handle: "@lucas__salame" },
-  { w: "wm3fjddgak", views: "1.2M", handle: "@edwardmannix" },
+  { w: "pk2itxsyf9", views: "961K", handle: "@theopenposturedoc" },
 ];
 
 export const steps = [
