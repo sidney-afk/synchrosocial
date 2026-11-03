@@ -1,5 +1,6 @@
 ---
 import Studio from "../../layouts/Studio.astro";
+import StepArt from "../../components/studio/StepArt.astro";
 import { campaignProof } from "../../data/campaignProof.js";
 import { testimonials } from "../../data/testimonials.js";
 import { steps } from "../../data/studio.js";
@@ -44,7 +45,7 @@ const faqs = [
   </section>
   <section class="band"><div class="wrap sec">
     <h2 class="sh">How we work</h2>
-    <ol class="sg">{steps.map(s => <li><img class="lt" src={`/images/process/${s.img}.webp`} alt="" loading="lazy" /><img class="dk" src={`/images/process-dark/${s.img}.webp`} alt="" loading="lazy" /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
+    <ol class="sg">{steps.map((s, i) => <li><StepArt i={i} /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
   </div></section>
   <section class="wrap sec">
     <h2 class="sh">Why we're different</h2>
