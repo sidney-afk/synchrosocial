@@ -1,42 +1,62 @@
 ---
 import Studio from "../../layouts/Studio.astro";
-import StepArt from "../../components/studio/StepArt.astro";
-import { people, reels, steps } from "../../data/studio.js";
-const doors = [
-  { t: "Grow your audience", p: "Strategy, scripts, editing and posting, run by one team.", g: "For clients", h: "/new/clients" },
-  { t: "Work with us", p: "A remote team in the US and LATAM, based in Miami.", g: "See open roles", h: "/new/careers" },
-  { t: "Get to know us", p: "How we started in 2022 and how we work today.", g: "Read our story", h: "/new/about" },
+import HomeArt from "../../components/studio/HomeArt.astro";
+import HomeCta from "../../components/studio/HomeCta.astro";
+import { people, homePeople, quotes, reels } from "../../data/studio.js";
+const shown = homePeople.map(n => people.find(p => p.name === n));
+const how = [
+  { t: "Find the angle", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
+  { t: "You film about 2 hours a month", b: "We handle the scripts, filming plans, editing and posting every week, as one team that learns your voice." },
+  { t: "Turn views into business", b: "Content and simple systems that turn viewers into followers, email subscribers, program members and clients." },
 ];
 ---
-<Studio title="Synchro Social | Social media studio in Miami" description="We plan, film, edit and grow social media for experts, founders and educators. Based in Miami, since 2022." page="home">
+<Studio title="Synchro Social | Social media agency in Miami" description="A done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. Based in Miami, since 2022." page="home">
   <section class="wrap hero hb2">
-    <h1>A social media studio for people <span class="pp">with something to say.</span></h1>
-    <div class="hb2-m"><p class="lede">We plan, film, edit and grow social media for experts, founders and educators. Real audiences, built since 2022.</p><div class="cta"><a class="btn" href="/new/clients">Work with us</a><a class="btn ghost" href="/new/careers">Join the team</a></div></div>
+    <h1>A social media agency for people <span class="pp">with something to say.</span></h1>
+    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. We plan, film, edit and grow your content, so the audience finds the person who actually earned it.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a><a class="link" href="/new/careers">Join the team</a></div></div>
     <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
   <section class="wrap stats" aria-label="In numbers">
-    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div><b>1.2B</b><span>views across every client since 2022</span></div>
     <div><b>8M</b><span>followers grown across platforms</span></div>
-    <div class="award"><img src="/images/awards/european-agency-awards-2026-finalist-white.png" alt="European Agency Awards 2026" /><span>Finalist, Social Media Agency of the Year</span></div>
+    <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, nominated" /></a><span>Nominated, Best Social Media Agency of the Year</span></div>
   </section>
-  <section class="wrap sec">
-    <h2 class="sh">Where would you like to start?</h2>
-    <div class="dl">{doors.map(d => <a class="door" href={d.h}><h3>{d.t}</h3><p>{d.p}</p><span class="go">{d.g}</span></a>)}</div>
-  </section>
+  <section class="wrap sec"><HomeCta kind="router" v="a" /></section>
   <section class="wrap sec tight">
     <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
     <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} data-ig={r.ig} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || (r.ig ? `/images/ig/${r.ig}.webp` : `/images/wistia/${r.w}.webp`)} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
   </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
-    <ul class="pg">{people.map(c => <li><img src={c.img} alt="" loading="lazy" /><div><b>{c.name}</b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
+    <ul class="pg">{shown.map(c => <li><img src={c.img} alt="" loading="lazy" /><div><b><a href={`https://www.instagram.com/${c.ig}/`} target="_blank" rel="noopener">{c.name}</a></b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
   </div></section>
   <section class="wrap sec">
-    <h2 class="sh">How we work</h2>
-    <ol class="sg">{steps.map((s, i) => <li><StepArt i={i} /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
+    <h2 class="sh">In their words</h2>
+    <div class="tq">{quotes.map(t => <figure><blockquote>“{t.q}”</blockquote><figcaption><b>{t.href ? <a href={t.href} target="_blank" rel="noopener">{t.name}</a> : t.name}</b><small>{t.role}</small></figcaption></figure>)}</div>
   </section>
-  <section class="band"><div class="wrap sec quote">
-    <blockquote>“I kept meeting people who really knew their stuff and nobody online had heard of them. That bugged me. So that's the job: get them seen, by real people, without the fake stuff.”</blockquote>
+  <section class="band"><div class="wrap sec endc">
+    <h2>The expertise is already there.<br />The audience just hasn't found it yet.</h2>
+    <div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div>
+  </div></section>
+  <section class="wrap sec">
+    <div class="sh"><h2>How we work</h2><p>The same system that grew our clients over 8 million followers.</p></div>
+    <ol class="sg">{how.map((s, i) => <li><HomeArt i={i} /><h3>{s.t}</h3><p>{s.b}</p></li>)}</ol>
+  </section>
+  <section class="band"><div class="wrap sec split2">
+    <div>
+      <h2>Who this is for</h2>
+      <p class="big">You're a coach, author, doctor or expert people already trust.</p>
+      <ul class="tick"><li>Your content doesn't show how good you are, while less experienced people get the views.</li><li>You want a team to run your social media, so you can focus on your work.</li></ul>
+    </div>
+    <div>
+      <h2>Why not an editor or an intern?</h2>
+      <p class="big">Editing is one piece.</p>
+      <p class="mute">We handle strategy, hooks, scripts, editing, posting and testing, for significantly less than hiring a strategist, scriptwriter, editor and someone to publish and measure.</p>
+    </div>
+  </div></section>
+  <section class="wrap sec quote">
+    <blockquote>“I kept meeting people who really knew their stuff and nobody online had heard of them. That bugged me. So that's the job: get them seen, without the fake stuff.”</blockquote>
     <p class="by"><img src="/images/kasper.jpg" alt="" />Kasper, founder</p>
-      </div></section>
+  </section>
+  <section class="band"><div class="wrap sec"><HomeCta kind="close" v="a" /></div></section>
 </Studio>

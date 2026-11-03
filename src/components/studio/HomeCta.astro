@@ -1,0 +1,26 @@
+---
+const { kind, v = "a" } = Astro.props;
+---
+{kind === "router" && v === "a" && <div class="rt rt-a">
+  <a class="rc1" href="/apply"><span class="k">For experts and brands</span><h3>Grow my audience</h3><p>Apply to work with us. If it looks like a fit, we invite you to a call.</p><span class="go">Apply to work with us</span></a>
+  <a class="rc2" href="/new/careers"><span class="k">For creatives</span><h3>Join the team</h3><p>See open roles.</p><span class="go">See open roles</span></a>
+</div>}
+{kind === "router" && v === "b" && <div class="rt rt-b">
+  <p class="q">What brings you here?</p>
+  <a href="/apply"><h3>I want to grow my audience</h3><span class="go">Apply to work with us</span></a>
+  <a href="/new/careers"><h3>I want to join the team</h3><span class="go">See open roles</span></a>
+</div>}
+{kind === "close" && v === "a" && <div class="cl cl-a">
+  <h2>The audience is waiting for the person who actually earned it.</h2>
+  <p class="l">Apply below, watch the short video, and if it looks like a fit we'll invite you to a call.</p>
+  <div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div>
+  <p class="s">Every application is reviewed. Calls are limited and only offered when there's a fit, so the application is where we start.</p>
+  <p class="o">Want to build this with us instead? <a class="link" href="/new/careers">See open roles.</a></p>
+</div>}
+{kind === "close" && v === "b" && <div class="cl cl-b">
+  <h2>The audience is waiting for the person who actually earned it.</h2>
+  <div class="doors">
+    <div class="d1"><h3>Grow your audience</h3><p>Apply below, watch the short video, and if it looks like a fit we'll invite you to a call.</p><a class="btn" href="/apply">Apply to work with us</a><small>Every application is reviewed. Calls are limited and only offered when there's a fit, so the application is where we start.</small></div>
+    <div class="d2"><h3>Build this with us</h3><p>We hire editors, social media managers and designers across the US and LATAM.</p><a class="btn ghost" href="/new/careers">See open roles</a></div>
+  </div>
+</div>}
