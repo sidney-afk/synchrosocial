@@ -858,6 +858,19 @@ const faqs = [
     document.querySelectorAll(".dm .video-btn").forEach(function (btn) {
       btn.addEventListener("click", function () { clarity("event", "video_play"); });
     });
+    // How far down the page each visitor gets: one Clarity event the first time a section is
+    // partly on screen (seen_deck, seen_form, seen_who, seen_results, seen_how, seen_faq, seen_final).
+    if ("IntersectionObserver" in window) {
+      var secs = [["#deck","deck"],[".dm section.apply","form"],["#who","who"],["#results h2","results"],["#how","how"],["#faq","faq"],[".dm section.final","final"]];
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          clarity("event", "seen_" + e.target.getAttribute("data-seen"));
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.15 });
+      secs.forEach(function (x) { var el = document.querySelector(x[0]); if (el) { el.setAttribute("data-seen", x[1]); io.observe(el); } });
+    }
     // Slide deck under the form: one Clarity event per slide reached (swipes included), so we can
     // see exactly how many visitors use it and how far they get (deck_slide_2 ... deck_slide_8).
     var track = document.querySelector("#deck .deck-track");
