@@ -145,8 +145,8 @@ iframe.vid{border:0}
  .foot nav{gap:var(--s5);flex-wrap:wrap}
 }
 /* round 2: hero with Kasper, 12-person team, page transitions */
-.hk{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:var(--s5);align-items:center}
-.hk h1{font-size:clamp(42px,5.4vw,80px);max-width:15ch}
+.hk{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s5);align-items:center}
+.hk h1{font-size:clamp(42px,5.4vw,80px);max-width:18ch}
 .hk .lede{margin:var(--s3) 0 var(--s4)}
 .hk figure img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:var(--r)}
 .hk figcaption{margin-top:10px;font-size:14px;color:var(--mute)}
