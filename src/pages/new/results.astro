@@ -5,7 +5,7 @@ const avatar = { "Baya Voce": "baya-voce", "Danny Morel": "danny-morel", "Morgan
 const pairs = [["Baya Voce", "baya"], ["Danny Morel", "danny", "-feed"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"], ["Dr. Lily Baker", "lily", "-s"], ["Dr. Sonia Chopra", "sonia", "-s"]];
 const more = [
   { name: "Luke Cutting", avatar: "luke-cutting", credit: "@lukebuildsai", period: "3 Months", platforms: ["Instagram"], stats: [{ value: "10M+", label: "Views since he joined" }, { value: "4", label: "Videos over 1M views" }], videos: [{ wistia: "agctps725g", views: "3.8M" }, { wistia: "7ixvu8r8al", views: "2.1M" }, { wistia: "geoxo9j2w2", views: "1.4M" }] },
-  { name: "Edward Mannix", avatar: "edward-mannix", credit: "@edwardmannix", period: "11 Months", platforms: ["Instagram"], stats: [{ value: "700 to 90K+", label: "Followers" }, { value: "3.4M", label: "Views on one video" }, { value: "1000s", label: "Organic leads" }], story: { wistia: "0dmp30wvy3", poster: "/images/campaign-proof/14-edward-mannix.webp", label: "Kasper on Edward's growth" }, videos: [{ wistia: "6d4n0e79y4", views: "3.4M" }, { wistia: "cc75h2py2y", views: "1.7M" }, { wistia: "wm3fjddgak", views: "1.2M" }] },
+  { name: "Edward Mannix", avatar: "edward-mannix", credit: "@edwardmannix", period: "11 Months", platforms: ["Instagram"], stats: [{ value: "700 to 90K+", label: "Followers" }, { value: "3.4M", label: "Views on one video" }, { value: "1000s", label: "Organic leads" }], videos: [{ wistia: "6d4n0e79y4", views: "3.4M" }, { wistia: "cc75h2py2y", views: "1.7M" }, { wistia: "wm3fjddgak", views: "1.2M" }] },
 ];
 const allCases = [...caseStudies.map(c => ({ ...c, avatar: avatar[c.name] })), ...more];
 const receipts = [
@@ -26,7 +26,7 @@ const receipts = [
   {allCases.map((c, i) => (
     <section class={i % 2 ? "band" : ""}><div class="wrap sec tight cs">
       <div class="sh"><div><h2>{c.name}</h2><p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt="" /><span>{c.credit}<br /><small>{c.period.toLowerCase()} with us, on {c.platforms.join(", ").replace(/, ([^,]*)$/, " and $1")}</small></span></p></div>
-      <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div>{c.story && <button class="vid wide story" data-wistia={c.story.wistia} aria-label={c.story.label}><img src={c.story.poster} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{c.story.label}</span></button>}</div>
+      <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div></div>
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
   <section class="band"><div class="wrap sec">
