@@ -35,7 +35,7 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
 <script type="application/ld+json" set:html={JSON.stringify(page === "home" ? [org, site] : org)} />
 <title>{title}</title><meta name="description" content={description} />
 <link rel="icon" type="image/png" href="/images/favicon-studio.png" /><link rel="apple-touch-icon" href="/images/favicon-studio-180.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://fast.wistia.net" crossorigin /><link rel="preconnect" href="https://embed-ssl.wistia.com" crossorigin /><link rel="dns-prefetch" href="https://distillery.wistia.com" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&display=swap" rel="stylesheet" />
 <script is:inline>try{var t=localStorage.getItem('ss-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
@@ -63,6 +63,8 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
   </nav>
 </footer>
 <script is:inline>document.querySelector('.tg').addEventListener('click',function(){var h=document.documentElement;h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';try{localStorage.setItem('ss-theme',h.dataset.theme)}catch(e){}});
-document.querySelectorAll('[data-wistia],[data-ig]').forEach(function(b){b.addEventListener('click',function(){var f=document.createElement('iframe');f.src=b.dataset.ig?'https://www.instagram.com/reel/'+b.dataset.ig+'/embed/':'https://fast.wistia.net/embed/iframe/'+b.dataset.wistia+'?seo=false&videoFoam=true&autoPlay=true';f.allow='autoplay; fullscreen';f.title=b.getAttribute('aria-label')||'Video';f.className=b.className+' playing';b.replaceWith(f)})});</script>
+function wurl(b){return 'https://fast.wistia.net/embed/iframe/'+b.dataset.wistia+'?seo=false&videoFoam=true&autoPlay=true&playerColor=8331e8&stillUrl='+encodeURIComponent(location.origin+(b.querySelector('img')||{}).getAttribute('src'))}
+function warm(b){if(b._w)return;b._w=1;var l=document.createElement('link');l.rel='prefetch';l.href=wurl(b);document.head.appendChild(l)}
+document.querySelectorAll('[data-wistia]').forEach(function(b){['pointerenter','touchstart','focus'].forEach(function(e){b.addEventListener(e,function(){warm(b)},{passive:true,once:true})});b.addEventListener('click',function(){var w=document.createElement('div');w.className=b.className+' loading';b.replaceWith(w);b.className='vposter';b.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;background:none;cursor:progress';w.appendChild(b);var f=document.createElement('iframe');f.src=wurl(b);f.allow='autoplay; fullscreen';f.title=b.getAttribute('aria-label')||'Video';f.className='vframe';var shown=0;function show(){if(shown)return;shown=1;f.classList.add('on');w.classList.remove('loading')}setTimeout(show,5000);f.addEventListener('load',function(){setTimeout(show,1100)});w.appendChild(f)})});</script>
 </body>
 </html>
