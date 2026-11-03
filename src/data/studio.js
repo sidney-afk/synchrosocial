@@ -80,6 +80,6 @@ export const homePeople = ["Danny Morel","Baya Voce","Dr. Lily Baker","Garrain J
 // One line each, word for word from their testimonial videos.
 export const quotes = [
   { q: "His team is so professional, so kind, so fast.", name: "Alli Schaper", role: "CEO and co-founder of SuperMush", href: "https://www.instagram.com/allischaper/" },
-  { q: "They have an incredible process end to end and they make sure to really understand you, your strengths, your business, and your message.", name: "Sabrina Guler", role: "Founder of Sinclair West" },
-  { q: "The results have been remarkable. I witnessed significant growth across my social media platforms.", name: "Tu Lam", role: "Founder and CEO of Ronin Tactics" },
+  { q: "They have an incredible process end to end and they make sure to really understand you, your strengths, your business, and your message.", name: "Sabrina Guler", role: "Founder of Sinclair West", href: "https://www.instagram.com/sabrinamguler/" },
+  { q: "The results have been remarkable. I witnessed significant growth across my social media platforms.", name: "Tu Lam", role: "Founder and CEO of Ronin Tactics", href: "https://www.instagram.com/ronintactics/" },
 ];
