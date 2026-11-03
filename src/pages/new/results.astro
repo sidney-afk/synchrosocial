@@ -7,6 +7,8 @@ const viral = [
   ["Dr. Amanda Hanson", "Psychologist, @midlife.muse", [["Dde-z33h-da","24.1M"],["Ddz2Vh5hfVY","17.5M"],["DbLM2v_RLDQ","1.8M"]]],
   ["Luke Cutting", "AI founder, @lukebuildsai", [["DdRp2rqpwHI","3.8M"],["DefDCtfJqLG","2.1M"],["DboZHeqJwYC","1.5M"]]],
   ["Edward Mannix", "Spiritual teacher, @edwardmannix", [["DURDgR2jp33","3.4M"],["DUs169ejlhE","1.7M"],["DUjGQ3xDvN8","1.2M"]]],
+  ["Jenna Phillips Ballard", "Coach and mom, @jennaphillipsballard", [["DfDrLWyIP6k","5.1M"],["DevOdqeo9WU","1.3M"]]],
+  ["Nathan Hirschaut", "Somatic dance teacher, @nathanhirschaut", [["DXZhh1mDiuM","3.1M"],["Dax0OrhgvuR","746K"],["DX7BMH-lMch","614K"]]],
 ];
 const receipts = [
   ["/images/apply4/lily-baker-insights.webp", "Dr. Lily Baker: 10.6M views in under three months"],
@@ -30,7 +32,7 @@ const receipts = [
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
   <section class="wrap sec">
-    <div class="sh"><h2>More clients, more million-view videos</h2><p>Three videos each, all made by our team. Press play to watch on Instagram.</p></div>
+    <div class="sh"><h2>More clients, more million-view videos</h2><p>Their best videos, all made by our team. Press play to watch on Instagram.</p></div>
     {viral.map(([n, who, vids]) => <div class="vr"><div><h3>{n}</h3><small>{who}</small></div><div class="vg">{vids.map(([c, v]) => <div class="vi"><button class="vid" data-ig={`https://www.instagram.com/reel/${c}/embed/`} aria-label={`Play ${n} video, ${v} views`}><img src={`/images/ig/${c}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v} views</span></button></div>)}</div></div>)}
   </section>
   <section class="band"><div class="wrap sec">
