@@ -295,3 +295,6 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 .lg-ic{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:14px;background:color-mix(in srgb,var(--p) 12%,transparent);color:var(--p);margin-bottom:var(--s3)}.legal h2{padding-top:var(--s4);border-top:1px solid var(--line);margin-top:var(--s5)}.legal h2:first-child{border-top:0;padding-top:0}
 
 
+
+/* Home: show-more reels, outcome line */
+.rg .reel.x{display:none}.rg.open .reel.x{display:block}.rm{text-align:center;margin-top:var(--s3,24px)}.rg.open+.rm{display:none}.hb2-m .lede.out{color:var(--ink,inherit);font-weight:600}
