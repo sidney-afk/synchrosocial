@@ -242,3 +242,9 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 @media (max-width:820px){.tq,.split2,.rt-a,.cl-b .doors{grid-template-columns:1fr}.tq{gap:var(--s4)}.split2{gap:var(--s5)}.nav .btn .d{display:none}.nav .btn .m{display:inline}}
 .endc{text-align:center}.endc h2{max-width:22ch;margin:0 auto var(--s4)}.endc .cta{justify-content:center}
 .hb2-m .lede{max-width:58ch}
+.team2 .tg-wide{width:100%;height:auto;border-radius:20px;display:block;margin-bottom:var(--s4)}
+.tp{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s3)}
+.tp img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;border-radius:14px;display:block;margin-bottom:10px}
+.tp b{display:block;font-weight:600}.tp small{color:var(--mute);font-size:14px}
+.tl{display:flex;gap:var(--s4);flex-wrap:wrap;margin-top:var(--s4)}
+@media (max-width:820px){.tp{grid-template-columns:repeat(2,minmax(0,1fr))}.team2 .tg-wide{border-radius:14px}}
