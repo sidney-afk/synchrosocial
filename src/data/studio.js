@@ -34,7 +34,7 @@ export const people = [
   { name: "Kute Blackson", who: "Author and speaker", result: "300K+ followers", img: "/images/kute.jpg" },
   { name: "Stefanos Sifandos", who: "Relationship coach", result: "200K+ followers", img: "/images/stefanos.jpg" },
   { name: "Dr. Lily Baker", ig: "theopenposturedoc", who: "Chiropractic Physician", result: "+60K followers in under 90 days", img: "/images/apply4/lily-baker-avatar.webp" },
-  { name: "Dr. Sonia Chopra", ig: "drsoniachopra", who: "Endodontist", result: "1,500 comments on one post", img: "/images/apply4/sonia-chopra-avatar.webp" },
+  { name: "Dr. Sonia Chopra", ig: "drsoniachopra", who: "Endodontist", result: "1,000s of qualified leads", img: "/images/apply4/sonia-chopra-avatar.webp" },
   { name: "Edward Mannix", ig: "edwardmannix", who: "Spiritual coach", result: "700 to 90K+ followers", img: "/images/clients/edward-mannix.jpg" },
   { name: "Luke Cutting", ig: "lukebuildsai", who: "AI founder", result: "10M+ views in 3 months", img: "/images/clients/luke-cutting.jpg" },
   { name: "Luke MacNaughton", who: "Sales coach", result: "+10K followers in 1 month", img: "/images/people/luke-macnaughton.webp" },
