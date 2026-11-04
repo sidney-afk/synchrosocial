@@ -285,3 +285,6 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 .btn{min-height:44px}
 .pg li{align-content:start}
 }
+.brand{flex-shrink:0}.brand img{flex-shrink:0;max-width:none}
+@media (max-width:820px){.nav{gap:8px}.nav .right{gap:8px}}
+@media (max-width:380px){.brand img{height:34px}}
