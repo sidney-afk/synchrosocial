@@ -25,7 +25,7 @@ const receipts = [
   </section>
   {allCases.map((c, i) => (
     <section class={i % 2 ? "band" : ""}><div class="wrap sec tight cs">
-      <div class="sh"><div><h2>{c.name}</h2><p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt="" /><span>{c.credit}<br /><small>{c.period.toLowerCase()} with us, on {c.platforms.join(", ").replace(/, ([^,]*)$/, " and $1")}</small></span></p></div>
+      <div class="sh"><div><h2>{c.name}</h2><p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt={c.name} /><span>{c.credit}<br /><small>{c.period.toLowerCase()} with us, on {c.platforms.join(", ").replace(/, ([^,]*)$/, " and $1")}</small></span></p></div>
       <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div></div>
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}

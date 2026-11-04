@@ -30,7 +30,7 @@ const how = [
   </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
-    <ul class="pg">{shown.map(c => <li><img src={c.img} alt="" loading="lazy" /><div><b><a href={`https://www.instagram.com/${c.ig}/`} target="_blank" rel="noopener">{c.name}</a></b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
+    <ul class="pg">{shown.map(c => <li><img src={c.img} alt={c.name} loading="lazy" /><div><b><a href={`https://www.instagram.com/${c.ig}/`} target="_blank" rel="noopener">{c.name}</a></b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
   </div></section>
   <section class="wrap sec">
     <h2 class="sh">In their words</h2>
