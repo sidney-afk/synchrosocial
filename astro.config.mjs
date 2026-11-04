@@ -8,6 +8,9 @@ export default defineConfig({
   site: 'https://synchrosocial.com',
   base: '/',
   redirects: {
+    // One set of legal pages: the new-site copies redirect to the originals.
+    '/new/privacy': '/privacypolicy',
+    '/new/terms': '/terms-conditions',
     // The new homepage lived at /v2 during the test phase — keep old links alive.
     '/v2': '/',
     // The two VSL landing pages shipped as /danny_vsl and /baya_vsl and were
