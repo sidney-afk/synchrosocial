@@ -7,14 +7,14 @@ import { testimonials } from "../../data/testimonials.js";
 const shown = homePeople.map(n => people.find(p => p.name === n));
 const how = [
   { t: "Find the angle", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
-  { t: "We handle the rest, every week", b: "We handle the scripts, filming plans, editing and posting every week, as one team that learns your voice." },
+  { t: "Scripts, filming plans, editing and posting", b: "We handle all of it every week, as one team that learns your voice. You film about 2 hours a month." },
   { t: "Turn views into business", b: "Content and simple systems that turn viewers into followers, email subscribers, program members and clients." },
 ];
 ---
 <Studio title="Synchro Social | Done-For-You Social Media Agency" description="Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. Based in Miami since 2022." page="home">
   <section class="wrap hero hb2">
     <h1><span class="s1">Someone with half your credentials is getting the audience that should be yours.</span><span class="s2">You spent years becoming the expert. You film about 2 hours a month, we handle the rest.</span></h1>
-    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
+    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><p class="lede out">We turn your expertise into an audience that becomes clients, members and sales.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
     <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
   <section class="wrap stats" aria-label="In numbers">
@@ -23,14 +23,15 @@ const how = [
     <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, nominated" /></a><span>Nominated, Best Social Media Agency of the Year</span></div>
   </section>
   <ol class="hb2-s only-m wrap">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
-  <section class="wrap sec tight">
-    <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
-    <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} data-ig={r.ig} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || (r.ig ? `/images/ig/${r.ig}.webp` : `/images/wistia/${r.w}.webp`)} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
-  </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
     <ul class="pg">{shown.map(c => <li><img src={c.img} alt={c.name} loading="lazy" /><div><b><a href={`https://www.instagram.com/${c.ig}/`} target="_blank" rel="noopener">{c.name}</a></b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
   </div></section>
+  <section class="wrap sec tight">
+    <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
+    <div class="rg">{reels.map((r, i) => <figure class={i >= 12 ? "reel x" : "reel"}><button class="vid" data-wistia={r.w} data-ig={r.ig} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || (r.ig ? `/images/ig/${r.ig}.webp` : `/images/wistia/${r.w}.webp`)} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
+    <p class="rm"><button class="btn ghost" id="more-reels" type="button">Show more videos</button></p>
+  </section>
   <section class="wrap sec hv">
     <h2 class="sh">In their own words</h2>
     <div class="vg">{testimonials.map(t => (
@@ -54,8 +55,9 @@ const how = [
     <div>
       <h2>Why not an editor or an intern?</h2>
       <p class="big">Editing is one piece.</p>
-      <p class="mute">We handle strategy, hooks, scripts, editing, posting and testing, for significantly less than hiring a strategist, scriptwriter, editor and someone to publish and measure.</p>
+      <p class="mute">We handle strategy, hooks, scripts, editing, posting and testing, Hiring a scriptwriter, editor, social media manager and videographer separately runs $7,000 to $12,000+ a month, and you manage all of them.</p>
     </div>
   </div></section>
   <section class="band"><div class="wrap sec"><HomeCta kind="close" v="a" /></div></section>
+<script is:inline>(function(){var b=document.getElementById("more-reels");if(!b)return;b.addEventListener("click",function(){var g=document.querySelector(".rg");g.classList.add("open");b.parentNode.remove()})})();</script>
 </Studio>
