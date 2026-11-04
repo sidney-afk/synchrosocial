@@ -298,3 +298,4 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 
 /* Home: show-more reels, outcome line */
 .rg .reel.x{display:none}.rg.open .reel.x{display:block}.rm{text-align:center;margin-top:var(--s3,24px)}.rg.open+.rm{display:none}.hb2-m .lede.out{color:var(--ink,inherit);font-weight:600}
+.method{max-width:62ch;margin:0 0 var(--s4,32px)}

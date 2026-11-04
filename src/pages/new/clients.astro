@@ -3,7 +3,8 @@ import Studio from "../../layouts/Studio.astro";
 import StepArt from "../../components/studio/StepArt.astro";
 import { campaignProof } from "../../data/campaignProof.js";
 import { testimonials } from "../../data/testimonials.js";
-import { steps } from "../../data/studio.js";
+import { steps as baseSteps } from "../../data/studio.js";
+const steps = baseSteps.map((s, i) => i === 0 ? { ...s, title: "Start with the script" } : s);
 const diff = [
   ["Followers", "Bots, bought followers and ghost views", "Real people who watch, comment and buy"],
   ["Reach", "Pay for every view with ad spend", "Organic reach that keeps working after the post"],
@@ -40,11 +41,12 @@ const faqs = [
       <div class="vi">
         <button class="vid wide" data-wistia={c.wistia} aria-label={`Play ${c.name}'s story`}><img src={c.poster} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
         <h3>{c.name}</h3><small>{c.label.split(" - ")[1]}</small>
-        <ul>{c.results.map(r => <li>{r}</li>)}</ul>
+        <ul>{c.results.map(r => <li>{r === "1,000s of qualified leads" ? "One video, 1,000 qualified leads" : r}</li>).filter((_, i) => c.name !== "Dr. Sonia Chopra" || i !== 1)}</ul>
       </div>))}</div>
   </section>
   <section class="band"><div class="wrap sec">
     <h2 class="sh">How we work</h2>
+    <p class="mute method"><b>The Script-First Method.</b> I write every script myself, built on what is trending, which formats work and who your audience follows. Filming, editing and posting all start from that script.</p>
     <ol class="sg">{steps.map((s, i) => <li><StepArt i={i} /><h3>{s.title}</h3><p>{s.body}</p></li>)}</ol>
   </div></section>
   <section class="wrap sec">
