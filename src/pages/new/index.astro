@@ -7,13 +7,13 @@ import { testimonials } from "../../data/testimonials.js";
 const shown = homePeople.map(n => people.find(p => p.name === n));
 const how = [
   { t: "Start with the script", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
-  { t: "Scripts, filming plans, editing and posting", b: "We handle all of it every week, as one team that learns your voice. You film about 2 hours a month." },
+  { t: "Scripts, filming plans, editing and posting", b: "We handle all of it every week, as one team that learns your voice. You review content about 20 minutes a week and film one day a month, around 2 hours." },
   { t: "Turn views into business", b: "Content and simple systems that turn viewers into followers, email subscribers, program members and clients." },
 ];
 ---
 <Studio title="Synchro Social | Done-For-You Social Media Agency" description="Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. Based in Miami since 2022." page="home">
   <section class="wrap hero hb2">
-    <h1><span class="s1">Someone with half your credentials is getting the audience that should be yours.</span><span class="s2">You spent years becoming the expert. You film about 2 hours a month, we handle the rest.</span></h1>
+    <h1><span class="s1">Someone with half your credentials is getting the audience that should be yours.</span><span class="s2">You spent years becoming the expert. You spend about 20 minutes a week reviewing and one filming day a month. We handle the rest.</span></h1>
     <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><p class="lede out">We turn your expertise into an audience that becomes clients, members and sales.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
     <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
