@@ -5,14 +5,8 @@ import HomeCta from "../../components/studio/HomeCta.astro";
 import { people, homePeople, reels } from "../../data/studio.js";
 import { testimonials } from "../../data/testimonials.js";
 const shown = homePeople.map(n => people.find(p => p.name === n));
-const I = d => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const aud = [
-  ["Authors", "A bigger audience means a stronger book launch.", I('<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v15h5.5a1.5 1.5 0 0 1 1.5 1.5z"/>')],
-  ["Doctors", "More of the right patients find you before they book.", I('<path d="M12 4v16M4 12h16"/>')],
-  ["Coaches", "Followers turn into program members.", I('<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14a5.5 5.5 0 0 1 3 5"/>')],
-  ["Thought leaders", "More invitations to speak, partner and be heard.", I('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>')],
-];
-const vs = [["Strategy", false], ["Hooks", false], ["Scripts", false], ["Editing", true], ["Posting", false], ["Testing", false]];
+const aud = ["Authors", "Doctors", "Coaches", "Thought leaders"];
+const vs = ["Strategy", "Hooks", "Scripts", "Editing", "Posting", "Testing"];
 const how = [
   { t: "Start with the script", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
   { t: "Scripts, filming plans, editing and posting", b: "We handle all of it every week, as one team that learns your voice. You review content about 20 minutes a week and film one day a month, around 2 hours." },
@@ -58,14 +52,16 @@ const how = [
     <div>
       <h2>Who this is for</h2>
       <p class="big">You're a coach, author, doctor or expert people already trust.</p>
-      <ul class="aud">{aud.map(([t, d, ic]) => <li><span class="ai" aria-hidden="true" set:html={ic}></span><div><b>{t}</b><span>{d}</span></div></li>)}</ul>
+      <div class="stories"><ul>{aud.map(t => <li><span class="ring"><i>{t[0]}</i></span>{t}</li>)}</ul></div>
       <p class="mute">Your content doesn't show how good you are, while less experienced people get the views. You want a team to run your social media, so you can focus on your work.</p>
     </div>
     <div>
       <h2>Why not an editor or an intern?</h2>
       <p class="big">Editing is one piece.</p>
-      <table class="vs"><thead><tr><th scope="col"><span class="sr">What gets done</span></th><th scope="col">Editor or intern</th><th scope="col">Synchro Social</th></tr></thead>
-        <tbody>{vs.map(([t, e]) => <tr><th scope="row">{t}</th><td>{e ? <svg viewBox="0 0 20 20" width="20" height="20" aria-label="Yes"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> : <span class="no" aria-label="Not included">&ndash;</span>}</td><td class="y"><svg viewBox="0 0 20 20" width="20" height="20" aria-label="Yes"><path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>)}</tbody></table>
+      <div class="rem" role="group" aria-label="What each option covers">
+        <div><h3>Editor or intern</h3><ul>{vs.map(t => <li><i class={t === "Editing" ? "on" : ""}>{t === "Editing" && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>}</i>{t}<span class="sr">{t === "Editing" ? ", included" : ", not included"}</span></li>)}</ul></div>
+        <div class="me"><h3>Synchro Social</h3><ul>{vs.map(t => <li><i class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>{t}<span class="sr">, included</span></li>)}</ul></div>
+      </div>
       <p class="mute">An editor starts with footage. The Script-First Method starts with the script.</p>
       <p class="mute">Hiring a scriptwriter, editor, social media manager and videographer separately runs $7,000 to $12,000+ a month, and you manage all of them.</p>
     </div>
