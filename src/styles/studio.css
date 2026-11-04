@@ -299,3 +299,16 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 /* Home: show-more reels, outcome line */
 .rg .reel.x{display:none}.rg.open .reel.x{display:block}.rm{text-align:center;margin-top:var(--s3,24px)}.rg.open+.rm{display:none}.hb2-m .lede.out{color:var(--ink,inherit);font-weight:600}
 .method{max-width:62ch;margin:0 0 var(--s4,32px)}
+
+/* Phone polish: header fits, lighter first screen, chips, swipe rows */
+@media (max-width:820px){
+ .nav{gap:6px}.nav .right{gap:6px}.brand img{height:30px}.nav .btn{padding:0 14px;min-height:40px;font-size:14px}.mb,.tg{width:40px;height:40px}
+ .hb2-m .lede:not(.out){display:none}
+ .hb2-s.only-m{display:flex;flex-wrap:wrap;gap:8px;padding:0 var(--s3,24px) 28px;margin-top:var(--s4,24px)}
+ .hb2-s.only-m li{border:1px solid var(--line);border-radius:999px;padding:8px 14px;flex-direction:row;align-items:baseline;gap:8px}
+ .hb2-s.only-m .d{display:none}.hb2-s.only-m b{font-size:17px}.hb2-s.only-m .n{font-size:12px}
+ .sec:not(.cs) .vg{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:68%;overflow-x:auto;scroll-snap-type:x mandatory;gap:var(--s3);margin-right:calc(-1*var(--s3));padding-right:var(--s3);scrollbar-width:none}
+ .sec:not(.cs) .vg::-webkit-scrollbar{display:none}.sec:not(.cs) .vg>*{scroll-snap-align:start}
+ .split2 .mute+.mute{margin-top:12px}
+ .sg{gap:var(--s4)}
+}
