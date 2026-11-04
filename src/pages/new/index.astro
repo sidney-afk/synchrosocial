@@ -5,7 +5,7 @@ import HomeCta from "../../components/studio/HomeCta.astro";
 import { people, homePeople, reels } from "../../data/studio.js";
 import { testimonials } from "../../data/testimonials.js";
 const shown = homePeople.map(n => people.find(p => p.name === n));
-const aud = ["Authors", "Doctors", "Coaches", "Thought leaders"];
+const aud = [["Authors", "/images/clients/amber-rae.jpg"], ["Doctors", "/images/apply4/lily-baker-avatar.webp"], ["Coaches", "/images/danny-morel.jpg"], ["Thought leaders", "/images/kute.jpg"]];
 const vs = ["Strategy", "Hooks", "Scripts", "Editing", "Posting", "Testing"];
 const how = [
   { t: "Start with the script", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
@@ -46,13 +46,13 @@ const how = [
   </div></section>
   <section class="wrap sec">
     <div class="sh"><h2>How we work</h2><p><b>The Script-First Method.</b> I write every script myself, built on what is trending, which formats work and who your audience follows. Filming, editing and posting all start from that script. The same system that grew our clients over 8 million followers.</p></div>
-    <ol class="sg">{how.map((s, i) => <li><HomeArt i={i} /><h3>{s.t}</h3><p>{s.b}</p></li>)}</ol>
+    <ol class="sg">{how.map((s, i) => <li><h3>{s.t}</h3><HomeArt i={i} /><p>{s.b}</p></li>)}</ol>
   </section>
   <section class="band"><div class="wrap sec split2">
     <div>
       <h2>Who this is for</h2>
       <p class="big">You're a coach, author, doctor or expert people already trust.</p>
-      <div class="stories"><ul>{aud.map(t => <li><span class="ring"><i>{t[0]}</i></span>{t}</li>)}</ul></div>
+      <div class="stories"><ul>{aud.map(([t, img]) => <li><span class="ring"><img src={img} alt="" loading="lazy" /></span>{t}</li>)}</ul></div>
       <p class="mute">Your content doesn't show how good you are, while less experienced people get the views. You want a team to run your social media, so you can focus on your work.</p>
     </div>
     <div>
