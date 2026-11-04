@@ -25,7 +25,7 @@ export const people = [
   { name: "Baya Voce", ig: "bayavoce", who: "Relationship expert", result: "7K to 350K+ followers", img: "/images/baya.jpg" },
   { name: "Garrain Jones", ig: "garrain.jones", who: "Coach and speaker", result: "73.2M views in 12 months", img: "/images/garrain.jpg" },
   { name: "Lucas Salame", ig: "lucas__salame", who: "Spiritual guide", result: "57K to 140K+ followers", img: "/images/lucas.jpg" },
-  { name: "Jessica Winterstern", ig: "thefeminineheart", who: "Writer and coach", result: "4K to 100K+ followers", img: "/images/jessica.jpg" },
+  { name: "Jessica Winterstern", ig: "thefeminineheart", who: "Writer and coach", result: "4K to 125K+ followers", img: "/images/jessica.jpg" },
   { name: "Daniel Raphael", who: "Spiritual guide", result: "11.4M views on one video", img: "/images/daniel.jpg" },
   { name: "Morgan Burch", who: "Therapist", result: "15M views in 3 months", img: "/images/morgan.jpg" },
   { name: "Alexi Panos", who: "Coach and author", result: "+30K followers in 2 months", img: "/images/alexi.jpg" },

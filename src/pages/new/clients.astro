@@ -41,7 +41,7 @@ const faqs = [
       <div class="vi">
         <button class="vid wide" data-wistia={c.wistia} aria-label={`Play ${c.name}'s story`}><img src={c.poster} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
         <h3>{c.name}</h3><small>{c.label.split(" - ")[1]}</small>
-        <ul>{c.results.map(r => <li>{r === "1,000s of qualified leads" ? "One video, 1,000 qualified leads" : r}</li>).filter((_, i) => c.name !== "Dr. Sonia Chopra" || i !== 1)}</ul>
+        <ul>{c.results.map(r => <li>{r === "1,000s of qualified leads" ? "One video, 1,000 qualified leads" : r === "4K to 100K+ followers" ? "4K to 125K+ followers" : r === "Thousands of organic leads" ? "More than 1,000 organic leads" : r}</li>).filter((_, i) => c.name !== "Dr. Sonia Chopra" || i !== 1)}</ul>
       </div>))}</div>
   </section>
   <section class="band"><div class="wrap sec">
