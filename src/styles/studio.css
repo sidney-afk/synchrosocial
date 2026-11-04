@@ -288,3 +288,6 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 .brand{flex-shrink:0}.brand img{flex-shrink:0;max-width:none}
 @media (max-width:820px){.nav{gap:8px}.nav .right{gap:8px}}
 @media (max-width:380px){.brand img{height:34px}}
+
+/* Home headline: bold first sentence, purple second sentence spread under it */
+.hb2 h1{max-width:none;font-size:clamp(34px,5.4vw,78px);line-height:1}.hb2 h1 span{display:block}.hb2 h1 .s1{font-weight:800}.hb2 h1 .s2{font-weight:600;font-size:clamp(20px,2.3vw,34px);line-height:1.2;margin-top:.7em;max-width:none;color:var(--p);letter-spacing:-.01em;text-wrap:balance}.hb2-m .lede{font-size:17px;max-width:40ch}
