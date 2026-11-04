@@ -64,7 +64,6 @@ export const reels = [
   { w: "4yi5pwvrik", views: "867K", handle: "@doug_cartwright" },
   { w: "mgjt4z4zbh", views: "845K", handle: "@dani__robin" },
   { w: "quopccb1sg", views: "753K", handle: "@chelseyscaffidi" },
-  { w: "s9rmfiu60k", views: "742K", handle: "@dani__robin" },
   { w: "xmo6e2nkzq", views: "513K", handle: "@nataliemacneil" },
 ];
 
