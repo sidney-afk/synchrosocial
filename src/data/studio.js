@@ -55,11 +55,11 @@ export const reels = [
   { w: "vwma18vfm7", views: "5.9M", handle: "@dannymorel" },
   { w: "9jdg8z8xh7", views: "2.7M", handle: "@garrain.jones" },
   { w: "dnudt15o8k", views: "2.1M", handle: "@thefeminineheart" },
-  { w: "7ixvu8r8al", views: "2.1M", handle: "@lukebuildsai" },
   { w: "zasud019el", views: "2.0M", handle: "@lucas__salame" },
   { w: "oster0f52c", views: "2.2M", handle: "@garrain.jones" },
-  { w: "cc75h2py2y", views: "1.7M", handle: "@edwardmannix" },
-  { w: "pk2itxsyf9", views: "961K", handle: "@theopenposturedoc" },
+  { w: "mgjt4z4zbh", views: "845K", handle: "@dani__robin" },
+  { w: "quopccb1sg", views: "753K", handle: "@chelseyscaffidi" },
+  { w: "s9rmfiu60k", views: "742K", handle: "@dani__robin" },
 ];
 
 export const steps = [
