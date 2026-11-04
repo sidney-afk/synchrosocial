@@ -2,7 +2,8 @@
 import Studio from "../../layouts/Studio.astro";
 import HomeArt from "../../components/studio/HomeArt.astro";
 import HomeCta from "../../components/studio/HomeCta.astro";
-import { people, homePeople, quotes, reels, GLASSDOOR_EN } from "../../data/studio.js";
+import { people, homePeople, reels, GLASSDOOR_EN } from "../../data/studio.js";
+import { testimonials } from "../../data/testimonials.js";
 const crew = [["Analia","Social media manager","analia"],["Sebastian","Social media manager","sebastian"],["Molly","Social media manager","molly"],["Martin","Social media manager","martin"],["Rocio","Graphic designer","rocio"]];
 const shown = homePeople.map(n => people.find(p => p.name === n));
 const how = [
@@ -14,7 +15,7 @@ const how = [
 <Studio title="Synchro Social | Done-For-You Social Media Agency" description="Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. Based in Miami since 2022." page="home">
   <section class="wrap hero hb2">
     <h1><span class="s1">You spent years becoming the expert.</span><span class="s2">Someone with half your credentials is getting the audience that should be yours.</span></h1>
-    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a><a class="link" href="/new/careers">Join the team</a></div></div>
+    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
     <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
   <section class="wrap stats" aria-label="In numbers">
@@ -23,7 +24,6 @@ const how = [
     <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, nominated" /></a><span>Nominated, Best Social Media Agency of the Year</span></div>
   </section>
   <ol class="hb2-s only-m wrap">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
-  <section class="wrap sec"><HomeCta kind="router" v="a" /></section>
   <section class="wrap sec tight">
     <div class="sh"><h2>Videos we made</h2><p>Reels from client accounts, with the views they got. Tap one to watch.</p></div>
     <div class="rg">{reels.map(r => <figure class="reel"><button class="vid" data-wistia={r.w} data-ig={r.ig} aria-label={`Play ${r.handle} video, ${r.views} views`}><img src={r.src || (r.ig ? `/images/ig/${r.ig}.webp` : `/images/wistia/${r.w}.webp`)} alt="" loading="lazy" /></button><figcaption><b>{r.views} views</b>{r.handle}</figcaption></figure>)}</div>
@@ -32,9 +32,11 @@ const how = [
     <div class="sh"><h2>People we've worked with</h2><a class="link" href="/new/results">See every result</a></div>
     <ul class="pg">{shown.map(c => <li><img src={c.img} alt={c.name} loading="lazy" /><div><b><a href={`https://www.instagram.com/${c.ig}/`} target="_blank" rel="noopener">{c.name}</a></b><small>{c.who}</small><em>{c.result}</em></div></li>)}</ul>
   </div></section>
-  <section class="wrap sec">
-    <h2 class="sh">In their words</h2>
-    <div class="tq">{quotes.map(t => <figure><blockquote>“{t.q}”</blockquote><figcaption><b>{t.href ? <a href={t.href} target="_blank" rel="noopener">{t.name}</a> : t.name}</b><small>{t.role}</small></figcaption></figure>)}</div>
+  <section class="wrap sec hv">
+    <h2 class="sh">In their own words</h2>
+    <div class="vg">{testimonials.map(t => (
+      <div class="vi"><button class="vid" data-wistia={t.wistia} aria-label={`Play ${t.name}'s testimonial`}><img src={`/images/wistia/${t.wistia}.webp`} alt={`${t.name}, ${t.shortRole}`} loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
+      <h3>{t.name}</h3><small>{t.shortRole}</small></div>))}</div>
   </section>
   <section class="band"><div class="wrap sec endc">
     <h2>The expertise is already there.<br />The audience just hasn't found it yet.</h2>
@@ -60,11 +62,7 @@ const how = [
     <div class="sh"><h2>Meet the team</h2><p>Remote, across the US and Latin America, 9am to 5pm ET.</p></div>
     <img class="tg-wide" src="/images/shoot/team-group.webp" alt="The Synchro Social team together at our shoot in Argentina" loading="lazy" width="1600" height="1066" />
     <ul class="tp">{crew.map(([n, r, k]) => <li><img src={`/images/shoot/${k}.webp`} alt={`${n}, ${r.toLowerCase()}`} loading="lazy" width="520" height="650" /><b>{n}</b><small>{r}</small></li>)}</ul>
-    <p class="tl"><a class="link" href={GLASSDOOR_EN} target="_blank" rel="noopener">Rated 4.2 out of 5 on Glassdoor, from 7 reviews</a><a class="link" href="/new/careers">See open roles</a></p>
-  </section>
-  <section class="wrap sec quote">
-    <blockquote>“I kept meeting people who really knew their stuff and nobody online had heard of them. That bugged me. So that's the job: get them seen, without the fake stuff.”</blockquote>
-    <p class="by"><img src="/images/kasper.jpg" alt="Kasper, founder of Synchro Social" width="512" height="512" />Kasper, founder</p>
+    <p class="tl"><a class="link" href={GLASSDOOR_EN} target="_blank" rel="noopener">Rated 4.2 out of 5 on Glassdoor, from 7 reviews</a></p>
   </section>
   <section class="band"><div class="wrap sec"><HomeCta kind="close" v="a" /></div></section>
 </Studio>
