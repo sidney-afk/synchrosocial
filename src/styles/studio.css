@@ -258,3 +258,30 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 .tl{display:flex;flex-direction:column;align-items:flex-start;gap:0}
 }
 @media (max-width:520px){.kpis{flex-wrap:wrap;gap:var(--s3) var(--s4)}.kpis p{margin:0}.kpis b{font-size:32px;white-space:nowrap}}
+
+/* mobile menu, people grid, stats order, founder photo */
+.mb{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--fg);align-items:center;justify-content:center;cursor:pointer;padding:0}
+.mb .x{display:none}.nav.open .mb .o{display:none}.nav.open .mb .x{display:inline}
+.only-m{display:none}
+.nav .btn{white-space:nowrap}
+@media (max-width:820px){
+.nav{position:relative}
+.mb{display:inline-flex}
+.nav nav{display:none}
+.nav.open nav{display:flex;flex-direction:column;gap:0;position:absolute;left:0;right:0;top:100%;z-index:20;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:6px 16px;box-shadow:0 12px 32px rgba(20,10,40,.12)}
+.nav.open nav a{display:flex;align-items:center;min-height:48px;font-size:17px;color:var(--fg);border-bottom:1px solid var(--line)}
+.nav.open nav a:last-child{border-bottom:0}
+.hero .hb2-s{display:none}
+.only-m{display:grid;margin-top:var(--s5)}
+.pg{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--s3)}
+.pg li{grid-template-columns:1fr;gap:10px;align-items:start;padding:var(--s3) 0}
+.pg img{width:56px;height:56px}
+.pg em{font-size:16px}
+.by{flex-direction:column;gap:14px;text-align:center}
+.by img{width:96px;height:96px}
+.hb2-m{margin-bottom:var(--s3)}
+.hero.hb2{padding-bottom:0}
+.nav .tg,.nav .btn{min-height:44px;min-width:44px}
+.btn{min-height:44px}
+.pg li{align-content:start}
+}
