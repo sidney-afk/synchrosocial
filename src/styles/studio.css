@@ -381,3 +381,12 @@ html[data-theme=dark] .split2 .aud,html[data-theme=dark] .split2 .vs{--card:#1f1
  .split2 .aud{padding:var(--s3) 20px}.split2 .vs{padding:20px 20px 8px}
 }
 @media (max-width:820px){.bi h3{font-size:19px;line-height:1.25}}
+
+/* Round 4: video labels stay out of faces, before/after screenshots readable */
+@media (max-width:820px){
+ .vid .play{border-radius:8px;left:10px;bottom:10px;padding:6px 10px 6px 8px;font-size:13px}
+ .cs .vid .play{left:6px;bottom:6px;padding:3px 7px;font-size:12px;backdrop-filter:none;background:rgba(18,12,27,.6)}
+ .cs .vid .play svg{display:none}
+ html .ba figure>div{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:84%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-right:calc(-1*var(--s3));padding-right:var(--s3)}
+ html .ba figure>div::-webkit-scrollbar{display:none}.ba figure>div>img{scroll-snap-align:start}
+}
