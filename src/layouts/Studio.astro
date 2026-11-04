@@ -2,8 +2,8 @@
 import "../styles/studio.css";
 import { GLASSDOOR_EN, LINKEDIN, INSTAGRAM, APPLY, SITE_LIVE } from "../data/studio.js";
 import { GLASSDOOR_URL } from "../data/org.js";
-interface Props { title: string; description: string; page: string }
-const { title, description, page } = Astro.props;
+interface Props { title: string; description: string; page: string; open?: boolean }
+const { title, description, page, open = false } = Astro.props;
 const path = page === "home" ? "/" : `/${page}`;
 const canonical = new URL(path, "https://synchrosocial.com").href;
 const org = {
@@ -26,7 +26,7 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-{SITE_LIVE ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex, nofollow" />}
+{(SITE_LIVE || open) ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex, nofollow" />}
 <meta property="og:type" content="website" /><meta property="og:site_name" content="Synchro Social" />
 <meta property="og:title" content={title} /><meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} /><meta property="og:image" content="https://synchrosocial.com/images/apply4/kasper-founder.webp" />
