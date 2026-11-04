@@ -248,3 +248,13 @@ html[data-theme=dark] .hb2-s li:nth-child(1) b{color:#d8b4fe}html[data-theme=dar
 .tp b{display:block;font-weight:600}.tp small{color:var(--mute);font-size:14px}
 .tl{display:flex;gap:var(--s4);flex-wrap:wrap;margin-top:var(--s4)}
 @media (max-width:820px){.tp{grid-template-columns:repeat(2,minmax(0,1fr))}.team2 .tg-wide{border-radius:14px}}
+
+/* mobile tap targets: 44px minimum for stand-alone links */
+@media (max-width:820px){
+.foot nav div{gap:0}
+.foot nav a{display:flex;align-items:center;min-height:44px}
+.foot .fl a{display:inline-flex;align-items:center;min-height:44px}
+.cta2 .link,.sh .link,.tl .link,.roles .link{display:inline-flex;align-items:center;min-height:44px}
+.tl{display:flex;flex-direction:column;align-items:flex-start;gap:0}
+}
+@media (max-width:520px){.kpis{flex-wrap:wrap;gap:var(--s3) var(--s4)}.kpis p{margin:0}.kpis b{font-size:32px;white-space:nowrap}}
