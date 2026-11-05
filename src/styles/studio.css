@@ -458,3 +458,8 @@ html[data-theme=dark] .hw .tmk .av i{border-color:#1f1730}
  .sg:has(>*>.art)>*{display:grid;grid-template-rows:subgrid;grid-row:span 3;row-gap:0;align-content:start}
  .sg:has(>*>.art)>*>.art{aspect-ratio:auto;min-height:0;align-self:stretch}
 }
+@media (min-width:821px){
+ .split2:has(>div>.big){row-gap:0}
+ .split2:has(>div>.big)>div{display:grid;grid-template-rows:subgrid;grid-row:span 4;align-content:start}
+ .split2:has(>div>.big)>div>:nth-child(3){align-self:start}
+}

@@ -53,7 +53,7 @@ const how = [
       <h2>Who this is for</h2>
       <p class="big">You're a coach, author, doctor or expert people already trust.</p>
       <div class="stories"><ul>{aud.map(([t, img]) => <li><span class="ring"><img src={img} alt="" loading="lazy" /></span>{t}</li>)}</ul></div>
-      <p class="mute">Your content doesn't show how good you are, while less experienced people get the views. You want a team to run your social media, so you can focus on your work.</p>
+      <div class="tx"><p class="mute">Your content doesn't show how good you are, while less experienced people get the views. You want a team to run your social media, so you can focus on your work.</p></div>
     </div>
     <div>
       <h2>Why not an editor or an intern?</h2>
@@ -62,8 +62,8 @@ const how = [
         <div><h3>Editor or intern</h3><ul>{vs.map(t => <li><i class={t === "Editing" ? "on" : ""}>{t === "Editing" && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>}</i>{t}<span class="sr">{t === "Editing" ? ", included" : ", not included"}</span></li>)}</ul></div>
         <div class="me"><h3>Synchro Social</h3><ul>{vs.map(t => <li><i class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>{t}<span class="sr">, included</span></li>)}</ul></div>
       </div>
-      <p class="mute">An editor starts with footage. We start with the script.</p>
-      <p class="mute">Hiring a scriptwriter, editor, social media manager and videographer separately runs $7,000 to $12,000+ a month, and you manage all of them.</p>
+      <div class="tx"><p class="mute">An editor starts with footage. We start with the script.</p>
+      <p class="mute">Hiring a scriptwriter, editor, social media manager and videographer separately runs $7,000 to $12,000+ a month, and you manage all of them.</p></div>
     </div>
   </div></section>
   <section class="band"><div class="wrap sec"><HomeCta kind="close" v="a" /></div></section>
