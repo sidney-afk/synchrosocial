@@ -15,8 +15,8 @@ const how = [
 ---
 <Studio title="Synchro Social | Done-For-You Social Media Agency" description="Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders. Based in Miami since 2022." page="home">
   <section class="wrap hero hb2">
-    <h1><span class="s1">Someone with half your credentials is getting the audience that should be yours.</span><span class="s2">You spent years becoming the expert. You spend about 20 minutes a week reviewing and one filming day a month. We handle the rest.</span></h1>
-    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><p class="lede out">We turn your expertise into an audience that becomes clients, members and sales.</p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
+    <h1><span class="s1"><i class="dsk">Someone with half your credentials is getting the audience that should be yours.</i><i class="phn">Someone with half your credentials is getting your audience.</i></span><span class="s2"><i class="dsk">You spent years becoming the expert. You spend about 20 minutes a week reviewing and one filming day a month. We handle the rest.</i><i class="phn">You spent years becoming the expert. We handle the rest.</i></span></h1>
+    <div class="hb2-m"><p class="lede">Synchro Social is a done-for-you social media and content strategy agency for coaches, doctors, authors and thought leaders.</p><p class="lede out"><i class="dsk">We turn your expertise into an audience that becomes clients, members and sales.</i><i class="phn">We turn your expertise into clients.</i></p><div class="cta2"><a class="btn" href="/apply">Apply to work with us</a></div></div>
     <ol class="hb2-s">{[["Plan","Ideas built around what you know, in your voice."],["Film","We direct the shoot, or guide you while you film."],["Edit","Hooks, cuts and captions that hold attention."],["Grow","Posting and testing until the audience builds."],["Earn","Followers turn into members, clients and sales."]].map(([a, b], i) => <li><span class="n">0{i + 1}</span><b>{a}</b><span class="d">{b}</span></li>)}</ol>
   </section>
   <section class="wrap stats" aria-label="In numbers">
@@ -45,7 +45,7 @@ const how = [
     <div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div>
   </div></section>
   <section class="wrap sec">
-    <div class="sh"><h2>How we work</h2><p><b>The Script-First Method.</b> I write every script myself, built on what is trending, which formats work and who your audience follows. Filming, editing and posting all start from that script. The same system that grew our clients over 8 million followers.</p></div>
+    <div class="sh"><h2>How we work</h2><p>I write every script myself, built on what is trending, which formats work and who your audience follows. Filming, editing and posting all start from that script. The same system that grew our clients over 8 million followers.</p></div>
     <ol class="sg">{how.map((s, i) => <li><h3>{s.t}</h3><HomeArt i={i} /><p>{s.b}</p></li>)}</ol>
   </section>
   <section class="band"><div class="wrap sec split2">
@@ -62,7 +62,7 @@ const how = [
         <div><h3>Editor or intern</h3><ul>{vs.map(t => <li><i class={t === "Editing" ? "on" : ""}>{t === "Editing" && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>}</i>{t}<span class="sr">{t === "Editing" ? ", included" : ", not included"}</span></li>)}</ul></div>
         <div class="me"><h3>Synchro Social</h3><ul>{vs.map(t => <li><i class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg></i>{t}<span class="sr">, included</span></li>)}</ul></div>
       </div>
-      <p class="mute">An editor starts with footage. The Script-First Method starts with the script.</p>
+      <p class="mute">An editor starts with footage. We start with the script.</p>
       <p class="mute">Hiring a scriptwriter, editor, social media manager and videographer separately runs $7,000 to $12,000+ a month, and you manage all of them.</p>
     </div>
   </div></section>
