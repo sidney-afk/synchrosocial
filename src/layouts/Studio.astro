@@ -70,7 +70,13 @@ document.querySelectorAll('[data-wistia]').forEach(function(b){['pointerenter','
 <script is:inline>(function(){var mq=window.matchMedia('(max-width:820px)');var sel='.rg,.sec:not(.cs) .vg,.pg,.ba figure>div,.about-bl,.bl.sw';var items=[];
 function build(el){if(el._sw)return;var n=el.children.length;if(n<2)return;var w=document.createElement('div');w.className='swh';w.setAttribute('aria-hidden','true');var d=document.createElement('div');d.className='swd';var nd=Math.min(n,6);for(var i=0;i<nd;i++){var b=document.createElement('i');d.appendChild(b)}w.appendChild(d);el.insertAdjacentElement('afterend',w);el._sw=w;
 function up(){var m=el.scrollWidth-el.clientWidth;if(m<8){w.hidden=true;return}w.hidden=false;var r=Math.max(0,Math.min(1,el.scrollLeft/m));var a=Math.round(r*(nd-1));var k=d.children;for(var i=0;i<k.length;i++)k[i].className=i===a?'on':'';w.classList.toggle('moved',el.scrollLeft>8)}
-el.addEventListener('scroll',function(){requestAnimationFrame(up)},{passive:true});window.addEventListener('resize',up);up();setTimeout(up,400)}
+el.addEventListener('scroll',function(){requestAnimationFrame(up)},{passive:true});
+function go(x,instant){var r=d.getBoundingClientRect();var f=Math.max(0,Math.min(1,(x-r.left)/r.width));var k=Math.min(Math.floor(f*nd),nd-1);var m=el.scrollWidth-el.clientWidth;var prev=el.style.scrollBehavior,snap=el.style.scrollSnapType;if(instant){el.style.scrollBehavior='auto';el.style.scrollSnapType='none'}el.scrollTo({left:nd===1?0:k/(nd-1)*m,behavior:instant?'auto':'smooth'});if(instant){el.style.scrollBehavior=prev;el._snap=snap}}
+var drag=false;d.addEventListener('pointerdown',function(e){drag=true;try{d.setPointerCapture(e.pointerId)}catch(x){}go(e.clientX,false);e.preventDefault()});
+d.addEventListener('pointermove',function(e){if(drag)go(e.clientX,true)});
+function end(){if(!drag)return;drag=false;el.style.scrollSnapType=''}
+d.addEventListener('pointerup',end);d.addEventListener('pointercancel',end);
+window.addEventListener('resize',up);up();setTimeout(up,400)}
 function init(){if(!mq.matches)return;document.querySelectorAll('main *').forEach(function(e){if(e._sw||e.children.length<2)return;var o=getComputedStyle(e).overflowX;if((o==='auto'||o==='scroll')&&e.scrollWidth-e.clientWidth>8)build(e)})}
 init();mq.addEventListener&&mq.addEventListener('change',init);window.addEventListener('load',init)})();</script>
 </body>
