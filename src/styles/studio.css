@@ -460,6 +460,7 @@ html[data-theme=dark] .hw .tmk .av i{border-color:#1f1730}
 }
 @media (min-width:821px){
  .split2:has(>div>.big){row-gap:0}
- .split2:has(>div>.big)>div{display:grid;grid-template-rows:subgrid;grid-row:span 4;align-content:start}
- .split2:has(>div>.big)>div>:nth-child(3){align-self:start}
+ .split2:has(>div>.big)>div{display:grid;grid-template-rows:subgrid;grid-row:span 3;align-content:start}
+ .split2:has(>div>.big)>div>h2{align-self:end}
+ .split2:has(>div>.big)>div>.bd>.tx{margin-top:var(--s3)}
 }
