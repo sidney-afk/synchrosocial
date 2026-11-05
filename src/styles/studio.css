@@ -480,3 +480,19 @@ html[data-theme=dark] .hw .tmk .av i{border-color:#1f1730}
 .cta{align-items:center}
 @media(max-width:760px){.stats.s4 .proofstat{grid-column:1/-1;border-left:0;border-top:1px solid var(--line)}.stats.s4>div:nth-child(2){border-left:1px solid var(--line)}.proofstat b{font-size:42px}.cta{flex-wrap:wrap}}
 .cta .rl{padding:14px 8px;line-height:1.2;align-self:center}
+
+/* Home hero (Nov 2026): button, client faces with the numbers, award on one row; steps after the client list */
+.hp{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:36px}
+.fp{display:flex;align-items:center;gap:14px}
+.fp .fc{display:flex;flex:none}.fp .fc img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:3px solid var(--bg);margin-left:-12px}.fp .fc img:first-child{margin-left:0}
+.fp p{margin:0;font-size:15px;line-height:1.45;color:var(--mute);max-width:300px}.fp b{color:var(--fg);font-weight:600}
+.hp .award{display:flex;flex-direction:row;align-items:center;gap:14px}.hp .award a{display:contents}.hp .award img{height:52px}.hp .award span{font-size:14px;line-height:1.4;color:var(--mute);max-width:200px;text-align:left}
+.hero.hb2{padding-bottom:64px}
+.hsteps{padding-top:72px}
+.vo{font-weight:600;font-size:16px;line-height:1.3;margin:var(--s2) 0 0}.vo+h3{margin-top:6px}
+@media (max-width:820px){
+ .hp{flex-direction:column;align-items:center;gap:28px;width:100%}
+ .fp{flex-direction:column;gap:10px}.fp p{text-align:center}
+ .hero.hb2{padding-bottom:56px}
+ .hsteps{padding-top:0}.hsteps .dsk{display:none}
+}
