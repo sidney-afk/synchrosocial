@@ -22,7 +22,7 @@ const faqs = [
   ["How long until I see results?", "Most clients build real momentum within the first 90 days."],
 ];
 ---
-<Studio title="Work with Synchro Social" description="Strategy, scripts, filming plans, editing and posting for experts, founders and educators. 1.2B views generated, 8M followers grown." page="clients">
+<Studio title="Work with Synchro Social" description="Strategy, scripts, filming plans, editing and posting for experts, founders and educators. 1.2B+ views generated, 8M+ followers grown." page="clients">
   <section class="wrap hero">
     <h1>Turn your expertise into members, clients and sales.</h1>
     <div class="hb">
@@ -31,10 +31,10 @@ const faqs = [
     </div>
   </section>
   <section class="wrap stats s4" aria-label="In numbers">
-    <div><b>1.2B</b><span>views generated for our clients</span></div>
-    <div><b>8M</b><span>followers grown across platforms</span></div>
-    <div class="proofstat"><b>0 to 900+</b><span>members in 10 weeks for one client</span></div>
-    <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, shortlisted" /></a><span>Shortlisted, Best Social Media Agency of the Year</span></div>
+    <div><b>1.2B+</b><span>views generated for our clients</span></div>
+    <div><b>8M+</b><span>followers grown across platforms</span></div>
+    <div class="proofstat"><b class="nw">0 → 900+</b><span>members in 10 weeks for one client</span></div>
+    <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="Shortlisted, Social Media Agency of the Year, European Agency Awards 2026" /></a><span>Shortlisted, Social Media Agency of the Year</span></div>
   </section>
   <section class="wrap sec fit" id="fit">
     <h2 class="sh">Who this is for</h2>
@@ -57,15 +57,21 @@ const faqs = [
       <div class="vi">
         <button class="vid wide" data-wistia={c.wistia} aria-label={`Play ${c.name}'s story`}><img src={c.poster} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
         <h3>{c.name}</h3><small>{c.label.split(" - ")[1]}</small>
-        <ul>{c.results.map(r => <li>{r === "1,000s of qualified leads" ? "One video, 1,000 qualified leads" : r === "20M+ total views" ? "46.6M total views" : r === "4K to 100K+ followers" ? "4K to 125K+ followers" : r === "Thousands of organic leads" ? "More than 1,000 organic leads" : r}</li>).filter((_, i) => c.name !== "Dr. Sonia Chopra" || i !== 1)}</ul>
+        <ul>{c.results.map(r => <li>{r === "1,000s of qualified leads" ? "One video, 1,000 qualified leads" : r === "20M+ total views" ? "46.6M total views" : r === "4K to 100K+ followers" ? "4K to 125K+ followers" : r === "Thousands of organic leads" ? "More than 1,000 organic leads" : r}</li>).filter((_, i) => c.name !== "Dr. Sonia Chopra" || i > 1)}</ul>
       </div>))}</div>
   </section>
   <section class="band"><div class="wrap sec">
+    <div class="sh"><h2>In their own words</h2><p>Unscripted, on camera, from people who have been through the whole process.</p></div>
+    <div class="vg">{testimonials.map(t => (
+      <div class="vi"><button class="vid" data-wistia={t.wistia} aria-label={`Play ${t.name}'s testimonial`}><img src={`/images/wistia/${t.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
+      <h3>{t.name}</h3><small>{t.shortRole}</small></div>))}</div>
+  </div></section>
+  <section class="wrap sec">
     <h2 class="sh">How we work</h2>
     <p class="mute method">I write every script myself, built on what is trending, which formats work and who your audience follows. Filming, editing and posting all start from that script.</p>
     <ol class="sg">{steps.map((s, i) => <li><h3>{s.title}</h3><StepArt i={i} /><p>{s.body}</p></li>)}</ol>
-  </div></section>
-  <section class="wrap sec">
+  </section>
+  <section class="band"><div class="wrap sec">
     <h2 class="sh">What working with us feels like</h2>
     <div class="sg hw">
       <div><h3>We learn you before we film you</h3><div class="art"><div class="note"><div class="t">Getting to know you</div>
@@ -79,12 +85,6 @@ const faqs = [
       <div><h3>You get better on camera</h3><div class="art"><div class="gr"><div class="m1"><i></i>Month 1</div><span class="ar">→</span><div class="m6"><i><span>1.2M</span></i>Month 6</div></div></div><p>Nobody is great in month one. It's a muscle, and we coach you through it.</p></div>
       <div><h3>The same team, every month</h3><div class="art"><div class="tmk"><div class="av"><i style="background:#d62976"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M3.5 24c0-5 3.8-8 8.5-8s8.5 3 8.5 8z"/></svg></i><i style="background:#8331e8"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M3.5 24c0-5 3.8-8 8.5-8s8.5 3 8.5 8z"/></svg></i><i style="background:#f08a24"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M3.5 24c0-5 3.8-8 8.5-8s8.5 3 8.5 8z"/></svg></i><i style="background:#2f8ce6"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="4.2"/><path d="M3.5 24c0-5 3.8-8 8.5-8s8.5 3 8.5 8z"/></svg></i></div><b>Your team</b><small>Same faces since day one</small></div></div><p>No new account manager every quarter. The people who learn your voice stay.</p></div>
     </div>
-  </section>
-  <section class="band"><div class="wrap sec">
-    <div class="sh"><h2>In their own words</h2><p>Unscripted, on camera, from people who have been through the whole process.</p></div>
-    <div class="vg">{testimonials.map(t => (
-      <div class="vi"><button class="vid" data-wistia={t.wistia} aria-label={`Play ${t.name}'s testimonial`}><img src={`/images/wistia/${t.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>Watch</span></button>
-      <h3>{t.name}</h3><small>{t.shortRole}</small></div>))}</div>
   </div></section>
   <section class="wrap sec split">
     <h2>Questions</h2>
