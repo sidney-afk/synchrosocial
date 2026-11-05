@@ -1,10 +1,14 @@
 ---
 import Studio from "../../layouts/Studio.astro";
+import HomeArt from "../../components/studio/HomeArt.astro";
+const how = [
+  { t: "Start with the script", b: "We study your audience first: what they care about, what they fear, what makes them stop scrolling. Every hook comes from that." },
+  { t: "Scripts, filming plans, editing and posting", b: "We handle all of it every week, as one team that learns your voice. You review content about 20 minutes a week and film one day a month, around 2 hours." },
+  { t: "Turn views into business", b: "Content and simple systems that turn viewers into followers, email subscribers, program members and clients." },
+];
 const beliefs = [
-  ["Organic first", "We don't run paid ads to fake momentum. We find what makes your content spread on its own, so growth keeps going after the post.", "What we focus on is how you can, with the type of content you have, go viral organically."],
+  ["We don't fake growth", "No paid ads to fake momentum, no bots, no bought followers, no shortcuts that look smart and hurt the account. We find what makes your content spread on its own. Followers gained per post is our earliest signal, because it shows real people chose to stay.", "Followers per post, that's my number one tracking metric."],
   ["Your genius is the content", "We don't hand you a template. We pull out what you know and what makes you, you, and build the videos around that.", "Our work is around how we can extract your genius and what makes you, you."],
-  ["Real audiences only", "No bots, no bought followers, no ghost views. Followers gained per post is our earliest signal, because it shows real people chose to stay and that the audience we build can turn into clients.", "Followers per post, that's my number one tracking metric."],
-  ["No shortcuts", "There are quicker tricks out there. They look smart and they hurt the account. We say no to them, even when it would be easier.", "There are some sketchy methods that might seem smart, but they're just not."],
   ["Honest over hyped", "We don't promise viral videos on a sales call. If something isn't working, we look at the content and tell you straight why.", "It's a content issue. Let's look at the content."],
   ["The camera is a muscle", "Nobody is great on camera in month one. You get better by showing up, and we coach you through it.", "I want you to feel a little embarrassed when you look at your month one videos when you're on month six."],
   ["Growth has to pay for itself", "Views are nice. Clients, members and sales are the point. We build the path from a video to your calendar.", "When people come to us, they need to make a return on what they invest."],
@@ -40,10 +44,14 @@ const beliefs = [
     <div class="sh"><h2>What we believe</h2><p>In Kasper's own words, taken from his calls with clients.</p></div>
     <div class="bl">{beliefs.map(([t, p, q]) => <div><h3>{t}</h3><p>{p}</p><div class="bub"><img src="/images/kasper.jpg" alt="Kasper, founder of Synchro Social" /><q>{q}</q></div></div>)}</div>
   </div></section>
+  <section class="wrap sec">
+    <div class="sh stack"><h2>How we work</h2><p>I write every script myself. Filming, editing and posting all start from that script.</p></div>
+    <ol class="sg">{how.map((s, i) => <li><h3>{s.t}</h3><HomeArt i={i} /><p>{s.b}</p></li>)}</ol>
+  </section>
   <section class="wrap stats" aria-label="Recognition" style="margin-bottom:48px">
-    <div><b>1.2B</b><span>views generated for our clients</span></div>
+    <div><b>1.2B</b><span>views across every client since 2022</span></div>
     <div><b>8M</b><span>followers grown across platforms</span></div>
-    <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, nominated" /></a><span>Nominated, Best Social Media Agency of the Year</span></div>
+    <div class="award"><a href="https://europeanagencyawards.com/2026-shortlist/" target="_blank" rel="noopener"><img src="/images/awards/european-agency-awards-2026-nominated-white.png" alt="European Agency Awards 2026, shortlisted" /></a><span>Shortlisted, Best Social Media Agency of the Year</span></div>
   </section>
   <section class="wrap" style="text-align:center;margin:0 auto 96px"><a class="btn" href="/apply">Apply to work with us</a></section>
 </Studio>

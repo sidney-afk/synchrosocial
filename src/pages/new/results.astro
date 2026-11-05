@@ -7,7 +7,12 @@ const more = [
   { name: "Luke Cutting", avatar: "luke-cutting", credit: "@lukebuildsai", period: "3 Months", platforms: ["Instagram"], stats: [{ value: "10M+", label: "Views since he joined" }, { value: "4", label: "Videos over 1M views" }, { value: "50K+", label: "Email subscribers in 3 months" }], videos: [{ wistia: "agctps725g", views: "3.8M" }, { wistia: "7ixvu8r8al", views: "2.1M" }, { wistia: "geoxo9j2w2", views: "1.4M" }] },
   { name: "Edward Mannix", avatar: "edward-mannix", credit: "@edwardmannix", period: "11 Months", platforms: ["Instagram"], stats: [{ value: "700 to 90K+", label: "Followers" }, { value: "3.4M", label: "Views on one video" }, { value: "1,000+", label: "Organic leads" }], videos: [{ wistia: "6d4n0e79y4", views: "3.4M" }, { wistia: "cc75h2py2y", views: "1.7M" }, { wistia: "wm3fjddgak", views: "1.2M" }] },
 ];
-const allCases = [...caseStudies.map(c => ({ ...c, avatar: avatar[c.name] })), ...more];
+const outcome = { "Danny Morel": "Number one on Apple Podcasts, and a TikTok that passed 1 million followers.", "Edward Mannix": "Grew from 700 to 90K+ followers and brought in 1,000+ organic leads.", "Luke Cutting": "50K+ email subscribers in 3 months, with four videos over 1 million views.", "Jessica Winterstern": "78,749 followers, up 105% in 30 days." };
+const everyone = [...caseStudies.map(c => ({ ...c, avatar: avatar[c.name] })), ...more];
+const flagNames = ["Danny Morel", "Edward Mannix", "Luke Cutting"];
+const flagship = flagNames.map(n => everyone.find(c => c.name === n));
+const rest = everyone.filter(c => !flagNames.includes(c.name));
+const ig = (c) => `https://www.instagram.com/${c.credit.slice(1)}/`;
 const receipts = [
   ["/images/apply4/lily-baker-insights.webp", "Dr. Lily Baker: 10.6M views in under three months"],
   ["danny-podcast-chart.webp", "Danny Morel at number one on Apple Podcasts"],
@@ -21,14 +26,24 @@ const receipts = [
 <Studio title="Results | Synchro Social" description="Case studies, before and after accounts and the receipts behind 1.2B views and 8M followers." page="results">
   <section class="wrap hero">
     <h1>The receipts behind<br />1.2 billion views.</h1>
-    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts.</p><div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div></div>
+    <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts. Tap any name to open the real account and check it yourself.</p><div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div></div>
   </section>
-  {allCases.map((c, i) => (
+  {flagship.map((c, i) => (
     <section class={i % 2 ? "band" : ""}><div class="wrap sec tight cs">
-      <div class="sh"><div><h2><a class="ig" href={`https://www.instagram.com/${c.credit.slice(1)}/`} target="_blank" rel="noopener">{c.name}</a></h2><p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt={c.name} /><span><a class="ig" href={`https://www.instagram.com/${c.credit.slice(1)}/`} target="_blank" rel="noopener">{c.credit}</a><br /><small>{c.period.toLowerCase()} with us, on {c.platforms.join(", ").replace(/, ([^,]*)$/, " and $1")}</small></span></p></div>
+      <div class="sh"><div><h2><a class="ig" href={ig(c)} target="_blank" rel="noopener">{c.name}</a></h2><p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt={c.name} /><span><a class="ig" href={ig(c)} target="_blank" rel="noopener">{c.credit}</a><br /><small>{c.period.toLowerCase()} with us, on {c.platforms.join(", ").replace(/, ([^,]*)$/, " and $1")}</small></span></p><p class="out">{outcome[c.name]}</p></div>
       <div class="kpis">{c.stats.map(s => <p><b>{s.value}</b><span>{s.label.toLowerCase()}</span></p>)}</div></div>
       <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views} views</span></button></div>)}</div>
     </div></section>))}
+  <section class="wrap sec tight">
+    <div class="sh"><h2>More clients, more views</h2><p>Tap a name to open the real account.</p></div>
+    <div class="mg">{rest.map(c => (
+      <article class="mc">
+        <p class="who"><img src={`/images/clients/${c.avatar}.jpg`} alt={c.name} /><span><a class="ig nm" href={ig(c)} target="_blank" rel="noopener">{c.name}</a><br /><small>{c.credit} · {c.period.toLowerCase()} with us</small></span></p>
+        <p class="ck">{c.stats.map(s => <span><b>{s.value}</b> {s.label.toLowerCase()}</span>)}</p>
+        {outcome[c.name] ? <p class="out sm">{outcome[c.name]}</p> : <p class="out sm" aria-hidden="true"></p>}
+        <div class="vg">{c.videos.map(v => <div class="vi"><button class="vid" data-wistia={v.wistia} aria-label={`Play ${c.name} video, ${v.views} views`}><img src={v.poster || `/images/wistia/${v.wistia}.webp`} alt="" loading="lazy" /><span class="play"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>{v.views}</span></button></div>)}</div>
+      </article>))}</div>
+  </section>
   <section class="band"><div class="wrap sec">
     <div class="sh"><h2>Before and after</h2><p>The same accounts, before we started and after the work had been running.</p></div>
     <div class="ba">{pairs.map(([n, k, x = ""]) => <figure><div><img src={`/images/audience-skyrocket/${k}-before${x}.webp`} alt={`${n} account before`} loading="lazy" /><img src={`/images/audience-skyrocket/${k}-after${x}.webp`} alt={`${n} account after`} loading="lazy" /></div><figcaption>{n}, before and after</figcaption></figure>)}</div>
@@ -39,11 +54,13 @@ const receipts = [
   </section>
   <section class="band"><div class="wrap sec endc">
     <h2>Want results like these?</h2>
-    <p>Apply, or see how we work with clients and what a first month looks like.</p>
+    <p>What we ask of you: about 20 minutes a week to review, and one filming day a month (around 2 hours). In month one we learn your voice, you film once, and we edit and post.</p>
     <div class="cta"><a class="btn" href="/apply">Apply to work with us</a> <a class="btn ghost" href="/new/clients">See how we work</a></div>
   </div></section>
 </Studio>
 <style is:global>
+.out{margin-top:var(--s3);color:var(--fg);font:600 clamp(20px,2vw,26px)/1.25 var(--disp);letter-spacing:-.015em;max-width:24ch}.out.sm{margin-top:14px;font-size:17px;max-width:none}
+.mg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 var(--s4)}.mc{display:grid;grid-template-rows:subgrid;grid-row:span 4;row-gap:0;padding-bottom:var(--s5)}.mc .out.sm{margin-top:14px;min-height:1.25em}.mc .ck{align-content:flex-start;margin-bottom:0}section.sec .mc .vg{display:grid;grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-columns:auto;overflow:visible;margin:var(--s2) 0 0;padding:0;gap:8px}.mc .who{margin-top:0}.mc .nm{font:700 22px/1.2 var(--disp);letter-spacing:-.015em;color:var(--fg)}.mc .nm:hover{text-decoration:underline}.mc .ck{display:flex;flex-wrap:wrap;gap:6px var(--s3);margin-top:var(--s2);color:var(--mute);font-size:14px}.mc .ck b{color:var(--fg);font:800 22px/1 var(--disp)}.sh p.out,.mc p.out{color:var(--fg)}@media (max-width:980px){.mg{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:640px){.mg{grid-template-columns:1fr}.mc .out.sm:empty{display:none}.mc{grid-row:auto;grid-template-rows:none;display:block}}.cs .kpis{gap:12px;margin-top:var(--s3)}.cs .kpis p{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.cs .kpis b{display:inline;font-size:30px;line-height:1;color:var(--fg)}.cs .kpis span{font-size:15px;color:var(--mute)}@media (max-width:820px){.cs,.cs .sh,.cs .sh>div,.cs .who,.cs .out{text-align:left;justify-items:start;align-items:start}.cs .kpis{flex-direction:column;flex-wrap:nowrap;gap:10px;margin-top:var(--s3)}.cs .kpis p{display:flex;align-items:baseline;gap:10px;text-align:left}.cs .kpis b{font-size:26px;display:inline}.cs .kpis span{font-size:14px}}
 .cs a.ig{color:inherit;text-decoration:none}.cs h2 a.ig:hover{text-decoration:underline}.cs .who a.ig{text-decoration:underline;text-underline-offset:3px}
 .vr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:var(--s5);align-items:start;padding:var(--s4) 0;border-top:1px solid var(--line)}.vr h3{margin:0 0 6px}.vr small{color:var(--mute);font-size:14px}.vr .vg{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}@media (max-width:820px){.vr{grid-template-columns:1fr;gap:var(--s3)}.vr .vg{gap:8px}}
 .endc{text-align:center}.endc p{color:var(--mute);margin:12px 0 var(--s3)}.endc .cta{justify-content:center}
