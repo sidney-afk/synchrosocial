@@ -504,4 +504,3 @@ html[data-theme=dark] .hw .tmk .av i{border-color:#1f1730}
 .cl .ks{max-width:46ch;margin:0 auto var(--s4)}.cl .ks blockquote{margin:0;color:var(--mute);font-size:18px;line-height:1.5}
 .cl .ks figcaption{display:inline-flex;align-items:center;gap:12px;margin-top:var(--s3);text-align:left}
 .cl .ks img{width:44px;height:44px;border-radius:50%;object-fit:cover}.cl .ks span{font-weight:600;line-height:1.25}.cl .ks small{display:block;font-weight:400;color:var(--mute);font-size:14px}
-.prose .lead{font:700 clamp(20px,2vw,24px)/1.35 var(--disp);letter-spacing:-.01em;color:var(--fg)}
