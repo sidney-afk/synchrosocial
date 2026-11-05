@@ -25,14 +25,16 @@ async function visit(browser, { query = "?utm_source=facebook", email, answers, 
   const read = () => page.evaluate(() => ((window.fbq && window.fbq.queue) || [])
     .map((a) => Array.from(a)).filter((a) => a[1] === "DoctorQualified")
     .map((a) => ({ method: a[0], params: a[2], eventID: a[3] && a[3].eventID })));
+  const showAll = () => page.evaluate(() => document.querySelector('.apply-form').removeAttribute('data-fs')); // the form is 4 steps now; this event is about the answers, not the step buttons
   await page.goto(`${BASE}/doctors-who-teach/${query}`);
+  await showAll();
   if (!emailLast) await typeEmail();
   for (const a of answers) await page.check(`input[name="investment"][value="${a}"]`, { force: true });
   if (emailLast) await typeEmail();
   await page.waitForTimeout(300);
   let events = await read();
   if (reload) { // same visit, page reloaded, "Yes" picked again
-    await page.reload(); await typeEmail();
+    await page.reload(); await showAll(); await typeEmail();
     await page.check('input[name="investment"][value="Yes"]', { force: true });
     await page.waitForTimeout(300);
     events = events.concat(await read());
