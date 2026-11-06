@@ -1,4 +1,25 @@
+# Synchro Social: everyone is welcome, including AI search tools.
+# (Pages that should stay out of search results carry a noindex tag instead of a block here,
+# because a blocked page cannot be read to find that tag.)
 User-agent: *
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://synchrosocial.com/sitemap.xml
