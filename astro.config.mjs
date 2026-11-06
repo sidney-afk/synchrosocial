@@ -11,6 +11,14 @@ export default defineConfig({
     // One set of legal pages: the new-site copies redirect to the originals.
     '/new/privacy': '/privacypolicy',
     '/new/terms': '/terms-conditions',
+    // The company site was tested at /new before it became the homepage (6 Nov 2026).
+    // Old test links keep working. (GitHub Pages cannot send a true 301, so these
+    // are instant redirects with a canonical link to the new address.)
+    '/new': '/',
+    '/new/clients': '/clients',
+    '/new/results': '/case-studies',
+    '/new/about': '/about',
+    '/new/careers': '/careers',
     // The new homepage lived at /v2 during the test phase — keep old links alive.
     '/v2': '/',
     // The two VSL landing pages shipped as /danny_vsl and /baya_vsl and were

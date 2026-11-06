@@ -1,37 +1,58 @@
 ---
 import "../styles/studio.css";
+import MetaPixel from "../components/MetaPixel.astro";
 import { GLASSDOOR_EN, LINKEDIN, INSTAGRAM, APPLY, SITE_LIVE } from "../data/studio.js";
 import { GLASSDOOR_URL } from "../data/org.js";
 interface Props { title: string; description: string; page: string; open?: boolean }
 const { title, description, page, open = false } = Astro.props;
-const path = page === "home" ? "/" : `/${page}`;
+// The Results page lives at /case-studies: /results is the doctor page that ads and emails point to.
+const slug = page === "home" ? "" : page === "results" ? "case-studies" : page;
+const path = `/${slug}`;
 const canonical = new URL(path, "https://synchrosocial.com").href;
+const SHARE_IMAGE = "https://synchrosocial.com/images/synchro-social-share.png";
+const AWARD = "Shortlisted, Social Media Agency of the Year, European Agency Awards 2026";
 const org = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
+  "@id": "https://synchrosocial.com/#organization",
   name: "Synchro Social",
+  alternateName: ["Synchro Social LLC", "Synchro Social agency"],
   legalName: "Synchro Social LLC",
   url: "https://synchrosocial.com/",
   logo: "https://synchrosocial.com/images/logo.png",
+  image: SHARE_IMAGE,
   foundingDate: "2022",
-  description: "A social media and content strategy agency for experts with something to teach: strategy, scripts, editing and posting.",
+  founder: { "@type": "Person", name: "Kasper Hytonen", jobTitle: "Founder and CEO", url: "https://synchrosocial.com/about" },
+  description: "Synchro Social is a Miami-based, done-for-you social media and content strategy agency for experts with something to teach: authors, doctors, coaches and thought leaders. Strategy, scripts, filming plans, editing and posting.",
+  disambiguatingDescription: "A social media marketing agency. Not a synchronized swimming club and not the Synchro app.",
+  slogan: "Someone with half your credentials is getting your audience.",
+  knowsAbout: ["social media management", "short-form video", "content strategy", "video editing", "Instagram growth", "personal brand"],
+  award: AWARD,
   email: "hello@synchrosocial.com",
   address: { "@type": "PostalAddress", addressLocality: "Miami", addressRegion: "FL", addressCountry: "US" },
+  areaServed: "US",
   sameAs: [INSTAGRAM, LINKEDIN, GLASSDOOR_URL],
 };
-const site = { "@context": "https://schema.org", "@type": "WebSite", name: "Synchro Social", url: "https://synchrosocial.com/" };
-const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["about", "About"], ["careers", "Careers"]];
+const site = { "@context": "https://schema.org", "@type": "WebSite", "@id": "https://synchrosocial.com/#website", name: "Synchro Social", alternateName: "Synchro Social agency", url: "https://synchrosocial.com/", publisher: { "@id": "https://synchrosocial.com/#organization" } };
+const kinds = { about: "AboutPage", "case-studies": "CollectionPage", clients: "WebPage", careers: "WebPage" };
+const label = { clients: "Work with us", "case-studies": "Results", about: "About", careers: "Careers" };
+const pageNode = page === "home" ? null : { "@context": "https://schema.org", "@type": kinds[slug] || "WebPage", name: title, description, url: canonical, isPartOf: { "@id": "https://synchrosocial.com/#website" }, about: { "@id": "https://synchrosocial.com/#organization" } };
+const crumbs = page === "home" ? null : { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: "https://synchrosocial.com/" }, { "@type": "ListItem", position: 2, name: label[slug] || title, item: canonical }] };
+const graph = page === "home" ? [org, site] : [org, pageNode, crumbs];
+const links = [["", "Home"], ["clients", "Clients"], ["case-studies", "Results"], ["about", "About"], ["careers", "Careers"]];
 ---
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-{(SITE_LIVE || open) ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex, nofollow" />}
-<meta property="og:type" content="website" /><meta property="og:site_name" content="Synchro Social" />
+{(SITE_LIVE || open) ? <><link rel="canonical" href={canonical} /><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" /></> : <meta name="robots" content="noindex, nofollow" />}
+<meta property="og:type" content="website" /><meta property="og:site_name" content="Synchro Social" /><meta property="og:locale" content="en_US" />
 <meta property="og:title" content={title} /><meta property="og:description" content={description} />
-<meta property="og:url" content={canonical} /><meta property="og:image" content="https://synchrosocial.com/images/apply4/kasper-founder.webp" />
-<meta name="twitter:card" content="summary_large_image" />
-<script type="application/ld+json" set:html={JSON.stringify(page === "home" ? [org, site] : org)} />
+<meta property="og:url" content={canonical} /><meta property="og:image" content={SHARE_IMAGE} /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" /><meta property="og:image:alt" content="Synchro Social, a social media agency for experts with something to teach" />
+<meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content={title} /><meta name="twitter:description" content={description} /><meta name="twitter:image" content={SHARE_IMAGE} />
+<meta name="theme-color" content="#8331e8" />
+<script type="application/ld+json" set:html={JSON.stringify(graph)} />
+<MetaPixel />
 <title>{title}</title><meta name="description" content={description} />
 <link rel="icon" type="image/png" href="/images/synchro-social-icon.png" /><link rel="apple-touch-icon" href="/images/synchro-social-icon-180.png" />
 <link rel="preconnect" href="https://fast.wistia.net" crossorigin /><link rel="preconnect" href="https://embed-ssl.wistia.com" crossorigin /><link rel="dns-prefetch" href="https://distillery.wistia.com" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -42,8 +63,8 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
 </head>
 <body>
 <header class="nav">
-  <a class="brand" href="/new/" aria-label="Synchro Social home"><img class="lt" src="/images/logo-lockup.png" alt="Synchro Social" /><img class="dk" src="/images/logo-lockup-white.png" alt="" /></a>
-  <nav id="mnav" aria-label="Main">{links.map(([h, l]) => <a href={`/new/${h}`} aria-current={(page === h || (h === "" && page === "home")) ? "page" : undefined}>{l}</a>)}</nav>
+  <a class="brand" href="/" aria-label="Synchro Social home"><img class="lt" src="/images/logo-lockup.png" alt="Synchro Social" /><img class="dk" src="/images/logo-lockup-white.png" alt="" /></a>
+  <nav id="mnav" aria-label="Main">{links.map(([h, l]) => <a href={`/${h}`} aria-current={(slug === h) ? "page" : undefined}>{l}</a>)}</nav>
   <div class="right">
     <button class="mb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mnav"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path class="o" d="M4 7h16M4 12h16M4 17h16"/><path class="x" d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="tg" type="button" aria-label="Switch between light and dark">
@@ -57,8 +78,8 @@ const links = [["", "Home"], ["clients", "Clients"], ["results", "Results"], ["a
 <footer class="foot">
   <div class="fl"><b>Synchro Social</b><p>Synchro Social LLC, Miami, Florida</p><p><a href="mailto:hello@synchrosocial.com">hello@synchrosocial.com</a></p></div>
   <nav aria-label="Footer">
-    <div><span>Company</span><a href="/new/about">About</a><a href="/new/careers">Careers</a></div>
-    <div><span>Work</span><a href="/new/clients">Clients</a><a href="/new/results">Results</a></div>
+    <div><span>Company</span><a href="/about">About</a><a href="/careers">Careers</a></div>
+    <div><span>Work</span><a href="/clients">Clients</a><a href="/case-studies">Results</a></div>
     <div><span>Follow</span><a href={INSTAGRAM} target="_blank" rel="noopener">Instagram</a><a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a><a href={GLASSDOOR_EN} target="_blank" rel="noopener">Glassdoor</a></div>
     <div><span>Legal</span><a href="/privacypolicy">Privacy policy</a><a href="/terms-conditions">Terms and conditions</a></div>
   </nav>

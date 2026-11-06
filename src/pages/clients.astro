@@ -1,9 +1,9 @@
 ---
-import Studio from "../../layouts/Studio.astro";
-import StepArt from "../../components/studio/StepArt.astro";
-import { campaignProof } from "../../data/campaignProof.js";
-import { testimonials } from "../../data/testimonials.js";
-import { steps as baseSteps } from "../../data/studio.js";
+import Studio from "../layouts/Studio.astro";
+import StepArt from "../components/studio/StepArt.astro";
+import { campaignProof } from "../data/campaignProof.js";
+import { testimonials } from "../data/testimonials.js";
+import { steps as baseSteps } from "../data/studio.js";
 const steps = baseSteps.map((s, i) => i === 0 ? { ...s, title: "Start with the script" } : s);
 const diff = [
   ["Followers", "Bots, bought followers and ghost views", "Real people who watch, comment and buy"],
@@ -22,7 +22,7 @@ const faqs = [
   ["How long until I see results?", "Most clients build real momentum within the first 90 days."],
 ];
 ---
-<Studio title="Work with Synchro Social" description="Strategy, scripts, filming plans, editing and posting for experts with something to teach. 1.2B+ views generated, 8M+ followers grown." page="clients">
+<Studio title="Work With Synchro Social | Done-For-You Social Media" description="Strategy, scripts, filming plans, editing and posting for experts with something to teach. 1.2B+ views generated, 8M+ followers grown." page="clients">
   <section class="wrap hero">
     <h1>Turn your expertise into members, clients and sales.</h1>
     <div class="hb">

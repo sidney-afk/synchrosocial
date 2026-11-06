@@ -1,7 +1,7 @@
-// Flip to true on launch day, when these pages move from /new to the root.
+// True since launch: the company site lives at the root (it was built at /new).
 // It turns on search indexing, canonical links and the sitemap entries.
-export const SITE_LIVE = false;
-export const SITE_PAGES = ["", "clients", "results", "about", "careers", "privacy", "terms"];
+export const SITE_LIVE = true;
+export const SITE_PAGES = ["", "clients", "case-studies", "about", "careers", "privacypolicy", "terms-conditions"];
 
 // Content for the new company site (/new while it is being built).
 export const team = [
