@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import MetaPixel from "../components/MetaPixel.astro";
 import { GLASSDOOR_URL } from "../data/org.js";
+import { LINKEDIN, INSTAGRAM } from "../data/studio.js";
 
 interface Props {
   title?: string;
@@ -49,6 +50,9 @@ const {
 
     <!-- Open Graph / social preview -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synchro Social" />
+    <meta property="og:image" content="https://synchrosocial.com/images/synchro-social-share.png" />
+    <meta name="twitter:image" content="https://synchrosocial.com/images/synchro-social-share.png" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {Astro.site && <meta property="og:url" content={Astro.site} />}
@@ -72,10 +76,22 @@ const {
          profiles belong to us. Add new profiles to sameAs. -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["Organization", "ProfessionalService"],
+      "@id": "https://synchrosocial.com/#organization",
       name: "Synchro Social",
+      alternateName: ["Synchro Social LLC", "Synchro Social agency"],
+      legalName: "Synchro Social LLC",
       url: "https://synchrosocial.com",
-      sameAs: [GLASSDOOR_URL],
+      logo: "https://synchrosocial.com/images/logo.png",
+      image: "https://synchrosocial.com/images/synchro-social-share.png",
+      foundingDate: "2022",
+      founder: { "@type": "Person", name: "Kasper Hytonen", jobTitle: "Founder and CEO" },
+      description: "Synchro Social is a Miami-based, done-for-you social media and content strategy agency for experts with something to teach: authors, doctors, coaches and thought leaders.",
+      disambiguatingDescription: "A social media marketing agency. Not a synchronized swimming club and not the Synchro app.",
+      award: "Shortlisted, Social Media Agency of the Year, European Agency Awards 2026",
+      email: "hello@synchrosocial.com",
+      address: { "@type": "PostalAddress", addressLocality: "Miami", addressRegion: "FL", addressCountry: "US" },
+      sameAs: [INSTAGRAM, LINKEDIN, GLASSDOOR_URL],
     })} />
 
     <MetaPixel event={metaEvent?.name} params={metaEvent?.params} />
