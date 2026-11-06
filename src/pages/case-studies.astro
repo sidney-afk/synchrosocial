@@ -1,6 +1,6 @@
 ---
-import Studio from "../../layouts/Studio.astro";
-import { caseStudies } from "../../data/caseStudies.js";
+import Studio from "../layouts/Studio.astro";
+import { caseStudies } from "../data/caseStudies.js";
 const avatar = { "Baya Voce": "baya-voce", "Danny Morel": "danny-morel", "Morgan Burch": "morgan-burch", "Jessica Winterstern": "jessica-winterstern", "Garrain Jones": "garrain-jones", "Lucas Salame": "lucas-salame" };
 const pairs = [["Baya Voce", "baya"], ["Danny Morel", "danny", "-feed"], ["Lucas Salame", "lucas"], ["Oliver Nino", "oliver"], ["Dr. Lily Baker", "lily", "-s"], ["Dr. Sonia Chopra", "sonia", "-s"]];
 const more = [
@@ -23,7 +23,7 @@ const receipts = [
   ["sabrina-client-message.webp", "A client's message about her edits"],
 ];
 ---
-<Studio title="Results | Synchro Social" description="Case studies, before and after accounts and the receipts behind 1.2B+ views and 8M+ followers." page="results">
+<Studio title="Results and Case Studies | Synchro Social" description="Case studies, before and after accounts and the receipts behind 1.2B+ views and 8M+ followers." page="results">
   <section class="wrap hero">
     <h1>The receipts behind<br />1.2 billion views.</h1>
     <div class="hb"><p class="lede">Case studies, the videos behind them, and screenshots straight from client accounts. Tap any name to open the real account and check it yourself.</p><div class="cta"><a class="btn" href="/apply">Apply to work with us</a></div></div>
@@ -54,7 +54,7 @@ const receipts = [
   <section class="band"><div class="wrap sec endc">
     <h2>Want results like these?</h2>
     <p>What we ask of you: about 20 minutes a week to review, and one filming day a month (around 2 hours). In month one we learn your voice, you film once, and we edit and post.</p>
-    <div class="cta"><a class="btn" href="/apply">Apply to work with us</a> <a class="btn ghost" href="/new/clients">See how we work</a></div>
+    <div class="cta"><a class="btn" href="/apply">Apply to work with us</a> <a class="btn ghost" href="/clients">See how we work</a></div>
   </div></section>
 </Studio>
 <style is:global>
